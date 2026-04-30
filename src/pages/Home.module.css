@@ -1,0 +1,145 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.hero {
+  text-align: center;
+  padding: 12px 0;
+}
+
+.heading {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--gray-800);
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--gray-500);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.categoryBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.categoryLabel {
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+.categorySelect {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--gray-200);
+  background: white;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.categorySelect:focus {
+  outline: none;
+  border-color: var(--amber);
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.statCard {
+  background: white;
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statNumber {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--amber-dark);
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.gamesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+.gameCard {
+  background: white;
+  border-radius: var(--radius);
+  padding: 22px 18px 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  border-top: 4px solid var(--card-color);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.gameCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.gameIcon {
+  font-size: 2rem;
+}
+
+.gameName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.gameDesc {
+  font-size: 0.85rem;
+  color: var(--gray-400);
+  flex: 1;
+}
+
+.gameArrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--amber);
+}
+
+@media (max-width: 600px) {
+  .heading {
+    font-size: 1.5rem;
+  }
+
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gamesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

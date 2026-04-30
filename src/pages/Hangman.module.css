@@ -1,0 +1,123 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-400);
+  font-size: 1.1rem;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--gray-800);
+}
+
+.canvasWrapper {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 12px;
+}
+
+.canvas {
+  display: block;
+}
+
+.wordDisplay {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--gray-700);
+  font-family: 'Courier New', monospace;
+  text-align: center;
+}
+
+.guessesLeft {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-400);
+}
+
+.winMsg {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--green-dark);
+  background: var(--green-light);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+}
+
+.loseMsg {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--red);
+  background: var(--red-light);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+}
+
+.newGameBtn {
+  background: var(--amber);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 10px 28px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.newGameBtn:hover {
+  background: var(--amber-dark);
+}
+
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 420px;
+  justify-content: center;
+}
+
+.key {
+  width: 38px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.key:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.key:disabled {
+  cursor: default;
+}
+
+.keyUnused {
+  background: white;
+  color: var(--gray-700);
+  box-shadow: var(--shadow);
+}
+
+.keyUnused:hover {
+  background: var(--gray-100);
+}
+
+.keyCorrect {
+  background: var(--green);
+  color: white;
+}
+
+.keyWrong {
+  background: var(--red);
+  color: white;
+}
