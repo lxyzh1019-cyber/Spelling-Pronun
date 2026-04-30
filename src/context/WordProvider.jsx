@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import wordData from '../data/words.json';
 
 const WordContext = createContext(null);
 
@@ -20,23 +21,13 @@ function saveProgress(progress) {
 }
 
 export function WordProvider({ children }) {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [categories, setCategories] = useState(wordData.categories || []);
+  const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    const cats = wordData.categories || [];
+    return cats.length > 0 ? cats[0].name : '';
+  });
   const [progress, setProgress] = useState(loadProgress);
-
-  useEffect(() => {
-    fetch('/words.json')
-      .then((r) => r.json())
-      .then((data) => {
-        setCategories(data.categories);
-        if (data.categories.length > 0) {
-          setSelectedCategory(data.categories[0].name);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
 
   useEffect(() => {
     saveProgress(progress);
