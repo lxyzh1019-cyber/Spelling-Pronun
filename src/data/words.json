@@ -1,53 +1,3018 @@
 {
   "categories": [
     {
-      "name": "Grade 5 — Alberta Curriculum",
+      "name": "Grade 4 — Alberta Curriculum",
       "words": [
-        { "word": "accommodate", "definition": "To provide lodging or room for", "hint": "Two c's, two m's" },
-        { "word": "achievement", "definition": "Something accomplished successfully", "hint": "i before e" },
-        { "word": "apparent", "definition": "Clearly visible or understood", "hint": "Double p, ends with -ent" },
-        { "word": "argument", "definition": "A reason given in a discussion", "hint": "Drop the e from argue" },
-        { "word": "bargain", "definition": "Something bought for a good price", "hint": "Sounds like 'bar-gin'" },
-        { "word": "beginning", "definition": "The start of something", "hint": "Double n before -ing" },
-        { "word": "believe", "definition": "To accept something as true", "hint": "i before e" },
-        { "word": "breathe", "definition": "To take air into the lungs", "hint": "Ends with -the, not -th" },
-        { "word": "brilliant", "definition": "Very bright or intelligent", "hint": "Two l's, ends with -ant" },
-        { "word": "business", "definition": "A commercial activity or company", "hint": "Busy + ness" },
-        { "word": "calendar", "definition": "A chart showing days and months", "hint": "Ends with -dar, not -der" },
-        { "word": "committee", "definition": "A group assigned a task", "hint": "Double m, double t, double e" },
-        { "word": "conscience", "definition": "A sense of right and wrong", "hint": "Has 'science' in it" },
-        { "word": "convenient", "definition": "Suitable or easy to use", "hint": "i before e" },
-        { "word": "correspond", "definition": "To communicate by writing", "hint": "Double r, ends with -spond" },
-        { "word": "criticize", "definition": "To judge or find fault", "hint": "Ends with -cize, not -cise" },
-        { "word": "curiosity", "definition": "A strong desire to learn", "hint": "Related to 'curious'" },
-        { "word": "definite", "definition": "Clearly stated or decided", "hint": "Ends with -ite, not -ate" },
-        { "word": "desperate", "definition": "Feeling a loss of hope", "hint": "Ends with -ate, not -ite" },
-        { "word": "determined", "definition": "Having made a firm decision", "hint": "Ends with -ined, not -ened" },
-        { "word": "develop", "definition": "To grow or improve", "hint": "No extra e at the end" },
-        { "word": "disappear", "definition": "To vanish from sight", "hint": "One s, double p" },
-        { "word": "embarrass", "definition": "To make someone feel awkward", "hint": "Double r, double s" },
-        { "word": "environment", "definition": "The natural world around us", "hint": "Has 'iron' hidden in it" },
-        { "word": "equipment", "definition": "Tools or items for a purpose", "hint": "No extra t after equip" },
-        { "word": "excellence", "definition": "The quality of being outstanding", "hint": "Double l, ends with -ence" },
-        { "word": "familiar", "definition": "Well known or recognized", "hint": "Ends with -iar, not -ier" },
-        { "word": "fascinate", "definition": "To capture someone's interest", "hint": "Has 'sc' not 'ss'" },
-        { "word": "foreign", "definition": "From another country", "hint": "e before i" },
-        { "word": "government", "definition": "The group that rules a country", "hint": "Has 'govern' + 'ment'" }
+        {
+          "word": "accident",
+          "definition": "Something unplanned that causes harm",
+          "hint": "Double c, ends with -ent"
+        },
+        {
+          "word": "active",
+          "definition": "Always moving or doing things",
+          "hint": "Ends with -ive not -iv"
+        },
+        {
+          "word": "address",
+          "definition": "The place where someone lives or works",
+          "hint": "Double d, double s"
+        },
+        {
+          "word": "adventure",
+          "definition": "An exciting or unusual experience",
+          "hint": "Ends with -ture"
+        },
+        {
+          "word": "agree",
+          "definition": "To have the same opinion as someone",
+          "hint": "Ends with -ee"
+        },
+        {
+          "word": "almost",
+          "definition": "Very nearly but not quite",
+          "hint": "One l, not double l"
+        },
+        {
+          "word": "already",
+          "definition": "Before this time or so soon",
+          "hint": "One l"
+        },
+        {
+          "word": "although",
+          "definition": "Even though; despite the fact that",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "among",
+          "definition": "In the middle of a group",
+          "hint": "No extra 'st' at the end"
+        },
+        {
+          "word": "amount",
+          "definition": "A total quantity of something",
+          "hint": "Starts with a-, not u-"
+        },
+        {
+          "word": "angle",
+          "definition": "The space between two meeting lines",
+          "hint": "Ends with -gle"
+        },
+        {
+          "word": "another",
+          "definition": "One more person or thing",
+          "hint": "An + other, not a + nother"
+        },
+        {
+          "word": "answer",
+          "definition": "A response to a question",
+          "hint": "Silent w"
+        },
+        {
+          "word": "anybody",
+          "definition": "Any person at all",
+          "hint": "Any + body"
+        },
+        {
+          "word": "anything",
+          "definition": "Any object or matter",
+          "hint": "Any + thing"
+        },
+        {
+          "word": "appear",
+          "definition": "To come into sight or view",
+          "hint": "Double p"
+        },
+        {
+          "word": "approach",
+          "definition": "To come near or closer to",
+          "hint": "Has 'oa' in the middle"
+        },
+        {
+          "word": "arrange",
+          "definition": "To put things in order",
+          "hint": "Has 'ange' at the end"
+        },
+        {
+          "word": "arrive",
+          "definition": "To reach a destination",
+          "hint": "Double r"
+        },
+        {
+          "word": "balance",
+          "definition": "An even distribution of weight",
+          "hint": "Ends with -ance"
+        },
+        {
+          "word": "balloon",
+          "definition": "An inflatable bag filled with air",
+          "hint": "Double l, double o"
+        },
+        {
+          "word": "beautiful",
+          "definition": "Very pleasing to look at",
+          "hint": "beau-ti-ful"
+        },
+        {
+          "word": "beneath",
+          "definition": "Under or below something",
+          "hint": "Has 'ea' not 'ee'"
+        },
+        {
+          "word": "bicycle",
+          "definition": "A two-wheeled vehicle",
+          "hint": "Bi-cy-cle"
+        },
+        {
+          "word": "blanket",
+          "definition": "A warm covering for a bed",
+          "hint": "Ends with -et"
+        },
+        {
+          "word": "bottom",
+          "definition": "The lowest part of something",
+          "hint": "Double t"
+        },
+        {
+          "word": "bought",
+          "definition": "Purchased something with money",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "boundary",
+          "definition": "A line that marks the edge of an area",
+          "hint": "Bound-ary, not boundry"
+        },
+        {
+          "word": "breakfast",
+          "definition": "The morning meal",
+          "hint": "Break + fast"
+        },
+        {
+          "word": "bridge",
+          "definition": "A structure built over water or a gap",
+          "hint": "Has 'dge' at the end"
+        },
+        {
+          "word": "brother",
+          "definition": "A male sibling",
+          "hint": "Ends with -ther"
+        },
+        {
+          "word": "captain",
+          "definition": "The leader of a team or ship",
+          "hint": "Ends with -ain"
+        },
+        {
+          "word": "careful",
+          "definition": "Paying close attention to avoid harm",
+          "hint": "Care + ful"
+        },
+        {
+          "word": "carry",
+          "definition": "To transport or hold something",
+          "hint": "Double r"
+        },
+        {
+          "word": "cattle",
+          "definition": "Cows or bulls kept on a farm",
+          "hint": "Double t, ends with -le"
+        },
+        {
+          "word": "caught",
+          "definition": "Captured or trapped something",
+          "hint": "Silent gh, -aught not -ought"
+        },
+        {
+          "word": "center",
+          "definition": "The middle point of something",
+          "hint": "Ends with -er, not -re"
+        },
+        {
+          "word": "certain",
+          "definition": "Sure or definite about something",
+          "hint": "Ends with -ain"
+        },
+        {
+          "word": "chance",
+          "definition": "A possibility of something happening",
+          "hint": "Ends with -ance"
+        },
+        {
+          "word": "change",
+          "definition": "To make or become different",
+          "hint": "Has 'ange' at the end"
+        },
+        {
+          "word": "chapter",
+          "definition": "A main section of a book",
+          "hint": "Ends with -ter"
+        },
+        {
+          "word": "character",
+          "definition": "A person in a story or a person's qualities",
+          "hint": "Char-ac-ter"
+        },
+        {
+          "word": "charge",
+          "definition": "To ask for payment or to rush forward",
+          "hint": "Has 'ar' not 'er'"
+        },
+        {
+          "word": "chief",
+          "definition": "The person in charge; a leader",
+          "hint": "i before e"
+        },
+        {
+          "word": "children",
+          "definition": "More than one child",
+          "hint": "Chil-dren, not child-ren"
+        },
+        {
+          "word": "chocolate",
+          "definition": "A sweet food made from cocoa",
+          "hint": "Choc-o-late"
+        },
+        {
+          "word": "choose",
+          "definition": "To pick one thing over others",
+          "hint": "Has 'oo' in the middle"
+        },
+        {
+          "word": "circle",
+          "definition": "A perfectly round shape",
+          "hint": "Has 'cle' at the end"
+        },
+        {
+          "word": "citizen",
+          "definition": "A person who belongs to a country",
+          "hint": "Ci-ti-zen"
+        },
+        {
+          "word": "climate",
+          "definition": "The usual weather conditions of a place",
+          "hint": "Ends with -ate"
+        },
+        {
+          "word": "climbed",
+          "definition": "Went upward using hands and feet",
+          "hint": "Silent b"
+        },
+        {
+          "word": "clothes",
+          "definition": "Items worn on the body",
+          "hint": "Silent e, has 'thes'"
+        },
+        {
+          "word": "collect",
+          "definition": "To gather things together",
+          "hint": "Double l"
+        },
+        {
+          "word": "common",
+          "definition": "Occurring often or shared by many",
+          "hint": "Double m"
+        },
+        {
+          "word": "company",
+          "definition": "A business organization",
+          "hint": "Com-pany, not comp-any"
+        },
+        {
+          "word": "compare",
+          "definition": "To find similarities and differences",
+          "hint": "Ends with -are"
+        },
+        {
+          "word": "complete",
+          "definition": "Finished; having all parts",
+          "hint": "Ends with -ete, not -eet"
+        },
+        {
+          "word": "concern",
+          "definition": "To worry about something",
+          "hint": "Ends with -ern"
+        },
+        {
+          "word": "condition",
+          "definition": "The state that something is in",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "connect",
+          "definition": "To join or link together",
+          "hint": "Double n"
+        },
+        {
+          "word": "consider",
+          "definition": "To think about something carefully",
+          "hint": "No extra e after d"
+        },
+        {
+          "word": "contain",
+          "definition": "To hold or have inside",
+          "hint": "Con-tain"
+        },
+        {
+          "word": "continue",
+          "definition": "To keep going without stopping",
+          "hint": "Con-tin-ue"
+        },
+        {
+          "word": "correct",
+          "definition": "Free from error; right",
+          "hint": "Double r"
+        },
+        {
+          "word": "cotton",
+          "definition": "A soft white fabric from a plant",
+          "hint": "Double t"
+        },
+        {
+          "word": "country",
+          "definition": "A nation with its own government",
+          "hint": "OU not O"
+        },
+        {
+          "word": "couple",
+          "definition": "Two of something together",
+          "hint": "Ends with -le"
+        },
+        {
+          "word": "courage",
+          "definition": "The ability to face danger or fear",
+          "hint": "Ends with -age"
+        },
+        {
+          "word": "course",
+          "definition": "A path or direction of travel",
+          "hint": "Has 'our' in the middle"
+        },
+        {
+          "word": "cover",
+          "definition": "To place something over or on top",
+          "hint": "Ends with -er"
+        },
+        {
+          "word": "create",
+          "definition": "To make something new",
+          "hint": "Ends with -ate"
+        },
+        {
+          "word": "creature",
+          "definition": "A living being, especially an animal",
+          "hint": "Ends with -ture"
+        },
+        {
+          "word": "cupboard",
+          "definition": "A cabinet for storing dishes or food",
+          "hint": "Silent p"
+        },
+        {
+          "word": "curious",
+          "definition": "Eager to learn or know something",
+          "hint": "Ends with -ious"
+        },
+        {
+          "word": "current",
+          "definition": "Happening now; the flow of water or electricity",
+          "hint": "Double r, ends with -ent"
+        },
+        {
+          "word": "danger",
+          "definition": "Something that may cause harm",
+          "hint": "Ends with -ger"
+        },
+        {
+          "word": "daughter",
+          "definition": "A female child of a parent",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "decided",
+          "definition": "Made a choice after thinking",
+          "hint": "De-cid-ed"
+        },
+        {
+          "word": "describe",
+          "definition": "To tell about something in words",
+          "hint": "De-scribe"
+        },
+        {
+          "word": "design",
+          "definition": "A plan or drawing of something",
+          "hint": "Silent g"
+        },
+        {
+          "word": "destroy",
+          "definition": "To ruin or damage completely",
+          "hint": "De-stroy"
+        },
+        {
+          "word": "dictionary",
+          "definition": "A book that lists words and their meanings",
+          "hint": "Dic-tion-ar-y"
+        },
+        {
+          "word": "different",
+          "definition": "Not the same; unlike",
+          "hint": "Double f, ends with -ent"
+        },
+        {
+          "word": "difficult",
+          "definition": "Not easy; requiring effort",
+          "hint": "Double f"
+        },
+        {
+          "word": "direction",
+          "definition": "A course along which something moves",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "discover",
+          "definition": "To find something for the first time",
+          "hint": "Dis-cover"
+        },
+        {
+          "word": "distance",
+          "definition": "The amount of space between two things",
+          "hint": "Ends with -ance"
+        },
+        {
+          "word": "divide",
+          "definition": "To split something into parts",
+          "hint": "Di-vide"
+        },
+        {
+          "word": "double",
+          "definition": "Two times as much or as many",
+          "hint": "Ends with -le"
+        },
+        {
+          "word": "dozen",
+          "definition": "A group of twelve things",
+          "hint": "Ends with -en"
+        },
+        {
+          "word": "early",
+          "definition": "Before the usual or expected time",
+          "hint": "Ear-ly, not er-ly"
+        },
+        {
+          "word": "earth",
+          "definition": "The planet that we live on",
+          "hint": "Has 'ear' at the start"
+        },
+        {
+          "word": "edge",
+          "definition": "The outer border of something",
+          "hint": "Has 'dge' at the end"
+        },
+        {
+          "word": "eighth",
+          "definition": "Coming after seventh in order",
+          "hint": "Silent h after g"
+        },
+        {
+          "word": "electricity",
+          "definition": "A form of energy used for power",
+          "hint": "E-lec-tri-ci-ty"
+        },
+        {
+          "word": "empty",
+          "definition": "Containing nothing inside",
+          "hint": "Ends with -ty"
+        },
+        {
+          "word": "enemy",
+          "definition": "A person who is against you",
+          "hint": "En-e-my"
+        },
+        {
+          "word": "energy",
+          "definition": "The ability to do work or be active",
+          "hint": "En-er-gy"
+        },
+        {
+          "word": "engine",
+          "definition": "A machine that provides power",
+          "hint": "En-gine"
+        },
+        {
+          "word": "enough",
+          "definition": "As much as is needed",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "enter",
+          "definition": "To go into a place",
+          "hint": "En-ter"
+        },
+        {
+          "word": "entire",
+          "definition": "Whole or complete",
+          "hint": "En-tire"
+        },
+        {
+          "word": "equal",
+          "definition": "The same in value or amount",
+          "hint": "E-qual"
+        },
+        {
+          "word": "escape",
+          "definition": "To get free from something",
+          "hint": "Es-cape"
+        },
+        {
+          "word": "example",
+          "definition": "A thing that shows what others are like",
+          "hint": "Ex-am-ple"
+        },
+        {
+          "word": "except",
+          "definition": "Not including; other than",
+          "hint": "Ex-cept"
+        },
+        {
+          "word": "excite",
+          "definition": "To make someone feel eager and happy",
+          "hint": "Ex-cite"
+        },
+        {
+          "word": "expect",
+          "definition": "To think something will happen",
+          "hint": "Ex-pect"
+        },
+        {
+          "word": "explain",
+          "definition": "To make something clear or easy to understand",
+          "hint": "Ex-plain"
+        },
+        {
+          "word": "express",
+          "definition": "To show thoughts or feelings",
+          "hint": "Ex-press"
+        },
+        {
+          "word": "factory",
+          "definition": "A building where things are made",
+          "hint": "Fac-to-ry"
+        },
+        {
+          "word": "failure",
+          "definition": "Lack of success; not succeeding",
+          "hint": "Ends with -ure"
+        },
+        {
+          "word": "famous",
+          "definition": "Known about by many people",
+          "hint": "Ends with -ous"
+        },
+        {
+          "word": "favorite",
+          "definition": "Liked more than the others",
+          "hint": "Ends with -ite, not -ate"
+        },
+        {
+          "word": "feather",
+          "definition": "A light covering on a bird's body",
+          "hint": "Feath-er"
+        },
+        {
+          "word": "February",
+          "definition": "The second month of the year",
+          "hint": "Silent first r"
+        },
+        {
+          "word": "fellow",
+          "definition": "A man or boy; a companion",
+          "hint": "Double l"
+        },
+        {
+          "word": "field",
+          "definition": "An open area of land",
+          "hint": "i before e"
+        },
+        {
+          "word": "figure",
+          "definition": "A number or a shape",
+          "hint": "Ends with -ure"
+        },
+        {
+          "word": "finally",
+          "definition": "After a long time; at last",
+          "hint": "Double l before -y"
+        },
+        {
+          "word": "finger",
+          "definition": "One of the digits on a hand",
+          "hint": "Ends with -ger"
+        },
+        {
+          "word": "finish",
+          "definition": "To bring something to an end",
+          "hint": "Fin-ish"
+        },
+        {
+          "word": "forward",
+          "definition": "Toward the front or ahead",
+          "hint": "For-ward"
+        },
+        {
+          "word": "fourth",
+          "definition": "Coming after third in order",
+          "hint": "Has 'our' not 'or'"
+        },
+        {
+          "word": "freeze",
+          "definition": "To turn from liquid to solid from cold",
+          "hint": "Has 'eeze' in it"
+        },
+        {
+          "word": "frighten",
+          "definition": "To make someone feel afraid",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "furnish",
+          "definition": "To provide furniture for a room",
+          "hint": "Fur-nish"
+        },
+        {
+          "word": "further",
+          "definition": "More distant; additional",
+          "hint": "Fur-ther"
+        },
+        {
+          "word": "garden",
+          "definition": "A place where plants and flowers grow",
+          "hint": "Gar-den"
+        },
+        {
+          "word": "gather",
+          "definition": "To bring things together",
+          "hint": "Gath-er"
+        },
+        {
+          "word": "gentle",
+          "definition": "Soft and kind; not rough",
+          "hint": "Gen-tle"
+        },
+        {
+          "word": "giant",
+          "definition": "Very large in size or importance",
+          "hint": "Gi-ant"
+        },
+        {
+          "word": "governor",
+          "definition": "The elected leader of a state or province",
+          "hint": "Gov-er-nor"
+        },
+        {
+          "word": "grammar",
+          "definition": "The rules of a language",
+          "hint": "Double m, ends with -ar"
+        },
+        {
+          "word": "group",
+          "definition": "A number of people or things together",
+          "hint": "Has 'ou' in it"
+        },
+        {
+          "word": "guard",
+          "definition": "To protect or keep safe",
+          "hint": "Has 'ua', not 'au'"
+        },
+        {
+          "word": "guess",
+          "definition": "To estimate without knowing for sure",
+          "hint": "GU makes the /g/ sound"
+        },
+        {
+          "word": "guide",
+          "definition": "A person who leads or shows the way",
+          "hint": "Silent u"
+        },
+        {
+          "word": "half",
+          "definition": "One of two equal parts",
+          "hint": "Silent l"
+        },
+        {
+          "word": "handle",
+          "definition": "To manage or deal with something",
+          "hint": "Han-dle"
+        },
+        {
+          "word": "happen",
+          "definition": "To take place; to occur",
+          "hint": "Double p"
+        },
+        {
+          "word": "happy",
+          "definition": "Feeling joy or pleasure",
+          "hint": "Double p"
+        },
+        {
+          "word": "healthy",
+          "definition": "In good physical or mental condition",
+          "hint": "Heal-thy"
+        },
+        {
+          "word": "heavy",
+          "definition": "Having great weight",
+          "hint": "Heav-y"
+        },
+        {
+          "word": "history",
+          "definition": "The study of past events",
+          "hint": "His-to-ry"
+        },
+        {
+          "word": "holiday",
+          "definition": "A day off from work or school",
+          "hint": "Hol-i-day"
+        },
+        {
+          "word": "honest",
+          "definition": "Truthful and fair",
+          "hint": "Silent h"
+        },
+        {
+          "word": "hospital",
+          "definition": "A place where sick people are treated",
+          "hint": "Hos-pi-tal"
+        },
+        {
+          "word": "however",
+          "definition": "But; nevertheless; on the other hand",
+          "hint": "How-ev-er"
+        },
+        {
+          "word": "hundred",
+          "definition": "The number equal to ten times ten",
+          "hint": "Hun-dred"
+        },
+        {
+          "word": "hungry",
+          "definition": "Feeling a need to eat food",
+          "hint": "Hun-gry"
+        },
+        {
+          "word": "important",
+          "definition": "Having great meaning or value",
+          "hint": "Ends with -ant, not -ent"
+        },
+        {
+          "word": "include",
+          "definition": "To have as a part of a whole",
+          "hint": "In-clude"
+        },
+        {
+          "word": "increase",
+          "definition": "To become or make larger",
+          "hint": "In-crease"
+        },
+        {
+          "word": "industry",
+          "definition": "The making of goods in factories",
+          "hint": "In-dus-try"
+        },
+        {
+          "word": "instead",
+          "definition": "As a substitute or alternative",
+          "hint": "In-stead"
+        },
+        {
+          "word": "instrument",
+          "definition": "A tool or device, especially for music",
+          "hint": "In-stru-ment"
+        },
+        {
+          "word": "interest",
+          "definition": "A feeling of wanting to learn about something",
+          "hint": "In-ter-est"
+        },
+        {
+          "word": "island",
+          "definition": "Land surrounded by water",
+          "hint": "Silent s"
+        },
+        {
+          "word": "journey",
+          "definition": "A trip from one place to another",
+          "hint": "Jour-ney"
+        },
+        {
+          "word": "judge",
+          "definition": "A person who decides court cases",
+          "hint": "Has 'dge' at the end"
+        },
+        {
+          "word": "juice",
+          "definition": "The liquid from fruits or vegetables",
+          "hint": "Has 'ui' not 'ew'"
+        },
+        {
+          "word": "kitchen",
+          "definition": "A room where food is prepared and cooked",
+          "hint": "Has 'tch' not 'ch'"
+        },
+        {
+          "word": "knee",
+          "definition": "The joint between the upper and lower leg",
+          "hint": "Silent k"
+        },
+        {
+          "word": "knife",
+          "definition": "A sharp tool used for cutting",
+          "hint": "Silent k"
+        },
+        {
+          "word": "language",
+          "definition": "A system of communication using words",
+          "hint": "Lan-guage"
+        },
+        {
+          "word": "laugh",
+          "definition": "To make sounds showing amusement",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "leader",
+          "definition": "A person who guides or directs a group",
+          "hint": "Lead-er"
+        },
+        {
+          "word": "leather",
+          "definition": "Treated animal skin used to make things",
+          "hint": "Leath-er"
+        },
+        {
+          "word": "letter",
+          "definition": "A written message or a symbol of the alphabet",
+          "hint": "Double t"
+        },
+        {
+          "word": "library",
+          "definition": "A place where books are kept",
+          "hint": "Lib-ra-ry, not lib-ary"
+        },
+        {
+          "word": "liquid",
+          "definition": "A substance that flows like water",
+          "hint": "Ends with -id"
+        },
+        {
+          "word": "listen",
+          "definition": "To pay attention to sound",
+          "hint": "Silent t"
+        },
+        {
+          "word": "local",
+          "definition": "Relating to a nearby area",
+          "hint": "Lo-cal"
+        },
+        {
+          "word": "lonely",
+          "definition": "Feeling sad from being alone",
+          "hint": "Lone-ly"
+        },
+        {
+          "word": "machine",
+          "definition": "A device that does a particular job",
+          "hint": "Ma-chine"
+        },
+        {
+          "word": "manner",
+          "definition": "A way of doing something",
+          "hint": "Double n"
+        },
+        {
+          "word": "market",
+          "definition": "A place where goods are bought and sold",
+          "hint": "Mar-ket"
+        },
+        {
+          "word": "marriage",
+          "definition": "The union of two people as partners",
+          "hint": "Double r"
+        },
+        {
+          "word": "material",
+          "definition": "The substance something is made from",
+          "hint": "Ma-te-ri-al"
+        },
+        {
+          "word": "measure",
+          "definition": "To find the size or amount of something",
+          "hint": "Has 'ea' not 'ae'"
+        },
+        {
+          "word": "medicine",
+          "definition": "A substance used to treat illness",
+          "hint": "Med-i-cine"
+        },
+        {
+          "word": "mention",
+          "definition": "To refer to something briefly",
+          "hint": "Men-tion"
+        },
+        {
+          "word": "middle",
+          "definition": "The center point of something",
+          "hint": "Double d"
+        },
+        {
+          "word": "million",
+          "definition": "The number equal to a thousand thousands",
+          "hint": "Double l"
+        },
+        {
+          "word": "minute",
+          "definition": "A unit of time equal to sixty seconds",
+          "hint": "Min-ute"
+        },
+        {
+          "word": "mistake",
+          "definition": "An error or wrong action",
+          "hint": "Mis-take"
+        },
+        {
+          "word": "mountain",
+          "definition": "A very tall natural hill",
+          "hint": "Moun-tain"
+        },
+        {
+          "word": "movement",
+          "definition": "An act of changing position",
+          "hint": "Move-ment"
+        },
+        {
+          "word": "natural",
+          "definition": "Existing in nature; not made by people",
+          "hint": "Nat-u-ral"
+        },
+        {
+          "word": "nearly",
+          "definition": "Almost; very close to",
+          "hint": "Near-ly"
+        },
+        {
+          "word": "neighbor",
+          "definition": "A person who lives near you",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "neither",
+          "definition": "Not one and not the other",
+          "hint": "e before i"
+        },
+        {
+          "word": "nervous",
+          "definition": "Feeling worried or afraid",
+          "hint": "Ends with -ous"
+        },
+        {
+          "word": "notice",
+          "definition": "To see or become aware of something",
+          "hint": "No-tice"
+        },
+        {
+          "word": "number",
+          "definition": "A word or symbol for counting",
+          "hint": "Silent b"
+        },
+        {
+          "word": "object",
+          "definition": "A thing that can be seen or touched",
+          "hint": "Ob-ject"
+        },
+        {
+          "word": "observe",
+          "definition": "To watch something carefully",
+          "hint": "Ob-serve"
+        },
+        {
+          "word": "obtain",
+          "definition": "To get or acquire something",
+          "hint": "Ob-tain"
+        },
+        {
+          "word": "ocean",
+          "definition": "A very large body of salt water",
+          "hint": "Has 'ea' not 'e'"
+        }
       ]
     },
     {
-      "name": "Grade 6 — Challenge Words",
+      "name": "Grade 5 — Alberta Curriculum",
       "words": [
-        { "word": "knowledge", "definition": "Information and skills gained", "hint": "Silent k at the start" },
-        { "word": "necessary", "definition": "Required or essential", "hint": "One c, two s's" },
-        { "word": "parallel", "definition": "Side by side and never meeting", "hint": "Two l's in the middle" },
-        { "word": "rhythm", "definition": "A regular beat or pattern", "hint": "No vowels except y" },
-        { "word": "temperature", "definition": "How hot or cold something is", "hint": "Ends with -ature" },
-        { "word": "twelfth", "definition": "The number after eleventh", "hint": "Has 'lf' in the middle" },
-        { "word": "pronunciation", "definition": "The way a word is spoken", "hint": "Drop the 'o' from pronounce" },
-        { "word": "immediately", "definition": "Without delay", "hint": "Ends with -ately" },
-        { "word": "occasionally", "definition": "Sometimes but not always", "hint": "Double c, one s, double l" },
-        { "word": "vegetable", "definition": "A plant used as food", "hint": "Has 'table' at the end" }
+        {
+          "word": "accommodate",
+          "definition": "To provide lodging or room for",
+          "hint": "Two c's, two m's"
+        },
+        {
+          "word": "achievement",
+          "definition": "Something accomplished successfully",
+          "hint": "i before e"
+        },
+        {
+          "word": "ancient",
+          "definition": "Belonging to the very distant past",
+          "hint": "Has 'ci' not 'ti'"
+        },
+        {
+          "word": "apparent",
+          "definition": "Clearly visible or understood",
+          "hint": "Double p, ends with -ent"
+        },
+        {
+          "word": "appreciate",
+          "definition": "To be grateful for something",
+          "hint": "Double p, ends with -iate"
+        },
+        {
+          "word": "argument",
+          "definition": "A reason given in a discussion",
+          "hint": "Drop the e from argue"
+        },
+        {
+          "word": "attached",
+          "definition": "Connected or joined to something",
+          "hint": "Ends with -tched"
+        },
+        {
+          "word": "available",
+          "definition": "Able to be used or obtained",
+          "hint": "Ends with -able"
+        },
+        {
+          "word": "awkward",
+          "definition": "Clumsy or uncomfortable",
+          "hint": "Silent w before k"
+        },
+        {
+          "word": "bargain",
+          "definition": "Something bought for a good price",
+          "hint": "Sounds like 'bar-gin'"
+        },
+        {
+          "word": "beginning",
+          "definition": "The start of something",
+          "hint": "Double n before -ing"
+        },
+        {
+          "word": "believe",
+          "definition": "To accept something as true",
+          "hint": "i before e"
+        },
+        {
+          "word": "breathe",
+          "definition": "To take air into the lungs",
+          "hint": "Ends with -the, not -th"
+        },
+        {
+          "word": "brilliant",
+          "definition": "Very bright or intelligent",
+          "hint": "Two l's, ends with -ant"
+        },
+        {
+          "word": "bruise",
+          "definition": "A dark mark on skin from an injury",
+          "hint": "Has 'ui' not 'ew'"
+        },
+        {
+          "word": "business",
+          "definition": "A commercial activity or company",
+          "hint": "Busy + ness"
+        },
+        {
+          "word": "calendar",
+          "definition": "A chart showing days and months",
+          "hint": "Ends with -dar, not -der"
+        },
+        {
+          "word": "category",
+          "definition": "A group of similar things",
+          "hint": "Has 'eg' not 'ag'"
+        },
+        {
+          "word": "committee",
+          "definition": "A group assigned a task",
+          "hint": "Double m, double t, double e"
+        },
+        {
+          "word": "community",
+          "definition": "A group of people living together",
+          "hint": "Double m"
+        },
+        {
+          "word": "competition",
+          "definition": "A contest to see who is best",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "congratulations",
+          "definition": "An expression of praise for an achievement",
+          "hint": "Has 'tula' in the middle"
+        },
+        {
+          "word": "conscience",
+          "definition": "A sense of right and wrong",
+          "hint": "Has 'science' in it"
+        },
+        {
+          "word": "conscious",
+          "definition": "Aware of one's surroundings",
+          "hint": "Has 'sci' like science"
+        },
+        {
+          "word": "controversy",
+          "definition": "A public disagreement or debate",
+          "hint": "Ends with -versy"
+        },
+        {
+          "word": "convenient",
+          "definition": "Suitable or easy to use",
+          "hint": "i before e"
+        },
+        {
+          "word": "correspond",
+          "definition": "To communicate by writing",
+          "hint": "Double r, ends with -spond"
+        },
+        {
+          "word": "criticize",
+          "definition": "To judge or find fault",
+          "hint": "Ends with -cize, not -cise"
+        },
+        {
+          "word": "curiosity",
+          "definition": "A strong desire to learn",
+          "hint": "Related to 'curious'"
+        },
+        {
+          "word": "definite",
+          "definition": "Clearly stated or decided",
+          "hint": "Ends with -ite, not -ate"
+        },
+        {
+          "word": "desperate",
+          "definition": "Feeling a loss of hope",
+          "hint": "Ends with -ate, not -ite"
+        },
+        {
+          "word": "determined",
+          "definition": "Having made a firm decision",
+          "hint": "Ends with -ined, not -ened"
+        },
+        {
+          "word": "develop",
+          "definition": "To grow or improve",
+          "hint": "No extra e at the end"
+        },
+        {
+          "word": "disappear",
+          "definition": "To vanish from sight",
+          "hint": "One s, double p"
+        },
+        {
+          "word": "embarrass",
+          "definition": "To make someone feel awkward",
+          "hint": "Double r, double s"
+        },
+        {
+          "word": "environment",
+          "definition": "The natural world around us",
+          "hint": "Has 'iron' hidden in it"
+        },
+        {
+          "word": "equipment",
+          "definition": "Tools or items for a purpose",
+          "hint": "No extra t after equip"
+        },
+        {
+          "word": "especially",
+          "definition": "Particularly; more than usual",
+          "hint": "Ends with -ially"
+        },
+        {
+          "word": "exaggerate",
+          "definition": "To make something seem larger than it is",
+          "hint": "Double g"
+        },
+        {
+          "word": "excellence",
+          "definition": "The quality of being outstanding",
+          "hint": "Double l, ends with -ence"
+        },
+        {
+          "word": "existence",
+          "definition": "The state of being real or alive",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "experience",
+          "definition": "Something a person has lived through",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "explanation",
+          "definition": "A statement that makes something clear",
+          "hint": "Drop the i from explain"
+        },
+        {
+          "word": "familiar",
+          "definition": "Well known or recognized",
+          "hint": "Ends with -iar, not -ier"
+        },
+        {
+          "word": "fascinate",
+          "definition": "To capture someone's interest",
+          "hint": "Has 'sc' not 'ss'"
+        },
+        {
+          "word": "foreign",
+          "definition": "From another country",
+          "hint": "e before i"
+        },
+        {
+          "word": "government",
+          "definition": "The group that rules a country",
+          "hint": "Has 'govern' + 'ment'"
+        },
+        {
+          "word": "guarantee",
+          "definition": "To promise or assure something",
+          "hint": "Has 'ua' not 'au'"
+        },
+        {
+          "word": "interrupt",
+          "definition": "To break into a conversation",
+          "hint": "Double r"
+        },
+        {
+          "word": "mischievous",
+          "definition": "Playfully causing minor trouble",
+          "hint": "Ends with -vous, not -vious"
+        },
+        {
+          "word": "abbreviation",
+          "definition": "A shortened form of a word or phrase",
+          "hint": "Double b, ends with -tion"
+        },
+        {
+          "word": "absence",
+          "definition": "The state of being away or missing",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "abundant",
+          "definition": "Existing in large quantities",
+          "hint": "Ends with -ant"
+        },
+        {
+          "word": "acceptable",
+          "definition": "Good enough to be received",
+          "hint": "Ends with -able"
+        },
+        {
+          "word": "accidentally",
+          "definition": "Happening by chance, not on purpose",
+          "hint": "Double c, -ally"
+        },
+        {
+          "word": "accompany",
+          "definition": "To go somewhere with someone",
+          "hint": "Double c, double m?"
+        },
+        {
+          "word": "accurate",
+          "definition": "Correct and true in every detail",
+          "hint": "Double c, ends with -ate"
+        },
+        {
+          "word": "acquire",
+          "definition": "To obtain or gain something",
+          "hint": "Has 'cqu' in it"
+        },
+        {
+          "word": "acquaintance",
+          "definition": "A person one knows slightly",
+          "hint": "Has 'c' then 'qu'"
+        },
+        {
+          "word": "adequate",
+          "definition": "Enough or satisfactory",
+          "hint": "Ends with -ate"
+        },
+        {
+          "word": "adolescent",
+          "definition": "A young person becoming an adult",
+          "hint": "Ado-les-cent"
+        },
+        {
+          "word": "aggressive",
+          "definition": "Ready to attack or confront",
+          "hint": "Double g, double s"
+        },
+        {
+          "word": "anniversary",
+          "definition": "The annual date of a past event",
+          "hint": "Double n, ends with -ary"
+        },
+        {
+          "word": "announcement",
+          "definition": "A public statement about something",
+          "hint": "Double n, ends with -ment"
+        },
+        {
+          "word": "anxiety",
+          "definition": "A feeling of worry or unease",
+          "hint": "Has 'x' makes /z/ sound"
+        },
+        {
+          "word": "apologize",
+          "definition": "To say sorry for a mistake",
+          "hint": "Ends with -ize"
+        },
+        {
+          "word": "appearance",
+          "definition": "The way something looks",
+          "hint": "Ends with -ance"
+        },
+        {
+          "word": "application",
+          "definition": "A formal request for something",
+          "hint": "Double p, ends with -tion"
+        },
+        {
+          "word": "appointment",
+          "definition": "An arranged meeting time",
+          "hint": "Double p, ends with -ment"
+        },
+        {
+          "word": "approachable",
+          "definition": "Easy to talk to or reach",
+          "hint": "Approach + able"
+        },
+        {
+          "word": "arrangement",
+          "definition": "A plan or preparation",
+          "hint": "Arrange + ment"
+        },
+        {
+          "word": "assistance",
+          "definition": "Help or support given to someone",
+          "hint": "Ends with -ance"
+        },
+        {
+          "word": "association",
+          "definition": "A group organized for a purpose",
+          "hint": "Double s, ends with -tion"
+        },
+        {
+          "word": "atmosphere",
+          "definition": "The gases surrounding a planet",
+          "hint": "Atmo-sphere"
+        },
+        {
+          "word": "attendance",
+          "definition": "Being present at an event",
+          "hint": "Ends with -ance"
+        },
+        {
+          "word": "attitude",
+          "definition": "A way of thinking or feeling",
+          "hint": "Ends with -ude"
+        },
+        {
+          "word": "audience",
+          "definition": "A group of people watching or listening",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "automatically",
+          "definition": "Working by itself without human control",
+          "hint": "Auto-mat-ic-ally"
+        },
+        {
+          "word": "behaviour",
+          "definition": "The way a person acts",
+          "hint": "Has 'our' not 'or'"
+        },
+        {
+          "word": "beneficial",
+          "definition": "Having a good or helpful effect",
+          "hint": "Bene-ficial"
+        },
+        {
+          "word": "boundaries",
+          "definition": "Plural of boundary; dividing lines",
+          "hint": "Bound-aries"
+        },
+        {
+          "word": "camouflage",
+          "definition": "Colouring that hides an animal or person",
+          "hint": "Has 'ou' and 'age'"
+        },
+        {
+          "word": "capability",
+          "definition": "The ability to do something",
+          "hint": "Ends with -ity"
+        },
+        {
+          "word": "catastrophe",
+          "definition": "A sudden great disaster",
+          "hint": "Ends with -phe"
+        },
+        {
+          "word": "celebration",
+          "definition": "A joyful party or event",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "circumstance",
+          "definition": "A fact or condition affecting a situation",
+          "hint": "Circum-stance"
+        },
+        {
+          "word": "collection",
+          "definition": "A group of gathered things",
+          "hint": "Double l, ends with -tion"
+        },
+        {
+          "word": "commitment",
+          "definition": "Dedication to a cause or activity",
+          "hint": "Double m, one t"
+        },
+        {
+          "word": "communicate",
+          "definition": "To share information with others",
+          "hint": "Double m, ends with -ate"
+        },
+        {
+          "word": "compassion",
+          "definition": "Deep concern for others' suffering",
+          "hint": "Com-passion, ends with -ion"
+        },
+        {
+          "word": "compromise",
+          "definition": "An agreement where both sides give way",
+          "hint": "Com-promise"
+        },
+        {
+          "word": "concentrate",
+          "definition": "To focus attention on something",
+          "hint": "Con-cen-trate"
+        },
+        {
+          "word": "conclusion",
+          "definition": "The end or final part",
+          "hint": "Ends with -sion"
+        },
+        {
+          "word": "confident",
+          "definition": "Sure of oneself and one's abilities",
+          "hint": "Ends with -ent"
+        },
+        {
+          "word": "confusion",
+          "definition": "A state of being mixed up or unclear",
+          "hint": "Ends with -sion"
+        },
+        {
+          "word": "consequence",
+          "definition": "The result of an action",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "consistent",
+          "definition": "Always acting the same way",
+          "hint": "Ends with -ent"
+        },
+        {
+          "word": "construction",
+          "definition": "The act of building something",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "contribution",
+          "definition": "Something given to help a cause",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "conversation",
+          "definition": "A talk between people",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "cooperation",
+          "definition": "Working together for a common goal",
+          "hint": "No hyphen, co-opera-tion"
+        },
+        {
+          "word": "courageous",
+          "definition": "Brave in the face of difficulty",
+          "hint": "Ends with -geous"
+        },
+        {
+          "word": "courteous",
+          "definition": "Polite and respectful",
+          "hint": "Ends with -eous"
+        },
+        {
+          "word": "declaration",
+          "definition": "A formal announcement",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "dedication",
+          "definition": "Strong commitment to a task",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "demonstrate",
+          "definition": "To show or explain how something works",
+          "hint": "De-mon-strate"
+        },
+        {
+          "word": "description",
+          "definition": "Words that tell what something is like",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "determination",
+          "definition": "Firmness of purpose; resolve",
+          "hint": "Determin-ation"
+        },
+        {
+          "word": "development",
+          "definition": "The process of growing or improving",
+          "hint": "Develop + ment"
+        },
+        {
+          "word": "disappointment",
+          "definition": "Sadness from unmet expectations",
+          "hint": "One s, double p"
+        },
+        {
+          "word": "discussion",
+          "definition": "A talk about a topic to share ideas",
+          "hint": "Ends with -ssion"
+        },
+        {
+          "word": "distinguish",
+          "definition": "To recognize the difference",
+          "hint": "Has 'gui' not 'gwi'"
+        },
+        {
+          "word": "distribute",
+          "definition": "To give out to several people",
+          "hint": "Dis-trib-ute"
+        },
+        {
+          "word": "economy",
+          "definition": "The system of money and trade",
+          "hint": "E-con-o-my"
+        },
+        {
+          "word": "education",
+          "definition": "The process of learning and teaching",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "elementary",
+          "definition": "Relating to basic or beginning levels",
+          "hint": "El-e-men-ta-ry"
+        },
+        {
+          "word": "emergency",
+          "definition": "A serious situation needing quick action",
+          "hint": "Ends with -ency"
+        },
+        {
+          "word": "encourage",
+          "definition": "To give support or confidence to",
+          "hint": "En-courage"
+        },
+        {
+          "word": "enormous",
+          "definition": "Very large in size",
+          "hint": "Enor-mous"
+        },
+        {
+          "word": "entertainment",
+          "definition": "Something that amuses or interests",
+          "hint": "Entertain + ment"
+        },
+        {
+          "word": "enthusiasm",
+          "definition": "Great excitement and interest",
+          "hint": "Has 'sias' not 'siasm'"
+        },
+        {
+          "word": "establish",
+          "definition": "To set up or create something",
+          "hint": "Es-tab-lish"
+        },
+        {
+          "word": "evaluation",
+          "definition": "A judgement about the value of something",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "evidence",
+          "definition": "Facts that show something is true",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "examination",
+          "definition": "A detailed inspection or test",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "examining",
+          "definition": "Looking at closely to check something",
+          "hint": "Ex-am-in-ing"
+        },
+        {
+          "word": "exceptional",
+          "definition": "Unusually good or outstanding",
+          "hint": "Ends with -tional"
+        },
+        {
+          "word": "experiment",
+          "definition": "A test done to learn something",
+          "hint": "Ex-per-i-ment"
+        },
+        {
+          "word": "exploration",
+          "definition": "The act of searching or travelling",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "expressions",
+          "definition": "Looks on a face showing feelings",
+          "hint": "Ex-pres-sions"
+        },
+        {
+          "word": "extraordinary",
+          "definition": "Very unusual or remarkable",
+          "hint": "Extra + ordinary"
+        },
+        {
+          "word": "facilities",
+          "definition": "Buildings or equipment for a purpose",
+          "hint": "Fac-il-i-ties"
+        },
+        {
+          "word": "forgotten",
+          "definition": "Not remembered; past of forget",
+          "hint": "Double t"
+        },
+        {
+          "word": "frequency",
+          "definition": "How often something happens",
+          "hint": "Ends with -ency"
+        },
+        {
+          "word": "generosity",
+          "definition": "Willingness to give freely",
+          "hint": "Gen-er-os-ity"
+        },
+        {
+          "word": "graduation",
+          "definition": "The ceremony of completing school",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "gratitude",
+          "definition": "The feeling of being thankful",
+          "hint": "Ends with -ude, starts with grat-"
+        },
+        {
+          "word": "happiness",
+          "definition": "The state of being happy",
+          "hint": "Double p? No - happy changes y to i"
+        },
+        {
+          "word": "hesitate",
+          "definition": "To pause before doing something",
+          "hint": "Hes-i-tate"
+        },
+        {
+          "word": "illustrate",
+          "definition": "To explain with pictures or examples",
+          "hint": "Double l, ends with -ate"
+        },
+        {
+          "word": "imagination",
+          "definition": "The ability to create ideas in the mind",
+          "hint": "I-ma-gin-a-tion"
+        },
+        {
+          "word": "impression",
+          "definition": "An idea or feeling about something",
+          "hint": "Ends with -ssion"
+        },
+        {
+          "word": "independence",
+          "definition": "Freedom from outside control",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "indication",
+          "definition": "A sign that something exists or is true",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "individual",
+          "definition": "A single person or thing",
+          "hint": "In-di-vid-u-al"
+        },
+        {
+          "word": "influence",
+          "definition": "The power to affect someone or something",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "information",
+          "definition": "Facts or details about a subject",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "institution",
+          "definition": "A large important organization",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "intelligence",
+          "definition": "The ability to learn and understand",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "intention",
+          "definition": "A plan or purpose to do something",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "interfere",
+          "definition": "To get involved where not wanted",
+          "hint": "Inter-fere"
+        },
+        {
+          "word": "interpret",
+          "definition": "To explain the meaning of something",
+          "hint": "Inter-pret"
+        },
+        {
+          "word": "investigation",
+          "definition": "A careful search for facts",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "irritate",
+          "definition": "To annoy or bother someone",
+          "hint": "Double r, ends with -ate"
+        },
+        {
+          "word": "legislation",
+          "definition": "Laws made by a government",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "luxurious",
+          "definition": "Very comfortable and expensive",
+          "hint": "Lux-uri-ous"
+        },
+        {
+          "word": "magnificent",
+          "definition": "Extremely beautiful or impressive",
+          "hint": "Magni-ficent"
+        },
+        {
+          "word": "manufacture",
+          "definition": "To make goods on a large scale",
+          "hint": "Manu-fact-ure"
+        },
+        {
+          "word": "mathematics",
+          "definition": "The study of numbers and shapes",
+          "hint": "Math-e-mat-ics"
+        },
+        {
+          "word": "maximum",
+          "definition": "The greatest possible amount",
+          "hint": "Ends with -um"
+        },
+        {
+          "word": "memorable",
+          "definition": "Worth remembering; unforgettable",
+          "hint": "Memor-able"
+        },
+        {
+          "word": "minimum",
+          "definition": "The smallest possible amount",
+          "hint": "Ends with -um"
+        },
+        {
+          "word": "misunderstand",
+          "definition": "To fail to grasp the correct meaning",
+          "hint": "Mis-under-stand"
+        },
+        {
+          "word": "multiply",
+          "definition": "To increase greatly in number",
+          "hint": "Multi-ply"
+        },
+        {
+          "word": "negotiate",
+          "definition": "To discuss to reach an agreement",
+          "hint": "Ne-go-ti-ate"
+        },
+        {
+          "word": "nevertheless",
+          "definition": "In spite of that; however",
+          "hint": "Never-the-less"
+        },
+        {
+          "word": "obedience",
+          "definition": "Following rules or orders willingly",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "observation",
+          "definition": "The act of watching something carefully",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "occupation",
+          "definition": "A person's job or profession",
+          "hint": "Double c, ends with -tion"
+        },
+        {
+          "word": "opportunity",
+          "definition": "A chance to do something",
+          "hint": "Double p, ends with -ity"
+        },
+        {
+          "word": "organization",
+          "definition": "A structured group of people",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "originally",
+          "definition": "At first; in the beginning",
+          "hint": "Double l, ends with -ly"
+        },
+        {
+          "word": "participation",
+          "definition": "The act of taking part in something",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "particularly",
+          "definition": "Especially; more than others",
+          "hint": "Partic-ular-ly"
+        },
+        {
+          "word": "patience",
+          "definition": "The ability to wait without getting upset",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "permanent",
+          "definition": "Lasting forever; not temporary",
+          "hint": "Per-man-ent"
+        },
+        {
+          "word": "permission",
+          "definition": "Approval to do something",
+          "hint": "Ends with -ssion"
+        },
+        {
+          "word": "persistence",
+          "definition": "Continuing firmly despite difficulty",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "population",
+          "definition": "All the people living in an area",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "possession",
+          "definition": "Something that someone owns",
+          "hint": "Double s twice"
+        },
+        {
+          "word": "prejudice",
+          "definition": "An unfair opinion formed without reason",
+          "hint": "Pre-ju-dice"
+        },
+        {
+          "word": "preparation",
+          "definition": "The act of getting ready",
+          "hint": "Prep-ara-tion"
+        },
+        {
+          "word": "privilege",
+          "definition": "A special right or advantage",
+          "hint": "Has 'lege' not 'ledge'"
+        },
+        {
+          "word": "procedure",
+          "definition": "A set of actions done in a certain way",
+          "hint": "Pro-ced-ure"
+        },
+        {
+          "word": "profession",
+          "definition": "A paid occupation requiring training",
+          "hint": "Ends with -ssion"
+        },
+        {
+          "word": "pronunciation",
+          "definition": "The way a word is spoken",
+          "hint": "Drop the 'o' from pronounce"
+        },
+        {
+          "word": "psychology",
+          "definition": "The study of the mind and behaviour",
+          "hint": "Silent p, ends with -ology"
+        },
+        {
+          "word": "punctuation",
+          "definition": "Marks used in writing like periods and commas",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "qualification",
+          "definition": "A skill or quality needed for a job",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "recommend",
+          "definition": "To suggest something as good or suitable",
+          "hint": "One c, double m"
+        },
+        {
+          "word": "reference",
+          "definition": "A source of information",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "repetition",
+          "definition": "The act of doing something again",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "representative",
+          "definition": "A person chosen to speak for others",
+          "hint": "Re-pre-sent-a-tive"
+        },
+        {
+          "word": "reputation",
+          "definition": "What others think of someone",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "requirement",
+          "definition": "Something that is needed or demanded",
+          "hint": "Require + ment"
+        },
+        {
+          "word": "respectfully",
+          "definition": "In a way that shows respect",
+          "hint": "Respect + fully"
+        },
+        {
+          "word": "responsible",
+          "definition": "Having a duty to deal with something",
+          "hint": "Ends with -ible"
+        },
+        {
+          "word": "restaurant",
+          "definition": "A place where meals are served",
+          "hint": "Res-tau-rant"
+        },
+        {
+          "word": "satisfaction",
+          "definition": "The feeling of being pleased",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "scientific",
+          "definition": "Relating to science",
+          "hint": "Has 'sci' not 'c'"
+        }
+      ]
+    },
+    {
+      "name": "Grade 6 — Alberta Curriculum",
+      "words": [
+        {
+          "word": "amateur",
+          "definition": "Someone who does something unpaid, not a professional",
+          "hint": "Ends with -eur"
+        },
+        {
+          "word": "appropriate",
+          "definition": "Suitable or proper for the situation",
+          "hint": "Double p, ends with -iate"
+        },
+        {
+          "word": "characteristic",
+          "definition": "A feature that helps identify something",
+          "hint": "Char-ac-ter-is-tic"
+        },
+        {
+          "word": "column",
+          "definition": "A vertical pillar or section in a newspaper",
+          "hint": "Silent n at the end"
+        },
+        {
+          "word": "commercial",
+          "definition": "Related to buying and selling",
+          "hint": "Double m"
+        },
+        {
+          "word": "completely",
+          "definition": "Totally or entirely",
+          "hint": "Drop no e from complete"
+        },
+        {
+          "word": "definitely",
+          "definition": "Without any doubt",
+          "hint": "Based on 'definite' + ly"
+        },
+        {
+          "word": "difference",
+          "definition": "The way things are not the same",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "disappoint",
+          "definition": "To fail to satisfy someone's hopes",
+          "hint": "One s, double p"
+        },
+        {
+          "word": "discipline",
+          "definition": "Training to follow rules or a code of behaviour",
+          "hint": "Has 'sci' in the middle"
+        },
+        {
+          "word": "efficient",
+          "definition": "Working well with little waste",
+          "hint": "Double f, ends with -ient"
+        },
+        {
+          "word": "eliminate",
+          "definition": "To get rid of entirely",
+          "hint": "Ends with -inate"
+        },
+        {
+          "word": "enthusiastic",
+          "definition": "Very excited and interested in something",
+          "hint": "Has 'sias' in the middle"
+        },
+        {
+          "word": "excellent",
+          "definition": "Extremely good or outstanding",
+          "hint": "Double l, ends with -ent"
+        },
+        {
+          "word": "exercise",
+          "definition": "Physical activity to stay healthy",
+          "hint": "Ends with -cise not -size"
+        },
+        {
+          "word": "frequently",
+          "definition": "Happening often or repeatedly",
+          "hint": "Ends with -quently"
+        },
+        {
+          "word": "grateful",
+          "definition": "Feeling thankful",
+          "hint": "Grate, not great"
+        },
+        {
+          "word": "humorous",
+          "definition": "Funny or amusing",
+          "hint": "Ends with -orous"
+        },
+        {
+          "word": "immediately",
+          "definition": "Without delay",
+          "hint": "Ends with -ately"
+        },
+        {
+          "word": "jealous",
+          "definition": "Envious of someone's success or advantages",
+          "hint": "Ends with -ous"
+        },
+        {
+          "word": "knowledge",
+          "definition": "Information and skills gained",
+          "hint": "Silent k at the start"
+        },
+        {
+          "word": "laboratory",
+          "definition": "A room equipped for experiments",
+          "hint": "Lab-o-ra-tory"
+        },
+        {
+          "word": "leisure",
+          "definition": "Free time away from work",
+          "hint": "e before i"
+        },
+        {
+          "word": "lightning",
+          "definition": "A flash of electricity in a storm",
+          "hint": "No e after the t"
+        },
+        {
+          "word": "maintenance",
+          "definition": "Keeping something in good condition",
+          "hint": "Main-ten-ance"
+        },
+        {
+          "word": "miniature",
+          "definition": "A very small version of something",
+          "hint": "Has 'ia' in the middle"
+        },
+        {
+          "word": "necessary",
+          "definition": "Required or essential",
+          "hint": "One c, two s's"
+        },
+        {
+          "word": "niece",
+          "definition": "A daughter of one's sibling",
+          "hint": "i before e"
+        },
+        {
+          "word": "noticeable",
+          "definition": "Easy to see or detect",
+          "hint": "Keep the e before -able"
+        },
+        {
+          "word": "occasionally",
+          "definition": "Sometimes but not always",
+          "hint": "Double c, one s, double l"
+        },
+        {
+          "word": "parallel",
+          "definition": "Side by side and never meeting",
+          "hint": "Two l's in the middle"
+        },
+        {
+          "word": "rhythm",
+          "definition": "A regular beat or pattern in music",
+          "hint": "No vowels except y"
+        },
+        {
+          "word": "thoroughly",
+          "definition": "In a complete and careful way",
+          "hint": "Has 'ough' in it"
+        },
+        {
+          "word": "twelfth",
+          "definition": "The number after eleventh",
+          "hint": "Has 'lf' in the middle"
+        },
+        {
+          "word": "accelerate",
+          "definition": "To increase in speed",
+          "hint": "Double c, double l? No - single l, ends with -ate"
+        },
+        {
+          "word": "acknowledge",
+          "definition": "To accept or admit the truth of something",
+          "hint": "Silent k, has 'dge'"
+        },
+        {
+          "word": "adaptation",
+          "definition": "The process of changing to fit a new situation",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "adolescence",
+          "definition": "The period between childhood and adulthood",
+          "hint": "Ado-les-cence"
+        },
+        {
+          "word": "ambiguous",
+          "definition": "Having more than one possible meaning",
+          "hint": "Ends with -uous"
+        },
+        {
+          "word": "analyze",
+          "definition": "To examine something in detail",
+          "hint": "Ends with -yze"
+        },
+        {
+          "word": "ancestor",
+          "definition": "A person from whom one is descended",
+          "hint": "An-ces-tor"
+        },
+        {
+          "word": "antibiotic",
+          "definition": "A medicine that kills bacteria",
+          "hint": "Anti-bio-tic"
+        },
+        {
+          "word": "apparatus",
+          "definition": "Equipment needed for a task",
+          "hint": "Double p"
+        },
+        {
+          "word": "approximately",
+          "definition": "Close to but not exactly",
+          "hint": "Double p, ends with -ately"
+        },
+        {
+          "word": "archaeology",
+          "definition": "The study of ancient human remains",
+          "hint": "Ar-chae-ol-o-gy"
+        },
+        {
+          "word": "architecture",
+          "definition": "The art of designing buildings",
+          "hint": "Ar-chi-tec-ture"
+        },
+        {
+          "word": "astronomy",
+          "definition": "The scientific study of stars and planets",
+          "hint": "As-tron-o-my"
+        },
+        {
+          "word": "bacteria",
+          "definition": "Tiny living things that can cause disease",
+          "hint": "Bac-te-ria"
+        },
+        {
+          "word": "bureaucracy",
+          "definition": "A system of government with many rules",
+          "hint": "Bu-reau-cracy"
+        },
+        {
+          "word": "cemetery",
+          "definition": "A place where dead people are buried",
+          "hint": "All e's, no a's"
+        },
+        {
+          "word": "challenge",
+          "definition": "A difficult task that tests ability",
+          "hint": "Ends with -enge"
+        },
+        {
+          "word": "chandelier",
+          "definition": "A hanging light with branches",
+          "hint": "Chan-de-lier"
+        },
+        {
+          "word": "chronological",
+          "definition": "Arranged in order of time",
+          "hint": "Chrono-logical"
+        },
+        {
+          "word": "coincidence",
+          "definition": "Two things happening together by chance",
+          "hint": "Co-inci-dence"
+        },
+        {
+          "word": "colleague",
+          "definition": "A person one works with",
+          "hint": "Ends with -eague"
+        },
+        {
+          "word": "comprehension",
+          "definition": "The ability to understand something",
+          "hint": "Ends with -sion"
+        },
+        {
+          "word": "connoisseur",
+          "definition": "An expert judge in matters of taste",
+          "hint": "Double n, double s, ends with -eur"
+        },
+        {
+          "word": "constitution",
+          "definition": "The basic laws of a country",
+          "hint": "Ends with -tion"
+        },
+        {
+          "word": "convenience",
+          "definition": "The state of being easy to use",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "correspondence",
+          "definition": "Communication by letters or email",
+          "hint": "Double r, ends with -ence"
+        },
+        {
+          "word": "curriculum",
+          "definition": "The subjects taught in a school",
+          "hint": "Double r, ends with -um"
+        },
+        {
+          "word": "deceive",
+          "definition": "To trick someone into believing a lie",
+          "hint": "e before i"
+        },
+        {
+          "word": "democracy",
+          "definition": "A government elected by the people",
+          "hint": "Demo-cracy"
+        },
+        {
+          "word": "deteriorate",
+          "definition": "To become worse over time",
+          "hint": "De-ter-i-o-rate"
+        },
+        {
+          "word": "diarrhoea",
+          "definition": "An illness causing frequent loose bowel movements",
+          "hint": "Double r, has 'oe'"
+        },
+        {
+          "word": "disastrous",
+          "definition": "Causing great damage or suffering",
+          "hint": "Drop the e from disaster"
+        },
+        {
+          "word": "doubt",
+          "definition": "To feel uncertain about something",
+          "hint": "Silent b"
+        },
+        {
+          "word": "economical",
+          "definition": "Using resources carefully; not wasteful",
+          "hint": "Eco-nom-i-cal"
+        },
+        {
+          "word": "encyclopedia",
+          "definition": "A book of information on many subjects",
+          "hint": "En-cy-clo-pe-dia"
+        },
+        {
+          "word": "equipped",
+          "definition": "Provided with necessary items",
+          "hint": "Double p"
+        },
+        {
+          "word": "essence",
+          "definition": "The basic nature of something",
+          "hint": "Ess-ence"
+        },
+        {
+          "word": "exceedingly",
+          "definition": "To a very great degree; extremely",
+          "hint": "Ex-ceed-ing-ly"
+        },
+        {
+          "word": "exhilarating",
+          "definition": "Making one feel very happy and excited",
+          "hint": "Ex-hil-a-rat-ing"
+        },
+        {
+          "word": "fulfill",
+          "definition": "To complete or achieve something",
+          "hint": "One l? No - ends with -fill, double l"
+        },
+        {
+          "word": "handkerchief",
+          "definition": "A small cloth for wiping the nose",
+          "hint": "Has 'd' and 'ief'"
+        },
+        {
+          "word": "harass",
+          "definition": "To repeatedly bother or attack someone",
+          "hint": "One r, double s"
+        },
+        {
+          "word": "height",
+          "definition": "How tall or high something is",
+          "hint": "e before i? No - e then i then g"
+        },
+        {
+          "word": "hemisphere",
+          "definition": "Half of a sphere, especially the earth",
+          "hint": "Hemi-sphere"
+        },
+        {
+          "word": "hierarchy",
+          "definition": "A system where people are ranked above others",
+          "hint": "Hi-er-archy"
+        },
+        {
+          "word": "hypocrisy",
+          "definition": "Pretending to have beliefs one does not hold",
+          "hint": "Hypo-crisy"
+        },
+        {
+          "word": "illegible",
+          "definition": "Impossible to read",
+          "hint": "Il-leg-ible"
+        },
+        {
+          "word": "inconvenience",
+          "definition": "A small problem or trouble",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "incredible",
+          "definition": "Hard to believe; amazing",
+          "hint": "Ends with -ible"
+        },
+        {
+          "word": "indispensable",
+          "definition": "Absolutely necessary",
+          "hint": "Ends with -able"
+        },
+        {
+          "word": "irresistible",
+          "definition": "Too attractive to be refused",
+          "hint": "Ends with -ible"
+        },
+        {
+          "word": "knowledgeable",
+          "definition": "Intelligent and well informed",
+          "hint": "Silent k, ends with -able"
+        },
+        {
+          "word": "legitimate",
+          "definition": "Allowed by law; reasonable",
+          "hint": "Leg-it-im-ate"
+        },
+        {
+          "word": "lieutenant",
+          "definition": "A rank in the army or police",
+          "hint": "Lieu-ten-ant"
+        },
+        {
+          "word": "manoeuvre",
+          "definition": "A planned and controlled movement",
+          "hint": "Has 'oeu' in it"
+        },
+        {
+          "word": "Mediterranean",
+          "definition": "Relating to the sea between Europe and Africa",
+          "hint": "Medi-terr-anean"
+        },
+        {
+          "word": "millennium",
+          "definition": "A period of one thousand years",
+          "hint": "Double l, double n"
+        },
+        {
+          "word": "miscellaneous",
+          "definition": "Made up of various types",
+          "hint": "Mis-cel-lan-eous"
+        },
+        {
+          "word": "misspell",
+          "definition": "To spell a word incorrectly",
+          "hint": "Double s, double l"
+        },
+        {
+          "word": "mysterious",
+          "definition": "Difficult or impossible to explain",
+          "hint": "Mys-ter-i-ous"
+        },
+        {
+          "word": "nauseous",
+          "definition": "Feeling like one might vomit",
+          "hint": "Has 'eau' in it"
+        },
+        {
+          "word": "neighbourhood",
+          "definition": "A district where people live",
+          "hint": "Neigh-bour-hood"
+        },
+        {
+          "word": "nuisance",
+          "definition": "A person or thing causing annoyance",
+          "hint": "Has 'uis' not 'ew'"
+        },
+        {
+          "word": "occurrence",
+          "definition": "An event or incident",
+          "hint": "Double c, double r, ends with -ence"
+        },
+        {
+          "word": "parliament",
+          "definition": "The group that makes laws in some countries",
+          "hint": "Par-lia-ment"
+        },
+        {
+          "word": "perseverance",
+          "definition": "Continuing to try despite difficulties",
+          "hint": "Per-sev-er-ance"
+        },
+        {
+          "word": "phenomenon",
+          "definition": "A fact or event that can be observed",
+          "hint": "Phe-nom-e-non"
+        },
+        {
+          "word": "philosophy",
+          "definition": "The study of ideas about life and knowledge",
+          "hint": "Phi-los-o-phy"
+        },
+        {
+          "word": "possess",
+          "definition": "To have or own something",
+          "hint": "Double s at the end"
+        },
+        {
+          "word": "predecessor",
+          "definition": "A person who held a job before another",
+          "hint": "Pre-de-ces-sor"
+        },
+        {
+          "word": "questionnaire",
+          "definition": "A list of questions for a survey",
+          "hint": "Double n, ends with -aire"
+        },
+        {
+          "word": "receipt",
+          "definition": "A note showing payment",
+          "hint": "Silent p"
+        },
+        {
+          "word": "relevant",
+          "definition": "Connected to the matter at hand",
+          "hint": "Re-le-vant"
+        },
+        {
+          "word": "sacrifice",
+          "definition": "To give up something important",
+          "hint": "Sac-ri-fice"
+        },
+        {
+          "word": "schedule",
+          "definition": "A plan of times when things will happen",
+          "hint": "Sch-ed-ule"
+        },
+        {
+          "word": "secretary",
+          "definition": "A person employed to handle office work",
+          "hint": "Se-cre-tary"
+        },
+        {
+          "word": "sincerely",
+          "definition": "In a genuine and honest way",
+          "hint": "Sincere + ly"
+        },
+        {
+          "word": "souvenir",
+          "definition": "A thing kept as a reminder of a place",
+          "hint": "Sou-ven-ir"
+        },
+        {
+          "word": "specifically",
+          "definition": "In a clear and exact way",
+          "hint": "Spe-cif-ic-ally"
+        },
+        {
+          "word": "sympathy",
+          "definition": "Feelings of pity for another's trouble",
+          "hint": "Sym-pathy"
+        },
+        {
+          "word": "technique",
+          "definition": "A special way of doing something",
+          "hint": "Ends with -ique"
+        },
+        {
+          "word": "unanimous",
+          "definition": "Fully in agreement by everyone",
+          "hint": "Un-an-im-ous"
+        },
+        {
+          "word": "unique",
+          "definition": "Being the only one of its kind",
+          "hint": "Ends with -ique"
+        },
+        {
+          "word": "vacuum",
+          "definition": "A space with no air in it",
+          "hint": "Double u"
+        },
+        {
+          "word": "xylophone",
+          "definition": "A musical instrument with wooden bars",
+          "hint": "Starts with x, ends with -phone"
+        },
+        {
+          "word": "offer",
+          "definition": "To present something for acceptance",
+          "hint": "Double f"
+        },
+        {
+          "word": "often",
+          "definition": "Many times; frequently",
+          "hint": "Silent t"
+        },
+        {
+          "word": "opinion",
+          "definition": "A belief or view about something",
+          "hint": "O-pin-ion"
+        },
+        {
+          "word": "order",
+          "definition": "A command or arrangement",
+          "hint": "Or-der"
+        },
+        {
+          "word": "ordinary",
+          "definition": "Normal or usual; not special",
+          "hint": "Or-di-nar-y"
+        },
+        {
+          "word": "organize",
+          "definition": "To arrange things in a structured way",
+          "hint": "Ends with -ize"
+        },
+        {
+          "word": "owner",
+          "definition": "A person who possesses something",
+          "hint": "Ends with -er"
+        },
+        {
+          "word": "pacific",
+          "definition": "Peaceful or calm",
+          "hint": "One f, ends with -ic"
+        },
+        {
+          "word": "painting",
+          "definition": "A picture made with paint",
+          "hint": "Paint-ing"
+        },
+        {
+          "word": "palace",
+          "definition": "A large grand house for royalty",
+          "hint": "Ends with -ace"
+        },
+        {
+          "word": "passenger",
+          "definition": "A person travelling in a vehicle",
+          "hint": "Double s"
+        },
+        {
+          "word": "pattern",
+          "definition": "A repeated design or sequence",
+          "hint": "Double t"
+        },
+        {
+          "word": "perfect",
+          "definition": "Without any faults or flaws",
+          "hint": "Per-fect"
+        },
+        {
+          "word": "perhaps",
+          "definition": "Maybe; possibly",
+          "hint": "Per-haps"
+        },
+        {
+          "word": "planet",
+          "definition": "A large body that orbits a star",
+          "hint": "Plan-et"
+        },
+        {
+          "word": "please",
+          "definition": "To make someone happy or satisfied",
+          "hint": "Ends with -ease"
+        },
+        {
+          "word": "police",
+          "definition": "Officers who enforce the law",
+          "hint": "Po-lice"
+        },
+        {
+          "word": "polite",
+          "definition": "Having good manners",
+          "hint": "Po-lite"
+        },
+        {
+          "word": "popular",
+          "definition": "Liked by many people",
+          "hint": "Pop-u-lar"
+        },
+        {
+          "word": "possible",
+          "definition": "Able to happen or be done",
+          "hint": "Double s"
+        },
+        {
+          "word": "practice",
+          "definition": "To do something repeatedly to improve",
+          "hint": "Ends with -ice not -ise"
+        },
+        {
+          "word": "prepare",
+          "definition": "To make ready beforehand",
+          "hint": "Pre-pare"
+        },
+        {
+          "word": "present",
+          "definition": "A gift or something happening now",
+          "hint": "Pre-sent"
+        },
+        {
+          "word": "president",
+          "definition": "The head of a country or organization",
+          "hint": "Pre-si-dent"
+        },
+        {
+          "word": "pressure",
+          "definition": "Force applied to something",
+          "hint": "Double s"
+        },
+        {
+          "word": "prevent",
+          "definition": "To stop something from happening",
+          "hint": "Pre-vent"
+        },
+        {
+          "word": "probably",
+          "definition": "Almost certainly; very likely",
+          "hint": "Prob-a-bly"
+        },
+        {
+          "word": "produce",
+          "definition": "To make or create something",
+          "hint": "Pro-duce"
+        },
+        {
+          "word": "promise",
+          "definition": "To say you will definitely do something",
+          "hint": "Prom-ise"
+        },
+        {
+          "word": "protect",
+          "definition": "To keep safe from harm",
+          "hint": "Pro-tect"
+        },
+        {
+          "word": "provide",
+          "definition": "To supply or make available",
+          "hint": "Pro-vide"
+        },
+        {
+          "word": "purpose",
+          "definition": "The reason for doing something",
+          "hint": "Pur-pose, not per-pose"
+        },
+        {
+          "word": "question",
+          "definition": "Something that is asked",
+          "hint": "Starts with que-"
+        },
+        {
+          "word": "receive",
+          "definition": "To get or be given something",
+          "hint": "e before i"
+        },
+        {
+          "word": "record",
+          "definition": "To write down or store information",
+          "hint": "Re-cord"
+        },
+        {
+          "word": "reflect",
+          "definition": "To throw back light or sound",
+          "hint": "Re-flect"
+        },
+        {
+          "word": "region",
+          "definition": "An area or part of a country",
+          "hint": "Ends with -ion"
+        },
+        {
+          "word": "remember",
+          "definition": "To bring back to mind",
+          "hint": "Rem-em-ber"
+        },
+        {
+          "word": "repeat",
+          "definition": "To say or do something again",
+          "hint": "Re-peat"
+        },
+        {
+          "word": "report",
+          "definition": "To give an account of something",
+          "hint": "Re-port"
+        },
+        {
+          "word": "require",
+          "definition": "To need something",
+          "hint": "Re-quire"
+        },
+        {
+          "word": "return",
+          "definition": "To come or go back",
+          "hint": "Re-turn"
+        },
+        {
+          "word": "scatter",
+          "definition": "To throw in different directions",
+          "hint": "Double t"
+        },
+        {
+          "word": "science",
+          "definition": "The study of the natural world",
+          "hint": "Has 'sc' not 's'"
+        },
+        {
+          "word": "separate",
+          "definition": "To divide or keep apart",
+          "hint": "Has 'par' not 'per'"
+        },
+        {
+          "word": "several",
+          "definition": "More than two but not many",
+          "hint": "Sev-er-al"
+        },
+        {
+          "word": "shoulder",
+          "definition": "The joint connecting arm to body",
+          "hint": "Shoul-der"
+        },
+        {
+          "word": "silence",
+          "definition": "Complete quiet; no sound",
+          "hint": "Ends with -ence"
+        },
+        {
+          "word": "similar",
+          "definition": "Almost the same; alike",
+          "hint": "Sim-i-lar"
+        },
+        {
+          "word": "sincere",
+          "definition": "Genuine and honest",
+          "hint": "Sin-cere"
+        },
+        {
+          "word": "smooth",
+          "definition": "Having an even surface",
+          "hint": "Has 'oo' in it"
+        },
+        {
+          "word": "soldier",
+          "definition": "A person who serves in an army",
+          "hint": "Has 'die' in it"
+        },
+        {
+          "word": "special",
+          "definition": "Better or different from usual",
+          "hint": "Has 'ci' not 'ti'"
+        },
+        {
+          "word": "spread",
+          "definition": "To open out over a larger area",
+          "hint": "Has 'ea' not 'ee'"
+        },
+        {
+          "word": "stomach",
+          "definition": "The organ that digests food",
+          "hint": "Ends with -ach"
+        },
+        {
+          "word": "straight",
+          "definition": "Without a bend or curve",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "strength",
+          "definition": "The quality of being strong",
+          "hint": "Has 'eng' then 'th'"
+        },
+        {
+          "word": "stretch",
+          "definition": "To pull something to make it longer",
+          "hint": "Has 'tch' not 'ch'"
+        },
+        {
+          "word": "subject",
+          "definition": "A topic or area of study",
+          "hint": "Sub-ject"
+        },
+        {
+          "word": "succeed",
+          "definition": "To achieve a goal",
+          "hint": "Double c, double e"
+        },
+        {
+          "word": "success",
+          "definition": "The achievement of a goal",
+          "hint": "Double c, double s"
+        },
+        {
+          "word": "suddenly",
+          "definition": "Happening quickly without warning",
+          "hint": "Sud-den-ly"
+        },
+        {
+          "word": "suggest",
+          "definition": "To put forward an idea",
+          "hint": "Double g"
+        },
+        {
+          "word": "supply",
+          "definition": "To provide something needed",
+          "hint": "Double p"
+        },
+        {
+          "word": "support",
+          "definition": "To help or back up",
+          "hint": "Double p"
+        },
+        {
+          "word": "suppose",
+          "definition": "To assume something is true",
+          "hint": "Double p"
+        },
+        {
+          "word": "surface",
+          "definition": "The outside layer of something",
+          "hint": "Sur-face"
+        },
+        {
+          "word": "surprise",
+          "definition": "An unexpected event",
+          "hint": "Sur-prise"
+        },
+        {
+          "word": "surround",
+          "definition": "To be all around something",
+          "hint": "Double r"
+        },
+        {
+          "word": "system",
+          "definition": "A set of connected things or parts",
+          "hint": "Sys-tem"
+        },
+        {
+          "word": "temperature",
+          "definition": "How hot or cold something is",
+          "hint": "Ends with -ature"
+        },
+        {
+          "word": "therefore",
+          "definition": "For that reason; as a result",
+          "hint": "There-fore"
+        },
+        {
+          "word": "thousand",
+          "definition": "The number equal to ten hundreds",
+          "hint": "Thou-sand"
+        },
+        {
+          "word": "through",
+          "definition": "From one side to the other",
+          "hint": "Silent gh"
+        },
+        {
+          "word": "together",
+          "definition": "With each other",
+          "hint": "To-geth-er"
+        },
+        {
+          "word": "tomorrow",
+          "definition": "The day after today",
+          "hint": "One m, double r"
+        },
+        {
+          "word": "tongue",
+          "definition": "The organ in the mouth used for tasting",
+          "hint": "Silent ue at the end"
+        },
+        {
+          "word": "toward",
+          "definition": "In the direction of",
+          "hint": "To-ward"
+        },
+        {
+          "word": "travel",
+          "definition": "To go from one place to another",
+          "hint": "One l"
+        },
+        {
+          "word": "trouble",
+          "definition": "Difficulty or problems",
+          "hint": "Trou-ble"
+        },
+        {
+          "word": "unusual",
+          "definition": "Not common; rare",
+          "hint": "Un-usual"
+        }
       ]
     }
   ]
