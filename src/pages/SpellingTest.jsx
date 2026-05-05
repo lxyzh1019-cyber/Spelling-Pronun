@@ -2,10 +2,14 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useWords } from '../context/WordProvider';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/shuffle';
+import { playCorrectSound, playIncorrectSound, playMilestoneSound, playHintSound, getSoundEnabled } from '../utils/sounds';
+import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
+import { triggerConfetti, triggerFireworks } from '../utils/confetti';
+import { checkAchievements } from '../utils/achievements';
 import styles from './SpellingTest.module.css';
 
 export default function SpellingTest() {
-  const { activeWords, recordResult, selectedCategory } = useWords();
+  const { activeWords, recordResult, selectedCategory, soundEnabled, unlockAchievement, useHint, hintsUsedToday, completeDailyChallenge, dailyChallengeDone, stats } = useWords();
   const [shuffled, setShuffled] = useState([]);
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState('');
@@ -14,6 +18,7 @@ export default function SpellingTest() {
   const [finished, setFinished] = useState(false);
   const [started, setStarted] = useState(false);
   const inputRef = useRef(null);
+  const [showHintContent, setShowHintContent] = useState(null);
 
   useEffect(() => {
     setShuffled(shuffle(activeWords));
@@ -39,6 +44,14 @@ export default function SpellingTest() {
     }, 300);
   };
 
+  const handleUseHint = async () => {
+    const success = await useHint();
+    if (success) {
+      playHintSound();
+      setShowHintContent('hint-shown');
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!input.trim() || feedback) return;
@@ -46,6 +59,16 @@ export default function SpellingTest() {
     const isCorrect = input.trim().toLowerCase() === current.word.toLowerCase();
     setFeedback(isCorrect ? 'correct' : 'incorrect');
     recordResult(current.id, isCorrect);
+
+    if (isCorrect) {
+      if (soundEnabled) playCorrectSound();
+      hapticSuccess();
+      triggerConfetti('light');
+    } else {
+      if (soundEnabled) playIncorrectSound();
+      hapticError();
+    }
+
     setScore((s) => ({
       ...s,
       correct: s.correct + (isCorrect ? 1 : 0),
@@ -56,10 +79,19 @@ export default function SpellingTest() {
   const handleNext = () => {
     if (index + 1 >= shuffled.length) {
       setFinished(true);
+      const total = score.correct + score.incorrect + score.skipped;
+      const isPerfect = score.correct === total && total > 0;
+      if (isPerfect) {
+        if (soundEnabled) playMilestoneSound();
+        hapticMilestone();
+        triggerFireworks();
+        unlockAchievement('perfect_round');
+      }
     } else {
       setIndex((i) => i + 1);
       setInput('');
       setFeedback(null);
+      setShowHintContent(null);
       setTimeout(() => {
         speakCurrent();
         inputRef.current?.focus();
@@ -100,11 +132,16 @@ export default function SpellingTest() {
   if (finished) {
     const total = score.correct + score.incorrect + score.skipped;
     const pct = total > 0 ? Math.round((score.correct / total) * 100) : 0;
+    const isPerfect = score.correct === total && total > 0;
+
     return (
       <div className={styles.container}>
         <div className={styles.finishCard}>
-          <span className={styles.finishIcon} aria-hidden="true">{pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪'}</span>
+          <span className={styles.finishIcon} aria-hidden="true">
+            {isPerfect ? '👑' : pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪'}
+          </span>
           <h1 className={styles.finishTitle}>Test Complete!</h1>
+          {isPerfect && <p className={styles.perfect}>Perfect Score! 🌟</p>}
           <div className={styles.finishStats}>
             <div className={styles.finishStat}>
               <span className={styles.finishStatNum}>{score.correct}</span>
@@ -149,11 +186,28 @@ export default function SpellingTest() {
       </div>
 
       <div className={styles.card}>
-        <button className={styles.speakBtn} onClick={speakCurrent} aria-label="Say the word again">
-          <span aria-hidden="true">🔊 </span>Play Again
-        </button>
+        <div className={styles.cardHeader}>
+          <button className={styles.speakBtn} onClick={speakCurrent} aria-label="Say the word again">
+            <span aria-hidden="true">🔊 </span>Play Again
+          </button>
+          <button
+            className={styles.hintBtn}
+            onClick={handleUseHint}
+            disabled={hintsUsedToday >= 3}
+            title={`${3 - hintsUsedToday} hints left`}
+            aria-label={`Use hint (${3 - hintsUsedToday} remaining)`}
+          >
+            💡 {3 - hintsUsedToday}
+          </button>
+        </div>
 
         <p className={styles.definition}>{current.definition}</p>
+
+        {showHintContent && hintsUsedToday > 0 && (
+          <div className={styles.hintBox}>
+            <p><strong>Hint:</strong> {current.word.charAt(0).toUpperCase()}... ({current.word.length} letters)</p>
+          </div>
+        )}
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label htmlFor="spelling-answer" className={styles.visuallyHidden}>
