@@ -3,7 +3,8 @@ import { useWords } from '../context/WordProvider';
 import styles from './ProfileSwitcher.module.css';
 
 export default function ProfileSwitcher() {
-  const { profiles, activeProfileId, switchProfile, addProfile } = useWords();
+  const { profiles, activeProfileId, switchProfile, addProfile, deleteProfile } =
+    useWords();
   const [showMenu, setShowMenu] = useState(false);
   const [newProfileName, setNewProfileName] = useState('');
   const menuRef = useRef(null);
@@ -46,24 +47,48 @@ export default function ProfileSwitcher() {
       {showMenu && (
         <div className={styles.menu} role="menu">
           {profiles.map((profile) => (
-            <button
-              key={profile.id}
-              className={`${styles.menuItem} ${
-                profile.id === activeProfileId ? styles.active : ''
-              }`}
-              onClick={() => {
-                switchProfile(profile.id);
-                setShowMenu(false);
-              }}
-              role="menuitem"
-            >
-              {profile.name}
-              {profile.id === activeProfileId && (
-                <span className={styles.checkmark} aria-hidden="true">
-                  ✓
+            <div key={profile.id} className={styles.menuRow}>
+              <button
+                className={`${styles.menuItem} ${
+                  profile.id === activeProfileId ? styles.active : ''
+                }`}
+                onClick={() => {
+                  switchProfile(profile.id);
+                  setShowMenu(false);
+                }}
+                role="menuitem"
+              >
+                <span>
+                  <span aria-hidden="true">{profile.avatar || '👤'} </span>
+                  {profile.name}
                 </span>
+                {profile.id === activeProfileId && (
+                  <span className={styles.checkmark} aria-hidden="true">
+                    ✓
+                  </span>
+                )}
+              </button>
+              {profiles.length > 1 && (
+                <button
+                  type="button"
+                  className={styles.deleteBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (
+                      window.confirm(
+                        `Delete profile "${profile.name}"? This cannot be undone.`
+                      )
+                    ) {
+                      deleteProfile(profile.id);
+                    }
+                  }}
+                  aria-label={`Delete profile ${profile.name}`}
+                  title="Delete profile"
+                >
+                  ×
+                </button>
               )}
-            </button>
+            </div>
           ))}
 
           <div className={styles.divider} role="separator" />

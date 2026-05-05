@@ -10,7 +10,7 @@ const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const MAX_WRONG = 7;
 
 export default function Hangman() {
-  const { activeWords, recordResult } = useWords();
+  const { activeWords, recordResult, useHint, hintsUsedToday } = useWords();
   const [wordEntry, setWordEntry] = useState(null);
   const [guessed, setGuessed] = useState(new Set());
   const [wrongGuesses, setWrongGuesses] = useState(0);
@@ -85,6 +85,18 @@ export default function Hangman() {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [handleGuess]);
+
+  const handleHint = useCallback(async () => {
+    if (gameOver || !word) return;
+    const unguessed = word
+      .split('')
+      .filter((l) => /[a-z]/.test(l) && !guessed.has(l));
+    if (!unguessed.length) return;
+    const success = await useHint();
+    if (!success) return;
+    const letter = unguessed[Math.floor(Math.random() * unguessed.length)];
+    handleGuess(letter);
+  }, [gameOver, word, guessed, useHint, handleGuess]);
 
   const displayWord = word
     .split('')
@@ -167,6 +179,18 @@ export default function Hangman() {
       <div className={styles.guessesLeft} role="status" aria-live="polite">
         Wrong guesses: {wrongGuesses} / {MAX_WRONG}
       </div>
+
+      {!gameOver && (
+        <button
+          className={styles.hintBtn}
+          onClick={handleHint}
+          disabled={hintsUsedToday >= 3}
+          title={`${Math.max(0, 3 - hintsUsedToday)} hints left today`}
+          aria-label={`Reveal a letter (hint, ${Math.max(0, 3 - hintsUsedToday)} remaining today)`}
+        >
+          💡 Hint ({Math.max(0, 3 - hintsUsedToday)})
+        </button>
+      )}
 
       {gameOver && (
         <div className={won ? styles.winMsg : styles.loseMsg} role="alert">
