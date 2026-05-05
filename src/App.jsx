@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import { ChunkBoundary } from './components/ChunkBoundary';
 import { WordProvider } from './context/WordProvider';
 import Home from './pages/Home';
 import styles from './App.module.css';
@@ -25,16 +26,18 @@ export default function App() {
       <a href="#main" className={styles.skipLink}>Skip to main content</a>
       <Header />
       <main id="main" tabIndex={-1} className={styles.main}>
-        <Suspense fallback={<PageFallback />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/test" element={<SpellingTest />} />
-            <Route path="/flashcards" element={<Flashcards />} />
-            <Route path="/scramble" element={<WordScramble />} />
-            <Route path="/hangman" element={<Hangman />} />
-            <Route path="/crossword" element={<Crossword />} />
-          </Routes>
-        </Suspense>
+        <ChunkBoundary>
+          <Suspense fallback={<PageFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/test" element={<SpellingTest />} />
+              <Route path="/flashcards" element={<Flashcards />} />
+              <Route path="/scramble" element={<WordScramble />} />
+              <Route path="/hangman" element={<Hangman />} />
+              <Route path="/crossword" element={<Crossword />} />
+            </Routes>
+          </Suspense>
+        </ChunkBoundary>
       </main>
     </WordProvider>
   );

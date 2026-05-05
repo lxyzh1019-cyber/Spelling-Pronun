@@ -30,42 +30,51 @@ export default function Hangman() {
     newGame();
   }, [newGame]);
 
-  const handleGuess = (letter) => {
-    if (gameOver || guessed.has(letter)) return;
-    const newGuessed = new Set(guessed);
-    newGuessed.add(letter);
-    setGuessed(newGuessed);
+  const handleGuess = useCallback(
+    (letter) => {
+      setGuessed((prevGuessed) => {
+        if (prevGuessed.has(letter) || gameOver) return prevGuessed;
+        const newGuessed = new Set(prevGuessed);
+        newGuessed.add(letter);
 
-    if (!word.includes(letter)) {
-      const newWrong = wrongGuesses + 1;
-      setWrongGuesses(newWrong);
-      if (newWrong >= MAX_WRONG) {
-        setGameOver(true);
-        setWon(false);
-        if (wordEntry) recordResult(wordEntry.id, false);
-      }
-    } else {
-      // Check if word is complete
-      const allGuessed = word.split('').every((l) => newGuessed.has(l));
-      if (allGuessed) {
-        setGameOver(true);
-        setWon(true);
-        if (wordEntry) recordResult(wordEntry.id, true);
-      }
-    }
-  };
+        setWrongGuesses((prevWrong) => {
+          if (!word.includes(letter)) {
+            const newWrong = prevWrong + 1;
+            if (newWrong >= MAX_WRONG) {
+              setGameOver(true);
+              setWon(false);
+              if (wordEntry) recordResult(wordEntry.id, false);
+            }
+            return newWrong;
+          } else {
+            const allGuessed = word
+              .split('')
+              .every((l) => newGuessed.has(l));
+            if (allGuessed) {
+              setGameOver(true);
+              setWon(true);
+              if (wordEntry) recordResult(wordEntry.id, true);
+            }
+            return prevWrong;
+          }
+        });
 
-  // Keyboard handling
+        return newGuessed;
+      });
+    },
+    [word, gameOver, wordEntry, recordResult]
+  );
+
   useEffect(() => {
     const handler = (e) => {
       const letter = e.key.toLowerCase();
-      if (ALPHABET.includes(letter) && !gameOver) {
+      if (ALPHABET.includes(letter)) {
         handleGuess(letter);
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [word, guessed, gameOver, wrongGuesses, handleGuess]);
+  }, [handleGuess]);
 
   const displayWord = word
     .split('')

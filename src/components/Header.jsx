@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import ProfileSwitcher from './ProfileSwitcher';
 import styles from './Header.module.css';
 
 const links = [
@@ -31,6 +32,7 @@ export default function Header() {
           </NavLink>
         ))}
       </nav>
+      <ProfileSwitcher />
     </header>
   );
 }
