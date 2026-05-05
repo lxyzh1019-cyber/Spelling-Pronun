@@ -87,10 +87,12 @@ export function WordProvider({ children }) {
         let allProfiles = [];
         let userSettings = {};
 
+        let savedActiveId = null;
         if (userDoc.exists()) {
           const data = userDoc.data();
           allProfiles = data.profiles || [];
           userSettings = data.settings || {};
+          savedActiveId = data.activeProfileId || null;
         } else {
           allProfiles = [
             {
@@ -103,14 +105,30 @@ export function WordProvider({ children }) {
           ];
           await setDoc(userDocRef, {
             profiles: allProfiles,
+            activeProfileId: 'default',
             settings: { soundEnabled: true },
           });
+          savedActiveId = 'default';
+        }
+
+        if (allProfiles.length === 0) {
+          allProfiles = [
+            {
+              id: 'default',
+              name: 'Guest',
+              avatar: DEFAULT_AVATAR,
+              color: '#3b82f6',
+              createdAt: new Date(),
+            },
+          ];
+          savedActiveId = 'default';
         }
 
         setProfiles(allProfiles);
         setSoundEnabled(userSettings.soundEnabled ?? true);
 
-        const active = allProfiles[0];
+        const active =
+          allProfiles.find((p) => p.id === savedActiveId) || allProfiles[0];
         if (active) {
           setActiveProfileId(active.id);
         }
@@ -176,8 +194,8 @@ export function WordProvider({ children }) {
           'spelling-achievements',
           `${user.uid}_${activeProfileId}`
         );
-        const doc = await getDoc(achievementsDocRef);
-        setAchievements(doc.exists() ? doc.data().achievements || [] : []);
+        const snap = await getDoc(achievementsDocRef);
+        setAchievements(snap.exists() ? snap.data().achievements || [] : []);
       } catch (err) {
         console.error('Failed to load achievements:', err);
       }
@@ -194,11 +212,11 @@ export function WordProvider({ children }) {
           'spelling-hints',
           `${user.uid}_${activeProfileId}`
         );
-        const doc = await getDoc(hintsDocRef);
+        const snap = await getDoc(hintsDocRef);
         const today = new Date().toDateString();
 
-        if (doc.exists() && doc.data().date === today) {
-          setHintsUsedToday(doc.data().usedToday || 0);
+        if (snap.exists() && snap.data().date === today) {
+          setHintsUsedToday(snap.data().usedToday || 0);
         } else {
           setHintsUsedToday(0);
           await setDoc(hintsDocRef, { date: today, usedToday: 0 });
@@ -251,23 +269,26 @@ export function WordProvider({ children }) {
 
   const recordResult = useCallback(
     async (wordId, correct) => {
-      if (!user || !activeProfileId) return;
+      if (!user || !activeProfileId || !wordId) return;
 
       const entry = progress[wordId] || {
         attempts: 0,
         correct: 0,
         streak: 0,
-        lastSeen: null,
       };
-      const newEntry = {
-        userId: user.uid,
-        profileId: activeProfileId,
-        wordId,
-        attempts: entry.attempts + 1,
-        correct: entry.correct + (correct ? 1 : 0),
-        streak: correct ? entry.streak + 1 : 0,
-        lastSeen: serverTimestamp(),
-      };
+      const nextStreak = correct ? entry.streak + 1 : 0;
+
+      // Optimistic local update so the UI reflects the result even before the
+      // Firestore snapshot round-trips back.
+      setProgress((prev) => ({
+        ...prev,
+        [wordId]: {
+          attempts: (prev[wordId]?.attempts || 0) + 1,
+          correct: (prev[wordId]?.correct || 0) + (correct ? 1 : 0),
+          streak: nextStreak,
+          lastSeen: new Date(),
+        },
+      }));
 
       try {
         const docRef = doc(
@@ -275,7 +296,22 @@ export function WordProvider({ children }) {
           'spelling-progress',
           `${user.uid}_${activeProfileId}_${wordId}`
         );
-        await setDoc(docRef, newEntry);
+        // Use increment so concurrent writes for the same word don't clobber
+        // each other's counts. Streak isn't safe to increment atomically, so we
+        // accept eventual consistency on it.
+        await setDoc(
+          docRef,
+          {
+            userId: user.uid,
+            profileId: activeProfileId,
+            wordId,
+            attempts: increment(1),
+            correct: increment(correct ? 1 : 0),
+            streak: nextStreak,
+            lastSeen: serverTimestamp(),
+          },
+          { merge: true }
+        );
       } catch (err) {
         console.error('Failed to record result:', err);
       }
@@ -361,19 +397,46 @@ export function WordProvider({ children }) {
     }
   }, [user, activeProfileId, dailyChallengeDone, unlockAchievement]);
 
-  const switchProfile = useCallback(async (profileId) => {
-    setActiveProfileId(profileId);
-    setProgress({});
-  }, []);
+  const switchProfile = useCallback(
+    async (profileId) => {
+      setActiveProfileId(profileId);
+      setProgress({});
+      if (!user) return;
+      try {
+        const userDocRef = doc(db, 'spelling-users', user.uid);
+        await setDoc(
+          userDocRef,
+          { activeProfileId: profileId },
+          { merge: true }
+        );
+      } catch (err) {
+        console.error('Failed to persist active profile:', err);
+      }
+    },
+    [user]
+  );
 
   const addProfile = useCallback(
     async (profileName) => {
       if (!user) return;
+      const trimmed = profileName.trim();
+      if (!trimmed) return;
+      const base = slug(trimmed) || 'profile';
+      let id = base;
+      let n = 2;
+      const existingIds = new Set(profiles.map((p) => p.id));
+      while (existingIds.has(id)) {
+        id = `${base}-${n++}`;
+      }
       const newProfile = {
-        id: slug(profileName),
-        name: profileName,
+        id,
+        name: trimmed,
         avatar: DEFAULT_AVATAR,
-        color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+        color:
+          '#' +
+          Math.floor(Math.random() * 16777215)
+            .toString(16)
+            .padStart(6, '0'),
         createdAt: new Date(),
       };
       const newProfiles = [...profiles, newProfile];
@@ -387,6 +450,34 @@ export function WordProvider({ children }) {
       }
     },
     [user, profiles]
+  );
+
+  const deleteProfile = useCallback(
+    async (profileId) => {
+      if (!user) return;
+      if (profiles.length <= 1) return;
+      const newProfiles = profiles.filter((p) => p.id !== profileId);
+      const nextActive =
+        profileId === activeProfileId
+          ? newProfiles[0]?.id || null
+          : activeProfileId;
+      try {
+        const userDocRef = doc(db, 'spelling-users', user.uid);
+        await setDoc(
+          userDocRef,
+          { profiles: newProfiles, activeProfileId: nextActive },
+          { merge: true }
+        );
+        setProfiles(newProfiles);
+        if (profileId === activeProfileId) {
+          setActiveProfileId(nextActive);
+          setProgress({});
+        }
+      } catch (err) {
+        console.error('Failed to delete profile:', err);
+      }
+    },
+    [user, profiles, activeProfileId]
   );
 
   const updateProfileAvatar = useCallback(
@@ -453,6 +544,7 @@ export function WordProvider({ children }) {
     activeProfileId,
     switchProfile,
     addProfile,
+    deleteProfile,
     selectedCategory,
     setSelectedCategory,
     activeWords,

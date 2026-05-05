@@ -7,51 +7,85 @@ import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
 import { triggerConfetti } from '../utils/confetti';
 import styles from './SpeedRound.module.css';
 
-const TIME_LIMIT = 60; // seconds
+const MODES = {
+  quick: { label: 'Quick (60s)', timeLimit: 60, count: 20, icon: '⚡' },
+  short: { label: 'Short Round (200 words)', timeLimit: 0, count: 200, icon: '📚' },
+};
+const PASS_AFTER_MS = 5000;
 
 export default function SpeedRound() {
   const { allWords, recordResult, soundEnabled, unlockAchievement } = useWords();
+  const [mode, setMode] = useState('quick');
   const [gameState, setGameState] = useState('start'); // start | playing | finish
-  const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
+  const [timeLeft, setTimeLeft] = useState(MODES.quick.timeLimit);
   const [words, setWords] = useState([]);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState(null);
+  const [canPass, setCanPass] = useState(false);
   const inputRef = useRef(null);
   const gameTimerRef = useRef(null);
+  const passTimerRef = useRef(null);
+
+  const stopTimers = () => {
+    if (gameTimerRef.current) clearInterval(gameTimerRef.current);
+    if (passTimerRef.current) clearTimeout(passTimerRef.current);
+  };
 
   useEffect(() => {
-    return () => {
-      if (gameTimerRef.current) clearInterval(gameTimerRef.current);
-    };
+    return stopTimers;
   }, []);
 
   const startGame = () => {
-    const shuffled = shuffle(allWords).slice(0, 20);
-    setWords(shuffled);
+    const cfg = MODES[mode];
+    const pool = shuffle(allWords);
+    const list =
+      cfg.count <= pool.length
+        ? pool.slice(0, cfg.count)
+        : Array.from({ length: cfg.count }, (_, i) => pool[i % pool.length]);
+    setWords(list);
     setIndex(0);
     setScore(0);
     setInput('');
     setFeedback(null);
-    setTimeLeft(TIME_LIMIT);
+    setTimeLeft(cfg.timeLimit);
     setGameState('playing');
+    setCanPass(false);
 
     if (inputRef.current) inputRef.current.focus();
 
-    gameTimerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          setGameState('finish');
-          clearInterval(gameTimerRef.current);
-          if (soundEnabled) playMilestoneSound();
-          hapticMilestone();
-          if (score >= 8) unlockAchievement('speed_demon');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    if (cfg.timeLimit > 0) {
+      gameTimerRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            setGameState('finish');
+            stopTimers();
+            if (soundEnabled) playMilestoneSound();
+            hapticMilestone();
+            if (score >= 8) unlockAchievement('speed_demon');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+  };
+
+  const advance = (didAnswer) => {
+    setInput('');
+    setFeedback(null);
+    setCanPass(false);
+
+    if (index + 1 >= words.length) {
+      setGameState('finish');
+      stopTimers();
+      if (soundEnabled) playMilestoneSound();
+      hapticMilestone();
+      if (score >= 8) unlockAchievement('speed_demon');
+    } else {
+      setIndex((i) => i + 1);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -73,30 +107,53 @@ export default function SpeedRound() {
       recordResult(current.id, false);
     }
 
-    setInput('');
-    setFeedback(null);
-
-    if (index + 1 >= words.length) {
-      setGameState('finish');
-      clearInterval(gameTimerRef.current);
-      if (soundEnabled) playMilestoneSound();
-      hapticMilestone();
-      if (score >= 8) unlockAchievement('speed_demon');
-    } else {
-      setIndex((i) => i + 1);
-    }
+    advance(true);
   };
 
+  const handlePass = () => {
+    const current = words[index];
+    if (current) recordResult(current.id, false);
+    advance(false);
+  };
+
+  // Reset the 5s pass-button timer whenever the user types or moves to a new word
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+    setCanPass(false);
+    if (passTimerRef.current) clearTimeout(passTimerRef.current);
+    passTimerRef.current = setTimeout(() => setCanPass(true), PASS_AFTER_MS);
+    return () => {
+      if (passTimerRef.current) clearTimeout(passTimerRef.current);
+    };
+  }, [gameState, index, input]);
+
   if (gameState === 'start') {
+    const cfg = MODES[mode];
     return (
       <div className={styles.container}>
         <div className={styles.card}>
           <span className={styles.icon} aria-hidden="true">
-            ⚡
+            {cfg.icon}
           </span>
           <h1 className={styles.title}>Speed Round</h1>
+          <div className={styles.modeRow} role="radiogroup" aria-label="Mode">
+            {Object.entries(MODES).map(([key, m]) => (
+              <button
+                key={key}
+                role="radio"
+                aria-checked={mode === key}
+                className={`${styles.modeBtn} ${mode === key ? styles.modeBtnActive : ''}`}
+                onClick={() => setMode(key)}
+              >
+                {m.icon} {m.label}
+              </button>
+            ))}
+          </div>
           <p className={styles.desc}>
-            Type as many words as you can in {TIME_LIMIT} seconds! No sound, just speed.
+            {cfg.timeLimit > 0
+              ? `Type as many words as you can in ${cfg.timeLimit} seconds!`
+              : `Work through ${cfg.count} words at your own pace.`}
+            {' '}If you're stuck for 5 seconds, a Pass button appears.
           </p>
           <button className={styles.startBtn} onClick={startGame}>
             Start Challenge
@@ -130,9 +187,13 @@ export default function SpeedRound() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.timer} style={{ color: timeLeft <= 10 ? '#ef4444' : '#3b82f6' }}>
-          ⏱️ {timeLeft}s
-        </div>
+        {MODES[mode].timeLimit > 0 ? (
+          <div className={styles.timer} style={{ color: timeLeft <= 10 ? '#ef4444' : '#3b82f6' }}>
+            ⏱️ {timeLeft}s
+          </div>
+        ) : (
+          <div className={styles.timer}>📚 {index + 1}/{words.length}</div>
+        )}
         <div className={styles.scoreDisplay}>Score: {score}</div>
       </div>
 
@@ -164,6 +225,17 @@ export default function SpeedRound() {
               className={styles.input}
             />
           </form>
+
+          {canPass && (
+            <button
+              type="button"
+              className={styles.passBtn}
+              onClick={handlePass}
+              aria-label="Pass this word and go to the next"
+            >
+              Pass / Next →
+            </button>
+          )}
 
           <p className={styles.counter}>
             {index + 1} / {words.length}

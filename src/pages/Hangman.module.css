@@ -76,6 +76,27 @@
   background: var(--amber-dark);
 }
 
+.hintBtn {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 8px 20px;
+  border: 1px solid #fcd34d;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.hintBtn:hover:not(:disabled) {
+  background: #fde68a;
+}
+
+.hintBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .keyboard {
   display: flex;
   flex-wrap: wrap;
