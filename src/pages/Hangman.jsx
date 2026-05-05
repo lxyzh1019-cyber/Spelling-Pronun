@@ -1,26 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWords } from '../context/WordProvider';
+import { pickRandom } from '../utils/shuffle';
 import styles from './Hangman.module.css';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const MAX_WRONG = 7;
 
-function pickRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
 export default function Hangman() {
   const { activeWords, recordResult } = useWords();
-  const [word, setWord] = useState('');
+  const [wordEntry, setWordEntry] = useState(null);
   const [guessed, setGuessed] = useState(new Set());
   const [wrongGuesses, setWrongGuesses] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [won, setWon] = useState(false);
 
+  const word = wordEntry?.word.toLowerCase() ?? '';
+
   const newGame = useCallback(() => {
     if (!activeWords.length) return;
     const w = pickRandom(activeWords);
-    setWord(w.word.toLowerCase());
+    setWordEntry(w);
     setGuessed(new Set());
     setWrongGuesses(0);
     setGameOver(false);
@@ -43,7 +42,7 @@ export default function Hangman() {
       if (newWrong >= MAX_WRONG) {
         setGameOver(true);
         setWon(false);
-        recordResult(word, false);
+        if (wordEntry) recordResult(wordEntry.id, false);
       }
     } else {
       // Check if word is complete
@@ -51,7 +50,7 @@ export default function Hangman() {
       if (allGuessed) {
         setGameOver(true);
         setWon(true);
-        recordResult(word, true);
+        if (wordEntry) recordResult(wordEntry.id, true);
       }
     }
   };

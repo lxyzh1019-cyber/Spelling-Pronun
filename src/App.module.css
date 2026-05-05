@@ -25,3 +25,9 @@
 .skipLink:focus {
   left: 0;
 }
+
+.pageFallback {
+  text-align: center;
+  padding: 48px 16px;
+  color: #6b7280;
+}
