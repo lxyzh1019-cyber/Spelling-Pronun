@@ -5,7 +5,6 @@ import styles from './MultiplayerWrapper.module.css';
 export default function MultiplayerWrapper({ children, gameKey }) {
   const { profiles, activeProfileId } = useWords();
   const [multiplayerMode, setMultiplayerMode] = useState(false);
-  const [otherPlayerProfile, setOtherPlayerProfile] = useWords();
   const [currentTurn, setCurrentTurn] = useState(activeProfileId);
 
   if (!multiplayerMode) {
