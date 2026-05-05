@@ -11,15 +11,21 @@ import {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
   query,
   where,
   onSnapshot,
   serverTimestamp,
+  increment,
 } from 'firebase/firestore';
 import { db, ensureAuth } from '../firebase';
+import { checkAchievements } from '../utils/achievements';
 import wordData from '../data/words.json';
 
 const WordContext = createContext(null);
+
+const AVATAR_OPTIONS = ['🧠', '🚀', '🎨', '🦁', '🌟', '📚', '🎯', '🏆'];
+const DEFAULT_AVATAR = '🧠';
 
 function slug(s) {
   return s
@@ -44,28 +50,32 @@ const FALLBACK_CATEGORIES = withIds(wordData.categories || []);
 export function WordProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState(FALLBACK_CATEGORIES);
+  const [categories] = useState(FALLBACK_CATEGORIES);
   const [profiles, setProfiles] = useState([]);
   const [activeProfileId, setActiveProfileId] = useState(null);
   const [progress, setProgress] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(
     () => FALLBACK_CATEGORIES[0]?.name ?? ''
   );
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [achievements, setAchievements] = useState([]);
+  const [hintsUsedToday, setHintsUsedToday] = useState(0);
+  const [dailyChallengeWord, setDailyChallengeWord] = useState(null);
+  const [dailyChallengeDone, setDailyChallengeComplete] = useState(false);
+  const [multiplayer, setMultiplayer] = useState(null);
 
   // 1. Initialize auth
   useEffect(() => {
     let mounted = true;
     ensureAuth().then((u) => {
-      if (mounted) {
-        setUser(u);
-      }
+      if (mounted) setUser(u);
     });
     return () => {
       mounted = false;
     };
   }, []);
 
-  // 2. Load profiles from Firestore (once user is ready)
+  // 2. Load profiles from Firestore
   useEffect(() => {
     if (!user) return;
     let unsub;
@@ -75,22 +85,45 @@ export function WordProvider({ children }) {
         const userDoc = await getDoc(userDocRef);
 
         let allProfiles = [];
+        let userSettings = {};
+
         if (userDoc.exists()) {
-          allProfiles = userDoc.data().profiles || [];
+          const data = userDoc.data();
+          allProfiles = data.profiles || [];
+          userSettings = data.settings || {};
         } else {
-          // Create default profile on first visit
-          allProfiles = [{ id: 'default', name: 'Guest', createdAt: new Date() }];
-          await setDoc(userDocRef, { profiles: allProfiles });
+          allProfiles = [
+            {
+              id: 'default',
+              name: 'Guest',
+              avatar: DEFAULT_AVATAR,
+              color: '#3b82f6',
+              createdAt: new Date(),
+            },
+          ];
+          await setDoc(userDocRef, {
+            profiles: allProfiles,
+            settings: { soundEnabled: true },
+          });
         }
 
         setProfiles(allProfiles);
+        setSoundEnabled(userSettings.soundEnabled ?? true);
+
         const active = allProfiles[0];
         if (active) {
           setActiveProfileId(active.id);
         }
       } catch (err) {
         console.error('Failed to load profiles:', err);
-        setProfiles([{ id: 'default', name: 'Guest' }]);
+        setProfiles([
+          {
+            id: 'default',
+            name: 'Guest',
+            avatar: DEFAULT_AVATAR,
+            color: '#3b82f6',
+          },
+        ]);
         setActiveProfileId('default');
       } finally {
         setLoading(false);
@@ -102,11 +135,10 @@ export function WordProvider({ children }) {
     };
   }, [user]);
 
-  // 3. Listen to progress for the active profile (per-profile isolation via Firestore query)
+  // 3. Load progress and achievements for active profile
   useEffect(() => {
     if (!user || !activeProfileId) return;
 
-    // Query: collection('spelling-progress') where userId == user.uid AND profileId == activeProfileId
     const q = query(
       collection(db, 'spelling-progress'),
       where('userId', '==', user.uid),
@@ -128,12 +160,93 @@ export function WordProvider({ children }) {
         });
         setProgress(progressMap);
       },
-      (err) => {
-        console.error('Progress listener error:', err);
-      }
+      (err) => console.error('Progress listener error:', err)
     );
 
     return () => unsub();
+  }, [user, activeProfileId]);
+
+  // 4. Load achievements for active profile
+  useEffect(() => {
+    if (!user || !activeProfileId) return;
+    (async () => {
+      try {
+        const achievementsDocRef = doc(
+          db,
+          'spelling-achievements',
+          `${user.uid}_${activeProfileId}`
+        );
+        const doc = await getDoc(achievementsDocRef);
+        setAchievements(doc.exists() ? doc.data().achievements || [] : []);
+      } catch (err) {
+        console.error('Failed to load achievements:', err);
+      }
+    })();
+  }, [user, activeProfileId]);
+
+  // 5. Daily hints reset (check if new day)
+  useEffect(() => {
+    if (!user || !activeProfileId) return;
+    (async () => {
+      try {
+        const hintsDocRef = doc(
+          db,
+          'spelling-hints',
+          `${user.uid}_${activeProfileId}`
+        );
+        const doc = await getDoc(hintsDocRef);
+        const today = new Date().toDateString();
+
+        if (doc.exists() && doc.data().date === today) {
+          setHintsUsedToday(doc.data().usedToday || 0);
+        } else {
+          setHintsUsedToday(0);
+          await setDoc(hintsDocRef, { date: today, usedToday: 0 });
+        }
+      } catch (err) {
+        console.error('Failed to load hints:', err);
+      }
+    })();
+  }, [user, activeProfileId]);
+
+  // 6. Daily challenge setup
+  useEffect(() => {
+    if (!user || !activeProfileId) return;
+    (async () => {
+      try {
+        const today = new Date().toDateString();
+        const challengeDocRef = doc(
+          db,
+          'spelling-daily-challenges',
+          `${user.uid}_${activeProfileId}`
+        );
+        const challengeDoc = await getDoc(challengeDocRef);
+
+        if (challengeDoc.exists() && challengeDoc.data().date === today) {
+          const challenge = challengeDoc.data();
+          setDailyChallengeWord(challenge.words);
+          setDailyChallengeComplete(challenge.completed || false);
+        } else {
+          // Pick 5 random words for today's challenge
+          const words = FALLBACK_CATEGORIES.flatMap((c) => c.words);
+          const challenge = [];
+          for (let i = 0; i < 5 && words.length > 0; i++) {
+            const idx = Math.floor(Math.random() * words.length);
+            challenge.push(words[idx]);
+            words.splice(idx, 1);
+          }
+          setDailyChallengeWord(challenge);
+          setDailyChallengeComplete(false);
+          await setDoc(challengeDocRef, {
+            date: today,
+            words: challenge,
+            completed: false,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to setup daily challenge:', err);
+      }
+    })();
   }, [user, activeProfileId]);
 
   const recordResult = useCallback(
@@ -170,6 +283,84 @@ export function WordProvider({ children }) {
     [user, activeProfileId, progress]
   );
 
+  const unlockAchievement = useCallback(
+    async (achievementId) => {
+      if (!user || !activeProfileId) return;
+
+      const isAlreadyUnlocked = achievements.some((a) => a.id === achievementId);
+      if (isAlreadyUnlocked) return;
+
+      const newAchievement = {
+        id: achievementId,
+        unlockedAt: new Date(),
+      };
+
+      try {
+        const achievementsDocRef = doc(
+          db,
+          'spelling-achievements',
+          `${user.uid}_${activeProfileId}`
+        );
+        await setDoc(
+          achievementsDocRef,
+          {
+            achievements: [...achievements, newAchievement],
+          },
+          { merge: true }
+        );
+        setAchievements([...achievements, newAchievement]);
+      } catch (err) {
+        console.error('Failed to unlock achievement:', err);
+      }
+    },
+    [user, activeProfileId, achievements]
+  );
+
+  const useHint = useCallback(async () => {
+    if (!user || !activeProfileId || hintsUsedToday >= 3) return false;
+
+    try {
+      const hintsDocRef = doc(
+        db,
+        'spelling-hints',
+        `${user.uid}_${activeProfileId}`
+      );
+      const today = new Date().toDateString();
+      await setDoc(
+        hintsDocRef,
+        { date: today, usedToday: increment(1) },
+        { merge: true }
+      );
+      setHintsUsedToday((prev) => prev + 1);
+      return true;
+    } catch (err) {
+      console.error('Failed to use hint:', err);
+      return false;
+    }
+  }, [user, activeProfileId, hintsUsedToday]);
+
+  const completeDailyChallenge = useCallback(async () => {
+    if (!user || !activeProfileId || dailyChallengeDone) return;
+
+    try {
+      const today = new Date().toDateString();
+      const challengeDocRef = doc(
+        db,
+        'spelling-daily-challenges',
+        `${user.uid}_${activeProfileId}`
+      );
+      await setDoc(
+        challengeDocRef,
+        { date: today, completed: true },
+        { merge: true }
+      );
+      setDailyChallengeComplete(true);
+      await unlockAchievement('daily_champion');
+    } catch (err) {
+      console.error('Failed to complete daily challenge:', err);
+    }
+  }, [user, activeProfileId, dailyChallengeDone, unlockAchievement]);
+
   const switchProfile = useCallback(async (profileId) => {
     setActiveProfileId(profileId);
     setProgress({});
@@ -181,6 +372,8 @@ export function WordProvider({ children }) {
       const newProfile = {
         id: slug(profileName),
         name: profileName,
+        avatar: DEFAULT_AVATAR,
+        color: '#' + Math.floor(Math.random() * 16777215).toString(16),
         createdAt: new Date(),
       };
       const newProfiles = [...profiles, newProfile];
@@ -195,6 +388,40 @@ export function WordProvider({ children }) {
     },
     [user, profiles]
   );
+
+  const updateProfileAvatar = useCallback(
+    async (profileId, avatar) => {
+      if (!user) return;
+      const updated = profiles.map((p) =>
+        p.id === profileId ? { ...p, avatar } : p
+      );
+      try {
+        const userDocRef = doc(db, 'spelling-users', user.uid);
+        await setDoc(userDocRef, { profiles: updated }, { merge: true });
+        setProfiles(updated);
+      } catch (err) {
+        console.error('Failed to update avatar:', err);
+      }
+    },
+    [user, profiles]
+  );
+
+  const toggleSound = useCallback(async () => {
+    const newState = !soundEnabled;
+    setSoundEnabled(newState);
+    if (!user) return;
+
+    try {
+      const userDocRef = doc(db, 'spelling-users', user.uid);
+      await setDoc(
+        userDocRef,
+        { settings: { soundEnabled: newState } },
+        { merge: true }
+      );
+    } catch (err) {
+      console.error('Failed to save sound setting:', err);
+    }
+  }, [user, soundEnabled]);
 
   const activeWords = useMemo(
     () => categories.find((c) => c.name === selectedCategory)?.words || [],
@@ -233,6 +460,19 @@ export function WordProvider({ children }) {
     progress,
     recordResult,
     stats,
+    soundEnabled,
+    toggleSound,
+    achievements,
+    unlockAchievement,
+    hintsUsedToday,
+    useHint,
+    dailyChallengeWord,
+    dailyChallengeDone,
+    completeDailyChallenge,
+    updateProfileAvatar,
+    multiplayer,
+    setMultiplayer,
+    AVATAR_OPTIONS,
   };
 
   return <WordContext.Provider value={value}>{children}</WordContext.Provider>;

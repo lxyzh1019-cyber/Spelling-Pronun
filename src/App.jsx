@@ -11,6 +11,7 @@ const Flashcards = lazy(() => import('./pages/Flashcards'));
 const WordScramble = lazy(() => import('./pages/WordScramble'));
 const Hangman = lazy(() => import('./pages/Hangman'));
 const Crossword = lazy(() => import('./pages/Crossword'));
+const SpeedRound = lazy(() => import('./pages/SpeedRound'));
 
 function PageFallback() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
               <Route path="/scramble" element={<WordScramble />} />
               <Route path="/hangman" element={<Hangman />} />
               <Route path="/crossword" element={<Crossword />} />
+              <Route path="/speed" element={<SpeedRound />} />
             </Routes>
           </Suspense>
         </ChunkBoundary>

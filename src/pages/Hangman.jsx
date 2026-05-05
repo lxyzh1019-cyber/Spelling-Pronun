@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWords } from '../context/WordProvider';
 import { pickRandom } from '../utils/shuffle';
+import { playCorrectSound, playIncorrectSound, playMilestoneSound } from '../utils/sounds';
+import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
+import { triggerConfetti } from '../utils/confetti';
 import styles from './Hangman.module.css';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -37,8 +40,10 @@ export default function Hangman() {
         const newGuessed = new Set(prevGuessed);
         newGuessed.add(letter);
 
-        setWrongGuesses((prevWrong) => {
-          if (!word.includes(letter)) {
+        if (!word.includes(letter)) {
+          playIncorrectSound();
+          hapticError();
+          setWrongGuesses((prevWrong) => {
             const newWrong = prevWrong + 1;
             if (newWrong >= MAX_WRONG) {
               setGameOver(true);
@@ -46,18 +51,23 @@ export default function Hangman() {
               if (wordEntry) recordResult(wordEntry.id, false);
             }
             return newWrong;
-          } else {
-            const allGuessed = word
-              .split('')
-              .every((l) => newGuessed.has(l));
-            if (allGuessed) {
-              setGameOver(true);
-              setWon(true);
-              if (wordEntry) recordResult(wordEntry.id, true);
-            }
-            return prevWrong;
+          });
+        } else {
+          playCorrectSound();
+          hapticSuccess();
+          triggerConfetti('light');
+          const allGuessed = word
+            .split('')
+            .every((l) => newGuessed.has(l));
+          if (allGuessed) {
+            setGameOver(true);
+            setWon(true);
+            playMilestoneSound();
+            hapticMilestone();
+            triggerConfetti('heavy');
+            if (wordEntry) recordResult(wordEntry.id, true);
           }
-        });
+        }
 
         return newGuessed;
       });
