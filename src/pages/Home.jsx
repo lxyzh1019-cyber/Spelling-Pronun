@@ -39,15 +39,15 @@ export default function Home() {
       </section>
 
       <section className={styles.statsRow} aria-label="Your progress">
-        <div className={styles.statCard}>
+        <div className={styles.statCard} data-stat="words-seen">
           <span className={styles.statNumber}>{stats.wordsSeen}</span>
           <span className={styles.statLabel}>Words Practiced</span>
         </div>
-        <div className={styles.statCard}>
+        <div className={styles.statCard} data-stat="attempts">
           <span className={styles.statNumber}>{stats.totalAttempts}</span>
           <span className={styles.statLabel}>Total Attempts</span>
         </div>
-        <div className={styles.statCard}>
+        <div className={styles.statCard} data-stat="accuracy">
           <span className={styles.statNumber}>
             {stats.totalAttempts > 0
               ? Math.round((stats.totalCorrect / stats.totalAttempts) * 100)
@@ -55,7 +55,7 @@ export default function Home() {
           </span>
           <span className={styles.statLabel}>Accuracy</span>
         </div>
-        <div className={styles.statCard}>
+        <div className={styles.statCard} data-stat="best-streak">
           <span className={styles.statNumber}>{stats.bestStreak}</span>
           <span className={styles.statLabel}>Best Streak</span>
         </div>

@@ -1,24 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useWords } from '../context/WordProvider';
+import { speak } from '../utils/speech';
+import { shuffle } from '../utils/shuffle';
 import styles from './SpellingTest.module.css';
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function speak(text) {
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = 0.9;
-  u.pitch = 1;
-  u.lang = 'en-US';
-  window.speechSynthesis.speak(u);
-}
 
 export default function SpellingTest() {
   const { activeWords, recordResult, selectedCategory } = useWords();
@@ -61,7 +45,7 @@ export default function SpellingTest() {
 
     const isCorrect = input.trim().toLowerCase() === current.word.toLowerCase();
     setFeedback(isCorrect ? 'correct' : 'incorrect');
-    recordResult(current.word, isCorrect);
+    recordResult(current.id, isCorrect);
     setScore((s) => ({
       ...s,
       correct: s.correct + (isCorrect ? 1 : 0),

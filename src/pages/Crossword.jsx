@@ -1,17 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useWords } from '../context/WordProvider';
+import { shuffle } from '../utils/shuffle';
 import styles from './Crossword.module.css';
 
 const GRID_SIZE = 8;
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function generateCrossword(words) {
   // Pick 3-5 words
@@ -247,28 +239,53 @@ export default function Crossword() {
             className={styles.grid}
             tabIndex={0}
             onKeyDown={handleKeyDown}
+            role="grid"
+            aria-label={`Crossword grid, ${GRID_SIZE} by ${GRID_SIZE}`}
+            aria-rowcount={GRID_SIZE}
+            aria-colcount={GRID_SIZE}
           >
             {puzzle.grid.map((row, r) => (
-              <div key={r} className={styles.gridRow}>
+              <div key={r} className={styles.gridRow} role="row" aria-rowindex={r + 1}>
                 {row.map((cell, c) => {
                   const isFocused = focusedCell?.r === r && focusedCell?.c === c;
                   const isCorrect = checked && cell && userGrid[r][c]?.toLowerCase() === cell;
                   const isWrong = checked && cell && userGrid[r][c]?.toLowerCase() !== cell;
 
                   if (cell === null) {
-                    return <div key={c} className={styles.blackCell} />;
+                    return (
+                      <div
+                        key={c}
+                        role="gridcell"
+                        aria-colindex={c + 1}
+                        aria-label="Blocked square"
+                        className={styles.blackCell}
+                      />
+                    );
                   }
+
+                  const userValue = userGrid[r][c];
+                  const cellLabel = `Row ${r + 1}, column ${c + 1}${
+                    puzzle.cellNumbers[r][c] > 0 ? `, clue ${puzzle.cellNumbers[r][c]}` : ''
+                  }${userValue ? `, contains ${userValue}` : ', empty'}`;
 
                   return (
                     <div
                       key={c}
+                      role="gridcell"
+                      aria-colindex={c + 1}
+                      aria-label={cellLabel}
+                      aria-selected={isFocused}
+                      aria-invalid={isWrong ? 'true' : undefined}
+                      data-row={r}
+                      data-col={c}
+                      data-answer={cell}
                       className={`${styles.cell} ${isFocused ? styles.focused : ''} ${isCorrect ? styles.correct : ''} ${isWrong ? styles.wrong : ''}`}
                       onClick={() => handleCellClick(r, c)}
                     >
                       {puzzle.cellNumbers[r][c] > 0 && (
-                        <span className={styles.cellNum}>{puzzle.cellNumbers[r][c]}</span>
+                        <span className={styles.cellNum} aria-hidden="true">{puzzle.cellNumbers[r][c]}</span>
                       )}
-                      <span className={styles.cellLetter}>{checked ? cell : userGrid[r][c]}</span>
+                      <span className={styles.cellLetter} aria-hidden="true">{checked ? cell : userValue}</span>
                     </div>
                   );
                 })}

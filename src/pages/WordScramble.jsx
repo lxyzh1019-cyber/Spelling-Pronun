@@ -1,22 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWords } from '../context/WordProvider';
+import { shuffle, pickRandom } from '../utils/shuffle';
 import styles from './WordScramble.module.css';
 
 function scrambleWord(word) {
-  const letters = word.split('');
-  for (let i = letters.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [letters[i], letters[j]] = [letters[j], letters[i]];
-  }
-  // Make sure scrambled is actually different
+  const letters = shuffle(word.split(''));
   if (letters.join('') === word && letters.length > 2) {
     [letters[0], letters[1]] = [letters[1], letters[0]];
   }
   return letters;
-}
-
-function pickRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 export default function WordScramble() {
@@ -65,13 +57,13 @@ export default function WordScramble() {
     const isCorrect = guess === currentWord.word;
     if (isCorrect) {
       setFeedback('correct');
-      recordResult(currentWord.word, true);
+      recordResult(currentWord.id, true);
     } else {
       const newAttempts = attemptsLeft - 1;
       setAttemptsLeft(newAttempts);
       if (newAttempts <= 0) {
         setFeedback('incorrect');
-        recordResult(currentWord.word, false);
+        recordResult(currentWord.id, false);
       } else {
         // Wrong but still have attempts — just let them try again
         setFeedback(null);
@@ -138,6 +130,9 @@ export default function WordScramble() {
             className={`${styles.tile} ${styles.builtTile}`}
             onClick={() => handleBuiltClick(i)}
             disabled={!!feedback}
+            data-letter={item.letter}
+            data-source-idx={item.sourceIdx}
+            aria-label={`Letter ${item.letter}, position ${i + 1}. Activate to remove.`}
           >
             {item.letter}
           </button>
@@ -166,6 +161,9 @@ export default function WordScramble() {
             className={`${styles.tile} ${styles.scrambleTile} ${!remaining.includes(i) ? styles.usedTile : ''}`}
             onClick={() => handleLetterClick(i)}
             disabled={!remaining.includes(i) || !!feedback}
+            data-letter={letter}
+            data-source-idx={i}
+            aria-label={`Letter ${letter}${remaining.includes(i) ? '' : ', already used'}`}
           >
             {!remaining.includes(i) ? '' : letter}
           </button>
