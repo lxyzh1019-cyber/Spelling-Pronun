@@ -72,32 +72,45 @@ export default function Flashcards() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Flashcards</h2>
+      <h1 className={styles.heading}>Flashcards</h1>
       <p className={styles.counter}>
         Card {index + 1} of {cards.length}
       </p>
 
-      <div className={styles.cardWrapper} onClick={handleFlip}>
+      <button
+        type="button"
+        className={styles.cardWrapper}
+        onClick={handleFlip}
+        aria-pressed={flipped}
+        aria-label={flipped ? `Definition of ${current.word}` : `Word: ${current.word}. Activate to reveal definition.`}
+      >
         <div className={`${styles.card} ${flipped ? styles.flipped : ''}`}>
           <div className={styles.front}>
             <span className={styles.wordText}>{current.word}</span>
-            <span className={styles.tapHint}>Tap to flip</span>
+            <span className={styles.tapHint} aria-hidden="true">Tap to flip</span>
           </div>
           <div className={styles.back}>
             <span className={styles.definitionText}>{current.definition}</span>
-            <span className={styles.tapHint}>Tap to flip back</span>
+            <span className={styles.tapHint} aria-hidden="true">Tap to flip back</span>
           </div>
         </div>
-      </div>
+      </button>
 
       <div className={styles.controls}>
-        <button className={styles.navBtn} onClick={handlePrev}>← Prev</button>
-        <button className={styles.speakBtn} onClick={speakWord}>🔊 Listen</button>
-        <button className={styles.navBtn} onClick={handleNext}>Next →</button>
+        <button className={styles.navBtn} onClick={handlePrev} aria-label="Previous card">
+          <span aria-hidden="true">← </span>Prev
+        </button>
+        <button className={styles.speakBtn} onClick={speakWord} aria-label="Listen to the word">
+          <span aria-hidden="true">🔊 </span>Listen
+        </button>
+        <button className={styles.navBtn} onClick={handleNext} aria-label="Next card">
+          Next<span aria-hidden="true"> →</span>
+        </button>
       </div>
 
       <button className={styles.shuffleToggle} onClick={toggleShuffleMode}>
-        {shuffledMode ? '📋 Original Order' : '🔀 Shuffle Cards'}
+        <span aria-hidden="true">{shuffledMode ? '📋 ' : '🔀 '}</span>
+        {shuffledMode ? 'Original Order' : 'Shuffle Cards'}
       </button>
     </div>
   );

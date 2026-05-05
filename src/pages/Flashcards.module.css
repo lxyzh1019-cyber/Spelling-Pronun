@@ -30,6 +30,17 @@
   max-width: 400px;
   height: 240px;
   cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.cardWrapper:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 4px;
+  border-radius: 12px;
 }
 
 .card {

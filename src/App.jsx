@@ -12,8 +12,9 @@ import styles from './App.module.css';
 export default function App() {
   return (
     <WordProvider>
+      <a href="#main" className={styles.skipLink}>Skip to main content</a>
       <Header />
-      <main className={styles.main}>
+      <main id="main" tabIndex={-1} className={styles.main}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/test" element={<SpellingTest />} />

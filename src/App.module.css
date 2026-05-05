@@ -5,3 +5,23 @@
   margin: 0 auto;
   padding: 24px 20px 48px;
 }
+
+.main:focus {
+  outline: none;
+}
+
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: #1f2937;
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 1000;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+}
+
+.skipLink:focus {
+  left: 0;
+}

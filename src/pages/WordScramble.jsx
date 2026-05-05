@@ -112,7 +112,7 @@ export default function WordScramble() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Word Scramble</h2>
+      <h1 className={styles.heading}>Word Scramble</h1>
       <p className={styles.hint}>Unscramble the letters to spell the word</p>
 
       <div className={styles.definitionCard}>
@@ -120,10 +120,11 @@ export default function WordScramble() {
         <span className={styles.defText}>{currentWord.definition}</span>
       </div>
 
-      <div className={styles.attemptsRow}>
+      <div className={styles.attemptsRow} role="status" aria-label={`${attemptsLeft} attempts remaining`}>
         {Array.from({ length: 3 }).map((_, i) => (
           <span
             key={i}
+            aria-hidden="true"
             className={`${styles.attemptDot} ${i < attemptsLeft ? styles.attemptActive : styles.attemptUsed}`}
           />
         ))}
@@ -147,11 +148,13 @@ export default function WordScramble() {
       </div>
 
       {feedback === 'correct' && (
-        <div className={styles.correctMsg}>✅ Correct! Well done!</div>
+        <div className={styles.correctMsg} role="status" aria-live="polite">
+          <span aria-hidden="true">✅ </span>Correct! Well done!
+        </div>
       )}
       {feedback === 'incorrect' && (
-        <div className={styles.incorrectMsg}>
-          ❌ The word was: <strong>{currentWord.word}</strong>
+        <div className={styles.incorrectMsg} role="alert">
+          <span aria-hidden="true">❌ </span>The word was: <strong>{currentWord.word}</strong>
         </div>
       )}
 
@@ -177,7 +180,7 @@ export default function WordScramble() {
         )}
         {!feedback && !hintRevealed && (
           <button className={styles.hintBtn} onClick={handleHint}>
-            💡 Hint
+            <span aria-hidden="true">💡 </span>Hint
           </button>
         )}
       </div>
