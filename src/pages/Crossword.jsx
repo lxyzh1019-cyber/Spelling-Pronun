@@ -238,7 +238,7 @@ export default function Crossword() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Crossword</h2>
+      <h1 className={styles.heading}>Crossword</h1>
 
       <div className={styles.layout}>
         <div className={styles.gridSection}>
@@ -280,7 +280,7 @@ export default function Crossword() {
         <div className={styles.cluesSection}>
           {puzzle.acrossClues.length > 0 && (
             <div className={styles.clueGroup}>
-              <h3 className={styles.clueHeading}>Across</h3>
+              <h2 className={styles.clueHeading}>Across</h2>
               {puzzle.acrossClues.map((clue) => (
                 <div key={clue.number} className={styles.clue}>
                   <span className={styles.clueNum}>{clue.number}.</span>
@@ -292,7 +292,7 @@ export default function Crossword() {
 
           {puzzle.downClues.length > 0 && (
             <div className={styles.clueGroup}>
-              <h3 className={styles.clueHeading}>Down</h3>
+              <h2 className={styles.clueHeading}>Down</h2>
               {puzzle.downClues.map((clue) => (
                 <div key={clue.number} className={styles.clue}>
                   <span className={styles.clueNum}>{clue.number}.</span>

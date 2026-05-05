@@ -13,11 +13,11 @@ const links = [
 export default function Header() {
   return (
     <header className={styles.header}>
-      <NavLink to="/" className={styles.brand}>
-        <span className={styles.logo}>🔤</span>
+      <NavLink to="/" className={styles.brand} aria-label="Spelling Tutor home">
+        <span className={styles.logo} aria-hidden="true">🔤</span>
         <span className={styles.title}>Spelling Tutor</span>
       </NavLink>
-      <nav className={styles.nav}>
+      <nav className={styles.nav} aria-label="Primary">
         {links.slice(1).map((link) => (
           <NavLink
             key={link.to}
@@ -26,7 +26,7 @@ export default function Header() {
               `${styles.navLink} ${isActive ? styles.active : ''}`
             }
           >
-            <span className={styles.icon}>{link.icon}</span>
+            <span className={styles.icon} aria-hidden="true">{link.icon}</span>
             <span className={styles.label}>{link.label}</span>
           </NavLink>
         ))}

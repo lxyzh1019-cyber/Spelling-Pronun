@@ -100,8 +100,8 @@ export default function SpellingTest() {
     return (
       <div className={styles.container}>
         <div className={styles.startCard}>
-          <span className={styles.startIcon}>✏️</span>
-          <h2 className={styles.startTitle}>Spelling Test</h2>
+          <span className={styles.startIcon} aria-hidden="true">✏️</span>
+          <h1 className={styles.startTitle}>Spelling Test</h1>
           <p className={styles.startInfo}>
             You'll hear {shuffled.length} words spoken aloud. Type the correct spelling for each one.
           </p>
@@ -119,8 +119,8 @@ export default function SpellingTest() {
     return (
       <div className={styles.container}>
         <div className={styles.finishCard}>
-          <span className={styles.finishIcon}>{pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪'}</span>
-          <h2 className={styles.finishTitle}>Test Complete!</h2>
+          <span className={styles.finishIcon} aria-hidden="true">{pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪'}</span>
+          <h1 className={styles.finishTitle}>Test Complete!</h1>
           <div className={styles.finishStats}>
             <div className={styles.finishStat}>
               <span className={styles.finishStatNum}>{score.correct}</span>
@@ -149,7 +149,15 @@ export default function SpellingTest() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.progressBar}>
+      <h1 className={styles.visuallyHidden}>Spelling Test</h1>
+      <div
+        className={styles.progressBar}
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={shuffled.length}
+        aria-valuenow={index}
+        aria-label={`Word ${index + 1} of ${shuffled.length}`}
+      >
         <div className={styles.progressFill} style={{ width: `${((index) / shuffled.length) * 100}%` }} />
       </div>
       <div className={styles.counter}>
@@ -157,14 +165,18 @@ export default function SpellingTest() {
       </div>
 
       <div className={styles.card}>
-        <button className={styles.speakBtn} onClick={speakCurrent} title="Say the word again">
-          🔊 Play Again
+        <button className={styles.speakBtn} onClick={speakCurrent} aria-label="Say the word again">
+          <span aria-hidden="true">🔊 </span>Play Again
         </button>
 
         <p className={styles.definition}>{current.definition}</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <label htmlFor="spelling-answer" className={styles.visuallyHidden}>
+            Type the word you heard
+          </label>
           <input
+            id="spelling-answer"
             ref={inputRef}
             className={`${styles.input} ${feedback === 'correct' ? styles.inputCorrect : ''} ${feedback === 'incorrect' ? styles.inputIncorrect : ''}`}
             type="text"
@@ -175,6 +187,7 @@ export default function SpellingTest() {
             autoCapitalize="off"
             spellCheck={false}
             disabled={!!feedback}
+            aria-invalid={feedback === 'incorrect' ? 'true' : 'false'}
           />
           {!feedback && (
             <button type="submit" className={styles.submitBtn} disabled={!input.trim()}>
@@ -183,15 +196,20 @@ export default function SpellingTest() {
           )}
         </form>
 
+        <div role="status" aria-live="polite" className={styles.visuallyHidden}>
+          {feedback === 'correct' && 'Correct!'}
+          {feedback === 'incorrect' && `Incorrect. The correct spelling is ${current.word}.`}
+        </div>
+
         {feedback === 'correct' && (
           <div className={styles.correctFeedback}>
-            <span className={styles.feedbackIcon}>✅</span> Correct!
+            <span className={styles.feedbackIcon} aria-hidden="true">✅</span> Correct!
           </div>
         )}
 
         {feedback === 'incorrect' && (
           <div className={styles.incorrectFeedback}>
-            <span className={styles.feedbackIcon}>❌</span>
+            <span className={styles.feedbackIcon} aria-hidden="true">❌</span>
             The correct spelling is: <strong>{current.word}</strong>
           </div>
         )}

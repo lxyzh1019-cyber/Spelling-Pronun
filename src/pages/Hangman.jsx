@@ -83,10 +83,19 @@ export default function Hangman() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Hangman</h2>
+      <h1 className={styles.heading}>Hangman</h1>
 
       <div className={styles.canvasWrapper}>
-        <svg className={styles.canvas} viewBox="0 0 200 230" width="200" height="230">
+        <svg
+          className={styles.canvas}
+          viewBox="0 0 200 230"
+          width="200"
+          height="230"
+          role="img"
+          aria-labelledby="hangman-title hangman-desc"
+        >
+          <title id="hangman-title">Hangman drawing</title>
+          <desc id="hangman-desc">{`${wrongGuesses} of ${MAX_WRONG} wrong guesses used.`}</desc>
           {/* Gallows */}
           <line x1="20" y1="220" x2="180" y2="220" stroke="#6b7280" strokeWidth="4" strokeLinecap="round" />
           <line x1="50" y1="220" x2="50" y2="20" stroke="#6b7280" strokeWidth="4" strokeLinecap="round" />
@@ -130,15 +139,21 @@ export default function Hangman() {
         </svg>
       </div>
 
-      <div className={styles.wordDisplay}>{displayWord}</div>
+      <div
+        className={styles.wordDisplay}
+        aria-label={`Word: ${word.split('').map((l) => (guessed.has(l) ? l : 'blank')).join(', ')}`}
+      >
+        <span aria-hidden="true">{displayWord}</span>
+      </div>
 
-      <div className={styles.guessesLeft}>
+      <div className={styles.guessesLeft} role="status" aria-live="polite">
         Wrong guesses: {wrongGuesses} / {MAX_WRONG}
       </div>
 
       {gameOver && (
-        <div className={won ? styles.winMsg : styles.loseMsg}>
-          {won ? '🎉 You won!' : `💀 Game over! The word was: ${word}`}
+        <div className={won ? styles.winMsg : styles.loseMsg} role="alert">
+          <span aria-hidden="true">{won ? '🎉 ' : '💀 '}</span>
+          {won ? 'You won!' : `Game over! The word was: ${word}`}
         </div>
       )}
 
@@ -149,15 +164,22 @@ export default function Hangman() {
       )}
 
       {!gameOver && (
-        <div className={styles.keyboard}>
+        <div className={styles.keyboard} role="group" aria-label="Letter keyboard">
           {ALPHABET.map((letter) => {
             const isGuessed = guessed.has(letter);
             const isCorrect = isGuessed && word.includes(letter);
             const isWrong = isGuessed && !word.includes(letter);
             let cls = styles.key;
-            if (isCorrect) cls = `${styles.key} ${styles.keyCorrect}`;
-            else if (isWrong) cls = `${styles.key} ${styles.keyWrong}`;
-            else cls = `${styles.key} ${styles.keyUnused}`;
+            let stateLabel = 'not yet guessed';
+            if (isCorrect) {
+              cls = `${styles.key} ${styles.keyCorrect}`;
+              stateLabel = 'correct';
+            } else if (isWrong) {
+              cls = `${styles.key} ${styles.keyWrong}`;
+              stateLabel = 'wrong';
+            } else {
+              cls = `${styles.key} ${styles.keyUnused}`;
+            }
 
             return (
               <button
@@ -165,6 +187,7 @@ export default function Hangman() {
                 className={cls}
                 onClick={() => handleGuess(letter)}
                 disabled={isGuessed}
+                aria-label={`Letter ${letter.toUpperCase()}, ${stateLabel}`}
               >
                 {letter}
               </button>

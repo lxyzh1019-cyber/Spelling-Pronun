@@ -22,9 +22,10 @@ export default function Home() {
         </p>
       </section>
 
-      <section className={styles.categoryBar}>
-        <label className={styles.categoryLabel}>Word List:</label>
+      <section className={styles.categoryBar} aria-labelledby="category-label">
+        <label id="category-label" htmlFor="category-select" className={styles.categoryLabel}>Word List:</label>
         <select
+          id="category-select"
           className={styles.categorySelect}
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
@@ -37,7 +38,7 @@ export default function Home() {
         </select>
       </section>
 
-      <section className={styles.statsRow}>
+      <section className={styles.statsRow} aria-label="Your progress">
         <div className={styles.statCard}>
           <span className={styles.statNumber}>{stats.wordsSeen}</span>
           <span className={styles.statLabel}>Words Practiced</span>
@@ -60,13 +61,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.gamesGrid}>
+      <section className={styles.gamesGrid} aria-label="Games">
         {games.map((game) => (
-          <Link key={game.to} to={game.to} className={styles.gameCard} style={{ '--card-color': game.color }}>
-            <span className={styles.gameIcon}>{game.icon}</span>
-            <h3 className={styles.gameName}>{game.label}</h3>
+          <Link key={game.to} to={game.to} className={styles.gameCard} style={{ '--card-color': game.color }} data-game={game.to.slice(1)}>
+            <span className={styles.gameIcon} aria-hidden="true">{game.icon}</span>
+            <h2 className={styles.gameName}>{game.label}</h2>
             <p className={styles.gameDesc}>{game.desc}</p>
-            <span className={styles.gameArrow}>Play →</span>
+            <span className={styles.gameArrow} aria-hidden="true">Play →</span>
           </Link>
         ))}
       </section>
