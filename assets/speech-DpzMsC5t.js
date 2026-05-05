@@ -1,1 +1,0 @@
-function o(t,{rate:s=.9,pitch:i=1,lang:c="en-US"}={}){if(typeof window>"u")return;const n=window.speechSynthesis;if(!n||typeof window.SpeechSynthesisUtterance!="function")return;n.cancel();const e=new window.SpeechSynthesisUtterance(t);e.rate=s,e.pitch=i,e.lang=c,n.speak(e)}export{o as s};
