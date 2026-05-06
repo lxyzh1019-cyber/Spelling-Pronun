@@ -2,9 +2,18 @@ import { useState, useCallback } from 'react';
 import { useWords } from '../context/WordProvider';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/shuffle';
+import MultiplayerWrapper from '../components/MultiplayerWrapper';
 import styles from './Flashcards.module.css';
 
 export default function Flashcards() {
+  return (
+    <MultiplayerWrapper>
+      <FlashcardsInner />
+    </MultiplayerWrapper>
+  );
+}
+
+function FlashcardsInner() {
   const { activeWords } = useWords();
   const [cards, setCards] = useState(() => [...activeWords]);
   const [index, setIndex] = useState(0);

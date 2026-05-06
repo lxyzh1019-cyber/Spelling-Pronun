@@ -17,6 +17,7 @@ import {
   onSnapshot,
   serverTimestamp,
   increment,
+  arrayUnion,
 } from 'firebase/firestore';
 import { db, ensureAuth } from '../firebase';
 import { checkAchievements } from '../utils/achievements';
@@ -39,15 +40,52 @@ function slug(s) {
     .replace(/^-|-$/g, '');
 }
 
+const SECTION_SIZE = 25;
+
+function shortGradeLabel(name) {
+  // "Grade 4 — Alberta Curriculum" -> "Grade 4"
+  const m = name.match(/Grade\s*\d+/i);
+  return m ? m[0] : name;
+}
+
 function withIds(categories) {
-  return categories.map((cat) => ({
-    ...cat,
-    id: slug(cat.name),
-    words: cat.words.map((w) => ({
-      ...w,
-      id: `${slug(cat.name)}__${slug(w.word)}`,
-    })),
-  }));
+  // Split each large category into smaller sections of SECTION_SIZE words
+  // so Flashcards / Word Scramble / Spelling Test stay focused.
+  const sections = [];
+  for (const cat of categories) {
+    const words = cat.words || [];
+    const total = words.length;
+    if (total <= SECTION_SIZE) {
+      const catId = slug(cat.name);
+      sections.push({
+        ...cat,
+        id: catId,
+        words: words.map((w) => ({
+          ...w,
+          id: `${catId}__${slug(w.word)}`,
+        })),
+      });
+      continue;
+    }
+    const sectionCount = Math.ceil(total / SECTION_SIZE);
+    for (let i = 0; i < sectionCount; i++) {
+      const start = i * SECTION_SIZE;
+      const end = Math.min(start + SECTION_SIZE, total);
+      const sectionName = `${shortGradeLabel(cat.name)} — Section ${i + 1} (words ${start + 1}-${end})`;
+      const sectionId = slug(sectionName);
+      sections.push({
+        ...cat,
+        name: sectionName,
+        id: sectionId,
+        words: words.slice(start, end).map((w) => ({
+          ...w,
+          // Keep stable global id so progress doesn't reset when sections change.
+          id: `${slug(cat.name)}__${slug(w.word)}`,
+        })),
+      });
+    }
+  }
+  return sections;
 }
 
 const FALLBACK_CATEGORIES = withIds(wordData.categories || []);
@@ -411,6 +449,10 @@ export function WordProvider({ children }) {
     async (profileName) => {
       const trimmed = profileName.trim();
       if (!trimmed) return;
+      // Don't accept adds before the initial Firestore load resolves; otherwise
+      // we'd build the new array off the default seed and clobber any saved
+      // profiles when we write back.
+      if (loading) return;
       const base = slug(trimmed) || 'profile';
       let id = base;
       let n = 2;
@@ -429,23 +471,35 @@ export function WordProvider({ children }) {
             .padStart(6, '0'),
         createdAt: new Date(),
       };
-      const newProfiles = [...profiles, newProfile];
-      setProfiles(newProfiles);
+      setProfiles((prev) => [...prev, newProfile]);
       if (user) {
         try {
           const userDocRef = doc(db, 'spelling-users', user.uid);
-          await setDoc(userDocRef, { profiles: newProfiles }, { merge: true });
+          // Atomic append so two quick adds (or a stale closure) can't drop
+          // entries from the array.
+          await updateDoc(userDocRef, { profiles: arrayUnion(newProfile) });
         } catch (err) {
-          console.error('Failed to persist new profile:', err);
+          // updateDoc fails if the doc doesn't exist yet; fall back to setDoc.
+          try {
+            const userDocRef = doc(db, 'spelling-users', user.uid);
+            await setDoc(
+              userDocRef,
+              { profiles: [...profiles, newProfile] },
+              { merge: true }
+            );
+          } catch (err2) {
+            console.error('Failed to persist new profile:', err2);
+          }
         }
       }
       return newProfile;
     },
-    [user, profiles]
+    [user, profiles, loading]
   );
 
   const deleteProfile = useCallback(
     async (profileId) => {
+      if (loading) return;
       if (profiles.length <= 1) return;
       const newProfiles = profiles.filter((p) => p.id !== profileId);
       const nextActive =
@@ -470,7 +524,7 @@ export function WordProvider({ children }) {
         }
       }
     },
-    [user, profiles, activeProfileId]
+    [user, profiles, activeProfileId, loading]
   );
 
   const updateProfileAvatar = useCallback(
