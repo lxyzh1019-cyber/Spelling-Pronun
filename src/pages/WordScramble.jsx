@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWords } from '../context/WordProvider';
 import { shuffle, pickRandom } from '../utils/shuffle';
+import MultiplayerWrapper from '../components/MultiplayerWrapper';
 import styles from './WordScramble.module.css';
 
 function scrambleWord(word) {
@@ -12,6 +13,14 @@ function scrambleWord(word) {
 }
 
 export default function WordScramble() {
+  return (
+    <MultiplayerWrapper>
+      <WordScrambleInner />
+    </MultiplayerWrapper>
+  );
+}
+
+function WordScrambleInner() {
   const { activeWords, recordResult } = useWords();
   const [currentWord, setCurrentWord] = useState(null);
   const [scrambled, setScrambled] = useState([]);

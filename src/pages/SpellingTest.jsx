@@ -6,9 +6,18 @@ import { playCorrectSound, playIncorrectSound, playMilestoneSound, playHintSound
 import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
 import { triggerConfetti, triggerFireworks } from '../utils/confetti';
 import { checkAchievements } from '../utils/achievements';
+import MultiplayerWrapper from '../components/MultiplayerWrapper';
 import styles from './SpellingTest.module.css';
 
 export default function SpellingTest() {
+  return (
+    <MultiplayerWrapper>
+      <SpellingTestInner />
+    </MultiplayerWrapper>
+  );
+}
+
+function SpellingTestInner() {
   const { activeWords, recordResult, selectedCategory, soundEnabled, unlockAchievement, useHint, hintsUsedToday, completeDailyChallenge, dailyChallengeDone, stats } = useWords();
   const [shuffled, setShuffled] = useState([]);
   const [index, setIndex] = useState(0);
