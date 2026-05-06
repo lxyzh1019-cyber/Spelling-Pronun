@@ -449,10 +449,6 @@ export function WordProvider({ children }) {
     async (profileName) => {
       const trimmed = profileName.trim();
       if (!trimmed) return;
-      // Don't accept adds before the initial Firestore load resolves; otherwise
-      // we'd build the new array off the default seed and clobber any saved
-      // profiles when we write back.
-      if (loading) return;
       const base = slug(trimmed) || 'profile';
       let id = base;
       let n = 2;
@@ -472,7 +468,11 @@ export function WordProvider({ children }) {
         createdAt: new Date(),
       };
       setProfiles((prev) => [...prev, newProfile]);
-      if (user) {
+      // Only persist once auth + initial load have resolved. Skipping the
+      // remote write keeps the local-first UX working while offline or
+      // before anonymous auth completes; the next mutation that runs after
+      // load will re-sync via setDoc/merge in deleteProfile/avatar updates.
+      if (user && !loading) {
         try {
           const userDocRef = doc(db, 'spelling-users', user.uid);
           // Atomic append so two quick adds (or a stale closure) can't drop
@@ -499,7 +499,6 @@ export function WordProvider({ children }) {
 
   const deleteProfile = useCallback(
     async (profileId) => {
-      if (loading) return;
       if (profiles.length <= 1) return;
       const newProfiles = profiles.filter((p) => p.id !== profileId);
       const nextActive =
@@ -511,7 +510,7 @@ export function WordProvider({ children }) {
         setActiveProfileId(nextActive);
         setProgress({});
       }
-      if (user) {
+      if (user && !loading) {
         try {
           const userDocRef = doc(db, 'spelling-users', user.uid);
           await setDoc(
