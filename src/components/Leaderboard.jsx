@@ -1,19 +1,47 @@
+import { useEffect, useState } from 'react';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
 import { useWords } from '../context/WordProvider';
 import styles from './Leaderboard.module.css';
 
 export default function Leaderboard() {
-  const { profiles } = useWords();
+  const { profiles, user } = useWords();
+  const [statsByProfile, setStatsByProfile] = useState({});
 
-  // For now, show mock leaderboard; in production fetch from Firestore
-  const mockStats = profiles.map((p) => ({
-    id: p.id,
-    name: p.name,
-    avatar: p.avatar,
-    correct: Math.floor(Math.random() * 100),
-    totalAttempts: Math.floor(Math.random() * 200) + 50,
-  }));
+  useEffect(() => {
+    if (!user) return;
+    const q = query(
+      collection(db, 'spelling-progress'),
+      where('userId', '==', user.uid)
+    );
+    const unsub = onSnapshot(
+      q,
+      (snap) => {
+        const agg = {};
+        snap.forEach((docSnap) => {
+          const data = docSnap.data();
+          const pid = data.profileId;
+          if (!pid) return;
+          if (!agg[pid]) agg[pid] = { correct: 0, totalAttempts: 0 };
+          agg[pid].correct += data.correct || 0;
+          agg[pid].totalAttempts += data.attempts || 0;
+        });
+        setStatsByProfile(agg);
+      },
+      (err) => console.error('Leaderboard listener error:', err)
+    );
+    return () => unsub();
+  }, [user]);
 
-  const leaderboard = mockStats.sort((a, b) => b.correct - a.correct);
+  const leaderboard = profiles
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      avatar: p.avatar,
+      correct: statsByProfile[p.id]?.correct || 0,
+      totalAttempts: statsByProfile[p.id]?.totalAttempts || 0,
+    }))
+    .sort((a, b) => b.correct - a.correct);
 
   const getMedalEmoji = (index) => {
     const medals = ['🥇', '🥈', '🥉'];

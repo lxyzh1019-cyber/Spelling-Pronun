@@ -88,12 +88,13 @@ export default function SpellingTest() {
         unlockAchievement('perfect_round');
       }
     } else {
+      const nextWord = shuffled[index + 1];
       setIndex((i) => i + 1);
       setInput('');
       setFeedback(null);
       setShowHintContent(null);
       setTimeout(() => {
-        speakCurrent();
+        if (nextWord) speak(nextWord.word);
         inputRef.current?.focus();
       }, 100);
     }
