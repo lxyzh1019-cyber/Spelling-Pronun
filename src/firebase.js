@@ -5,7 +5,6 @@ import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 const firebaseConfig = {
   apiKey: 'AIzaSyBvasH4OqU76196ZmZSXX_e8-L2PYnvyaY',
   authDomain: 'chore-tracker-a461b.firebaseapp.com',
-  databaseURL: 'https://chore-tracker-a461b-default-rtdb.firebaseio.com',
   projectId: 'chore-tracker-a461b',
   storageBucket: 'chore-tracker-a461b.firebasestorage.app',
   messagingSenderId: '282740057913',

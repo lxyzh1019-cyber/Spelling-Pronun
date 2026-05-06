@@ -210,11 +210,30 @@ export default function Crossword() {
     }
   };
 
+  const inputRef = useRef(null);
+
   useEffect(() => {
     if (focusedCell) {
-      gridRef.current?.focus();
+      // Focus the hidden input so iOS Safari shows the on-screen keyboard.
+      // (Focusing a div with tabIndex doesn't summon the keyboard on iOS.)
+      inputRef.current?.focus({ preventScroll: true });
     }
   }, [focusedCell]);
+
+  const handleHiddenInput = (e) => {
+    const value = e.target.value;
+    e.target.value = '';
+    if (!focusedCell || checked || !value) return;
+    const ch = value.slice(-1);
+    if (!/^[a-zA-Z]$/.test(ch)) return;
+    const { r, c } = focusedCell;
+    const newGrid = userGrid.map((row) => [...row]);
+    newGrid[r][c] = ch.toLowerCase();
+    setUserGrid(newGrid);
+    let nc = c + 1;
+    while (nc < GRID_SIZE && !puzzle?.grid[r][nc]) nc++;
+    if (nc < GRID_SIZE) setFocusedCell({ r, c: nc });
+  };
 
   const handleCheck = () => {
     setChecked(true);
@@ -234,10 +253,23 @@ export default function Crossword() {
 
       <div className={styles.layout}>
         <div className={styles.gridSection}>
+          <input
+            ref={inputRef}
+            type="text"
+            inputMode="text"
+            autoCapitalize="characters"
+            autoCorrect="off"
+            autoComplete="off"
+            spellCheck={false}
+            className={styles.hiddenInput}
+            aria-hidden="true"
+            tabIndex={-1}
+            onInput={handleHiddenInput}
+            onKeyDown={handleKeyDown}
+          />
           <div
             ref={gridRef}
             className={styles.grid}
-            tabIndex={0}
             onKeyDown={handleKeyDown}
             role="grid"
             aria-label={`Crossword grid, ${GRID_SIZE} by ${GRID_SIZE}`}

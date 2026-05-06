@@ -29,6 +29,21 @@
 
 .gridSection {
   flex-shrink: 0;
+  position: relative;
+}
+
+.hiddenInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
 }
 
 .grid {

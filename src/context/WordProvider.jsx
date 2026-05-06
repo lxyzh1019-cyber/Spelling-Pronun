@@ -27,6 +27,11 @@ const WordContext = createContext(null);
 const AVATAR_OPTIONS = ['🧠', '🚀', '🎨', '🦁', '🌟', '📚', '🎯', '🏆'];
 const DEFAULT_AVATAR = '🧠';
 
+const DEFAULT_PROFILES = [
+  { id: 'jenn', name: 'Jenn', avatar: '🌟', color: '#f472b6' },
+  { id: 'jess', name: 'Jess', avatar: '🎨', color: '#60a5fa' },
+];
+
 function slug(s) {
   return s
     .toLowerCase()
@@ -51,8 +56,10 @@ export function WordProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [categories] = useState(FALLBACK_CATEGORIES);
-  const [profiles, setProfiles] = useState([]);
-  const [activeProfileId, setActiveProfileId] = useState(null);
+  const [profiles, setProfiles] = useState(() =>
+    DEFAULT_PROFILES.map((p) => ({ ...p, createdAt: new Date() }))
+  );
+  const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILES[0].id);
   const [progress, setProgress] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(
     () => FALLBACK_CATEGORIES[0]?.name ?? ''
@@ -87,6 +94,11 @@ export function WordProvider({ children }) {
         let allProfiles = [];
         let userSettings = {};
 
+        const seedProfiles = DEFAULT_PROFILES.map((p) => ({
+          ...p,
+          createdAt: new Date(),
+        }));
+
         let savedActiveId = null;
         if (userDoc.exists()) {
           const data = userDoc.data();
@@ -94,34 +106,18 @@ export function WordProvider({ children }) {
           userSettings = data.settings || {};
           savedActiveId = data.activeProfileId || null;
         } else {
-          allProfiles = [
-            {
-              id: 'default',
-              name: 'Guest',
-              avatar: DEFAULT_AVATAR,
-              color: '#3b82f6',
-              createdAt: new Date(),
-            },
-          ];
+          allProfiles = seedProfiles;
           await setDoc(userDocRef, {
             profiles: allProfiles,
-            activeProfileId: 'default',
+            activeProfileId: seedProfiles[0].id,
             settings: { soundEnabled: true },
           });
-          savedActiveId = 'default';
+          savedActiveId = seedProfiles[0].id;
         }
 
         if (allProfiles.length === 0) {
-          allProfiles = [
-            {
-              id: 'default',
-              name: 'Guest',
-              avatar: DEFAULT_AVATAR,
-              color: '#3b82f6',
-              createdAt: new Date(),
-            },
-          ];
-          savedActiveId = 'default';
+          allProfiles = seedProfiles;
+          savedActiveId = seedProfiles[0].id;
         }
 
         setProfiles(allProfiles);
@@ -134,15 +130,10 @@ export function WordProvider({ children }) {
         }
       } catch (err) {
         console.error('Failed to load profiles:', err);
-        setProfiles([
-          {
-            id: 'default',
-            name: 'Guest',
-            avatar: DEFAULT_AVATAR,
-            color: '#3b82f6',
-          },
-        ]);
-        setActiveProfileId('default');
+        setProfiles(
+          DEFAULT_PROFILES.map((p) => ({ ...p, createdAt: new Date() }))
+        );
+        setActiveProfileId(DEFAULT_PROFILES[0].id);
       } finally {
         setLoading(false);
       }
@@ -418,7 +409,6 @@ export function WordProvider({ children }) {
 
   const addProfile = useCallback(
     async (profileName) => {
-      if (!user) return;
       const trimmed = profileName.trim();
       if (!trimmed) return;
       const base = slug(trimmed) || 'profile';
@@ -440,41 +430,44 @@ export function WordProvider({ children }) {
         createdAt: new Date(),
       };
       const newProfiles = [...profiles, newProfile];
-      try {
-        const userDocRef = doc(db, 'spelling-users', user.uid);
-        await setDoc(userDocRef, { profiles: newProfiles }, { merge: true });
-        setProfiles(newProfiles);
-        return newProfile;
-      } catch (err) {
-        console.error('Failed to add profile:', err);
+      setProfiles(newProfiles);
+      if (user) {
+        try {
+          const userDocRef = doc(db, 'spelling-users', user.uid);
+          await setDoc(userDocRef, { profiles: newProfiles }, { merge: true });
+        } catch (err) {
+          console.error('Failed to persist new profile:', err);
+        }
       }
+      return newProfile;
     },
     [user, profiles]
   );
 
   const deleteProfile = useCallback(
     async (profileId) => {
-      if (!user) return;
       if (profiles.length <= 1) return;
       const newProfiles = profiles.filter((p) => p.id !== profileId);
       const nextActive =
         profileId === activeProfileId
           ? newProfiles[0]?.id || null
           : activeProfileId;
-      try {
-        const userDocRef = doc(db, 'spelling-users', user.uid);
-        await setDoc(
-          userDocRef,
-          { profiles: newProfiles, activeProfileId: nextActive },
-          { merge: true }
-        );
-        setProfiles(newProfiles);
-        if (profileId === activeProfileId) {
-          setActiveProfileId(nextActive);
-          setProgress({});
+      setProfiles(newProfiles);
+      if (profileId === activeProfileId) {
+        setActiveProfileId(nextActive);
+        setProgress({});
+      }
+      if (user) {
+        try {
+          const userDocRef = doc(db, 'spelling-users', user.uid);
+          await setDoc(
+            userDocRef,
+            { profiles: newProfiles, activeProfileId: nextActive },
+            { merge: true }
+          );
+        } catch (err) {
+          console.error('Failed to persist profile deletion:', err);
         }
-      } catch (err) {
-        console.error('Failed to delete profile:', err);
       }
     },
     [user, profiles, activeProfileId]
@@ -482,16 +475,17 @@ export function WordProvider({ children }) {
 
   const updateProfileAvatar = useCallback(
     async (profileId, avatar) => {
-      if (!user) return;
       const updated = profiles.map((p) =>
         p.id === profileId ? { ...p, avatar } : p
       );
-      try {
-        const userDocRef = doc(db, 'spelling-users', user.uid);
-        await setDoc(userDocRef, { profiles: updated }, { merge: true });
-        setProfiles(updated);
-      } catch (err) {
-        console.error('Failed to update avatar:', err);
+      setProfiles(updated);
+      if (user) {
+        try {
+          const userDocRef = doc(db, 'spelling-users', user.uid);
+          await setDoc(userDocRef, { profiles: updated }, { merge: true });
+        } catch (err) {
+          console.error('Failed to persist avatar update:', err);
+        }
       }
     },
     [user, profiles]
