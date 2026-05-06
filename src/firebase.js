@@ -34,7 +34,16 @@ export function ensureAuth() {
           unsub();
           resolve(user);
         } else {
-          signInAnonymously(auth).then(resolve);
+          // If anonymous auth is disabled or the network is down, resolve
+          // with null so the app falls through to local-only mode instead of
+          // hanging forever on a never-settled promise.
+          signInAnonymously(auth)
+            .then((cred) => resolve(cred.user))
+            .catch((err) => {
+              console.warn('Anonymous sign-in failed; continuing offline:', err);
+              unsub();
+              resolve(null);
+            });
         }
       });
     });

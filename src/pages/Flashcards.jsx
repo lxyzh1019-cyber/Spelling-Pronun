@@ -14,7 +14,7 @@ export default function Flashcards() {
 }
 
 function FlashcardsInner() {
-  const { activeWords } = useWords();
+  const { activeWords, recordResult } = useWords();
   const [cards, setCards] = useState(() => [...activeWords]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -32,6 +32,11 @@ function FlashcardsInner() {
   const handleNext = () => {
     setFlipped(false);
     setIndex((i) => (i + 1) % cards.length);
+  };
+
+  const handleSelfRate = (gotIt) => {
+    if (current) recordResult(current.id, gotIt);
+    handleNext();
   };
 
   const handleShuffle = () => {
@@ -100,6 +105,25 @@ function FlashcardsInner() {
           Next<span aria-hidden="true"> →</span>
         </button>
       </div>
+
+      {flipped && (
+        <div className={styles.controls}>
+          <button
+            className={styles.navBtn}
+            onClick={() => handleSelfRate(false)}
+            aria-label="Mark word as needing more practice and go to next card"
+          >
+            <span aria-hidden="true">🔁 </span>Practice Again
+          </button>
+          <button
+            className={styles.navBtn}
+            onClick={() => handleSelfRate(true)}
+            aria-label="Mark word as known and go to next card"
+          >
+            <span aria-hidden="true">✅ </span>Got It
+          </button>
+        </div>
+      )}
 
       <button className={styles.shuffleToggle} onClick={toggleShuffleMode}>
         <span aria-hidden="true">{shuffledMode ? '📋 ' : '🔀 '}</span>

@@ -5,6 +5,7 @@ import {
   useEffect,
   useCallback,
   useMemo,
+  useRef,
 } from 'react';
 import {
   collection,
@@ -108,6 +109,9 @@ export function WordProvider({ children }) {
   const [dailyChallengeWord, setDailyChallengeWord] = useState(null);
   const [dailyChallengeDone, setDailyChallengeComplete] = useState(false);
   const [multiplayer, setMultiplayer] = useState(null);
+  // recordResult needs to call completeDailyChallenge but it's defined later;
+  // mirror through a ref so we don't have to reorder declarations.
+  const completeDailyChallengeRef = useRef(null);
 
   // 1. Initialize auth
   useEffect(() => {
@@ -298,7 +302,7 @@ export function WordProvider({ children }) {
 
   const recordResult = useCallback(
     async (wordId, correct) => {
-      if (!user || !activeProfileId || !wordId) return;
+      if (!activeProfileId || !wordId) return;
 
       const entry = progress[wordId] || {
         attempts: 0,
@@ -306,18 +310,66 @@ export function WordProvider({ children }) {
         streak: 0,
       };
       const nextStreak = correct ? entry.streak + 1 : 0;
+      const nextEntry = {
+        attempts: entry.attempts + 1,
+        correct: entry.correct + (correct ? 1 : 0),
+        streak: nextStreak,
+        lastSeen: new Date(),
+      };
+      const nextProgress = { ...progress, [wordId]: nextEntry };
 
       // Optimistic local update so the UI reflects the result even before the
       // Firestore snapshot round-trips back.
-      setProgress((prev) => ({
-        ...prev,
-        [wordId]: {
-          attempts: (prev[wordId]?.attempts || 0) + 1,
-          correct: (prev[wordId]?.correct || 0) + (correct ? 1 : 0),
-          streak: nextStreak,
-          lastSeen: new Date(),
-        },
-      }));
+      setProgress(nextProgress);
+
+      // Run rule-based achievement checks against the post-update stats so
+      // every game (not just SpellingTest/SpeedRound) feeds the badge engine.
+      const nextStats = {
+        totalAttempts: Object.values(nextProgress).reduce((s, e) => s + e.attempts, 0),
+        totalCorrect: Object.values(nextProgress).reduce((s, e) => s + e.correct, 0),
+        wordsSeen: Object.keys(nextProgress).length,
+        bestStreak: Object.values(nextProgress).reduce((m, e) => Math.max(m, e.streak), 0),
+      };
+      const earned = checkAchievements(nextStats, achievements);
+      if (earned.length) {
+        const merged = [...achievements, ...earned];
+        setAchievements(merged);
+        if (user) {
+          try {
+            const achievementsDocRef = doc(
+              db,
+              'spelling-achievements',
+              `${user.uid}_${activeProfileId}`
+            );
+            await setDoc(
+              achievementsDocRef,
+              { achievements: merged },
+              { merge: true }
+            );
+          } catch (err) {
+            console.error('Failed to persist earned achievements:', err);
+          }
+        }
+      }
+
+      // If the user just got a daily-challenge word right and now has at least
+      // one correct attempt on each of the 5 daily words, mark the daily
+      // challenge complete.
+      if (
+        correct &&
+        !dailyChallengeDone &&
+        Array.isArray(dailyChallengeWord) &&
+        dailyChallengeWord.some((w) => w.id === wordId)
+      ) {
+        const allDone = dailyChallengeWord.every(
+          (w) => (nextProgress[w.id]?.correct || 0) >= 1
+        );
+        if (allDone) {
+          completeDailyChallengeRef.current?.();
+        }
+      }
+
+      if (!user) return;
 
       try {
         const docRef = doc(
@@ -345,7 +397,7 @@ export function WordProvider({ children }) {
         console.error('Failed to record result:', err);
       }
     },
-    [user, activeProfileId, progress]
+    [user, activeProfileId, progress, achievements, dailyChallengeWord, dailyChallengeDone]
   );
 
   const unlockAchievement = useCallback(
@@ -425,6 +477,10 @@ export function WordProvider({ children }) {
       console.error('Failed to complete daily challenge:', err);
     }
   }, [user, activeProfileId, dailyChallengeDone, unlockAchievement]);
+
+  useEffect(() => {
+    completeDailyChallengeRef.current = completeDailyChallenge;
+  }, [completeDailyChallenge]);
 
   const switchProfile = useCallback(
     async (profileId) => {
@@ -532,7 +588,10 @@ export function WordProvider({ children }) {
         p.id === profileId ? { ...p, avatar } : p
       );
       setProfiles(updated);
-      if (user) {
+      // Match addProfile/deleteProfile: don't write back until the initial
+      // Firestore load is done, otherwise an early avatar tap would persist
+      // the default seed array on top of saved profiles.
+      if (user && !loading) {
         try {
           const userDocRef = doc(db, 'spelling-users', user.uid);
           await setDoc(userDocRef, { profiles: updated }, { merge: true });
@@ -541,7 +600,7 @@ export function WordProvider({ children }) {
         }
       }
     },
-    [user, profiles]
+    [user, profiles, loading]
   );
 
   const toggleSound = useCallback(async () => {

@@ -27,6 +27,13 @@ export default function SpeedRound() {
   const inputRef = useRef(null);
   const gameTimerRef = useRef(null);
   const passTimerRef = useRef(null);
+  // Mirror score in a ref so timer callbacks and post-setState reads see the
+  // latest value (the setInterval below captures `score` from game start, and
+  // `advance` runs synchronously with the same render's stale `score`).
+  const scoreRef = useRef(0);
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
 
   const stopTimers = () => {
     if (gameTimerRef.current) clearInterval(gameTimerRef.current);
@@ -47,6 +54,7 @@ export default function SpeedRound() {
     setWords(list);
     setIndex(0);
     setScore(0);
+    scoreRef.current = 0;
     setInput('');
     setFeedback(null);
     setTimeLeft(cfg.timeLimit);
@@ -63,7 +71,7 @@ export default function SpeedRound() {
             stopTimers();
             if (soundEnabled) playMilestoneSound();
             hapticMilestone();
-            if (score >= 8) unlockAchievement('speed_demon');
+            if (scoreRef.current >= 8) unlockAchievement('speed_demon');
             return 0;
           }
           return prev - 1;
@@ -82,7 +90,7 @@ export default function SpeedRound() {
       stopTimers();
       if (soundEnabled) playMilestoneSound();
       hapticMilestone();
-      if (score >= 8) unlockAchievement('speed_demon');
+      if (scoreRef.current >= 8) unlockAchievement('speed_demon');
     } else {
       setIndex((i) => i + 1);
     }
@@ -96,6 +104,7 @@ export default function SpeedRound() {
     const isCorrect = input.trim().toLowerCase() === current.word.toLowerCase();
 
     if (isCorrect) {
+      scoreRef.current += 1;
       setScore((s) => s + 1);
       if (soundEnabled) playCorrectSound();
       hapticSuccess();

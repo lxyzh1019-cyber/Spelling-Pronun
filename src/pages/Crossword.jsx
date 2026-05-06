@@ -141,7 +141,7 @@ function generateCrossword(words) {
 }
 
 export default function Crossword() {
-  const { activeWords } = useWords();
+  const { activeWords, recordResult } = useWords();
   const [puzzle, setPuzzle] = useState(null);
   const [userGrid, setUserGrid] = useState([]);
   const [checked, setChecked] = useState(false);
@@ -237,6 +237,22 @@ export default function Crossword() {
 
   const handleCheck = () => {
     setChecked(true);
+    if (!puzzle) return;
+    // Record one result per placed entry: correct only if every cell of the
+    // word matches. Look the word back up in activeWords to get its stable id.
+    for (const entry of puzzle.entries) {
+      let correct = true;
+      for (let i = 0; i < entry.word.length; i++) {
+        const r = entry.direction === 'across' ? entry.row : entry.row + i;
+        const c = entry.direction === 'across' ? entry.col + i : entry.col;
+        if ((userGrid[r]?.[c] || '').toLowerCase() !== entry.word[i].toLowerCase()) {
+          correct = false;
+          break;
+        }
+      }
+      const wordEntry = activeWords.find((w) => w.word === entry.word);
+      if (wordEntry) recordResult(wordEntry.id, correct);
+    }
   };
 
   if (!activeWords.length || !puzzle) {

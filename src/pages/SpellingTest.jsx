@@ -2,10 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useWords } from '../context/WordProvider';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/shuffle';
-import { playCorrectSound, playIncorrectSound, playMilestoneSound, playHintSound, getSoundEnabled } from '../utils/sounds';
+import { playCorrectSound, playIncorrectSound, playMilestoneSound, playHintSound } from '../utils/sounds';
 import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
 import { triggerConfetti, triggerFireworks } from '../utils/confetti';
-import { checkAchievements } from '../utils/achievements';
 import MultiplayerWrapper from '../components/MultiplayerWrapper';
 import styles from './SpellingTest.module.css';
 
