@@ -13,14 +13,43 @@ service cloud.firestore {
     // Progress documents — per-user and per-profile isolation
     // Document ID format: {userId}_{profileId}_{wordId}
     match /spelling-progress/{document=**} {
-      allow read, write: if
+      allow read: if
         request.auth.uid != null &&
-        request.auth.uid == request.resource.data.userId &&
         request.auth.uid == resource.data.userId;
 
       allow create: if
         request.auth.uid != null &&
         request.auth.uid == request.resource.data.userId;
+
+      allow update: if
+        request.auth.uid != null &&
+        request.auth.uid == resource.data.userId &&
+        request.auth.uid == request.resource.data.userId;
+
+      allow delete: if
+        request.auth.uid != null &&
+        request.auth.uid == resource.data.userId;
+    }
+
+    // Achievements — per-user/profile
+    match /spelling-achievements/{document} {
+      allow read, write: if
+        request.auth.uid != null &&
+        document.matches(request.auth.uid + '_.*');
+    }
+
+    // Hints tracker — per-user/profile
+    match /spelling-hints/{document} {
+      allow read, write: if
+        request.auth.uid != null &&
+        document.matches(request.auth.uid + '_.*');
+    }
+
+    // Daily challenge — per-user/profile
+    match /spelling-daily-challenges/{document} {
+      allow read, write: if
+        request.auth.uid != null &&
+        document.matches(request.auth.uid + '_.*');
     }
 
     // Deny everything else
