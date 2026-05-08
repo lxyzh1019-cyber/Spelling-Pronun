@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useRef,
   useCallback,
   useMemo,
 } from 'react';
@@ -97,6 +98,8 @@ export function WordProvider({ children }) {
   const [profiles, setProfiles] = useState(() =>
     DEFAULT_PROFILES.map((p) => ({ ...p, createdAt: new Date() }))
   );
+  const profilesRef = useRef(profiles);
+  useEffect(() => { profilesRef.current = profiles; }, [profiles]);
   const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILES[0].id);
   const [progress, setProgress] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(
@@ -158,11 +161,25 @@ export function WordProvider({ children }) {
           savedActiveId = seedProfiles[0].id;
         }
 
-        setProfiles(allProfiles);
+        // Preserve any profiles added locally while Firestore was still loading.
+        // Without this merge, setProfiles(allProfiles) would silently erase them.
+        const currentLocal = profilesRef.current;
+        const firestoreIdSet = new Set(allProfiles.map((p) => p.id));
+        const pendingLocal = currentLocal.filter((p) => !firestoreIdSet.has(p.id));
+        let finalProfiles = allProfiles;
+        if (pendingLocal.length > 0) {
+          finalProfiles = [...allProfiles, ...pendingLocal];
+          try {
+            await setDoc(userDocRef, { profiles: finalProfiles }, { merge: true });
+          } catch (err) {
+            console.error('Failed to persist pending profiles:', err);
+          }
+        }
+        setProfiles(finalProfiles);
         setSoundEnabled(userSettings.soundEnabled ?? true);
 
         const active =
-          allProfiles.find((p) => p.id === savedActiveId) || allProfiles[0];
+          finalProfiles.find((p) => p.id === savedActiveId) || finalProfiles[0];
         if (active) {
           setActiveProfileId(active.id);
         }
