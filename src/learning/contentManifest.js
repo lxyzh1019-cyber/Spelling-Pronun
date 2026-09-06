@@ -23,6 +23,7 @@ export function buildContentManifest({ skills = [], packs = [], assessmentForms 
     mappedSkills: new Set(packSkills).size,
     challengedObjects: packs.flatMap((pack) => pack.items).filter((item) => ['independently_challenged', 'reviewed'].includes(item.reviewStatus)).length,
     reviewedObjects: packs.flatMap((pack) => pack.items).filter((item) => item.reviewStatus === 'reviewed').length,
+    challengedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => ['independently_challenged', 'reviewed'].includes(item.reviewStatus)).length,
     reviewedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.reviewStatus === 'reviewed').length,
   };
   return {

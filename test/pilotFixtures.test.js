@@ -60,11 +60,35 @@ test('C0 assessment draft has two distinct 34-prompt forms with the required blu
     assert.equal(form.items.filter((item) => item.category === 'editing').length, 1);
     assert.equal(form.items.filter((item) => item.category === 'writing').length, 1);
   }
-  assert.ok(c0AssessmentItems.every((item) => item.reviewStatus === 'needs_independent_challenge'));
+  assert.ok(c0AssessmentItems.every((item) => item.reviewStatus === 'independently_challenged'));
+  assert.ok(c0AssessmentItems.filter((item) => item.category === 'sentence').every((item) => !item.explanation.includes('reviewed release')));
+  assert.ok(c0AssessmentItems.filter((item) => item.category === 'speaking').every((item) => item.rubric.targetPattern && item.rubric.ratingScale?.retry));
   for (const item of c0AssessmentItems.filter((candidate) => candidate.choices && candidate.evaluator === 'choice')) {
     const choiceIds = item.choices.map((choice) => choice.id);
     assert.ok(item.acceptedAnswers.every((answer) => choiceIds.includes(answer)), `${item.id} answer is not a choice ID`);
   }
+});
+
+test('C0 assessment forms are content-matched and do not reuse teaching items', () => {
+  const lessonAnswers = new Set(c0PilotItems.flatMap((item) => {
+    if (item.choices) return item.choices.filter((choice) => item.acceptedAnswers?.includes(choice.id)).map((choice) => choice.text.toLocaleLowerCase('en-CA'));
+    return item.acceptedAnswers || [];
+  }).map((answer) => String(answer).toLocaleLowerCase('en-CA')));
+  const lessonChoiceSignatures = new Set(c0PilotItems.filter((item) => item.choices).map((item) => {
+    const answerText = item.choices.find((choice) => item.acceptedAnswers.includes(choice.id))?.text || '';
+    return JSON.stringify([item.prompt, answerText]).toLocaleLowerCase('en-CA');
+  }));
+  for (const item of c0AssessmentItems) {
+    if (item.spokenText && item.category === 'spelling_dictation') assert.equal(lessonAnswers.has(item.spokenText.toLocaleLowerCase('en-CA')), false, `${item.id} repeats a lesson answer`);
+    if (item.category === 'sentence') {
+      const answerText = item.choices.find((choice) => item.acceptedAnswers.includes(choice.id)).text.toLocaleLowerCase('en-CA');
+      const signature = JSON.stringify([item.prompt, answerText]).toLocaleLowerCase('en-CA');
+      assert.equal(lessonChoiceSignatures.has(signature), false, `${item.id} repeats a lesson item`);
+    }
+  }
+  const meanLength = (form, start, count) => form.items.filter((item) => item.category === 'spelling_dictation').slice(start, start + count).reduce((sum, item) => sum + item.spokenText.length, 0) / count;
+  assert.ok(Math.abs(meanLength(c0AssessmentForms[0], 0, 4) - meanLength(c0AssessmentForms[1], 0, 4)) <= 1);
+  assert.ok(Math.abs(meanLength(c0AssessmentForms[0], 4, 4) - meanLength(c0AssessmentForms[1], 4, 4)) <= 1);
 });
 
 test('C0 story draft has two sourced, explicitly fictionalized episodes', () => {
