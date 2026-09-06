@@ -2,7 +2,7 @@
 
 Updated: 2026-09-05 (America/Edmonton)
 Baseline: `58fe21ebb6ad351094d4686a9713e6ccbdba6744`
-Working release: R1 Repair
+Working release: R2 Pilot Engine
 
 This ledger tracks implementation evidence separately from content review, real-device testing, and family piloting. A checked automated test does not imply educational or iPad validation.
 
@@ -23,9 +23,9 @@ This ledger tracks implementation evidence separately from content review, real-
 | F10 / DATA-02 | Parent + Codex | R2 | not started | — | — | Parent email/password provider setup required during R2 |
 | F11 | Codex | R1 | verified | learner/category-bound session snapshot | Unit test rejects wrong learner; browser reload resumed word 2 with original skip count | IndexedDB/outbox expansion in R2 |
 | F12 | Codex | R1 | integrated | game hints remain game-scoped; local hints work | Source review and production build | Full lesson help ladder arrives in R2 |
-| DATA-01 | Codex | R2 | integrated | evaluator, mastery, scheduling, and session-engine modules | 7 focused engine/validator tests; 17 total tests pass | Connect engine to learner-facing R2 pages |
-| EDU-01 | Codex | R2 | drafting | explicit session state machine | Wrong/feedback/repair/transfer/reflection transitions implemented | Build complete UI journey and import reviewed C0 |
-| EDU-02 | Codex | R2 | drafting | evidence-aware evaluators and mastery derivation | Punctuation, alternative-answer, helped-evidence, secure-mastery tests pass | Build A/B assessment runner and reports |
+| DATA-01 | Codex | R2 | integrated | evaluator, mastery, scheduling, session engine, IndexedDB outbox, and learner-scoped local store | Focused engine/validator tests plus production build | Connect authenticated remote sync after Firebase setup |
+| EDU-01 | Codex | R2 | integrated preview | `/case` and `/lesson/:sessionId` explicit learning flow | Browser: wrong first answer → separate helped repair → unseen transfer → gated reveal; reload persistence implemented | Replace fixtures with independently reviewed C0 pack |
+| EDU-02 | Codex | R2 | integrated preview | `/assessment` Form A/B preview, `/progress`, `/review`, `/parent` | Browser assessment resumed on question 2 after reload; progress rendered 42 skills and excluded fixture attempts | Author/review full 68-prompt C0 assessment and reporting |
 
 ## Release gates
 
@@ -36,6 +36,8 @@ This ledger tracks implementation evidence separately from content review, real-
 | R1-G3 legacy preservation | integrated | Legacy word IDs/collections remain readable; new attempt collection is additive; no migration/deletion |
 | R1-G4 auth fallback | verified locally | Firebase `auth/configuration-not-found` led to usable local-only mode without hanging |
 | R1-G5 candidate report | drafting | Await GitHub PR checks; iPad and authenticated Firebase paths are explicitly untested |
+| R2 engine build | verified locally | `npm run build`: 106 modules transformed; lazy learner routes emitted |
+| R2 preview journey | verified locally | Browser exercised repair, transfer gate, story reveal, assessment resume, and 42-skill progress |
 
 ## Content manifest
 
@@ -51,6 +53,7 @@ This ledger tracks implementation evidence separately from content review, real-
 
 - No real-iPad Safari or installed-home-screen test has occurred.
 - Firebase anonymous authentication is not enabled for the current project, so only local-only behavior was exercised in the browser.
-- Shared family identity, durable IndexedDB outbox, curriculum content, assessment, story, pronunciation recording, and family pilot remain R2/R3 work.
+- Shared family identity, reviewed curriculum content, full assessment, sourced story chapters, pronunciation recording, and family pilot remain R2/R3 work.
+- The IndexedDB attempt outbox and learner-facing R2 routes are integrated locally; remote reconciliation, reviewed C0 content, pronunciation capture, and the family pilot remain incomplete.
 - The GitHub installation currently permits reads but rejected branch/blob creation with `Resource not accessible by integration`; the tested commits remain local until repository write scope is restored.
 - Production publication and Firebase-console changes remain parent-authorized external actions.

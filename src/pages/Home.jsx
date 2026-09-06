@@ -54,6 +54,16 @@ export default function Home() {
       )}
       {syncError && <p role="alert">{syncError}</p>}
 
+      <section aria-labelledby="learning-actions">
+        <h2 id="learning-actions">Your learning journey</h2>
+        <div className={styles.gamesGrid}>
+          <Link to="/case" className={styles.gameCard} style={{ '--card-color': '#2563eb' }}><span className={styles.gameIcon}>🔎</span><h3 className={styles.gameName}>Continue my case</h3><p className={styles.gameDesc}>Learn a rule and solve the next clue</p></Link>
+          <Link to="/review" className={styles.gameCard} style={{ '--card-color': '#059669' }}><span className={styles.gameIcon}>↻</span><h3 className={styles.gameName}>Practise again</h3><p className={styles.gameDesc}>Review skills when they are due</p></Link>
+          <a href="#games" className={styles.gameCard} style={{ '--card-color': '#7c3aed' }}><span className={styles.gameIcon}>🎮</span><h3 className={styles.gameName}>Play a word game</h3><p className={styles.gameDesc}>Choose a low-stakes practice game</p></a>
+          <Link to="/progress" className={styles.gameCard} style={{ '--card-color': '#d97706' }}><span className={styles.gameIcon}>📈</span><h3 className={styles.gameName}>My progress</h3><p className={styles.gameDesc}>See evidence by skill, not one overall score</p></Link>
+        </div>
+      </section>
+
       {dailyChallengeWord && !dailyChallengeDone && (
         <section className={styles.dailyChallenge}>
           <div className={styles.dailyCard}>
@@ -126,7 +136,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.gamesGrid} aria-label="Games">
+      <section id="games" className={styles.gamesGrid} aria-label="Games">
         {games.map((game) => (
           <Link
             key={game.to}
