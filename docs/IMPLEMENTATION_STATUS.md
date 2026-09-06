@@ -23,6 +23,9 @@ This ledger tracks implementation evidence separately from content review, real-
 | F10 / DATA-02 | Parent + Codex | R2 | not started | — | — | Parent email/password provider setup required during R2 |
 | F11 | Codex | R1 | verified | learner/category-bound session snapshot | Unit test rejects wrong learner; browser reload resumed word 2 with original skip count | IndexedDB/outbox expansion in R2 |
 | F12 | Codex | R1 | integrated | game hints remain game-scoped; local hints work | Source review and production build | Full lesson help ladder arrives in R2 |
+| DATA-01 | Codex | R2 | integrated | evaluator, mastery, scheduling, and session-engine modules | 7 focused engine/validator tests; 17 total tests pass | Connect engine to learner-facing R2 pages |
+| EDU-01 | Codex | R2 | drafting | explicit session state machine | Wrong/feedback/repair/transfer/reflection transitions implemented | Build complete UI journey and import reviewed C0 |
+| EDU-02 | Codex | R2 | drafting | evidence-aware evaluators and mastery derivation | Punctuation, alternative-answer, helped-evidence, secure-mastery tests pass | Build A/B assessment runner and reports |
 
 ## Release gates
 
@@ -49,4 +52,5 @@ This ledger tracks implementation evidence separately from content review, real-
 - No real-iPad Safari or installed-home-screen test has occurred.
 - Firebase anonymous authentication is not enabled for the current project, so only local-only behavior was exercised in the browser.
 - Shared family identity, durable IndexedDB outbox, curriculum content, assessment, story, pronunciation recording, and family pilot remain R2/R3 work.
+- The GitHub installation currently permits reads but rejected branch/blob creation with `Resource not accessible by integration`; the tested commits remain local until repository write scope is restored.
 - Production publication and Firebase-console changes remain parent-authorized external actions.
