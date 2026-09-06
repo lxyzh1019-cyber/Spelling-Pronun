@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { evaluateItem, evidenceEligible } from '../src/learning/evaluators.js';
 import { deriveMastery } from '../src/learning/mastery.js';
-import { nextReview, selectDueReviews } from '../src/learning/reviewScheduler.js';
+import { nextReview, selectDueReviews, deriveReviewProgress } from '../src/learning/reviewScheduler.js';
 import { createLearningSession, transitionSession } from '../src/learning/sessionEngine.js';
 import { validateContent } from '../src/learning/contentValidator.js';
 
@@ -51,6 +51,19 @@ test('review scheduling advances only on unassisted success and caps due selecti
   const first = nextReview({ eventTime: '2026-09-01T00:00:00Z', correct: true });
   assert.equal(first.reviewStage, 0);
   assert.equal(selectDueReviews(Object.fromEntries(Array.from({ length: 6 }, (_, i) => [i, { id: i, reviewDue: '2026-09-01T00:00:00Z' }])), new Date('2026-09-05T00:00:00Z')).length, 4);
+});
+
+test('review progress excludes fixtures and resets reviewed failures to one day', () => {
+  const attempts = [
+    { eventTime: '2026-01-01T12:00:00Z', edmontonDate: '2026-01-01', skillIds: ['SE.complete'], correct: true, status: 'correct', contentStatus: 'not_reviewed' },
+    { eventTime: '2026-01-02T12:00:00Z', edmontonDate: '2026-01-02', skillIds: ['SP.patterns'], correct: true, status: 'correct', contentStatus: 'reviewed' },
+    { eventTime: '2026-01-05T12:00:00Z', edmontonDate: '2026-01-05', skillIds: ['SP.patterns'], correct: false, status: 'incorrect', contentStatus: 'reviewed' },
+  ];
+  const progress = deriveReviewProgress(attempts);
+  assert.equal(progress['SE.complete'], undefined);
+  assert.equal(progress['SP.patterns'].reviewStage, 0);
+  assert.equal(progress['SP.patterns'].reviewDue, '2026-01-06T12:00:00.000Z');
+  assert.equal(progress['SP.patterns'].lastErrorAt, '2026-01-05T12:00:00Z');
 });
 
 test('content validator rejects cycles, missing answers, and assessment overlap', () => {

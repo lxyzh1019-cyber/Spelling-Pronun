@@ -13,3 +13,30 @@ export function selectDueReviews(progress, now = new Date(), limit = 4) {
     .sort((a, b) => new Date(a.reviewDue) - new Date(b.reviewDue) || new Date(b.lastErrorAt || 0) - new Date(a.lastErrorAt || 0))
     .slice(0, limit);
 }
+
+export function deriveReviewProgress(attempts) {
+  const progress = {};
+  const sorted = [...attempts]
+    .filter((attempt) => attempt.contentStatus !== 'not_reviewed' && !attempt.technicalFailure && attempt.status !== 'pending' && attempt.status !== 'omitted')
+    .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime));
+  for (const attempt of sorted) {
+    for (const skillId of attempt.skillIds || []) {
+      const previous = progress[skillId];
+      const sameDayRepair = attempt.helped && previous?.lastAttemptDate === attempt.edmontonDate;
+      const scheduled = nextReview({
+        eventTime: attempt.eventTime,
+        reviewStage: sameDayRepair ? previous?.reviewStage ?? -1 : previous?.reviewStage ?? -1,
+        correct: attempt.correct && !sameDayRepair,
+        helped: attempt.helped,
+      });
+      progress[skillId] = {
+        skillId,
+        ...scheduled,
+        lastAttemptAt: attempt.eventTime,
+        lastAttemptDate: attempt.edmontonDate,
+        lastErrorAt: attempt.correct ? previous?.lastErrorAt : attempt.eventTime,
+      };
+    }
+  }
+  return progress;
+}

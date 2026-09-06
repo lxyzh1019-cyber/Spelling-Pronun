@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useWords } from './WordProvider';
 import { evaluateItem } from '../learning/evaluators';
 import { deriveMastery } from '../learning/mastery';
+import { deriveReviewProgress, selectDueReviews } from '../learning/reviewScheduler';
 import { edmontonDayKey } from '../learning/r1Core';
 import { queueAttempt } from '../persistence/indexedDb';
 import { readJson, writeJson } from '../utils/localStore';
@@ -64,8 +65,10 @@ export function LearningProvider({ children }) {
     skill.id,
     deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id) && attempt.contentStatus !== 'not_reviewed')),
   ])), [attempts]);
+  const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
+  const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);
 
-  const value = useMemo(() => ({ attempts, submitAttempt, masteryBySkill, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, masteryBySkill, saveStatus]);
+  const value = useMemo(() => ({ attempts, submitAttempt, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
   return <LearningContext.Provider value={value}>{children}</LearningContext.Provider>;
 }
 
