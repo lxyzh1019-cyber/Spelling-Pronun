@@ -8,13 +8,15 @@ test('assessment report separates first tries, assistance, omissions, and pendin
     { skillId: 'SP.patterns', status: 'incorrect', correct: false, helped: true },
     { skillId: 'SE.complete', status: 'omitted', omitted: true },
     { skillId: 'PR.word-stress', status: 'pending' },
+    { skillId: 'PR.discrimination', status: 'technical_failure', technicalFailure: true },
   ] });
-  assert.deepEqual(report.tracks.spelling, { opportunities: 2, independentScored: 1, firstTryCorrect: 1, assisted: 1, omissions: 0, pendingReview: 0, coverage: 'needs_more_evidence' });
+  assert.deepEqual(report.tracks.spelling, { opportunities: 2, independentScored: 1, firstTryCorrect: 1, assisted: 1, omissions: 0, pendingReview: 0, technicalFailures: 0, coverage: 'needs_more_evidence' });
   assert.equal(report.tracks.sentences.omissions, 1);
   assert.equal(report.tracks.pronunciation.pendingReview, 1);
+  assert.equal(report.tracks.pronunciation.technicalFailures, 1);
   assert.equal(report.status, 'incomplete');
   assert.equal(report.suggestedTrack, 'sentences');
-  assert.deepEqual(report.totals, { answered: 3, assisted: 1, omissions: 1, pendingReview: 1 });
+  assert.deepEqual(report.totals, { answered: 3, assisted: 1, omissions: 1, pendingReview: 1, technicalFailures: 1 });
 });
 
 test('assessment comparison requires complete like-for-like forms and discloses exposure', () => {

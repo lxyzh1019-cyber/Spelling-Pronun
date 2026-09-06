@@ -10,6 +10,6 @@ export default function AssessmentPage() {
   };
   return <div className={styles.page}>
     <p className={styles.notice} role="note">{PILOT_FIXTURE_NOTICE}</p>
-    <section className={styles.card}><h1>Assessment preview</h1><p>This four-item engineering check demonstrates Form A/B, first-answer capture, resume, and evidence reporting. It is not the planned 34-item reviewed assessment and must not be used for placement.</p>{(exposed('A') || exposed('B')) && <p className={styles.feedback}>Previous exposure: {exposed('A') ? 'Form A ' : ''}{exposed('B') ? 'Form B' : ''}. A repeated form is not all unseen.</p>}<div className={styles.actions}><Link className={styles.primary} to="/assessment/form-a">Start Form A</Link><Link className={styles.secondary} to="/assessment/form-b">Start Form B</Link></div></section>
+    <section className={styles.card}><h1>Assessment preview</h1><p>Each draft form has 34 items in two resumable parts: spelling, decoding, listening, speaking, sentences, editing, and writing. Content and synthetic audio still require independent review, so results must not be used for placement or mastery.</p>{(exposed('A') || exposed('B')) && <p className={styles.feedback}>Previous exposure: {exposed('A') ? 'Form A ' : ''}{exposed('B') ? 'Form B' : ''}. A repeated form is not all unseen.</p>}<div className={styles.actions}><Link className={styles.primary} to="/assessment/form-a">Start Form A</Link><Link className={styles.secondary} to="/assessment/form-b">Start Form B</Link></div></section>
   </div>;
 }

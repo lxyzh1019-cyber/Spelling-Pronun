@@ -1,6 +1,6 @@
 # Implementation Status
 
-Updated: 2026-09-05 (America/Edmonton)
+Updated: 2026-09-06 (America/Edmonton)
 Baseline: `58fe21ebb6ad351094d4686a9713e6ccbdba6744`
 Working release: R2 Pilot Engine
 
@@ -25,7 +25,8 @@ This ledger tracks implementation evidence separately from content review, real-
 | F12 | Codex | R1 | integrated | game hints remain game-scoped; local hints work | Source review and production build | Full lesson help ladder arrives in R2 |
 | DATA-01 | Codex | R2 | integrated | evaluator, mastery, scheduling, session engine, IndexedDB outbox, and learner-scoped local store | Focused engine/validator tests plus production build | Connect authenticated remote sync after Firebase setup |
 | EDU-01 | Codex | R2 | integrated preview | `/case` and `/lesson/:sessionId` explicit learning flow | Browser: wrong first answer → separate helped repair → unseen transfer → gated reveal; reload persistence implemented | Replace fixtures with independently reviewed C0 pack |
-| EDU-02 | Codex | R2 | integrated preview | `/assessment` Form A/B preview, `/progress`, `/review`, `/parent`, `assessmentReport.js` | Browser resume plus completed report separated first tries, assistance, omission, and exposure; progress rendered 42 skills and excluded fixtures | Independently challenge and then integrate the 68-prompt C0 draft |
+| EDU-02 | Codex | R2 | integrated draft preview | Full 34-item `/assessment/:sessionId` Form A/B runner, `/progress`, `/review`, `/parent`, `assessmentReport.js` | Browser showed 1/34 → reload at 2/34 and transition from Part A to Part B at 21/34; reports separate assistance, omission, pending, technical issues, and exposure | Independent content/audio challenge is required before placement use |
+| EDU-03 | Codex | R2 | integrated foundation | `src/utils/recording.js`, IndexedDB `recordings` store | Capability/MIME tests; explicit permission/technical failure reasons; blobs remain pending human review | Add learner recording control and real iPad microphone/playback test |
 
 ## Release gates
 
@@ -40,6 +41,7 @@ This ledger tracks implementation evidence separately from content review, real-
 | R2 preview journey | verified locally | Browser exercised repair, transfer gate, story reveal, assessment resume, and 42-skill progress |
 | R2 C0 inventory | drafting | Exact draft counts now exist: 68 assessment prompts, four 24-object packs, and two story episodes; all remain blocked from release/mastery pending independent educational/source challenge |
 | R2 assessment evidence | verified preview | Unit tests enforce honest categories and like-for-like comparison; browser showed assisted/omitted counts, a punctuation follow-up signal, and prior Form B exposure disclosure |
+| R2 full assessment runner | verified draft preview | Both 34-item forms integrated; browser verified synthetic audio control, exact resume, and 20-item Part A → 14-item Part B transition; 27 automated tests and production build pass |
 
 ## Content manifest
 
@@ -54,6 +56,7 @@ This ledger tracks implementation evidence separately from content review, real-
 ## Known limitations and external gates
 
 - No real-iPad Safari or installed-home-screen test has occurred.
+- Browser recording controls compile and use user-triggered permission, durable blobs, and playback; microphone permission/playback was not exercised because that requires an explicit device permission decision and real-iPad follow-up.
 - Firebase anonymous authentication is not enabled for the current project, so only local-only behavior was exercised in the browser.
 - Shared family identity, reviewed curriculum content, full assessment, sourced story chapters, pronunciation recording, and family pilot remain R2/R3 work.
 - The IndexedDB attempt outbox and learner-facing R2 routes are integrated locally; remote reconciliation, reviewed C0 content, pronunciation capture, and the family pilot remain incomplete.

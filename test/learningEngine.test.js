@@ -56,11 +56,13 @@ test('review scheduling advances only on unassisted success and caps due selecti
 test('review progress excludes fixtures and resets reviewed failures to one day', () => {
   const attempts = [
     { eventTime: '2026-01-01T12:00:00Z', edmontonDate: '2026-01-01', skillIds: ['SE.complete'], correct: true, status: 'correct', contentStatus: 'not_reviewed' },
+    { eventTime: '2026-01-01T12:00:00Z', edmontonDate: '2026-01-01', skillIds: ['PU.capitals-endmarks'], correct: true, status: 'correct', contentStatus: 'needs_independent_challenge' },
     { eventTime: '2026-01-02T12:00:00Z', edmontonDate: '2026-01-02', skillIds: ['SP.patterns'], correct: true, status: 'correct', contentStatus: 'reviewed' },
     { eventTime: '2026-01-05T12:00:00Z', edmontonDate: '2026-01-05', skillIds: ['SP.patterns'], correct: false, status: 'incorrect', contentStatus: 'reviewed' },
   ];
   const progress = deriveReviewProgress(attempts);
   assert.equal(progress['SE.complete'], undefined);
+  assert.equal(progress['PU.capitals-endmarks'], undefined);
   assert.equal(progress['SP.patterns'].reviewStage, 0);
   assert.equal(progress['SP.patterns'].reviewDue, '2026-01-06T12:00:00.000Z');
   assert.equal(progress['SP.patterns'].lastErrorAt, '2026-01-05T12:00:00Z');

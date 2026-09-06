@@ -11,9 +11,10 @@ export function buildAssessmentReport({ form, version = 1, results = [], complet
   const tracks = {};
   for (const result of results) {
     const track = trackForSkill(result.skillId);
-    const bucket = tracks[track] ||= { opportunities: 0, independentScored: 0, firstTryCorrect: 0, assisted: 0, omissions: 0, pendingReview: 0 };
+    const bucket = tracks[track] ||= { opportunities: 0, independentScored: 0, firstTryCorrect: 0, assisted: 0, omissions: 0, pendingReview: 0, technicalFailures: 0 };
     bucket.opportunities += 1;
-    if (result.omitted) bucket.omissions += 1;
+    if (result.technicalFailure) bucket.technicalFailures += 1;
+    else if (result.omitted) bucket.omissions += 1;
     else if (result.status === 'pending') bucket.pendingReview += 1;
     else if (result.helped) bucket.assisted += 1;
     else {
@@ -36,10 +37,11 @@ export function buildAssessmentReport({ form, version = 1, results = [], complet
     tracks,
     suggestedTrack: ranked[0]?.[0] || null,
     totals: {
-      answered: results.filter((result) => !result.omitted).length,
+      answered: results.filter((result) => !result.omitted && !result.technicalFailure).length,
       assisted: results.filter((result) => result.helped).length,
       omissions: results.filter((result) => result.omitted).length,
       pendingReview: results.filter((result) => result.status === 'pending').length,
+      technicalFailures: results.filter((result) => result.technicalFailure).length,
     },
   };
 }

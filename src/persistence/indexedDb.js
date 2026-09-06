@@ -1,6 +1,6 @@
 const DB_NAME = 'spelling-pronun-learning';
-const DB_VERSION = 1;
-const STORES = ['sessions', 'attempts', 'outbox', 'meta'];
+const DB_VERSION = 2;
+const STORES = ['sessions', 'attempts', 'outbox', 'meta', 'recordings'];
 
 function requestResult(request) {
   return new Promise((resolve, reject) => {
@@ -45,6 +45,14 @@ export function loadSession(sessionId) {
 
 export function saveAttempt(attempt) {
   return withStore('attempts', 'readwrite', (store) => requestResult(store.put({ ...attempt, id: attempt.attemptId })));
+}
+
+export function saveRecording(recording) {
+  return withStore('recordings', 'readwrite', (store) => requestResult(store.put({ ...recording, savedAt: new Date().toISOString() })));
+}
+
+export function loadRecording(recordingId) {
+  return withStore('recordings', 'readonly', (store) => requestResult(store.get(recordingId)));
 }
 
 export async function queueAttempt(attempt) {

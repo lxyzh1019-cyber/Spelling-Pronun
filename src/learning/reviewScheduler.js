@@ -17,7 +17,7 @@ export function selectDueReviews(progress, now = new Date(), limit = 4) {
 export function deriveReviewProgress(attempts) {
   const progress = {};
   const sorted = [...attempts]
-    .filter((attempt) => attempt.contentStatus !== 'not_reviewed' && !attempt.technicalFailure && attempt.status !== 'pending' && attempt.status !== 'omitted')
+    .filter((attempt) => attempt.contentStatus === 'reviewed' && !attempt.technicalFailure && attempt.status !== 'pending' && attempt.status !== 'omitted')
     .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime));
   for (const attempt of sorted) {
     for (const skillId of attempt.skillIds || []) {

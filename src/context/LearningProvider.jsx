@@ -34,9 +34,10 @@ export function LearningProvider({ children }) {
       itemVersion: item.version,
       skillIds: [item.primarySkill, ...(item.secondarySkills || [])],
       originalAnswer: response,
-      status: metadata.omitted ? 'omitted' : evaluation.status,
+      status: metadata.technicalFailure ? 'technical_failure' : metadata.omitted ? 'omitted' : evaluation.status,
       correct: metadata.omitted ? false : evaluation.correct,
       omitted: Boolean(metadata.omitted),
+      technicalFailure: Boolean(metadata.technicalFailure),
       helped: Boolean(metadata.helped),
       revealed: Boolean(metadata.revealed),
       unseen: Boolean(metadata.unseen),
@@ -63,7 +64,7 @@ export function LearningProvider({ children }) {
 
   const masteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
     skill.id,
-    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id) && attempt.contentStatus !== 'not_reviewed')),
+    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id) && attempt.contentStatus === 'reviewed')),
   ])), [attempts]);
   const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
   const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);
