@@ -43,6 +43,7 @@ This ledger tracks implementation evidence separately from content review, real-
 | Content release validator | verified | Manifest proves C0 96/68/2 counts without claiming release readiness; validator rejects unknown tasks/sources/skills, broken audio, synthetic release audio, unsafe recording evaluators, and malformed role distributions |
 | R2 assessment evidence | verified preview | Unit tests enforce honest categories and like-for-like comparison; browser showed assisted/omitted counts, a punctuation follow-up signal, and prior Form B exposure disclosure |
 | R2 full assessment runner | verified draft preview | Both 34-item forms integrated; browser verified synthetic audio control, exact resume, and 20-item Part A → 14-item Part B transition; 27 automated tests and production build pass |
+| iPad/PWA install metadata | verified locally | Missing icon repaired; honest manifest uses real 192/512 PNGs, 180px Apple touch icon, standalone metadata, and no fake screenshot entries; automated asset checks pass | Real Safari install/offline/microphone test still required |
 
 ## Content manifest
 
