@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
@@ -6,7 +6,7 @@ import RecordingAnswer from '../components/RecordingAnswer';
 import { c0AssessmentForms } from '../data/assessment.c0.draft';
 import { PILOT_FIXTURE_NOTICE } from '../data/pilotFixtures';
 import { buildAssessmentReport } from '../learning/assessmentReport';
-import { speak } from '../utils/speech';
+import { speak, stopSpeech } from '../utils/speech';
 import styles from './Learning.module.css';
 
 export default function AssessmentRunner() {
@@ -21,9 +21,21 @@ export default function AssessmentRunner() {
   const [answer, setAnswer] = useState('');
   const [helped, setHelped] = useState(false);
   const [audioMessage, setAudioMessage] = useState('');
-  useEffect(() => { localStorage.setItem(storageKey, JSON.stringify(state)); }, [state, storageKey]);
+  const stateOwnerKey = useRef(storageKey);
+  useEffect(() => {
+    if (stateOwnerKey.current === storageKey) localStorage.setItem(storageKey, JSON.stringify(state));
+  }, [state, storageKey]);
+  useEffect(() => {
+    if (stateOwnerKey.current === storageKey) return;
+    stateOwnerKey.current = storageKey;
+    try { setState(JSON.parse(localStorage.getItem(storageKey)) || { index: 0, results: [] }); } catch { setState({ index: 0, results: [] }); }
+    setAnswer('');
+    setHelped(false);
+    setAudioMessage('');
+  }, [storageKey]);
   const complete = state.index >= items.length;
   const item = complete ? null : items[state.index];
+  useEffect(() => () => stopSpeech(), [storageKey, item?.id]);
   const report = useMemo(() => buildAssessmentReport({ form, results: state.results, completedAt: state.completedAt }), [form, state]);
   const saveResult = async (response, metadata = {}) => {
     const { attempt } = await submitAttempt(item, response, { sessionId: `assessment-${form}`, evidenceType: metadata.technicalFailure ? 'technical_failure' : metadata.omitted ? 'omission' : helped ? 'assisted_assessment' : item.responseType === 'recording' ? 'reviewed_pronunciation_pending' : item.evaluator === 'spelling' ? 'independent_spelling' : item.evaluator === 'punctuation' ? 'independent_punctuation' : 'independent_choice', helped, ...metadata });

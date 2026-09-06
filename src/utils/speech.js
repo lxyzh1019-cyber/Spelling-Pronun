@@ -1,5 +1,13 @@
 let voicesReady;
 
+export function stopSpeech() {
+  if (typeof window === 'undefined') return false;
+  const synth = window.speechSynthesis;
+  if (!synth?.cancel) return false;
+  synth.cancel();
+  return true;
+}
+
 function ensureVoices() {
   if (voicesReady) return voicesReady;
   const synth = window.speechSynthesis;
@@ -40,7 +48,7 @@ export async function speak(
     voices.find((v) => v.lang === lang) ||
     voices.find((v) => v.lang?.startsWith(lang.split('-')[0]));
 
-  synth.cancel();
+  stopSpeech();
   const u = new window.SpeechSynthesisUtterance(text);
   u.rate = rate;
   u.pitch = pitch;

@@ -10,10 +10,17 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady 
   const [playbackUrl, setPlaybackUrl] = useState('');
   const support = recordingSupport();
 
-  useEffect(() => () => {
-    controllerRef.current?.cancel();
-    if (urlRef.current) URL.revokeObjectURL(urlRef.current);
-  }, []);
+  useEffect(() => {
+    setStatus('idle');
+    setMessage('');
+    setPlaybackUrl('');
+    return () => {
+      controllerRef.current?.cancel();
+      controllerRef.current = null;
+      if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+      urlRef.current = null;
+    };
+  }, [itemId, learnerId, sessionId]);
 
   const start = async () => {
     setMessage('');
