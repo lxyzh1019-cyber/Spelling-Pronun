@@ -43,18 +43,24 @@ export default function AssessmentRunner() {
   const report = useMemo(() => buildAssessmentReport({ form, results: state.results, completedAt: state.completedAt }), [form, state]);
   const saveResult = async (response, metadata = {}) => {
     if (submittingRef.current) return;
+    const submissionOwnerKey = storageKey;
+    const submissionState = state;
     submittingRef.current = true;
     setSubmitting(true);
     try {
       const { attempt } = await submitAttempt(item, response, { sessionId: `assessment-${form}`, evidenceType: metadata.technicalFailure ? 'technical_failure' : metadata.omitted ? 'omission' : helped ? 'assisted_assessment' : item.responseType === 'recording' ? 'reviewed_pronunciation_pending' : item.evaluator === 'spelling' ? 'independent_spelling' : item.evaluator === 'punctuation' ? 'independent_punctuation' : 'independent_choice', helped, ...metadata });
-      setState((current) => {
-        const nextIndex = current.index + 1;
-        return { ...current, index: nextIndex, completedAt: nextIndex === items.length ? new Date().toISOString() : null, results: [...current.results, { itemId: item.id, skillId: item.primarySkill, status: attempt.status, correct: attempt.correct, helped: attempt.helped, omitted: attempt.omitted, technicalFailure: attempt.technicalFailure }] };
-      });
-      setAnswer(''); setHelped(false); setAudioMessage('');
+      const nextIndex = submissionState.index + 1;
+      const nextState = { ...submissionState, index: nextIndex, completedAt: nextIndex === items.length ? new Date().toISOString() : null, results: [...submissionState.results, { itemId: item.id, skillId: item.primarySkill, status: attempt.status, correct: attempt.correct, helped: attempt.helped, omitted: attempt.omitted, technicalFailure: attempt.technicalFailure }] };
+      localStorage.setItem(submissionOwnerKey, JSON.stringify(nextState));
+      if (stateOwnerKey.current === submissionOwnerKey) {
+        setState(nextState);
+        setAnswer(''); setHelped(false); setAudioMessage('');
+      }
     } finally {
-      submittingRef.current = false;
-      setSubmitting(false);
+      if (stateOwnerKey.current === submissionOwnerKey) {
+        submittingRef.current = false;
+        setSubmitting(false);
+      }
     }
   };
   const submit = async (event) => {

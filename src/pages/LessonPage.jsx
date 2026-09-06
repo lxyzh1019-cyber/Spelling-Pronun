@@ -49,6 +49,8 @@ export default function LessonPage() {
 
   const answer = async (response, metadata = {}) => {
     if (submittingRef.current) return;
+    const submissionOwnerKey = storageKey;
+    const submissionState = state;
     submittingRef.current = true;
     setSubmitting(true);
     const sourceStage = state.stage === 'repair' ? state.repairSource : state.stage;
@@ -56,11 +58,17 @@ export default function LessonPage() {
     const assisted = helped || state.stage === 'repair';
     try {
       const { attempt, evaluation } = await submitAttempt(item, response, { sessionId, unseen: isTransfer, evidenceType: metadata.omitted ? 'omission' : assisted ? 'assisted_repair' : isTransfer ? 'independent_transfer' : 'independent_choice', helped: assisted, ...metadata });
-      setState((current) => ({ ...submitLessonResult(current, evaluation.correct, metadata), evidenceIds: [...(current.evidenceIds || []), attempt.attemptId] }));
-      setHelped(false);
+      const nextState = { ...submitLessonResult(submissionState, evaluation.correct, metadata), evidenceIds: [...(submissionState.evidenceIds || []), attempt.attemptId] };
+      writeJson(submissionOwnerKey, nextState);
+      if (stateOwnerKey.current === submissionOwnerKey) {
+        setState(nextState);
+        setHelped(false);
+      }
     } finally {
-      submittingRef.current = false;
-      setSubmitting(false);
+      if (stateOwnerKey.current === submissionOwnerKey) {
+        submittingRef.current = false;
+        setSubmitting(false);
+      }
     }
   };
 

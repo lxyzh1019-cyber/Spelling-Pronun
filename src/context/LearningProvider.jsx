@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useWords } from './WordProvider';
 import { evaluateItem } from '../learning/evaluators';
 import { deriveMastery } from '../learning/mastery';
@@ -22,15 +22,17 @@ export function LearningProvider({ children }) {
   const { activeProfileId, user } = useWords();
   const [attempts, setAttempts] = useState(() => readJson(attemptsKey(activeProfileId), []));
   const [saveStatus, setSaveStatus] = useState('saved');
+  const activeLearnerRef = useRef(activeProfileId);
+  activeLearnerRef.current = activeProfileId;
 
   useEffect(() => {
     setAttempts(readJson(attemptsKey(activeProfileId), []));
     setSaveStatus('saved');
   }, [activeProfileId]);
 
-  const syncCloud = useCallback(async (account = user) => {
+  const syncCloud = useCallback(async (account = user, learnerId = activeProfileId) => {
     if (!account) return false;
-    setSaveStatus('syncing');
+    if (activeLearnerRef.current === learnerId) setSaveStatus('syncing');
     try {
       await flushOutbox(async (entry) => {
         if (entry.kind !== 'attempt') return;
@@ -42,29 +44,32 @@ export function LearningProvider({ children }) {
       const snapshot = await getDocs(query(
         collection(db, 'spelling-attempts'),
         where('userId', '==', account.uid),
-        where('learnerId', '==', activeProfileId),
+        where('learnerId', '==', learnerId),
       ));
       const remote = snapshot.docs.map((entry) => entry.data());
-      const local = readJson(attemptsKey(activeProfileId), []);
+      const local = readJson(attemptsKey(learnerId), []);
       const merged = mergeAttempts(local, remote);
-      writeJson(attemptsKey(activeProfileId), merged);
-      setAttempts(merged);
-      setSaveStatus('saved');
+      writeJson(attemptsKey(learnerId), merged);
+      if (activeLearnerRef.current === learnerId) {
+        setAttempts(merged);
+        setSaveStatus('saved');
+      }
       return true;
     } catch (error) {
       console.warn('Learning attempt sync deferred:', error);
-      setSaveStatus('saved-locally');
+      if (activeLearnerRef.current === learnerId) setSaveStatus('saved-locally');
       return false;
     }
   }, [activeProfileId, user]);
 
-  useEffect(() => { if (user) syncCloud(user); }, [user, activeProfileId, syncCloud]);
+  useEffect(() => { if (user) syncCloud(user, activeProfileId); }, [user, activeProfileId, syncCloud]);
 
   const submitAttempt = useCallback(async (item, response, metadata = {}) => {
+    const learnerId = activeProfileId;
     const evaluation = evaluateItem(item, response);
     const attempt = Object.freeze({
       attemptId: metadata.attemptId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
-      learnerId: activeProfileId,
+      learnerId,
       sessionId: metadata.sessionId,
       itemId: item.id,
       itemVersion: item.version,
@@ -82,19 +87,24 @@ export function LearningProvider({ children }) {
       edmontonDate: edmontonDayKey(),
       contentStatus: item.reviewStatus,
     });
-    setAttempts((current) => {
-      if (current.some(({ attemptId }) => attemptId === attempt.attemptId)) return current;
-      const next = [...current, attempt];
-      writeJson(attemptsKey(activeProfileId), next);
-      return next;
-    });
-    setSaveStatus('saving');
+    if (activeLearnerRef.current === learnerId) {
+      setAttempts((current) => {
+        if (current.some(({ attemptId }) => attemptId === attempt.attemptId)) return current;
+        const next = [...current, attempt];
+        writeJson(attemptsKey(learnerId), next);
+        return next;
+      });
+      setSaveStatus('saving');
+    } else {
+      const stored = readJson(attemptsKey(learnerId), []);
+      if (!stored.some(({ attemptId }) => attemptId === attempt.attemptId)) writeJson(attemptsKey(learnerId), [...stored, attempt]);
+    }
     try {
       await queueAttempt(attempt);
-      if (user) await syncCloud(user);
-      else setSaveStatus('saved');
+      if (user) await syncCloud(user, learnerId);
+      else if (activeLearnerRef.current === learnerId) setSaveStatus('saved');
     } catch {
-      setSaveStatus('saved-locally');
+      if (activeLearnerRef.current === learnerId) setSaveStatus('saved-locally');
     }
     return { attempt, evaluation };
   }, [activeProfileId, user, syncCloud]);
