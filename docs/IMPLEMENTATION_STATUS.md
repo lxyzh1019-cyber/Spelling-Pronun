@@ -40,6 +40,7 @@ This ledger tracks implementation evidence separately from content review, real-
 | R2 engine build | verified locally | `npm run build`: 106 modules transformed; lazy learner routes emitted |
 | R2 preview journey | verified locally | Browser exercised repair, transfer gate, story reveal, assessment resume, and 42-skill progress |
 | R2 C0 inventory | drafting | Exact draft counts now exist: 68 assessment prompts, four 24-object packs, and two story episodes; all remain blocked from release/mastery pending independent educational/source challenge |
+| Content release validator | verified | Manifest proves C0 96/68/2 counts without claiming release readiness; validator rejects unknown tasks/sources/skills, broken audio, synthetic release audio, unsafe recording evaluators, and malformed role distributions |
 | R2 assessment evidence | verified preview | Unit tests enforce honest categories and like-for-like comparison; browser showed assisted/omitted counts, a punctuation follow-up signal, and prior Form B exposure disclosure |
 | R2 full assessment runner | verified draft preview | Both 34-item forms integrated; browser verified synthetic audio control, exact resume, and 20-item Part A → 14-item Part B transition; 27 automated tests and production build pass |
 

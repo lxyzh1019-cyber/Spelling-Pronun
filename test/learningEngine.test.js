@@ -78,3 +78,15 @@ test('content validator rejects cycles, missing answers, and assessment overlap'
   assert.ok(result.errors.some((error) => error.includes('cycle')));
   assert.ok(result.errors.some((error) => error.includes('overlaps')));
 });
+
+test('content validator rejects broken release references and unsafe recording scoring', () => {
+  const skills = [{ id: 'PR.target', prerequisites: [] }];
+  const item = { id: 'item-1', version: 1, primarySkill: 'PR.target', secondarySkills: ['missing'], role: 'independent', difficulty: 1, prerequisites: [], prompt: 'Record.', responseType: 'recording', evaluator: 'spelling', rubric: {}, explanation: 'Review the sound.', helpSteps: [], evidenceEligibility: 'draft_audio_only', transferGroup: 'g', authorStatus: 'draft', reviewStatus: 'reviewed', sourceIds: ['missing-source'], audioRef: 'missing-audio', audioStatus: 'synthetic_preview' };
+  const result = validateContent({ skills, items: [item], episodes: [{ id: 'ep', taskIds: ['missing-task'], historical: true, sourceIds: ['only-one'], status: 'released' }], sources: [{ id: 'known' }] });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes('unknown secondary skill')));
+  assert.ok(result.errors.some((error) => error.includes('broken audio reference')));
+  assert.ok(result.errors.some((error) => error.includes('recording must use human review')));
+  assert.ok(result.errors.some((error) => error.includes('unknown task')));
+  assert.ok(result.errors.some((error) => error.includes('fiction label')));
+});
