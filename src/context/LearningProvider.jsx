@@ -5,7 +5,11 @@ import { deriveMastery } from '../learning/mastery';
 import { deriveReviewProgress, selectDueReviews } from '../learning/reviewScheduler';
 import { edmontonDayKey } from '../learning/r1Core';
 import { queueAttempt } from '../persistence/indexedDb';
+import { flushOutbox } from '../persistence/indexedDb';
+import { attemptDocumentId, mergeAttempts } from '../persistence/sync';
 import { readJson, writeJson } from '../utils/localStore';
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { db } from '../firebase';
 import skillsData from '../data/skills.json';
 
 const LearningContext = createContext(null);
@@ -15,7 +19,7 @@ function attemptsKey(learnerId) {
 }
 
 export function LearningProvider({ children }) {
-  const { activeProfileId } = useWords();
+  const { activeProfileId, user } = useWords();
   const [attempts, setAttempts] = useState(() => readJson(attemptsKey(activeProfileId), []));
   const [saveStatus, setSaveStatus] = useState('saved');
 
@@ -23,6 +27,38 @@ export function LearningProvider({ children }) {
     setAttempts(readJson(attemptsKey(activeProfileId), []));
     setSaveStatus('saved');
   }, [activeProfileId]);
+
+  const syncCloud = useCallback(async (account = user) => {
+    if (!account) return false;
+    setSaveStatus('syncing');
+    try {
+      await flushOutbox(async (entry) => {
+        if (entry.kind !== 'attempt') return;
+        const documentId = attemptDocumentId(account.uid, entry.payload);
+        const target = doc(db, 'spelling-attempts', documentId);
+        const existing = await getDoc(target);
+        if (!existing.exists()) await setDoc(target, { ...entry.payload, userId: account.uid });
+      });
+      const snapshot = await getDocs(query(
+        collection(db, 'spelling-attempts'),
+        where('userId', '==', account.uid),
+        where('learnerId', '==', activeProfileId),
+      ));
+      const remote = snapshot.docs.map((entry) => entry.data());
+      const local = readJson(attemptsKey(activeProfileId), []);
+      const merged = mergeAttempts(local, remote);
+      writeJson(attemptsKey(activeProfileId), merged);
+      setAttempts(merged);
+      setSaveStatus('saved');
+      return true;
+    } catch (error) {
+      console.warn('Learning attempt sync deferred:', error);
+      setSaveStatus('saved-locally');
+      return false;
+    }
+  }, [activeProfileId, user]);
+
+  useEffect(() => { if (user) syncCloud(user); }, [user, activeProfileId, syncCloud]);
 
   const submitAttempt = useCallback(async (item, response, metadata = {}) => {
     const evaluation = evaluateItem(item, response);
@@ -55,12 +91,13 @@ export function LearningProvider({ children }) {
     setSaveStatus('saving');
     try {
       await queueAttempt(attempt);
-      setSaveStatus('saved');
+      if (user) await syncCloud(user);
+      else setSaveStatus('saved');
     } catch {
       setSaveStatus('saved-locally');
     }
     return { attempt, evaluation };
-  }, [activeProfileId]);
+  }, [activeProfileId, user, syncCloud]);
 
   const masteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
     skill.id,
@@ -69,7 +106,7 @@ export function LearningProvider({ children }) {
   const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
   const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);
 
-  const value = useMemo(() => ({ attempts, submitAttempt, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
+  const value = useMemo(() => ({ attempts, submitAttempt, syncCloud, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, syncCloud, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
   return <LearningContext.Provider value={value}>{children}</LearningContext.Provider>;
 }
 

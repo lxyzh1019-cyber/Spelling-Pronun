@@ -33,7 +33,8 @@ service cloud.firestore {
 
     // Immutable attempt events preserve evidence type and learner attribution.
     match /spelling-attempts/{document} {
-      allow read: if request.auth.uid != null && request.auth.uid == resource.data.userId;
+      allow get: if request.auth.uid != null && document.matches(request.auth.uid + '_.*');
+      allow list: if request.auth.uid != null && request.auth.uid == resource.data.userId;
       allow create: if request.auth.uid != null &&
         request.auth.uid == request.resource.data.userId &&
         document.matches(request.auth.uid + '_.*');

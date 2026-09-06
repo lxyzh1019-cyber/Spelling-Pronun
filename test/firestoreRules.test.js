@@ -13,5 +13,7 @@ test('attempt events are additive and immutable', () => {
   const attemptBlock = rules.match(/match \/spelling-attempts\/\{document\} \{([\s\S]*?)\n    \}/)?.[1];
   assert.ok(attemptBlock);
   assert.match(attemptBlock, /allow create:/);
+  assert.match(attemptBlock, /allow get:.*document\.matches\(request\.auth\.uid \+ '_\.\*'\)/s);
+  assert.match(attemptBlock, /allow list:.*resource\.data\.userId/s);
   assert.match(attemptBlock, /allow update, delete: if false/);
 });

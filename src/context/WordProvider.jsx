@@ -21,7 +21,7 @@ import {
   arrayUnion,
   writeBatch,
 } from 'firebase/firestore';
-import { db, ensureAuth } from '../firebase';
+import { auth, db, ensureAuth } from '../firebase';
 import { checkAchievements } from '../utils/achievements';
 import { applyAttempts, createAttempt, dailyChallengeComplete, edmontonDayKey, progressStats } from '../learning/r1Core';
 import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
@@ -108,6 +108,7 @@ export function WordProvider({ children }) {
   const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILES[0].id);
   const [progress, setProgress] = useState({});
   const progressRef = useRef(progress);
+  const progressImportCheckedRef = useRef(new Set());
   useEffect(() => { progressRef.current = progress; }, [progress]);
   const [selectedCategory, setSelectedCategory] = useState(
     () => FALLBACK_CATEGORIES[0]?.name ?? ''
@@ -122,6 +123,15 @@ export function WordProvider({ children }) {
   const dailyChallengeAttemptsRef = useRef(dailyChallengeAttempts);
   useEffect(() => { dailyChallengeAttemptsRef.current = dailyChallengeAttempts; }, [dailyChallengeAttempts]);
   const [multiplayer, setMultiplayer] = useState(null);
+
+  const refreshAuthState = useCallback(() => {
+    const current = auth.currentUser;
+    setUser(current);
+    setAuthStatus(current ? 'online' : 'local-only');
+    setSyncError(null);
+    setLoading(false);
+    return current;
+  }, []);
 
   // 1. Initialize auth
   useEffect(() => {
@@ -240,7 +250,38 @@ export function WordProvider({ children }) {
 
     const unsub = onSnapshot(
       q,
-      (snapshot) => {
+      async (snapshot) => {
+        const importKey = `${user.uid}:${activeProfileId}`;
+        if (!progressImportCheckedRef.current.has(importKey)) {
+          progressImportCheckedRef.current.add(importKey);
+          const local = readJson(progressStorageKey(activeProfileId), {});
+          if (snapshot.empty && Object.keys(local).length) {
+            try {
+              const entries = Object.entries(local);
+              for (let start = 0; start < entries.length; start += 450) {
+                const batch = writeBatch(db);
+                for (const [wordId, entry] of entries.slice(start, start + 450)) {
+                  batch.set(doc(db, 'spelling-progress', `${user.uid}_${activeProfileId}_${wordId}`), {
+                    userId: user.uid,
+                    profileId: activeProfileId,
+                    wordId,
+                    attempts: entry.attempts || 0,
+                    correct: entry.correct || 0,
+                    streak: entry.streak || 0,
+                    lastSeen: entry.lastSeen || serverTimestamp(),
+                    importedFromLocal: true,
+                  });
+                }
+                await batch.commit();
+              }
+              setSyncError(null);
+              return;
+            } catch (error) {
+              console.warn('Local legacy practice import deferred:', error);
+              setSyncError('Local practice is safe on this device but could not be imported to the parent account yet.');
+            }
+          }
+        }
         const progressMap = {};
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
@@ -693,6 +734,7 @@ export function WordProvider({ children }) {
 
   const value = {
     user,
+    refreshAuthState,
     loading,
     authStatus,
     syncError,

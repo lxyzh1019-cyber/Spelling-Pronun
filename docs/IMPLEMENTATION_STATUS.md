@@ -20,7 +20,7 @@ This ledger tracks implementation evidence separately from content review, real-
 | F07 | Codex | R1 | verified | batched attempt events and functional progress | Five-result unit test; crossword browser check/repair path | Remote offline reconciliation is R2 scope |
 | F08 | Codex | R1 | integrated | evidence labels across existing games | Unit test for `self_report`; source inspection for assisted/timed/game labels | R2 mastery engine must enforce eligibility |
 | F09 | Codex | R1 | verified | auth timeout, local store, truthful status | Browser showed local-only status after auth configuration failure; reload retained session | Verify online state after Firebase setup |
-| F10 / DATA-02 | Parent + Codex | R2 | not started | — | — | Parent email/password provider setup required during R2 |
+| F10 / DATA-02 | Parent + Codex | R2 | integrated locally / externally blocked | Parent sign-in/register UI; local-to-cloud attempt reconciliation; empty-cloud-only legacy import | 29 tests pass; browser verified sign-in/create mode and local-only fallback | Parent must enable Email/Password in Firebase; then run two-device reconciliation test |
 | F11 | Codex | R1 | verified | learner/category-bound session snapshot | Unit test rejects wrong learner; browser reload resumed word 2 with original skip count | IndexedDB/outbox expansion in R2 |
 | F12 | Codex | R1 | integrated | game hints remain game-scoped; local hints work | Source review and production build | Full lesson help ladder arrives in R2 |
 | DATA-01 | Codex | R2 | integrated | evaluator, mastery, scheduling, session engine, IndexedDB outbox, and learner-scoped local store | Focused engine/validator tests plus production build | Connect authenticated remote sync after Firebase setup |
@@ -58,6 +58,7 @@ This ledger tracks implementation evidence separately from content review, real-
 - No real-iPad Safari or installed-home-screen test has occurred.
 - Browser recording controls compile and use user-triggered permission, durable blobs, and playback; microphone permission/playback was not exercised because that requires an explicit device permission decision and real-iPad follow-up.
 - Firebase anonymous authentication is not enabled for the current project, so only local-only behavior was exercised in the browser.
+- Parent sign-in UI and additive sync are implemented, but Firebase Email/Password is not enabled and no real account or second-device test has been performed.
 - Shared family identity, reviewed curriculum content, full assessment, sourced story chapters, pronunciation recording, and family pilot remain R2/R3 work.
 - The IndexedDB attempt outbox and learner-facing R2 routes are integrated locally; remote reconciliation, reviewed C0 content, pronunciation capture, and the family pilot remain incomplete.
 - The GitHub installation currently permits reads but rejected branch/blob creation with `Resource not accessible by integration`; the tested commits remain local until repository write scope is restored.
