@@ -6,18 +6,20 @@ import { c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { validateContentReviews } from '../src/learning/contentReview.js';
 import { buildReviewQueue } from '../src/learning/reviewQueue.js';
 
-test('complete-sentence challenge records every item and supports only the challenge-stage promotion', () => {
+test('completed pack challenges record every item and support only challenge-stage promotion', () => {
   const result = validateContentReviews({ reviews: reviewData.reviews, packs: c0PilotPacks, sources: sourceData.sources });
   assert.deepEqual(result.errors, []);
-  const review = reviewData.reviews[0];
-  assert.equal(review.results.length, 24);
-  assert.equal(new Set(review.results.map(({ itemId }) => itemId)).size, 24);
-  assert.ok(review.results.every(({ outcome }) => outcome === 'pass'));
-  assert.ok(review.discrepancies.every(({ status }) => status === 'resolved'));
+  assert.equal(reviewData.reviews.length, 4);
+  for (const review of reviewData.reviews) {
+    assert.equal(review.results.length, 24);
+    assert.equal(new Set(review.results.map(({ itemId }) => itemId)).size, 24);
+    assert.ok(review.results.every(({ outcome }) => outcome === 'pass'));
+    assert.ok(review.discrepancies.every(({ status }) => status === 'resolved'));
+  }
 });
 
 test('challenged content is still excluded from delayed review and mastery queues', () => {
-  const due = [{ skillId: 'SE.complete', reviewStage: 0, reviewDue: '2026-09-06' }];
+  const due = reviewData.reviews.map(({ skillId }) => ({ skillId, reviewStage: 0, reviewDue: '2026-09-06' }));
   assert.deepEqual(buildReviewQueue(due, c0PilotPacks), []);
 });
 

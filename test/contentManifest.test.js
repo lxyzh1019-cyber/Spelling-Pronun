@@ -8,7 +8,7 @@ import { buildContentManifest } from '../src/learning/contentManifest.js';
 
 test('manifest proves exact C0 draft inventory without claiming release readiness', () => {
   const manifest = buildContentManifest({ skills: skillsData.skills, packs: c0PilotPacks, assessmentForms: c0AssessmentForms, episodes: storyDraft.episodes });
-  assert.deepEqual(manifest.counts, { skills: 42, packs: 4, contentObjects: 96, assessmentPrompts: 68, episodes: 2, mappedSkills: 4, challengedObjects: 24, reviewedObjects: 0, reviewedAssessmentPrompts: 0 });
+  assert.deepEqual(manifest.counts, { skills: 42, packs: 4, contentObjects: 96, assessmentPrompts: 68, episodes: 2, mappedSkills: 4, challengedObjects: 96, reviewedObjects: 0, reviewedAssessmentPrompts: 0 });
   assert.equal(manifest.r2InventoryComplete, true);
   assert.equal(manifest.r3InventoryComplete, false);
   assert.equal(manifest.releaseReady, false);

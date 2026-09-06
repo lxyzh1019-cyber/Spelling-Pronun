@@ -68,6 +68,229 @@
         "note": "Forms A and B use different sentence and fragment wording; no lesson item, answer, or distinctive wording is repeated."
       },
       "promotion": "independently_challenged"
+    },
+    {
+      "id": "c0.challenge.pu-capitals-endmarks.v1",
+      "stage": "independent_challenge",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_content_challenge_pass",
+      "packId": "c0.pack.pu.capitals-endmarks",
+      "packVersion": 1,
+      "skillId": "PU.capitals-endmarks",
+      "sourceIds": [
+        "ab-elal-2022-overview",
+        "ca-language-portal-capitalization-general",
+        "ca-language-portal-initial-words",
+        "ca-language-portal-sentence-purpose",
+        "ca-language-portal-personal-names",
+        "ca-language-portal-family-capitals",
+        "ca-language-portal-publication-capitals",
+        "ca-language-portal-provinces-territories"
+      ],
+      "dimensions": [
+        "answer_or_rubric",
+        "reasonable_alternatives",
+        "distractors",
+        "explanation",
+        "help_steps",
+        "reading_load",
+        "assessment_or_story_leak",
+        "transfer_distinctness"
+      ],
+      "results": [
+        { "itemId": "c0.pu.capitals-endmarks.01", "itemVersion": 1, "outcome": "pass", "note": "The comparison isolates the initial capital and period required by the written statement." },
+        { "itemId": "c0.pu.capitals-endmarks.02", "itemVersion": 1, "outcome": "pass", "note": "The examples accurately contrast a direct question with a forceful warning." },
+        { "itemId": "c0.pu.capitals-endmarks.03", "itemVersion": 1, "outcome": "pass", "note": "Only choice a begins the statement with a capital and closes it with a period." },
+        { "itemId": "c0.pu.capitals-endmarks.04", "itemVersion": 1, "outcome": "pass", "note": "Choice b is the only capitalized direct question ending with a question mark." },
+        { "itemId": "c0.pu.capitals-endmarks.05", "itemVersion": 1, "outcome": "pass", "note": "Choice c is the only capitalized forceful warning with an appropriate exclamation mark." },
+        { "itemId": "c0.pu.capitals-endmarks.06", "itemVersion": 1, "outcome": "pass", "note": "Mateo is an ordinary personal name and is unambiguously capitalized in choice a." },
+        { "itemId": "c0.pu.capitals-endmarks.07", "itemVersion": 1, "outcome": "pass", "note": "Red Deer is an official Canadian place name and both words are capitalized." },
+        { "itemId": "c0.pu.capitals-endmarks.08", "itemVersion": 1, "outcome": "pass", "note": "The polite command is correctly capitalized and normally ends with a period rather than a question mark." },
+        { "itemId": "c0.pu.capitals-endmarks.09", "itemVersion": 1, "outcome": "pass", "note": "The prompt specifies a statement, making the single capitalized, period-ended response exact." },
+        { "itemId": "c0.pu.capitals-endmarks.10", "itemVersion": 1, "outcome": "pass", "note": "The prompt specifies a direct question; the accepted response preserves wording while adding the required capital and question mark." },
+        { "itemId": "c0.pu.capitals-endmarks.11", "itemVersion": 1, "outcome": "pass", "note": "The prompt was narrowed to an excited exclamation so the period is no longer a reasonable competing stylistic answer." },
+        { "itemId": "c0.pu.capitals-endmarks.12", "itemVersion": 1, "outcome": "pass", "note": "A is the first word of the title and in is a short internal preposition, matching the cited Canadian convention." },
+        { "itemId": "c0.pu.capitals-endmarks.13", "itemVersion": 1, "outcome": "pass", "note": "Grandma Lee uses the family term as part of a name, and Sunday is a named day; choice a is unambiguous." },
+        { "itemId": "c0.pu.capitals-endmarks.14", "itemVersion": 1, "outcome": "pass", "note": "The former polite-request example was replaced with a direct information question to remove documented punctuation variation." },
+        { "itemId": "c0.pu.capitals-endmarks.15", "itemVersion": 1, "outcome": "pass", "note": "Edmonton and Alberta are proper place names; the statement also requires an initial capital and period." },
+        { "itemId": "c0.pu.capitals-endmarks.16", "itemVersion": 1, "outcome": "pass", "note": "Choice c alone capitalizes the sentence opening and Monday and ends the statement with a period." },
+        { "itemId": "c0.pu.capitals-endmarks.17", "itemVersion": 1, "outcome": "pass", "note": "Have you seen the keys is explicitly a direct question, so the question mark is required." },
+        { "itemId": "c0.pu.capitals-endmarks.18", "itemVersion": 1, "outcome": "pass", "note": "Aunt Rosa uses an unmodified family term as part of the name; the command has a capital and period." },
+        { "itemId": "c0.pu.capitals-endmarks.19", "itemVersion": 1, "outcome": "pass", "note": "The transfer sign uses clear capitals and separates a forceful warning from the following sentence." },
+        { "itemId": "c0.pu.capitals-endmarks.20", "itemVersion": 1, "outcome": "pass", "note": "The unseen exhibit context asks a direct who-question with a unique capitalization and end-mark repair." },
+        { "itemId": "c0.pu.capitals-endmarks.21", "itemVersion": 1, "outcome": "pass", "note": "The snow-melting sentence is declarative, making the period the single intended end mark." },
+        { "itemId": "c0.pu.capitals-endmarks.22", "itemVersion": 1, "outcome": "pass", "note": "Nova Scotia is the official two-word province name and is correctly capitalized only in choice b." },
+        { "itemId": "c0.pu.capitals-endmarks.23", "itemVersion": 1, "outcome": "pass", "note": "The prompt explicitly calls the sentence a question; Friday and the initial word require capitals." },
+        { "itemId": "c0.pu.capitals-endmarks.24", "itemVersion": 1, "outcome": "pass", "note": "The prompt asks for an exclamation, so choice c is uniquely matched despite a declarative period being possible in another context." }
+      ],
+      "discrepancies": [
+        {
+          "itemId": "c0.pu.capitals-endmarks.11",
+          "severity": "material",
+          "status": "resolved",
+          "resolution": "Specified an excited exclamation so the grammatically possible period is no longer a reasonable competing answer."
+        },
+        {
+          "itemId": "c0.pu.capitals-endmarks.14",
+          "severity": "material",
+          "status": "resolved",
+          "resolution": "Replaced a polite request, whose question-mark treatment varies, with an unambiguous direct information question."
+        }
+      ],
+      "assessmentOverlap": {
+        "status": "pass",
+        "note": "Assessment forms use different folder and case sentences; neither exact wording nor answers are exposed by the lesson or story text."
+      },
+      "promotion": "independently_challenged"
+    },
+    {
+      "id": "c0.challenge.gr-subject-object-pronouns.v1",
+      "stage": "independent_challenge",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_content_challenge_pass",
+      "packId": "c0.pack.gr.subject-object-pronouns",
+      "packVersion": 1,
+      "skillId": "GR.subject-object-pronouns",
+      "sourceIds": [
+        "ab-elal-2022-overview",
+        "ab-eal-benchmarks-4-6",
+        "ca-language-portal-personal-pronouns",
+        "ca-language-portal-pronoun-case-quiz",
+        "ca-language-portal-prepositions",
+        "ca-language-portal-singular-they"
+      ],
+      "dimensions": [
+        "answer_or_rubric",
+        "reasonable_alternatives",
+        "distractors",
+        "explanation",
+        "help_steps",
+        "reading_load",
+        "assessment_or_story_leak",
+        "transfer_distinctness"
+      ],
+      "results": [
+        { "itemId": "c0.gr.subject-object-pronouns.01", "itemVersion": 1, "outcome": "pass", "note": "The pair accurately contrasts she as subject with her as the object of thanked." },
+        { "itemId": "c0.gr.subject-object-pronouns.02", "itemVersion": 1, "outcome": "pass", "note": "They and we are correctly identified as subject forms and us and them as object forms." },
+        { "itemId": "c0.gr.subject-object-pronouns.03", "itemVersion": 1, "outcome": "pass", "note": "She is uniquely correct as the subject performing found." },
+        { "itemId": "c0.gr.subject-object-pronouns.04", "itemVersion": 1, "outcome": "pass", "note": "Us is uniquely correct as the direct object of helped." },
+        { "itemId": "c0.gr.subject-object-pronouns.05", "itemVersion": 1, "outcome": "pass", "note": "I is required in the compound subject; the removal check is accurate and age-appropriate." },
+        { "itemId": "c0.gr.subject-object-pronouns.06", "itemVersion": 1, "outcome": "pass", "note": "Me is the object of to in the compound prepositional phrase; no alternative answer is grammatical." },
+        { "itemId": "c0.gr.subject-object-pronouns.07", "itemVersion": 1, "outcome": "pass", "note": "They is the only offered subject form that agrees with are." },
+        { "itemId": "c0.gr.subject-object-pronouns.08", "itemVersion": 1, "outcome": "pass", "note": "Him is the object form required after the preposition to." },
+        { "itemId": "c0.gr.subject-object-pronouns.09", "itemVersion": 1, "outcome": "pass", "note": "She and I are both subject forms; the distractor exposes the common her-for-she error." },
+        { "itemId": "c0.gr.subject-object-pronouns.10", "itemVersion": 1, "outcome": "pass", "note": "Them is the direct object of surprised and is uniquely grammatical." },
+        { "itemId": "c0.gr.subject-object-pronouns.11", "itemVersion": 1, "outcome": "pass", "note": "I is required in the compound subject, and the removal test remains valid." },
+        { "itemId": "c0.gr.subject-object-pronouns.12", "itemVersion": 1, "outcome": "pass", "note": "Her is the object of with; the explanation directly identifies the controlling feature." },
+        { "itemId": "c0.gr.subject-object-pronouns.13", "itemVersion": 1, "outcome": "pass", "note": "They is the subject performing invited; Alex and me do not affect that choice." },
+        { "itemId": "c0.gr.subject-object-pronouns.14", "itemVersion": 1, "outcome": "pass", "note": "Us is the direct object of frighten and is the only offered object form." },
+        { "itemId": "c0.gr.subject-object-pronouns.15", "itemVersion": 1, "outcome": "pass", "note": "The distractor was replaced to test subject case without presenting an exclusionary binary claim; choice b uses singular they correctly." },
+        { "itemId": "c0.gr.subject-object-pronouns.16", "itemVersion": 1, "outcome": "pass", "note": "Between governs object case, and the cited Canadian source gives between you and me as its example." },
+        { "itemId": "c0.gr.subject-object-pronouns.17", "itemVersion": 1, "outcome": "pass", "note": "Choice c is the only sequence with subject we and object them in their required roles." },
+        { "itemId": "c0.gr.subject-object-pronouns.18", "itemVersion": 1, "outcome": "pass", "note": "She is part of the compound subject joined by nor and therefore takes subject case." },
+        { "itemId": "c0.gr.subject-object-pronouns.19", "itemVersion": 1, "outcome": "pass", "note": "The service-desk transfer combines subject they with object me in a distinct practical context." },
+        { "itemId": "c0.gr.subject-object-pronouns.20", "itemVersion": 1, "outcome": "pass", "note": "She and he are both subject forms performing measured in the distinct science-report transfer." },
+        { "itemId": "c0.gr.subject-object-pronouns.21", "itemVersion": 1, "outcome": "pass", "note": "Me is required after for, including when joined to the noun Aria." },
+        { "itemId": "c0.gr.subject-object-pronouns.22", "itemVersion": 1, "outcome": "pass", "note": "We is the subject form performing will present and is uniquely correct." },
+        { "itemId": "c0.gr.subject-object-pronouns.23", "itemVersion": 1, "outcome": "pass", "note": "Us is the indirect object of showed; the subject-form distractor is ungrammatical." },
+        { "itemId": "c0.gr.subject-object-pronouns.24", "itemVersion": 1, "outcome": "pass", "note": "He and I are the compound subject, while both distractor pronouns use object case." }
+      ],
+      "discrepancies": [
+        {
+          "itemId": "c0.gr.subject-object-pronouns.15",
+          "severity": "material",
+          "status": "resolved",
+          "resolution": "Replaced the distractor's unnecessary binary-gender claim with a direct subject-versus-object case error and clarified the explanation."
+        }
+      ],
+      "assessmentOverlap": {
+        "status": "pass",
+        "note": "Assessment forms test different pronoun sentences and contexts; no lesson prompt, answer sentence, or distinctive wording is repeated."
+      },
+      "promotion": "independently_challenged"
+    },
+    {
+      "id": "c0.challenge.sp-patterns.v1",
+      "stage": "independent_challenge",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_content_challenge_pass",
+      "packId": "c0.pack.sp.patterns",
+      "packVersion": 1,
+      "skillId": "SP.patterns",
+      "sourceIds": [
+        "ab-elal-2022-overview",
+        "ca-language-portal-double-consonant",
+        "ca-language-portal-silent-e",
+        "ca-language-portal-ending-c",
+        "ca-language-portal-suffix-y",
+        "ca-language-portal-prefix-in",
+        "ca-language-portal-analyze",
+        "ca-language-portal-canadian-spelling"
+      ],
+      "dimensions": [
+        "answer_or_rubric",
+        "reasonable_alternatives",
+        "distractors",
+        "explanation",
+        "help_steps",
+        "reading_load",
+        "assessment_or_story_leak",
+        "transfer_distinctness"
+      ],
+      "results": [
+        { "itemId": "c0.sp.patterns.01", "itemVersion": 1, "outcome": "pass", "note": "Hopping illustrates final-consonant doubling and hoping illustrates silent-e deletion before ing." },
+        { "itemId": "c0.sp.patterns.02", "itemVersion": 1, "outcome": "pass", "note": "Picnicking and panicking correctly add k after a word-final hard c before ing." },
+        { "itemId": "c0.sp.patterns.03", "itemVersion": 1, "outcome": "pass", "note": "Running uniquely applies the one-syllable single-vowel, single-consonant doubling pattern." },
+        { "itemId": "c0.sp.patterns.04", "itemVersion": 1, "outcome": "pass", "note": "Making correctly drops final silent e before the vowel suffix ing." },
+        { "itemId": "c0.sp.patterns.05", "itemVersion": 1, "outcome": "pass", "note": "The prompt was changed from a misleading tch rule test to a word-meaning spelling task, and the explanation now identifies rich as an exception." },
+        { "itemId": "c0.sp.patterns.06", "itemVersion": 1, "outcome": "pass", "note": "Watch is the only correctly spelled option and appropriately illustrates tch after the short-a sound." },
+        { "itemId": "c0.sp.patterns.07", "itemVersion": 1, "outcome": "pass", "note": "Impossible correctly uses the im- form of in- before p, matching the exact cited example." },
+        { "itemId": "c0.sp.patterns.08", "itemVersion": 1, "outcome": "pass", "note": "The prompt now asks for the correctly spelled word by meaning, avoiding the false implication that seet lacks a long-e pattern." },
+        { "itemId": "c0.sp.patterns.09", "itemVersion": 1, "outcome": "pass", "note": "Chasing correctly drops final silent e; no offered variant competes." },
+        { "itemId": "c0.sp.patterns.10", "itemVersion": 1, "outcome": "pass", "note": "Careless retains final e before the consonant suffix less and is uniquely spelled correctly." },
+        { "itemId": "c0.sp.patterns.11", "itemVersion": 1, "outcome": "pass", "note": "Beginning doubles final n because begin has final stress and takes a vowel-initial suffix." },
+        { "itemId": "c0.sp.patterns.12", "itemVersion": 1, "outcome": "pass", "note": "Necessary is the only standard spelling; the explanation supplies a usable one-c, two-s check without inventing a rule." },
+        { "itemId": "c0.sp.patterns.13", "itemVersion": 1, "outcome": "pass", "note": "Happiness correctly changes consonant-y to i before ness." },
+        { "itemId": "c0.sp.patterns.14", "itemVersion": 1, "outcome": "pass", "note": "Noticeable retains e to preserve soft c before able and is an explicit example in the cited source." },
+        { "itemId": "c0.sp.patterns.15", "itemVersion": 1, "outcome": "pass", "note": "Musician is the only standard spelling and the explanation accurately identifies the ian ending and ci sound." },
+        { "itemId": "c0.sp.patterns.16", "itemVersion": 1, "outcome": "pass", "note": "Preferred doubles final r under the cited final-stress rule and is explicitly supported by that source." },
+        { "itemId": "c0.sp.patterns.17", "itemVersion": 1, "outcome": "pass", "note": "Analyzed is the only correctly spelled offered form; the explanation now explicitly acknowledges the legitimate Canadian analyse family." },
+        { "itemId": "c0.sp.patterns.18", "itemVersion": 1, "outcome": "pass", "note": "Occasion is the sole standard spelling and the explanation provides a letter-pattern check rather than a false generalization." },
+        { "itemId": "c0.sp.patterns.19", "itemVersion": 1, "outcome": "pass", "note": "Inviting applies silent-e deletion in a new club context and does not repeat the practice sentence." },
+        { "itemId": "c0.sp.patterns.20", "itemVersion": 1, "outcome": "pass", "note": "Electrician is the only standard spelling and provides a distinct occupation transfer." },
+        { "itemId": "c0.sp.patterns.21", "itemVersion": 1, "outcome": "pass", "note": "Silent is the sole correct spelling; the related-word suggestion is useful without revealing another item." },
+        { "itemId": "c0.sp.patterns.22", "itemVersion": 1, "outcome": "pass", "note": "Admitted correctly doubles t under the final-stress rule; both distractors make distinct errors." },
+        { "itemId": "c0.sp.patterns.23", "itemVersion": 1, "outcome": "pass", "note": "Reliable correctly changes final consonant-y to i before able and is the only accepted option." },
+        { "itemId": "c0.sp.patterns.24", "itemVersion": 1, "outcome": "pass", "note": "Colour is the identified Canadian convention; the feedback also distinguishes legitimate US color from the actual misspellings offered." }
+      ],
+      "discrepancies": [
+        {
+          "itemId": "c0.sp.patterns.05",
+          "severity": "material",
+          "status": "resolved",
+          "resolution": "Removed a false explanation of rich and reframed the item as an explicitly taught exception."
+        },
+        {
+          "itemId": "c0.sp.patterns.08",
+          "severity": "material",
+          "status": "resolved",
+          "resolution": "Changed the prompt to test the spelling of seat by meaning rather than incorrectly imply that a nonword does not display a long-e letter pattern."
+        },
+        {
+          "itemId": "c0.sp.patterns.17",
+          "severity": "material",
+          "status": "resolved",
+          "resolution": "Explicitly acknowledged that analyse and analysed are also used by Canadian writers while retaining analyzed as the only correct offered spelling."
+        }
+      ],
+      "assessmentOverlap": {
+        "status": "pass",
+        "note": "Assessment spelling words and spoken prompts are distinct from all lesson answers; story text exposes no lesson spelling answer or assessment target."
+      },
+      "promotion": "independently_challenged"
     }
   ]
 }
