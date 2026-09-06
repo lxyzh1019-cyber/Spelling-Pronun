@@ -12,7 +12,10 @@
       "historical": true,
       "fictionLabel": "Fictional reconstruction",
       "sourceIds": ["tna-william-caxton", "bl-printer-guide"],
-      "taskIds": ["fixture.sp.patterns.01", "fixture.pu.capitals.01"],
+      "taskIds": [
+        "c0.sp.patterns.09", "c0.sp.patterns.10", "c0.sp.patterns.11", "c0.sp.patterns.12", "c0.sp.patterns.13", "c0.sp.patterns.14", "c0.sp.patterns.19", "c0.sp.patterns.20",
+        "c0.pu.capitals-endmarks.09", "c0.pu.capitals-endmarks.10", "c0.pu.capitals-endmarks.11", "c0.pu.capitals-endmarks.12", "c0.pu.capitals-endmarks.13", "c0.pu.capitals-endmarks.14", "c0.pu.capitals-endmarks.19", "c0.pu.capitals-endmarks.20"
+      ],
       "intro": "In the Alberta archive, a catalogue box holds a reproduction linked to William Caxton’s workshop. The archivist explains that Caxton is associated with bringing the press to England in the 1470s, although printing began much earlier in Asia. A modern exhibit label and a copied proof disagree. Which words belong to the old record, and which were added later?",
       "problem": "A copied exhibit label contains a spelling change and a missing capital that make its source unclear.",
       "decision": "Use language evidence to choose which transcription should remain attached to the reproduction.",
@@ -29,7 +32,7 @@
       "historical": true,
       "fictionLabel": "Fictional reconstruction",
       "sourceIds": ["bl-ames-printing-collections", "tna-william-caxton"],
-      "taskIds": ["fixture.se.complete.01", "fixture.se.complete.transfer.01"],
+      "taskIds": ["c0.se.complete.09", "c0.se.complete.10", "c0.se.complete.11", "c0.se.complete.12", "c0.se.complete.13", "c0.se.complete.14", "c0.se.complete.19", "c0.se.complete.20"],
       "intro": "The second sheet resembles a printer’s working copy, but it is a fictional clue rather than a real archival item. Real collections about British printing preserve papers, letters, notes, drafts, and handwritten alterations. On this sheet, one margin note is only a fragment. Another is a complete direction. Identifying the complete thought will reveal where the copy travelled next.",
       "problem": "Fragments and complete directions have been mixed together in the margin.",
       "decision": "Identify the complete direction without pretending that the invented sheet is a historical source.",

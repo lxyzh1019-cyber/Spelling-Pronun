@@ -20,29 +20,29 @@ This ledger tracks implementation evidence separately from content review, real-
 | F07 | Codex | R1 | verified | batched attempt events and functional progress | Five-result unit test; crossword browser check/repair path | Remote offline reconciliation is R2 scope |
 | F08 | Codex | R1 | integrated | evidence labels across existing games | Unit test for `self_report`; source inspection for assisted/timed/game labels | R2 mastery engine must enforce eligibility |
 | F09 | Codex | R1 | verified | auth timeout, local store, truthful status | Browser showed local-only status after auth configuration failure; reload retained session | Verify online state after Firebase setup |
-| F10 / DATA-02 | Parent + Codex | R2 | integrated locally / externally blocked | Parent sign-in/register UI; local-to-cloud attempt reconciliation; empty-cloud-only legacy import | 29 tests pass; browser verified sign-in/create mode and local-only fallback | Parent must enable Email/Password in Firebase; then run two-device reconciliation test |
+| F10 / DATA-02 | Parent + Codex | R2 | integrated locally / externally blocked | Parent sign-in/register UI; local-to-cloud attempt reconciliation; empty-cloud-only legacy import | Automated sync invariants pass; browser verified sign-in/create mode and local-only fallback | Parent must enable Email/Password in Firebase; then run two-device reconciliation test |
 | F11 | Codex | R1 | verified | learner/category-bound session snapshot | Unit test rejects wrong learner; browser reload resumed word 2 with original skip count | IndexedDB/outbox expansion in R2 |
 | F12 | Codex | R1 | integrated | game hints remain game-scoped; local hints work | Source review and production build | Full lesson help ladder arrives in R2 |
 | DATA-01 | Codex | R2 | integrated | evaluator, mastery, scheduling, session engine, IndexedDB outbox, and learner-scoped local store | Focused engine/validator tests plus production build | Connect authenticated remote sync after Firebase setup |
-| EDU-01 | Codex | R2 | integrated preview | `/case` and `/lesson/:sessionId` explicit learning flow | Browser: wrong first answer → separate helped repair → unseen transfer → gated reveal; reload persistence implemented | Replace fixtures with independently reviewed C0 pack |
+| EDU-01 | Codex | R2 | integrated draft preview | `/case`, `lessonCatalog.js`, `lessonFlow.js`, and `/lesson/:sessionId` | Browser completed the C0 spelling and capitals lessons: two misses produced a worked solution, reload resumed at question 2, all six independent plus two transfer tasks led to reflection/evidence, both clues unlocked Episode 1's reveal and Episode 2, and an in-lesson Jenn → Jess switch reset to Jess's isolated state | Independently challenge and review the four C0 packs before release/mastery |
 | EDU-02 | Codex | R2 | integrated draft preview | Full 34-item `/assessment/:sessionId` Form A/B runner, `/progress`, `/review`, `/parent`, `assessmentReport.js` | Browser showed 1/34 → reload at 2/34 and transition from Part A to Part B at 21/34; reports separate assistance, omission, pending, technical issues, and exposure | Independent content/audio challenge is required before placement use |
-| EDU-03 | Codex | R2 | integrated foundation | `src/utils/recording.js`, IndexedDB `recordings` store | Capability/MIME tests; explicit permission/technical failure reasons; blobs remain pending human review | Add learner recording control and real iPad microphone/playback test |
+| EDU-03 | Codex | R2 | integrated draft preview | `src/components/RecordingAnswer.jsx`, `src/utils/recording.js`, IndexedDB `recordings` store | Capability/MIME tests; assessment recording UI; explicit permission/technical failure reasons; blobs remain pending human review | Run a real iPad microphone, playback, persistence, and human-review test |
 
 ## Release gates
 
 | Gate | State | Evidence / next action |
 |---|---|---|
-| R1-G1 build | verified locally | `npm run build`: 92 modules transformed, production bundle generated |
+| R1-G1 build | verified locally | Production build remains green after R2 integration |
 | R1-G2 regressions | verified locally | `npm test`: 8/8; browser restart, skips, daily, crossword, learner ownership, reload checked |
 | R1-G3 legacy preservation | integrated | Legacy word IDs/collections remain readable; new attempt collection is additive; no migration/deletion |
 | R1-G4 auth fallback | verified locally | Firebase `auth/configuration-not-found` led to usable local-only mode without hanging |
 | R1-G5 candidate report | drafting | Await GitHub PR checks; iPad and authenticated Firebase paths are explicitly untested |
-| R2 engine build | verified locally | `npm run build`: 106 modules transformed; lazy learner routes emitted |
-| R2 preview journey | verified locally | Browser exercised repair, transfer gate, story reveal, assessment resume, and 42-skill progress |
+| R2 engine build | verified locally | `npm run build`: 116 modules transformed; lazy learner routes emitted |
+| R2 preview journey | verified locally | Browser exercised a two-miss worked solution, persisted resume, two complete eight-task lessons, reflection/evidence, story reveal/unlock, assessment resume, and 42-skill progress |
 | R2 C0 inventory | drafting | Exact draft counts now exist: 68 assessment prompts, four 24-object packs, and two story episodes; all remain blocked from release/mastery pending independent educational/source challenge |
 | Content release validator | verified | Manifest proves C0 96/68/2 counts without claiming release readiness; validator rejects unknown tasks/sources/skills, broken audio, synthetic release audio, unsafe recording evaluators, and malformed role distributions |
 | R2 assessment evidence | verified preview | Unit tests enforce honest categories and like-for-like comparison; browser showed assisted/omitted counts, a punctuation follow-up signal, and prior Form B exposure disclosure |
-| R2 full assessment runner | verified draft preview | Both 34-item forms integrated; browser verified synthetic audio control, exact resume, and 20-item Part A → 14-item Part B transition; 27 automated tests and production build pass |
+| R2 full assessment runner | verified draft preview | Both 34-item forms integrated; browser verified synthetic audio control, exact resume, and 20-item Part A → 14-item Part B transition; the current 37-test suite and production build pass |
 | iPad/PWA install metadata | verified locally | Missing icon repaired; honest manifest uses real 192/512 PNGs, 180px Apple touch icon, standalone metadata, and no fake screenshot entries; automated asset checks pass | Real Safari install/offline/microphone test still required |
 
 ## Content manifest
