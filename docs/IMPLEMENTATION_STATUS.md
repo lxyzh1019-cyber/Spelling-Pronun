@@ -38,13 +38,14 @@ This ledger tracks implementation evidence separately from content review, real-
 | R1-G5 candidate report | drafting | Await GitHub PR checks; iPad and authenticated Firebase paths are explicitly untested |
 | R2 engine build | verified locally | `npm run build`: 106 modules transformed; lazy learner routes emitted |
 | R2 preview journey | verified locally | Browser exercised repair, transfer gate, story reveal, assessment resume, and 42-skill progress |
+| R2 C0 inventory | drafting | Exact draft counts now exist: 68 assessment prompts, four 24-object packs, and two story episodes; all remain blocked from release/mastery pending independent educational/source challenge |
 
 ## Content manifest
 
 | Batch | Required | Authored | Independently challenged | Educational/source reviewed | Integrated | Unresolved discrepancies |
 |---|---:|---:|---:|---:|---:|---:|
 | C0 assessment A/B | 68 prompts | 68 draft | 0 | 0 | 0 | 0 |
-| C0 four pilot packs | 96 objects | 0 | 0 | 0 | 0 | 0 |
+| C0 four pilot packs | 96 objects | 96 draft | 0 | 0 | 0 | 0 |
 | C0 chapter 1 | 2 episodes | 2 draft | 0 | 0 | 0 | 0 |
 | C1 | 480 objects + 6 episodes | 0 | 0 | 0 | 0 | 0 |
 | C2 | 432 objects + 4 episodes | 0 | 0 | 0 | 0 | 0 |
