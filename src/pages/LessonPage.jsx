@@ -25,7 +25,7 @@ export default function LessonPage() {
   const [searchParams] = useSearchParams();
   const episodeId = searchParams.get('episode');
   const lesson = lessonBySessionId(sessionId);
-  const { activeProfileId } = useWords();
+  const { activeProfileId, user } = useWords();
   const { submitAttempt, saveStatus } = useLearning();
   const storageKey = `spelling-lesson-v2:${activeProfileId}:${sessionId}`;
   const { state, setState, ready, writable, canWrite, takeOverHere: takeOverSession, ownerKeyRef: stateOwnerKey, sessionSaveStatus } = useDurableSession({
@@ -35,6 +35,7 @@ export default function LessonPage() {
     contentVersion: lesson?.version || 0,
     orderedItemIds: lesson ? [...lesson.practice, ...lesson.transfer].map((entry) => entry.id) : [],
     initialState: createLessonState,
+    account: user,
   });
   const [helped, setHelped] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -112,7 +113,7 @@ export default function LessonPage() {
   const displayedSaveStatus = saveStatus === 'saved' ? sessionSaveStatus : saveStatus;
   return <div className={styles.page}>
     <p className={styles.notice} role="note">{DRAFT_NOTICE}</p>
-    {!ready ? <div className={styles.notice} role="status">Restoring the saved lesson…</div> : !writable && <div className={styles.notice} role="status"><strong>This lesson is open in another tab.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}
+    {!ready ? <div className={styles.notice} role="status">Restoring the saved lesson…</div> : !writable && <div className={styles.notice} role="status"><strong>This lesson is open in another tab or linked device.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}
     <div className={styles.progress} aria-label={`${Math.min(completedTasks, totalTasks)} of ${totalTasks} lesson tasks reached`}><span style={{ width: `${Math.min(100, (completedTasks / totalTasks) * 100)}%` }} /></div>
     <section className={styles.card}>
       <p className={styles.meta}>{lesson.skillId} · {displayedSaveStatus}</p><h1>{lesson.title}</h1>

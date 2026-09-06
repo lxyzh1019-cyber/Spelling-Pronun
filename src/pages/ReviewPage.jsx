@@ -19,7 +19,7 @@ function ReviewQuestion({ item, answer, setAnswer, disabled }) {
 }
 
 export default function ReviewPage() {
-  const { activeProfileId } = useWords();
+  const { activeProfileId, user } = useWords();
   const { attempts, dueReviews, reviewProgress, submitAttempt, saveStatus } = useLearning();
   const recent = attempts.slice(-8).reverse();
   const available = useMemo(() => buildReviewQueue(dueReviews, c0PilotPacks), [dueReviews]);
@@ -31,6 +31,7 @@ export default function ReviewPage() {
     contentVersion: REVIEW_CONTENT_VERSION,
     orderedItemIds: REVIEW_ITEM_IDS,
     initialState: createReviewSession,
+    account: user,
   });
   const [answer, setAnswer] = useState('');
   const [helped, setHelped] = useState(false);
@@ -120,7 +121,7 @@ export default function ReviewPage() {
 
   const accepted = item?.choices?.find((choice) => choice.id === item.acceptedAnswers?.[0])?.text || item?.acceptedAnswers?.[0];
   const displayedSaveStatus = saveStatus === 'saved' ? sessionSaveStatus : saveStatus;
-  return <div className={styles.page}>{!ready ? <div className={styles.notice} role="status">Restoring the saved review…</div> : !writable && <div className={styles.notice} role="status"><strong>This review is open in another tab.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}<section className={styles.card}>
+  return <div className={styles.page}>{!ready ? <div className={styles.notice} role="status">Restoring the saved review…</div> : !writable && <div className={styles.notice} role="status"><strong>This review is open in another tab or linked device.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}<section className={styles.card}>
     <h1>Practise again</h1>
     <p>Reviewed skills return after 1, 3, 7, 14, and 30 days. Older overdue work and recent errors come first, with at most four independently reviewed items. Draft content is never admitted to this mastery queue.</p>
     {session.stage === 'idle' && <>{available.length ? <><p>{available.length} reviewed item{available.length === 1 ? ' is' : 's are'} due now.</p><button className={styles.primary} disabled={!writable} onClick={() => persist(createReviewSession(available))}>Start due review</button></> : <p>No independently reviewed skill is due now.</p>}</>}

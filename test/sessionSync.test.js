@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { claimCloudSession, cloudSessionDocumentId, saveCloudSession } from '../src/persistence/sessionSync.js';
 
 const candidate = {
-  userId: 'family/one',
+  userId: 'family-one',
   learnerId: 'jenn',
   sessionId: 'lesson:one',
   deviceId: 'ipad-a',
@@ -15,7 +15,7 @@ const candidate = {
 
 test('cloud session IDs are family, learner, and session scoped without path separators', () => {
   const id = cloudSessionDocumentId(candidate.userId, candidate.learnerId, candidate.sessionId);
-  assert.equal(id, 'family%2Fone__jenn__lesson%3Aone');
+  assert.equal(id, 'family-one__jenn__lesson%3Aone');
   assert.equal(id.includes('/'), false);
 });
 
@@ -40,6 +40,14 @@ test('a second device is read-only until explicit takeover', () => {
   assert.equal(takeover.record.revision, 2);
 });
 
+test('the returning owner advances its state while takeover preserves the server state', () => {
+  const first = claimCloudSession(null, candidate).record;
+  const resumed = claimCloudSession(first, { ...candidate, state: { stage: 'attempt' } });
+  assert.deepEqual(resumed.record.state, { stage: 'attempt' });
+  const takeover = claimCloudSession(resumed.record, { ...candidate, deviceId: 'ipad-b', state: { stage: 'teach' } }, { takeOver: true });
+  assert.deepEqual(takeover.record.state, { stage: 'attempt' });
+});
+
 test('takeover makes the old device and old revision unable to save', () => {
   const first = claimCloudSession(null, candidate).record;
   const current = claimCloudSession(first, { ...candidate, deviceId: 'ipad-b' }, { takeOver: true }).record;
@@ -53,6 +61,7 @@ test('takeover makes the old device and old revision unable to save', () => {
 test('a session cannot silently change learner, version, or item order', () => {
   const existing = claimCloudSession(null, candidate).record;
   assert.throws(() => claimCloudSession(existing, { ...candidate, learnerId: 'jess' }), /session_identity_mismatch/);
+  assert.throws(() => claimCloudSession(existing, { ...candidate, mode: 'assessment' }), /session_mode_mismatch/);
   assert.throws(() => claimCloudSession(existing, { ...candidate, contentVersion: 4 }), /session_content_version_mismatch/);
   assert.throws(() => saveCloudSession(existing, { ...candidate, ownerEpoch: 1, expectedRevision: 1, orderedItemIds: ['q2', 'q1'] }), /session_content_order_mismatch/);
 });

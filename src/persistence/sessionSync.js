@@ -15,6 +15,7 @@ function assertIdentity(record, expected) {
 }
 
 function assertPinnedContent(existing, candidate) {
+  if (existing.mode !== candidate.mode) throw sessionError('session_mode_mismatch');
   if (existing.contentVersion !== candidate.contentVersion) throw sessionError('session_content_version_mismatch');
   if (JSON.stringify(existing.orderedItemIds || []) !== JSON.stringify(candidate.orderedItemIds || [])) throw sessionError('session_content_order_mismatch');
 }
@@ -49,7 +50,8 @@ export function claimCloudSession(existing, candidate, { takeOver = false } = {}
     record: {
       ...existing,
       deviceId: candidate.deviceId,
-      status: existing.status === 'complete' ? 'complete' : 'active',
+      state: ownerChanged ? existing.state : candidate.state,
+      status: ownerChanged ? existing.status : candidate.status || existing.status,
       ownerEpoch: existing.ownerEpoch + (ownerChanged ? 1 : 0),
       revision: existing.revision + 1,
     },
