@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { saveRecording } from '../persistence/indexedDb';
-import { recordingSupport, startAudioRecording } from '../utils/recording';
+import { assessRecordingQuality, recordingSupport, startAudioRecording } from '../utils/recording';
 
-export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady }) {
+export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady, onReset }) {
   const controllerRef = useRef(null);
   const urlRef = useRef(null);
   const [status, setStatus] = useState('idle');
@@ -23,7 +23,12 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady 
   }, [itemId, learnerId, sessionId]);
 
   const start = async () => {
+    if (onReset) onReset();
+    else onReady(null);
     setMessage('');
+    if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+    urlRef.current = null;
+    setPlaybackUrl('');
     try {
       controllerRef.current = await startAudioRecording();
       setStatus('recording');
@@ -37,6 +42,12 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady 
     setStatus('saving');
     try {
       const result = await controllerRef.current.stop();
+      const quality = assessRecordingQuality(result);
+      if (!quality.usable) {
+        setStatus('error');
+        setMessage(quality.reason === 'recording_silent' ? 'No clear voice was detected. Try recording again, or continue as a technical issue; this is not a wrong answer.' : quality.reason === 'recording_too_short' ? 'That recording was too short. Try again, or continue as a technical issue; this is not a wrong answer.' : 'The recording was empty. Try again, or continue as a technical issue; this is not a wrong answer.');
+        return;
+      }
       const recordingId = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
       await saveRecording({ id: recordingId, itemId, learnerId, sessionId, ...result });
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
