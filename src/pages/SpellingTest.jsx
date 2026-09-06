@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/shuffle';
+import { EMPTY_SCORE, createSessionSnapshot, isPerfectScore, nextScore, restoreSessionSnapshot, scoreTotal } from '../learning/r1Core';
+import { readJson, sessionStorageKey, writeJson } from '../utils/localStore';
 import { playCorrectSound, playIncorrectSound, playMilestoneSound, playHintSound } from '../utils/sounds';
 import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
 import { triggerConfetti, triggerFireworks } from '../utils/confetti';
@@ -16,59 +19,124 @@ export default function SpellingTest() {
   );
 }
 
-function SpellingTestInner() {
-  const { activeWords, recordResult, selectedCategory, soundEnabled, unlockAchievement, useHint, hintsUsedToday, completeDailyChallenge, dailyChallengeDone, stats } = useWords();
-  const [shuffled, setShuffled] = useState([]);
+function SpellingTestInner({ sessionLearnerId }) {
+  const location = useLocation();
+  const {
+    activeWords,
+    activeProfileId,
+    recordResult,
+    selectedCategory,
+    soundEnabled,
+    unlockAchievement,
+    useHint,
+    hintsUsedToday,
+    dailyChallengeWord,
+    dailyChallengeId,
+    recordDailyChallengeAttempt,
+  } = useWords();
+  const mode = new URLSearchParams(location.search).get('mode') === 'daily' ? 'daily' : 'practice';
+  const learnerId = sessionLearnerId || activeProfileId;
+  const availableWords = mode === 'daily' ? (dailyChallengeWord || []) : activeWords;
+  const category = mode === 'daily' ? dailyChallengeId || 'daily-loading' : selectedCategory;
+  const sessionKey = sessionStorageKey(learnerId, mode, category);
+  const [words, setWords] = useState([]);
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState('');
-  const [feedback, setFeedback] = useState(null); // 'correct' | 'incorrect' | null
-  const [score, setScore] = useState({ correct: 0, incorrect: 0, skipped: 0 });
+  const [feedback, setFeedback] = useState(null);
+  const [score, setScore] = useState({ ...EMPTY_SCORE });
   const [finished, setFinished] = useState(false);
   const [started, setStarted] = useState(false);
+  const [showHintContent, setShowHintContent] = useState(false);
+  const [speechError, setSpeechError] = useState(null);
   const inputRef = useRef(null);
-  const [showHintContent, setShowHintContent] = useState(null);
 
-  useEffect(() => {
-    setShuffled(shuffle(activeWords));
+  const resetSession = useCallback((autoStart = false) => {
+    const freshWords = mode === 'daily' ? [...availableWords] : shuffle(availableWords);
+    setWords(freshWords);
     setIndex(0);
     setInput('');
     setFeedback(null);
-    setScore({ correct: 0, incorrect: 0, skipped: 0 });
+    setScore({ ...EMPTY_SCORE });
     setFinished(false);
-    setStarted(false);
-  }, [activeWords, selectedCategory]);
+    setStarted(autoStart);
+    setShowHintContent(false);
+    setSpeechError(null);
+    return freshWords;
+  }, [availableWords, mode]);
 
-  const current = shuffled[index];
+  useEffect(() => {
+    if (!availableWords.length) return;
+    const restored = restoreSessionSnapshot(readJson(sessionKey), {
+      learnerId,
+      mode,
+      category,
+      words: availableWords,
+    });
+    if (restored) {
+      setWords(restored.words);
+      setIndex(Math.min(restored.index, restored.words.length - 1));
+      setScore(restored.score || { ...EMPTY_SCORE });
+      setStarted(Boolean(restored.started));
+      setFinished(Boolean(restored.finished));
+      setInput('');
+      setFeedback(null);
+    } else {
+      resetSession(false);
+    }
+  }, [sessionKey, learnerId, mode, category, availableWords, resetSession]);
 
-  const speakCurrent = useCallback(() => {
-    if (current) speak(current.word);
+  useEffect(() => {
+    if (!words.length) return;
+    writeJson(sessionKey, createSessionSnapshot({ learnerId, mode, category, words, index, score, started, finished }));
+  }, [sessionKey, learnerId, mode, category, words, index, score, started, finished]);
+
+  const current = words[index];
+
+  const speakWord = useCallback(async (word = current) => {
+    if (!word) return;
+    const result = await speak(word.word, { lang: 'en-CA' });
+    setSpeechError(result?.ok ? null : 'Audio could not start. Tap Play Again to retry, or continue without audio.');
   }, [current]);
 
   const handleStart = () => {
+    const startingWords = finished ? resetSession(true) : words;
     setStarted(true);
     setTimeout(() => {
-      speakCurrent();
+      speakWord(startingWords[0]);
       inputRef.current?.focus();
-    }, 300);
+    }, 100);
   };
 
   const handleUseHint = async () => {
     const success = await useHint();
     if (success) {
       playHintSound();
-      setShowHintContent('hint-shown');
+      setShowHintContent(true);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!input.trim() || feedback) return;
+  const persistOutcome = (outcome, correct) => {
+    const evidenceType = outcome === 'skipped'
+      ? 'skip'
+      : showHintContent ? 'assisted_spelling' : 'independent_spelling';
+    recordResult(current.id, correct, {
+      learnerId,
+      evidenceType,
+      helped: showHintContent,
+      skipped: outcome === 'skipped',
+      sessionId: sessionKey,
+    });
+    if (mode === 'daily') recordDailyChallengeAttempt(current.id, outcome);
+  };
 
-    const isCorrect = input.trim().toLowerCase() === current.word.toLowerCase();
-    setFeedback(isCorrect ? 'correct' : 'incorrect');
-    recordResult(current.id, isCorrect);
-
-    if (isCorrect) {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!input.trim() || feedback || !current) return;
+    const correct = input.trim().toLowerCase() === current.word.toLowerCase();
+    setFeedback(correct ? 'correct' : 'incorrect');
+    setScore((previous) => nextScore(previous, correct ? 'correct' : 'incorrect'));
+    persistOutcome(correct ? 'correct' : 'incorrect', correct);
+    if (correct) {
       if (soundEnabled) playCorrectSound();
       hapticSuccess();
       triggerConfetti('light');
@@ -76,49 +144,45 @@ function SpellingTestInner() {
       if (soundEnabled) playIncorrectSound();
       hapticError();
     }
-
-    setScore((s) => ({
-      ...s,
-      correct: s.correct + (isCorrect ? 1 : 0),
-      incorrect: s.incorrect + (isCorrect ? 0 : 1),
-    }));
   };
 
-  const handleNext = () => {
-    if (index + 1 >= shuffled.length) {
-      setFinished(true);
-      const total = score.correct + score.incorrect + score.skipped;
-      const isPerfect = score.correct === total && total > 0;
-      if (isPerfect) {
-        if (soundEnabled) playMilestoneSound();
-        hapticMilestone();
-        triggerFireworks();
-        unlockAchievement('perfect_round');
-      }
-    } else {
-      const nextWord = shuffled[index + 1];
-      setIndex((i) => i + 1);
-      setInput('');
-      setFeedback(null);
-      setShowHintContent(null);
-      setTimeout(() => {
-        if (nextWord) speak(nextWord.word);
-        inputRef.current?.focus();
-      }, 100);
+  const finishSession = (finalScore) => {
+    setScore(finalScore);
+    setFinished(true);
+    if (mode !== 'daily' && isPerfectScore(finalScore)) {
+      if (soundEnabled) playMilestoneSound();
+      hapticMilestone();
+      triggerFireworks();
+      unlockAchievement('perfect_round');
     }
   };
 
-  const handleSkip = () => {
-    setScore((s) => ({ ...s, skipped: s.skipped + 1 }));
-    handleNext();
+  const handleNext = (finalScore = score) => {
+    if (index + 1 >= words.length) {
+      finishSession(finalScore);
+      return;
+    }
+    const nextWord = words[index + 1];
+    setIndex((value) => value + 1);
+    setInput('');
+    setFeedback(null);
+    setShowHintContent(false);
+    setTimeout(() => {
+      speakWord(nextWord);
+      inputRef.current?.focus();
+    }, 100);
   };
 
-  if (!activeWords.length) {
-    return (
-      <div className={styles.empty}>
-        <p>No words in this category. Add some words to get started!</p>
-      </div>
-    );
+  const handleSkip = () => {
+    if (!current) return;
+    const finalScore = nextScore(score, 'skipped');
+    setScore(finalScore);
+    persistOutcome('skipped', false);
+    handleNext(finalScore);
+  };
+
+  if (!availableWords.length || !words.length) {
+    return <div className={styles.empty}><p>{mode === 'daily' ? 'Preparing today’s challenge…' : 'No words in this category.'}</p></div>;
   }
 
   if (!started) {
@@ -126,52 +190,31 @@ function SpellingTestInner() {
       <div className={styles.container}>
         <div className={styles.startCard}>
           <span className={styles.startIcon} aria-hidden="true">✏️</span>
-          <h1 className={styles.startTitle}>Spelling Test</h1>
-          <p className={styles.startInfo}>
-            You'll hear {shuffled.length} words spoken aloud. Type the correct spelling for each one.
-          </p>
-          <button className={styles.startButton} onClick={handleStart}>
-            Start Test
-          </button>
+          <h1 className={styles.startTitle}>{mode === 'daily' ? 'Daily Challenge' : 'Spelling Test'}</h1>
+          <p className={styles.startInfo}>You’ll hear {words.length} words. Type each spelling, or skip it for later practice.</p>
+          <button className={styles.startButton} onClick={handleStart}>Start {mode === 'daily' ? 'Challenge' : 'Test'}</button>
         </div>
       </div>
     );
   }
 
   if (finished) {
-    const total = score.correct + score.incorrect + score.skipped;
-    const pct = total > 0 ? Math.round((score.correct / total) * 100) : 0;
-    const isPerfect = score.correct === total && total > 0;
-
+    const total = scoreTotal(score);
+    const percentage = total ? Math.round((score.correct / total) * 100) : 0;
+    const perfect = mode !== 'daily' && isPerfectScore(score);
     return (
       <div className={styles.container}>
         <div className={styles.finishCard}>
-          <span className={styles.finishIcon} aria-hidden="true">
-            {isPerfect ? '👑' : pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪'}
-          </span>
-          <h1 className={styles.finishTitle}>Test Complete!</h1>
-          {isPerfect && <p className={styles.perfect}>Perfect Score! 🌟</p>}
+          <span className={styles.finishIcon} aria-hidden="true">{perfect ? '👑' : percentage >= 80 ? '🎉' : percentage >= 50 ? '👍' : '💪'}</span>
+          <h1 className={styles.finishTitle}>{mode === 'daily' ? 'Challenge Complete!' : 'Test Complete!'}</h1>
+          {perfect && <p className={styles.perfect}>Perfect Score! 🌟</p>}
           <div className={styles.finishStats}>
-            <div className={styles.finishStat}>
-              <span className={styles.finishStatNum}>{score.correct}</span>
-              <span>Correct</span>
-            </div>
-            <div className={styles.finishStat}>
-              <span className={styles.finishStatNum}>{score.incorrect}</span>
-              <span>Incorrect</span>
-            </div>
-            <div className={styles.finishStat}>
-              <span className={styles.finishStatNum}>{score.skipped}</span>
-              <span>Skipped</span>
-            </div>
-            <div className={styles.finishStat}>
-              <span className={styles.finishStatNum}>{pct}%</span>
-              <span>Score</span>
-            </div>
+            <div className={styles.finishStat}><span className={styles.finishStatNum}>{score.correct}</span><span>Correct</span></div>
+            <div className={styles.finishStat}><span className={styles.finishStatNum}>{score.incorrect}</span><span>Incorrect</span></div>
+            <div className={styles.finishStat}><span className={styles.finishStatNum}>{score.skipped}</span><span>Skipped</span></div>
+            <div className={styles.finishStat}><span className={styles.finishStatNum}>{percentage}%</span><span>Score</span></div>
           </div>
-          <button className={styles.startButton} onClick={handleStart}>
-            Try Again
-          </button>
+          <button className={styles.startButton} onClick={handleStart}>Try Again</button>
         </div>
       </div>
     );
@@ -179,106 +222,30 @@ function SpellingTestInner() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.visuallyHidden}>Spelling Test</h1>
-      <div
-        className={styles.progressBar}
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={shuffled.length}
-        aria-valuenow={index}
-        aria-label={`Word ${index + 1} of ${shuffled.length}`}
-      >
-        <div className={styles.progressFill} style={{ width: `${((index) / shuffled.length) * 100}%` }} />
+      <h1 className={styles.visuallyHidden}>{mode === 'daily' ? 'Daily Challenge' : 'Spelling Test'}</h1>
+      <div className={styles.progressBar} role="progressbar" aria-valuemin={0} aria-valuemax={words.length} aria-valuenow={index} aria-label={`Word ${index + 1} of ${words.length}`}>
+        <div className={styles.progressFill} style={{ width: `${(index / words.length) * 100}%` }} />
       </div>
-      <div className={styles.counter}>
-        Word {index + 1} of {shuffled.length}
-      </div>
-
+      <div className={styles.counter}>Word {index + 1} of {words.length}</div>
       <div className={styles.card}>
         <div className={styles.cardHeader}>
-          <button className={styles.speakBtn} onClick={speakCurrent} aria-label="Say the word again">
-            <span aria-hidden="true">🔊 </span>Play Again
-          </button>
-          <button
-            className={styles.hintBtn}
-            onClick={handleUseHint}
-            disabled={hintsUsedToday >= 3}
-            title={`${3 - hintsUsedToday} hints left`}
-            aria-label={`Use hint (${3 - hintsUsedToday} remaining)`}
-          >
-            💡 {3 - hintsUsedToday}
-          </button>
+          <button className={styles.speakBtn} onClick={() => speakWord()} aria-label="Say the word again"><span aria-hidden="true">🔊 </span>Play Again</button>
+          <button className={styles.hintBtn} onClick={handleUseHint} disabled={hintsUsedToday >= 3} title={`${3 - hintsUsedToday} hints left`} aria-label={`Use hint (${3 - hintsUsedToday} remaining)`}>💡 {3 - hintsUsedToday}</button>
         </div>
-
+        {speechError && <p role="alert">{speechError}</p>}
         <p className={styles.definition}>{current.definition}</p>
-
-        {showHintContent && hintsUsedToday > 0 && (
-          <div className={styles.hintBox}>
-            <p><strong>Hint:</strong> {current.word.charAt(0).toUpperCase()}... ({current.word.length} letters)</p>
-          </div>
-        )}
-
+        {showHintContent && <div className={styles.hintBox}><p><strong>Hint:</strong> {current.word.charAt(0).toUpperCase()}… ({current.word.length} letters)</p></div>}
         <form className={styles.form} onSubmit={handleSubmit}>
-          <label htmlFor="spelling-answer" className={styles.visuallyHidden}>
-            Type the word you heard
-          </label>
-          <input
-            id="spelling-answer"
-            ref={inputRef}
-            className={`${styles.input} ${feedback === 'correct' ? styles.inputCorrect : ''} ${feedback === 'incorrect' ? styles.inputIncorrect : ''}`}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type the word..."
-            autoComplete="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            disabled={!!feedback}
-            aria-invalid={feedback === 'incorrect' ? 'true' : 'false'}
-          />
-          {!feedback && (
-            <button type="submit" className={styles.submitBtn} disabled={!input.trim()}>
-              Check
-            </button>
-          )}
+          <label htmlFor="spelling-answer" className={styles.visuallyHidden}>Type the word you heard</label>
+          <input id="spelling-answer" ref={inputRef} className={`${styles.input} ${feedback === 'correct' ? styles.inputCorrect : ''} ${feedback === 'incorrect' ? styles.inputIncorrect : ''}`} type="text" value={input} onChange={(event) => setInput(event.target.value)} placeholder="Type the word…" autoComplete="off" autoCapitalize="off" spellCheck={false} disabled={Boolean(feedback)} aria-invalid={feedback === 'incorrect' ? 'true' : 'false'} />
+          {!feedback && <button type="submit" className={styles.submitBtn} disabled={!input.trim()}>Check</button>}
         </form>
-
-        <div role="status" aria-live="polite" className={styles.visuallyHidden}>
-          {feedback === 'correct' && 'Correct!'}
-          {feedback === 'incorrect' && `Incorrect. The correct spelling is ${current.word}.`}
-        </div>
-
-        {feedback === 'correct' && (
-          <div className={styles.correctFeedback}>
-            <span className={styles.feedbackIcon} aria-hidden="true">✅</span> Correct!
-          </div>
-        )}
-
-        {feedback === 'incorrect' && (
-          <div className={styles.incorrectFeedback}>
-            <span className={styles.feedbackIcon} aria-hidden="true">❌</span>
-            The correct spelling is: <strong>{current.word}</strong>
-          </div>
-        )}
-
-        {feedback && (
-          <div className={styles.afterFeedback}>
-            <button className={styles.nextBtn} onClick={handleNext}>
-              Next →
-            </button>
-          </div>
-        )}
-
-        {!feedback && (
-          <button className={styles.skipBtn} onClick={handleSkip}>
-            Skip this word
-          </button>
-        )}
+        <div role="status" aria-live="polite" className={styles.visuallyHidden}>{feedback === 'correct' && 'Correct!'}{feedback === 'incorrect' && `Incorrect. The correct spelling is ${current.word}.`}</div>
+        {feedback === 'correct' && <div className={styles.correctFeedback}><span aria-hidden="true">✅</span> Correct!</div>}
+        {feedback === 'incorrect' && <div className={styles.incorrectFeedback}><span aria-hidden="true">❌</span> The correct spelling is: <strong>{current.word}</strong></div>}
+        {feedback ? <div className={styles.afterFeedback}><button className={styles.nextBtn} onClick={() => handleNext()}>Next →</button></div> : <button className={styles.skipBtn} onClick={handleSkip}>Skip this word</button>}
       </div>
-
-      <div className={styles.liveScore}>
-        ✅ {score.correct} &nbsp; ❌ {score.incorrect} &nbsp; ⏭ {score.skipped}
-      </div>
+      <div className={styles.liveScore}>✅ {score.correct} &nbsp; ❌ {score.incorrect} &nbsp; ⏭ {score.skipped}</div>
     </div>
   );
 }

@@ -31,6 +31,15 @@ service cloud.firestore {
         request.auth.uid == resource.data.userId;
     }
 
+    // Immutable attempt events preserve evidence type and learner attribution.
+    match /spelling-attempts/{document} {
+      allow read: if request.auth.uid != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid != null &&
+        request.auth.uid == request.resource.data.userId &&
+        document.matches(request.auth.uid + '_.*');
+      allow update, delete: if false;
+    }
+
     // Achievements — per-user/profile
     match /spelling-achievements/{document} {
       allow read, write: if

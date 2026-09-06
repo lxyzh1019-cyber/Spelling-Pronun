@@ -29,22 +29,36 @@ let initPromise;
 export function ensureAuth() {
   if (!initPromise) {
     initPromise = new Promise((resolve) => {
-      const unsub = onAuthStateChanged(auth, (user) => {
+      let settled = false;
+      let unsub = () => {};
+      const finish = (user) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        unsub();
+        resolve(user);
+      };
+      const timeout = setTimeout(() => {
+        console.warn('Authentication timed out; continuing in local-only mode');
+        finish(null);
+      }, 5000);
+      unsub = onAuthStateChanged(auth, (user) => {
         if (user) {
-          unsub();
-          resolve(user);
+          finish(user);
         } else {
           // If anonymous auth is disabled or the network is down, resolve
           // with null so the app falls through to local-only mode instead of
           // hanging forever on a never-settled promise.
           signInAnonymously(auth)
-            .then((cred) => resolve(cred.user))
+            .then((cred) => finish(cred.user))
             .catch((err) => {
               console.warn('Anonymous sign-in failed; continuing offline:', err);
-              unsub();
-              resolve(null);
+              finish(null);
             });
         }
+      }, (err) => {
+        console.warn('Authentication state could not be read:', err);
+        finish(null);
       });
     });
   }

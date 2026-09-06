@@ -31,14 +31,14 @@ export const ACHIEVEMENTS = {
   five_streak: {
     id: 'five_streak',
     name: '🔥 On Fire',
-    description: 'Get a 5-word streak',
+    description: 'Get the same word right 5 times in a row',
     icon: '🔥',
     condition: (stats) => stats.bestStreak >= 5,
   },
   ten_streak: {
     id: 'ten_streak',
     name: '⚡ Unstoppable',
-    description: 'Get a 10-word streak',
+    description: 'Get the same word right 10 times in a row',
     icon: '⚡',
     condition: (stats) => stats.bestStreak >= 10,
   },
@@ -69,6 +69,13 @@ export const ACHIEVEMENTS = {
     description: 'Use all daily hints',
     icon: '💡',
     condition: () => false, // Set manually in game logic
+  },
+  daily_champion: {
+    id: 'daily_champion',
+    name: '🎯 Daily Champion',
+    description: 'Attempt every word in a daily challenge',
+    icon: '🎯',
+    condition: () => false,
   },
 };
 

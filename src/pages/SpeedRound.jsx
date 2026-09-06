@@ -109,11 +109,11 @@ export default function SpeedRound() {
       if (soundEnabled) playCorrectSound();
       hapticSuccess();
       triggerConfetti('light');
-      recordResult(current.id, true);
+      recordResult(current.id, true, { evidenceType: 'timed_retrieval_practice' });
     } else {
       if (soundEnabled) playIncorrectSound();
       hapticError();
-      recordResult(current.id, false);
+      recordResult(current.id, false, { evidenceType: 'timed_retrieval_practice' });
     }
 
     advance(true);
@@ -121,7 +121,7 @@ export default function SpeedRound() {
 
   const handlePass = () => {
     const current = words[index];
-    if (current) recordResult(current.id, false);
+    if (current) recordResult(current.id, false, { evidenceType: 'timed_retrieval_practice', skipped: true });
     advance(false);
   };
 

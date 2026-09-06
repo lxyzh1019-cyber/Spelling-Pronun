@@ -25,7 +25,8 @@ export default function Home() {
     toggleSound,
     dailyChallengeWord,
     dailyChallengeDone,
-    completeDailyChallenge,
+    authStatus,
+    syncError,
   } = useWords();
 
   return (
@@ -48,12 +49,17 @@ export default function Home() {
         </div>
       </section>
 
+      {authStatus !== 'online' && (
+        <p role="status">Offline mode: progress is saved on this device.</p>
+      )}
+      {syncError && <p role="alert">{syncError}</p>}
+
       {dailyChallengeWord && !dailyChallengeDone && (
         <section className={styles.dailyChallenge}>
           <div className={styles.dailyCard}>
             <h2 className={styles.dailyTitle}>🎯 Daily Challenge</h2>
             <p className={styles.dailyDesc}>
-              Complete these 5 words for bonus XP!
+              Attempt these 5 words. Skips are saved for later practice.
             </p>
             <div className={styles.dailyWords}>
               {dailyChallengeWord.map((w, idx) => (
@@ -62,7 +68,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <Link to="/test" className={styles.dailyBtn}>
+            <Link to="/test?mode=daily" className={styles.dailyBtn}>
               Start Challenge →
             </Link>
           </div>
@@ -116,7 +122,7 @@ export default function Home() {
           <span className={`${styles.statNumber} ${stats.bestStreak >= 5 ? styles.fire : ''}`}>
             {stats.bestStreak >= 5 ? '🔥' : ''} {stats.bestStreak}
           </span>
-          <span className={styles.statLabel}>Best Streak</span>
+          <span className={styles.statLabel}>Best Same-Word Streak</span>
         </div>
       </section>
 
