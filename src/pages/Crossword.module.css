@@ -66,15 +66,15 @@
 }
 
 .blackCell {
-  width: 42px;
-  height: 42px;
+  width: var(--crossword-cell-size, 42px);
+  height: var(--crossword-cell-size, 42px);
   background: var(--gray-800);
   border: 1px solid var(--gray-700);
 }
 
 .cell {
-  width: 42px;
-  height: 42px;
+  width: var(--crossword-cell-size, 42px);
+  height: var(--crossword-cell-size, 42px);
   border: 1px solid var(--gray-300);
   position: relative;
   display: flex;

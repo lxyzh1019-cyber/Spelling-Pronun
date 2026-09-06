@@ -48,7 +48,7 @@ export default function Hangman() {
             if (newWrong >= MAX_WRONG) {
               setGameOver(true);
               setWon(false);
-              if (wordEntry) recordResult(wordEntry.id, false);
+              if (wordEntry) recordResult(wordEntry.id, false, { evidenceType: 'visible_letters_game' });
             }
             return newWrong;
           });
@@ -65,7 +65,7 @@ export default function Hangman() {
             playMilestoneSound();
             hapticMilestone();
             triggerConfetti('heavy');
-            if (wordEntry) recordResult(wordEntry.id, true);
+            if (wordEntry) recordResult(wordEntry.id, true, { evidenceType: 'visible_letters_game' });
           }
         }
 

@@ -1,0 +1,286 @@
+{
+  "version": 1,
+  "accessedDate": "2026-09-06",
+  "sources": [
+    {
+      "id": "ab-elal-2022-overview",
+      "authority": "Government of Alberta",
+      "title": "English language arts and literature",
+      "url": "https://www.alberta.ca/curriculum-english-language-arts",
+      "supports": [
+        "Grades 4–6 apply grammar, spelling, and punctuation in written communication.",
+        "The curriculum includes reading, writing, listening, speaking, viewing, and representing."
+      ]
+    },
+    {
+      "id": "ab-eal-benchmarks-4-6",
+      "authority": "Alberta Education",
+      "title": "Alberta K–12 ESL Proficiency Benchmarks: Grades 4–6",
+      "url": "https://curriculum.learnalberta.ca/cdn/resources/m/documents/eslapb/ESL%20Benchmarks%20Grades%204-6.pdf",
+      "supports": [
+        "Grades 4–6 writing observations include pronouns, verb tense, plurals, word order, and subject–verb agreement.",
+        "Scaffolding and explicit instruction may be appropriate for learners developing academic English."
+      ]
+    },
+    {
+      "id": "ca-language-portal-subject",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "subject",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/subject",
+      "supports": [
+        "A complete sentence has a subject and a predicate.",
+        "An imperative sentence normally has the understood subject you."
+      ]
+    },
+    {
+      "id": "ca-language-portal-predicate",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "predicate",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/predicate-",
+      "supports": [
+        "A predicate contains the verb and says something about the subject.",
+        "A predicate may also contain modifiers and complements."
+      ]
+    },
+    {
+      "id": "ca-language-portal-recognizing-clauses",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Recognizing clauses",
+      "url": "https://our-languages.canada.ca/en/hypergrammar-2/recognizing-clauses",
+      "supports": [
+        "A clause contains a subject and a predicate, unlike a phrase.",
+        "A direct command may have an understood subject."
+      ]
+    },
+    {
+      "id": "ca-language-portal-sentence-structure",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "The structure of a sentence",
+      "url": "https://our-languages.canada.ca/en/hypergrammar-2/the-structure-of-a-sentence",
+      "supports": [
+        "Sentence length does not determine whether a sentence is complete.",
+        "A simple sentence contains one independent clause."
+      ]
+    },
+    {
+      "id": "ca-language-portal-fragments",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "fragment, sentence fragment",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/fragment-sentence-fragment",
+      "supports": [
+        "A sentence fragment does not express a complete thought.",
+        "Fragments may lack a subject or verb or may be dependent clauses or phrases."
+      ]
+    },
+    {
+      "id": "ca-language-portal-capitalization-general",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "capitalization: general points",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/capitalization-general-points",
+      "supports": [
+        "Capital letters distinguish proper nouns from common nouns.",
+        "Capitalization practice should be consistent with an identified style."
+      ]
+    },
+    {
+      "id": "ca-language-portal-initial-words",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "capitalization: initial words",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/capitalization-initial-words",
+      "supports": [
+        "Capitalize the first word of a sentence or sentence equivalent.",
+        "Capitalize the first word of a direct question."
+      ]
+    },
+    {
+      "id": "ca-language-portal-sentence-purpose",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "The purpose of a sentence",
+      "url": "https://our-languages.canada.ca/en/hypergrammar-2/the-purpose-of-a-sentence",
+      "supports": [
+        "Declarative sentences normally end in periods and direct questions in question marks.",
+        "Commands may end in a period or exclamation mark depending on force; polite commands with please normally use a period."
+      ]
+    },
+    {
+      "id": "ca-language-portal-personal-names",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "capitalization: personal names",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/capitalization-personal-names",
+      "supports": [
+        "Personal names are capitalized.",
+        "Individual capitalization preferences in names should be respected."
+      ]
+    },
+    {
+      "id": "ca-language-portal-family-capitals",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Capitalization: Family relationships",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/capitalization-family-relationships",
+      "supports": [
+        "An unmodified family term is capitalized when it forms part of a name.",
+        "A family term used by itself as a name is capitalized."
+      ]
+    },
+    {
+      "id": "ca-language-portal-publication-capitals",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "capitalization: publications and works of art",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/capitalization-publications-and-works-of-art",
+      "supports": [
+        "The first word of an English title is capitalized.",
+        "Short prepositions within English titles may remain lowercase."
+      ]
+    },
+    {
+      "id": "ca-language-portal-provinces-territories",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Abbreviations: Canadian provinces and territories",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/abbreviations-canadian-provinces-and-territories",
+      "supports": [
+        "Canadian province and territory names use their official capitalized forms.",
+        "Nova Scotia and Alberta are official province names."
+      ]
+    },
+    {
+      "id": "ca-language-portal-personal-pronouns",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "personal pronouns",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/personal-pronouns",
+      "supports": [
+        "Subject pronouns use forms such as I, we, he, she and they.",
+        "Objects of verbs and prepositions use forms such as me, us, him, her and them."
+      ]
+    },
+    {
+      "id": "ca-language-portal-pronoun-case-quiz",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Pronoun case: Is it ‘they’ or ‘them’?",
+      "url": "https://our-languages.canada.ca/en/quiz/pronoun-case-they-or-them-eng",
+      "supports": [
+        "Subject and object pronouns take different case forms.",
+        "Removing the other part of a compound subject or object is a useful case check."
+      ]
+    },
+    {
+      "id": "ca-language-portal-prepositions",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "prepositions",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/prepositions",
+      "supports": [
+        "A preposition is followed by an object.",
+        "Between you and me uses object-form pronouns after the preposition."
+      ]
+    },
+    {
+      "id": "ca-language-portal-singular-they",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Gender-inclusive writing: Use the singular ‘they’",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/gender-inclusive-writing-use-the-singular-they",
+      "supports": [
+        "Singular they is accepted in formal writing for a person of unknown gender and for people who use that pronoun.",
+        "They remains the subject form and takes plural-form verbs even when its meaning is singular."
+      ]
+    },
+    {
+      "id": "ca-language-portal-double-consonant",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Spelling: When to double the final consonant before a suffix",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/spelling-final-consonants-doubled-before-a-suffix",
+      "supports": [
+        "One-syllable roots ending in a single vowel and consonant normally double that consonant before a vowel suffix.",
+        "Multisyllable roots normally double the final consonant when the final syllable is stressed, subject to stated exceptions."
+      ]
+    },
+    {
+      "id": "ca-language-portal-silent-e",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "spelling: words ending in a silent ‘e’",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/spelling-words-ending-in-a-silent-e",
+      "supports": [
+        "A final silent e is usually dropped before a suffix beginning with a vowel.",
+        "A final e after c or g is retained before a or o when needed to preserve the soft consonant sound; noticeable is an explicit example."
+      ]
+    },
+    {
+      "id": "ca-language-portal-ending-c",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "spelling: words ending in ‘c’",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/spelling-words-ending-in-c",
+      "supports": [
+        "Words ending in hard c add k before e, i or y.",
+        "Picnicking and panicky are explicit examples of the pattern."
+      ]
+    },
+    {
+      "id": "ca-language-portal-suffix-y",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Suffixes after ‘y’: Keep the ‘y’ or switch to ‘i’?",
+      "url": "https://our-languages.canada.ca/en/quiz/suffixes-y-or-switch-to-i-eng",
+      "supports": [
+        "A final y after a consonant generally changes to i before a suffix.",
+        "The pattern has exceptions and should not be presented as universal."
+      ]
+    },
+    {
+      "id": "ca-language-portal-prefix-in",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "in-, il-, im-, ir-",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/in-il-im-ir-",
+      "supports": [
+        "The prefix in- changes to im- before b, m or p.",
+        "Impossible is an explicit example."
+      ]
+    },
+    {
+      "id": "ca-language-portal-analyze",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "analyze, analyse",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/analyze-analyse",
+      "supports": [
+        "Analyze and analyse are both used by Canadian writers.",
+        "Canadian usage shows a growing preference for the -yze form."
+      ]
+    },
+    {
+      "id": "ca-language-portal-canadian-spelling",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Why Canadian spelling is different",
+      "url": "https://our-languages.canada.ca/en/blogue-blog/canadian-spelling-eng",
+      "supports": [
+        "Colour is the generally preferred Canadian form.",
+        "Canadian spelling combines conventions from multiple varieties and should be checked rather than inferred from one universal rule."
+      ]
+    },
+    {
+      "id": "tna-william-caxton",
+      "authority": "The National Archives (UK)",
+      "title": "William Caxton",
+      "url": "https://www.nationalarchives.gov.uk/education/resources/significant-people-collection/william-caxton/",
+      "supports": [
+        "William Caxton is thought to have brought the printing press to England.",
+        "The National Archives dates the first item printed in England by Caxton to 1476."
+      ]
+    },
+    {
+      "id": "bl-printer-guide",
+      "authority": "British Library",
+      "title": "The Printer",
+      "url": "https://idp.bl.uk/wp-content/uploads/2025/01/BL.SR_.Large_.Print_.Guide_.V3.pdf",
+      "supports": [
+        "Printing technology emerged in China centuries before it appeared in Europe.",
+        "Printing spread through workshops in multiple regions rather than beginning in England."
+      ]
+    },
+    {
+      "id": "bl-ames-printing-collections",
+      "authority": "British Library Archives and Manuscripts Catalogue",
+      "title": "Add MS 5151: Collections for a history of printing in England, Scotland and Ireland",
+      "url": "https://searcharchives.bl.uk/catalog/032-003320313",
+      "supports": [
+        "The collection contains papers, letters, memoranda, drafts, amendments, and printer-related records.",
+        "The catalogue documents later handwritten correction and copying within collections about printing history."
+      ]
+    }
+  ]
+}

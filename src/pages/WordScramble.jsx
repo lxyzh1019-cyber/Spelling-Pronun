@@ -20,7 +20,7 @@ export default function WordScramble() {
   );
 }
 
-function WordScrambleInner() {
+function WordScrambleInner({ sessionLearnerId }) {
   const { activeWords, recordResult } = useWords();
   const [currentWord, setCurrentWord] = useState(null);
   const [scrambled, setScrambled] = useState([]);
@@ -66,13 +66,13 @@ function WordScrambleInner() {
     const isCorrect = guess === currentWord.word;
     if (isCorrect) {
       setFeedback('correct');
-      recordResult(currentWord.id, true);
+      recordResult(currentWord.id, true, { learnerId: sessionLearnerId, evidenceType: hintRevealed ? 'assisted_game' : 'visible_tiles_game', helped: hintRevealed });
     } else {
       const newAttempts = attemptsLeft - 1;
       setAttemptsLeft(newAttempts);
       if (newAttempts <= 0) {
         setFeedback('incorrect');
-        recordResult(currentWord.id, false);
+        recordResult(currentWord.id, false, { learnerId: sessionLearnerId, evidenceType: 'visible_tiles_game', helped: hintRevealed });
       } else {
         // Wrong but still have attempts — just let them try again
         setFeedback(null);

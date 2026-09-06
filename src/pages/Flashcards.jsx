@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useWords } from '../context/WordProvider';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/shuffle';
@@ -13,12 +13,18 @@ export default function Flashcards() {
   );
 }
 
-function FlashcardsInner() {
+function FlashcardsInner({ sessionLearnerId }) {
   const { activeWords, recordResult } = useWords();
   const [cards, setCards] = useState(() => [...activeWords]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [shuffledMode, setShuffledMode] = useState(false);
+
+  useEffect(() => {
+    setCards(shuffledMode ? shuffle(activeWords) : [...activeWords]);
+    setIndex(0);
+    setFlipped(false);
+  }, [activeWords, sessionLearnerId]);
 
   const current = cards[index];
 
@@ -35,7 +41,7 @@ function FlashcardsInner() {
   };
 
   const handleSelfRate = (gotIt) => {
-    if (current) recordResult(current.id, gotIt);
+    if (current) recordResult(current.id, gotIt, { learnerId: sessionLearnerId, evidenceType: 'self_report' });
     handleNext();
   };
 
