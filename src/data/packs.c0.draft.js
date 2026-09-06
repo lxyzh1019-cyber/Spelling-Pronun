@@ -6,14 +6,16 @@ const ROLE_SEQUENCE = [
   ...Array(4).fill('delayed_review'),
 ];
 
-const sourceIds = ['ab-elal-2022-overview', 'ab-eal-benchmarks-4-6'];
+const defaultSourceIds = ['ab-elal-2022-overview', 'ab-eal-benchmarks-4-6'];
 
-function makePack(skillId, title, rule, helpSteps, rows) {
+function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
   if (rows.length !== 24) throw new Error(`${skillId} must contain 24 rows`);
+  const sourceIds = options.sourceIds || defaultSourceIds;
+  const reviewStatus = options.reviewStatus || 'needs_independent_challenge';
   return {
     id: `c0.pack.${skillId.toLowerCase()}`,
     version: 1,
-    status: 'draft_needs_independent_challenge',
+    status: options.status || 'draft_needs_independent_challenge',
     skillId,
     title,
     rule,
@@ -40,7 +42,7 @@ function makePack(skillId, title, rule, helpSteps, rows) {
         evidenceEligibility: ['independent', 'transfer', 'delayed_review'].includes(role) ? `independent_${role}` : 'instruction_only',
         transferGroup: `${skillId.toLowerCase()}-${row.transferGroup || index + 1}`,
         authorStatus: 'draft',
-        reviewStatus: 'needs_independent_challenge',
+        reviewStatus,
         sourceIds,
       };
     }),
@@ -92,7 +94,7 @@ const sentenceRows = [
   choice('Which group can stand alone as a sentence?', 'a', [['a', 'My cousins from Calgary are visiting.'], ['b', 'My cousins from Calgary']], 'Are visiting completes what the cousins are doing.', 'predicate-verb'),
   choice('Choose the complete sentence.', 'b', [['a', 'Running quickly toward the gate'], ['b', 'The child ran quickly toward the gate.']], 'The child supplies a subject, and ran supplies the finite verb in the predicate.', 'finite-verb'),
   choice('Which group communicates a complete thought?', 'c', [['a', 'Although the recipe looked simple'], ['b', 'The recipe on the counter'], ['c', 'The recipe looked simple, but it took an hour.']], 'The third choice completes both ideas and joins them with but.', 'complete-thought'),
-  choice('Choose the complete sentence.', 'a', [['a', 'There are three messages in the folder.'], ['b', 'Three messages in the folder.']], 'There are supplies the verb structure needed to make the first choice complete.', 'there-are'),
+  choice('Choose the complete sentence.', 'a', [['a', 'There are three messages in the folder.'], ['b', 'Three messages in the folder.']], 'The complete sentence includes the verb are and tells us that three messages exist in the folder.', 'there-are'),
   choice('Which group is a complete sentence?', 'b', [['a', 'While everyone was listening'], ['b', 'Everyone listened quietly.']], 'Everyone is the subject and listened quietly is the predicate; while makes the other group dependent.', 'dependent-marker'),
   choice('Choose the complete sentence.', 'a', [['a', 'The blue canoe belongs to our team.'], ['b', 'The blue canoe by the dock.']], 'Belongs to our team tells what is true about the blue canoe.', 'link-complete'),
   choice('Which group is complete?', 'c', [['a', 'Such a surprising ending'], ['b', 'After a surprising ending'], ['c', 'The ending surprised us.']], 'The ending is the subject and surprised us states what it did.', 'noun-verb'),
@@ -161,7 +163,18 @@ const pronounRows = [
 
 export const c0PilotPacks = [
   makePack('SP.patterns', 'Spelling Patterns', 'Use the base word, vowel pattern, and ending together. Patterns help predict spelling, but legitimate exceptions and variants must be taught explicitly.', ['Say the base word.', 'Mark the vowel and final letters.', 'Try the applicable pattern, then check for an exception.'], spellingRows),
-  makePack('SE.complete', 'Complete Sentences', 'A complete sentence expresses a complete thought and has a subject and a predicate. Commands may have an understood subject.', ['Find who or what the words are about.', 'Find what that subject is or does.', 'Ask whether the thought can stand alone.'], sentenceRows),
+  makePack('SE.complete', 'Complete Sentences', 'A complete sentence expresses a complete thought and has a subject and a predicate. Commands may have an understood subject.', ['Find who or what the words are about.', 'Find what that subject is or does.', 'Ask whether the thought can stand alone.'], sentenceRows, {
+    status: 'independently_challenged',
+    reviewStatus: 'independently_challenged',
+    sourceIds: [
+      'ab-elal-2022-overview',
+      'ca-language-portal-subject',
+      'ca-language-portal-predicate',
+      'ca-language-portal-recognizing-clauses',
+      'ca-language-portal-sentence-structure',
+      'ca-language-portal-fragments',
+    ],
+  }),
   makePack('PU.capitals-endmarks', 'Capitals and End Marks', 'Begin sentences and proper names with capitals. Choose a period, question mark, or exclamation mark from the sentence’s purpose.', ['Find the beginning and any proper names.', 'Decide whether the sentence states, asks, or strongly exclaims.', 'Check the matching final mark.'], punctuationRows),
   makePack('GR.subject-object-pronouns', 'Subject and Object Pronouns', 'Use subject forms for who or what performs the action and object forms after verbs or prepositions.', ['Find the verb.', 'Ask who performs it and who receives it.', 'Remove the other noun in a compound to check the pronoun form.'], pronounRows),
 ];

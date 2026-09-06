@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "accessedDate": "2026-09-05",
+  "accessedDate": "2026-09-06",
   "sources": [
     {
       "id": "ab-elal-2022-overview",
@@ -20,6 +20,56 @@
       "supports": [
         "Grades 4–6 writing observations include pronouns, verb tense, plurals, word order, and subject–verb agreement.",
         "Scaffolding and explicit instruction may be appropriate for learners developing academic English."
+      ]
+    },
+    {
+      "id": "ca-language-portal-subject",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "subject",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/subject",
+      "supports": [
+        "A complete sentence has a subject and a predicate.",
+        "An imperative sentence normally has the understood subject you."
+      ]
+    },
+    {
+      "id": "ca-language-portal-predicate",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "predicate",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/predicate-",
+      "supports": [
+        "A predicate contains the verb and says something about the subject.",
+        "A predicate may also contain modifiers and complements."
+      ]
+    },
+    {
+      "id": "ca-language-portal-recognizing-clauses",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Recognizing clauses",
+      "url": "https://our-languages.canada.ca/en/hypergrammar-2/recognizing-clauses",
+      "supports": [
+        "A clause contains a subject and a predicate, unlike a phrase.",
+        "A direct command may have an understood subject."
+      ]
+    },
+    {
+      "id": "ca-language-portal-sentence-structure",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "The structure of a sentence",
+      "url": "https://our-languages.canada.ca/en/hypergrammar-2/the-structure-of-a-sentence",
+      "supports": [
+        "Sentence length does not determine whether a sentence is complete.",
+        "A simple sentence contains one independent clause."
+      ]
+    },
+    {
+      "id": "ca-language-portal-fragments",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "fragment, sentence fragment",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/fragment-sentence-fragment",
+      "supports": [
+        "A sentence fragment does not express a complete thought.",
+        "Fragments may lack a subject or verb or may be dependent clauses or phrases."
       ]
     },
     {

@@ -30,7 +30,8 @@ test('C0 pilot draft has four exact 24-object packs and 22 learner tasks each', 
     assert.equal(pack.items.filter((item) => item.role === 'transfer').length, 2);
     assert.equal(pack.items.filter((item) => item.role === 'delayed_review').length, 4);
     assert.equal(pack.items.filter((item) => item.responseType !== 'display').length, 22);
-    assert.ok(pack.items.every((item) => item.reviewStatus === 'needs_independent_challenge'));
+    const expectedReviewStatus = pack.skillId === 'SE.complete' ? 'independently_challenged' : 'needs_independent_challenge';
+    assert.ok(pack.items.every((item) => item.reviewStatus === expectedReviewStatus));
     assert.ok(pack.items.every((item) => item.explanation.length >= 35));
     for (const item of pack.items.filter((candidate) => candidate.choices)) {
       const choiceIds = item.choices.map((choice) => choice.id);

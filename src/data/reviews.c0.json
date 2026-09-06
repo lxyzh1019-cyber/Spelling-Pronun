@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "protocol": "MASTER_PLAN.md section 0.8",
+  "reviews": [
+    {
+      "id": "c0.challenge.se-complete.v1",
+      "stage": "independent_challenge",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_content_challenge_pass",
+      "packId": "c0.pack.se.complete",
+      "packVersion": 1,
+      "skillId": "SE.complete",
+      "sourceIds": [
+        "ab-elal-2022-overview",
+        "ca-language-portal-subject",
+        "ca-language-portal-predicate",
+        "ca-language-portal-recognizing-clauses",
+        "ca-language-portal-sentence-structure",
+        "ca-language-portal-fragments"
+      ],
+      "dimensions": [
+        "answer_or_rubric",
+        "reasonable_alternatives",
+        "distractors",
+        "explanation",
+        "help_steps",
+        "reading_load",
+        "assessment_or_story_leak",
+        "transfer_distinctness"
+      ],
+      "results": [
+        { "itemId": "c0.se.complete.01", "itemVersion": 1, "outcome": "pass", "note": "The phrase lacks a finite predicate; the comparison sentence supplies an explicit subject and predicate." },
+        { "itemId": "c0.se.complete.02", "itemVersion": 1, "outcome": "pass", "note": "Both examples are complete and correctly demonstrate that length is not a completeness test." },
+        { "itemId": "c0.se.complete.03", "itemVersion": 1, "outcome": "pass", "note": "Only choice b contains an explicit subject and finite predicate; the other choice is a prepositional phrase." },
+        { "itemId": "c0.se.complete.04", "itemVersion": 1, "outcome": "pass", "note": "Only choice a states what the named subject does; the distractor is a prepositional phrase." },
+        { "itemId": "c0.se.complete.05", "itemVersion": 1, "outcome": "pass", "note": "Choice b is an imperative with understood you; the alternative is an incomplete time phrase." },
+        { "itemId": "c0.se.complete.06", "itemVersion": 1, "outcome": "pass", "note": "Choice a is a complete direct question; the when-clause cannot stand alone in the intended formal-writing context." },
+        { "itemId": "c0.se.complete.07", "itemVersion": 1, "outcome": "pass", "note": "Only choice c combines the subject noun phrase with a finite predicate." },
+        { "itemId": "c0.se.complete.08", "itemVersion": 1, "outcome": "pass", "note": "The because-clause is dependent; choice b is an independent clause and the explanation does not leak another item." },
+        { "itemId": "c0.se.complete.09", "itemVersion": 1, "outcome": "pass", "note": "Choice a is an unambiguous command with understood you; the alternative is a location phrase." },
+        { "itemId": "c0.se.complete.10", "itemVersion": 1, "outcome": "pass", "note": "Only choice c completes the event; if leaves choice a dependent and choice b has no finite verb." },
+        { "itemId": "c0.se.complete.11", "itemVersion": 1, "outcome": "pass", "note": "Are visiting supplies the finite predicate missing from the otherwise identical distractor." },
+        { "itemId": "c0.se.complete.12", "itemVersion": 1, "outcome": "pass", "note": "Choice b supplies an explicit subject and finite verb; the participial phrase is not forced as a sentence." },
+        { "itemId": "c0.se.complete.13", "itemVersion": 1, "outcome": "pass", "note": "Only choice c is independent; the although-clause and noun phrase are intentionally unfinished." },
+        { "itemId": "c0.se.complete.14", "itemVersion": 1, "outcome": "pass", "note": "Choice a is a complete existential sentence; the explanation was clarified to avoid treating dummy there as the grammatical subject." },
+        { "itemId": "c0.se.complete.15", "itemVersion": 1, "outcome": "pass", "note": "While makes choice a dependent; choice b has an explicit subject and finite predicate." },
+        { "itemId": "c0.se.complete.16", "itemVersion": 1, "outcome": "pass", "note": "Belongs to our team completes the predicate; the distractor is only a noun phrase with a modifier." },
+        { "itemId": "c0.se.complete.17", "itemVersion": 1, "outcome": "pass", "note": "Only choice c pairs the subject with a finite verb and communicates a complete event." },
+        { "itemId": "c0.se.complete.18", "itemVersion": 1, "outcome": "pass", "note": "Whenever marks choice a as a dependent clause in formal writing; choice b stands alone without missing context." },
+        { "itemId": "c0.se.complete.19", "itemVersion": 1, "outcome": "pass", "note": "The museum direction is a complete command and uses a distinct practical context for transfer." },
+        { "itemId": "c0.se.complete.20", "itemVersion": 1, "outcome": "pass", "note": "The news-report line is independent; the alternative is a dependent after-clause in a distinct transfer context." },
+        { "itemId": "c0.se.complete.21", "itemVersion": 1, "outcome": "pass", "note": "Only choice c has a subject and finite predicate; the other choices test phrase and dependent-clause recognition." },
+        { "itemId": "c0.se.complete.22", "itemVersion": 1, "outcome": "pass", "note": "Choice a is a complete imperative with understood you; the location phrase is not a competing command." },
+        { "itemId": "c0.se.complete.23", "itemVersion": 1, "outcome": "pass", "note": "Choice b uses complete direct-question word order; choice a functions as an embedded-question fragment here." },
+        { "itemId": "c0.se.complete.24", "itemVersion": 1, "outcome": "pass", "note": "Choice a states a complete event; choice b is an incomplete prepositional phrase." }
+      ],
+      "discrepancies": [
+        {
+          "itemId": "c0.se.complete.14",
+          "severity": "minor",
+          "status": "resolved",
+          "resolution": "Reworded the explanation to identify the finite verb and complete existential meaning without making a disputed subject analysis."
+        }
+      ],
+      "assessmentOverlap": {
+        "status": "pass",
+        "note": "Forms A and B use different sentence and fragment wording; no lesson item, answer, or distinctive wording is repeated."
+      },
+      "promotion": "independently_challenged"
+    }
+  ]
+}

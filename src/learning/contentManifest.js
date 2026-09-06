@@ -21,6 +21,7 @@ export function buildContentManifest({ skills = [], packs = [], assessmentForms 
     assessmentPrompts: assessmentForms.reduce((sum, form) => sum + form.items.length, 0),
     episodes: episodes.length,
     mappedSkills: new Set(packSkills).size,
+    challengedObjects: packs.flatMap((pack) => pack.items).filter((item) => ['independently_challenged', 'reviewed'].includes(item.reviewStatus)).length,
     reviewedObjects: packs.flatMap((pack) => pack.items).filter((item) => item.reviewStatus === 'reviewed').length,
     reviewedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.reviewStatus === 'reviewed').length,
   };
