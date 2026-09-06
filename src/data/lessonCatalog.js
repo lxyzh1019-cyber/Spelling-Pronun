@@ -10,6 +10,7 @@ const sessionIds = {
 export const c0LessonCatalog = Object.fromEntries(c0PilotPacks.map((pack) => [sessionIds[pack.skillId], {
   sessionId: sessionIds[pack.skillId],
   packId: pack.id,
+  version: pack.version,
   skillId: pack.skillId,
   title: pack.title,
   rule: pack.rule,

@@ -4,9 +4,11 @@ import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import { c0PilotPacks } from '../data/packs.c0.draft';
 import { advanceReviewSession, buildReviewQueue, createReviewSession, recordReviewResult, resolveReviewItem } from '../learning/reviewQueue';
-import { useSessionLease } from '../hooks/useSessionLease';
-import { readJson, writeJson } from '../utils/localStore';
+import { useDurableSession } from '../hooks/useDurableSession';
 import styles from './Learning.module.css';
+
+const REVIEW_CONTENT_VERSION = c0PilotPacks.map((pack) => `${pack.id}@${pack.version}`).sort().join('|');
+const REVIEW_ITEM_IDS = c0PilotPacks.flatMap((pack) => pack.items.map((item) => item.id));
 
 function ReviewQuestion({ item, answer, setAnswer, disabled }) {
   return <>
@@ -22,42 +24,30 @@ export default function ReviewPage() {
   const recent = attempts.slice(-8).reverse();
   const available = useMemo(() => buildReviewQueue(dueReviews, c0PilotPacks), [dueReviews]);
   const storageKey = `spelling-review-session:${activeProfileId}`;
-  const { writable, takeOver, canWrite } = useSessionLease(storageKey);
-  const [session, setSession] = useState(() => readJson(storageKey, createReviewSession()));
+  const { state: session, setState: setSession, ready, writable, canWrite, takeOverHere: takeOverSession, ownerKeyRef, sessionSaveStatus } = useDurableSession({
+    storageKey,
+    learnerId: activeProfileId,
+    mode: 'review',
+    contentVersion: REVIEW_CONTENT_VERSION,
+    orderedItemIds: REVIEW_ITEM_IDS,
+    initialState: createReviewSession,
+  });
   const [answer, setAnswer] = useState('');
   const [helped, setHelped] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const ownerKeyRef = useRef(storageKey);
   const submittingRef = useRef(false);
 
   useEffect(() => {
-    if (ownerKeyRef.current === storageKey && canWrite()) writeJson(storageKey, session);
-  }, [canWrite, session, storageKey]);
-  useEffect(() => {
-    if (ownerKeyRef.current === storageKey) return;
-    ownerKeyRef.current = storageKey;
-    setSession(readJson(storageKey, createReviewSession()));
     setAnswer('');
     setHelped(false);
     setSubmitting(false);
     submittingRef.current = false;
   }, [storageKey]);
-  useEffect(() => {
-    const onStorage = (event) => {
-      if (event.key !== storageKey || canWrite()) return;
-      setSession(readJson(storageKey, createReviewSession()));
-      setAnswer('');
-      setHelped(false);
-    };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, [canWrite, storageKey]);
 
   const item = resolveReviewItem(session, c0PilotPacks);
   const entry = session.entries?.[session.index];
   const persist = (next, ownerKey = storageKey) => {
     if (ownerKey !== ownerKeyRef.current || !canWrite()) return false;
-    writeJson(ownerKey, next);
     setSession(next);
     return true;
   };
@@ -124,19 +114,18 @@ export default function ReviewPage() {
   };
 
   const takeOverHere = () => {
-    takeOver();
-    ownerKeyRef.current = storageKey;
-    setSession(readJson(storageKey, createReviewSession()));
     setAnswer(''); setHelped(false); setSubmitting(false); submittingRef.current = false;
+    takeOverSession();
   };
 
   const accepted = item?.choices?.find((choice) => choice.id === item.acceptedAnswers?.[0])?.text || item?.acceptedAnswers?.[0];
-  return <div className={styles.page}>{!writable && <div className={styles.notice} role="status"><strong>This review is open in another tab.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}<section className={styles.card}>
+  const displayedSaveStatus = saveStatus === 'saved' ? sessionSaveStatus : saveStatus;
+  return <div className={styles.page}>{!ready ? <div className={styles.notice} role="status">Restoring the saved review…</div> : !writable && <div className={styles.notice} role="status"><strong>This review is open in another tab.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}<section className={styles.card}>
     <h1>Practise again</h1>
     <p>Reviewed skills return after 1, 3, 7, 14, and 30 days. Older overdue work and recent errors come first, with at most four independently reviewed items. Draft content is never admitted to this mastery queue.</p>
     {session.stage === 'idle' && <>{available.length ? <><p>{available.length} reviewed item{available.length === 1 ? ' is' : 's are'} due now.</p><button className={styles.primary} disabled={!writable} onClick={() => persist(createReviewSession(available))}>Start due review</button></> : <p>No independently reviewed skill is due now.</p>}</>}
     {session.stage === 'attempt' && item && <>
-      <p className={styles.meta}>Review {session.index + 1} of {session.entries.length} · {entry.skillId} · {saveStatus}</p>
+      <p className={styles.meta}>Review {session.index + 1} of {session.entries.length} · {entry.skillId} · {displayedSaveStatus}</p>
       <h2>Try this without looking back</h2>
       <ReviewQuestion item={item} answer={answer} setAnswer={setAnswer} disabled={submitting || !writable} />
       {helped && <div className={styles.feedback}><strong>Help used</strong>{item.helpSteps.map((step) => <p key={step}>{step}</p>)}<p>This attempt will not advance independent review.</p></div>}

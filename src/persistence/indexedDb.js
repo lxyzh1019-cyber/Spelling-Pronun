@@ -1,3 +1,5 @@
+import { shouldStoreSession } from './durableSession';
+
 const DB_NAME = 'spelling-pronun-learning';
 const DB_VERSION = 2;
 const STORES = ['sessions', 'attempts', 'outbox', 'meta', 'recordings'];
@@ -36,7 +38,13 @@ async function withStore(storeName, mode, operation) {
 }
 
 export function saveSession(session) {
-  return withStore('sessions', 'readwrite', (store) => requestResult(store.put({ ...session, id: session.id, locallySavedAt: new Date().toISOString() })));
+  return withStore('sessions', 'readwrite', async (store) => {
+    const existing = await requestResult(store.get(session.id));
+    if (!shouldStoreSession(existing, session)) return existing;
+    const record = { ...session, id: session.id, locallySavedAt: new Date().toISOString() };
+    await requestResult(store.put(record));
+    return record;
+  });
 }
 
 export function loadSession(sessionId) {
