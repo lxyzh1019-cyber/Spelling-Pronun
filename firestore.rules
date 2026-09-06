@@ -41,6 +41,33 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // Resumable sessions use monotonic revisions. A second authenticated device
+    // may explicitly take ownership by increasing ownerEpoch; stale devices can
+    // neither rewind state nor change the pinned content identity.
+    match /spelling-sessions/{document} {
+      allow get: if request.auth.uid != null && document.matches(request.auth.uid + '__.*');
+      allow list: if request.auth.uid != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid != null &&
+        request.auth.uid == request.resource.data.userId &&
+        document.matches(request.auth.uid + '__.*') &&
+        request.resource.data.revision == 1 &&
+        request.resource.data.ownerEpoch == 1;
+      allow update: if request.auth.uid != null &&
+        request.auth.uid == resource.data.userId &&
+        request.auth.uid == request.resource.data.userId &&
+        request.resource.data.learnerId == resource.data.learnerId &&
+        request.resource.data.sessionId == resource.data.sessionId &&
+        request.resource.data.mode == resource.data.mode &&
+        request.resource.data.contentVersion == resource.data.contentVersion &&
+        request.resource.data.orderedItemIds == resource.data.orderedItemIds &&
+        request.resource.data.revision == resource.data.revision + 1 &&
+        ((request.resource.data.deviceId == resource.data.deviceId &&
+          request.resource.data.ownerEpoch == resource.data.ownerEpoch) ||
+         (request.resource.data.deviceId != resource.data.deviceId &&
+          request.resource.data.ownerEpoch == resource.data.ownerEpoch + 1));
+      allow delete: if false;
+    }
+
     // Achievements — per-user/profile
     match /spelling-achievements/{document} {
       allow read, write: if

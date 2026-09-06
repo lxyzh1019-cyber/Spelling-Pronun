@@ -17,3 +17,13 @@ test('attempt events are additive and immutable', () => {
   assert.match(attemptBlock, /allow list:.*resource\.data\.userId/s);
   assert.match(attemptBlock, /allow update, delete: if false/);
 });
+
+test('cloud sessions require owner identity, monotonic revisions, and explicit takeover epochs', () => {
+  const sessionBlock = rules.match(/match \/spelling-sessions\/\{document\} \{([\s\S]*?)\n    \}/)?.[1];
+  assert.ok(sessionBlock);
+  assert.match(sessionBlock, /request\.resource\.data\.revision == resource\.data\.revision \+ 1/);
+  assert.match(sessionBlock, /request\.resource\.data\.ownerEpoch == resource\.data\.ownerEpoch \+ 1/);
+  assert.match(sessionBlock, /request\.resource\.data\.contentVersion == resource\.data\.contentVersion/);
+  assert.match(sessionBlock, /request\.resource\.data\.orderedItemIds == resource\.data\.orderedItemIds/);
+  assert.match(sessionBlock, /allow delete: if false/);
+});
