@@ -25,7 +25,7 @@ This ledger tracks implementation evidence separately from content review, real-
 | F12 | Codex | R1 | integrated | game hints remain game-scoped; local hints work | Source review and production build | Full lesson help ladder arrives in R2 |
 | DATA-01 | Codex | R2 | integrated | evaluator, mastery, scheduling, session engine, IndexedDB outbox, and learner-scoped local store | Focused engine/validator tests plus production build | Connect authenticated remote sync after Firebase setup |
 | EDU-01 | Codex | R2 | integrated preview | `/case` and `/lesson/:sessionId` explicit learning flow | Browser: wrong first answer → separate helped repair → unseen transfer → gated reveal; reload persistence implemented | Replace fixtures with independently reviewed C0 pack |
-| EDU-02 | Codex | R2 | integrated preview | `/assessment` Form A/B preview, `/progress`, `/review`, `/parent` | Browser assessment resumed on question 2 after reload; progress rendered 42 skills and excluded fixture attempts | Author/review full 68-prompt C0 assessment and reporting |
+| EDU-02 | Codex | R2 | integrated preview | `/assessment` Form A/B preview, `/progress`, `/review`, `/parent`, `assessmentReport.js` | Browser resume plus completed report separated first tries, assistance, omission, and exposure; progress rendered 42 skills and excluded fixtures | Independently challenge and then integrate the 68-prompt C0 draft |
 
 ## Release gates
 
@@ -39,6 +39,7 @@ This ledger tracks implementation evidence separately from content review, real-
 | R2 engine build | verified locally | `npm run build`: 106 modules transformed; lazy learner routes emitted |
 | R2 preview journey | verified locally | Browser exercised repair, transfer gate, story reveal, assessment resume, and 42-skill progress |
 | R2 C0 inventory | drafting | Exact draft counts now exist: 68 assessment prompts, four 24-object packs, and two story episodes; all remain blocked from release/mastery pending independent educational/source challenge |
+| R2 assessment evidence | verified preview | Unit tests enforce honest categories and like-for-like comparison; browser showed assisted/omitted counts, a punctuation follow-up signal, and prior Form B exposure disclosure |
 
 ## Content manifest
 
