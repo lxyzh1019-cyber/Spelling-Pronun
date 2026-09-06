@@ -4,6 +4,7 @@ import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import { lessonBySessionId } from '../data/lessonCatalog';
 import { acceptWorkedSolution, completeReflection, continueLesson, createLessonState, currentLessonItem, startLesson, submitLessonResult } from '../learning/lessonFlow';
+import { useSessionLease } from '../hooks/useSessionLease';
 import { readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
@@ -13,8 +14,8 @@ function Question({ item, onAnswer, busy }) {
   const [answer, setAnswer] = useState('');
   return <form onSubmit={(event) => { event.preventDefault(); if (answer) onAnswer(answer); }}>
     <p>{item.prompt}</p>
-    {item.choices?.map((choice) => <label className={styles.choice} key={choice.id}><input type="radio" name={item.id} value={choice.id} checked={answer === choice.id} onChange={() => setAnswer(choice.id)} /> {choice.text}</label>)}
-    {!item.choices && <textarea className={styles.input} aria-label="Your answer" value={answer} onChange={(event) => setAnswer(event.target.value)} />}
+    {item.choices?.map((choice) => <label className={styles.choice} key={choice.id}><input type="radio" name={item.id} value={choice.id} checked={answer === choice.id} disabled={busy} onChange={() => setAnswer(choice.id)} /> {choice.text}</label>)}
+    {!item.choices && <textarea className={styles.input} aria-label="Your answer" value={answer} disabled={busy} onChange={(event) => setAnswer(event.target.value)} />}
     <button className={styles.primary} type="submit" disabled={!answer || busy}>{busy ? 'Saving…' : 'Save this answer'}</button>
   </form>;
 }
@@ -27,14 +28,15 @@ export default function LessonPage() {
   const { activeProfileId } = useWords();
   const { submitAttempt, saveStatus } = useLearning();
   const storageKey = `spelling-lesson-v2:${activeProfileId}:${sessionId}`;
+  const { writable, takeOver, canWrite } = useSessionLease(storageKey);
   const [state, setState] = useState(() => readJson(storageKey, createLessonState()));
   const [helped, setHelped] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
   const stateOwnerKey = useRef(storageKey);
   useEffect(() => {
-    if (stateOwnerKey.current === storageKey) writeJson(storageKey, state);
-  }, [storageKey, state]);
+    if (stateOwnerKey.current === storageKey && canWrite()) writeJson(storageKey, state);
+  }, [canWrite, storageKey, state]);
   useEffect(() => {
     if (stateOwnerKey.current === storageKey) return;
     stateOwnerKey.current = storageKey;
@@ -43,12 +45,22 @@ export default function LessonPage() {
     setSubmitting(false);
     submittingRef.current = false;
   }, [storageKey]);
+  useEffect(() => {
+    const onStorage = (event) => {
+      if (event.key === storageKey && !canWrite()) {
+        setState(readJson(storageKey, createLessonState()));
+        setHelped(false);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [canWrite, storageKey]);
   const item = useMemo(() => lesson ? currentLessonItem(state, lesson) : null, [state, lesson]);
 
   if (!lesson) return <div className={styles.page}><section className={styles.card}><h1>Lesson not found</h1><Link className={styles.primary} to="/case">Return to the case</Link></section></div>;
 
   const answer = async (response, metadata = {}) => {
-    if (submittingRef.current) return;
+    if (submittingRef.current || !canWrite()) return;
     const submissionOwnerKey = storageKey;
     const submissionState = state;
     submittingRef.current = true;
@@ -59,8 +71,8 @@ export default function LessonPage() {
     try {
       const { attempt, evaluation } = await submitAttempt(item, response, { sessionId, unseen: isTransfer, evidenceType: metadata.omitted ? 'omission' : assisted ? 'assisted_repair' : isTransfer ? 'independent_transfer' : 'independent_choice', helped: assisted, ...metadata });
       const nextState = { ...submitLessonResult(submissionState, evaluation.correct, metadata), evidenceIds: [...(submissionState.evidenceIds || []), attempt.attemptId] };
-      writeJson(submissionOwnerKey, nextState);
-      if (stateOwnerKey.current === submissionOwnerKey) {
+      if (stateOwnerKey.current === submissionOwnerKey && canWrite()) {
+        writeJson(submissionOwnerKey, nextState);
         setState(nextState);
         setHelped(false);
       }
@@ -73,30 +85,57 @@ export default function LessonPage() {
   };
 
   const revealAndContinue = async () => {
+    if (submittingRef.current || !canWrite()) return;
+    const submissionOwnerKey = storageKey;
+    const submissionState = state;
+    submittingRef.current = true;
+    setSubmitting(true);
     const response = item.acceptedAnswers?.[0] ?? null;
-    const { attempt } = await submitAttempt(item, response, { sessionId, unseen: state.repairSource === 'transfer', evidenceType: 'revealed_solution', helped: true, revealed: true });
-    setState((current) => ({ ...acceptWorkedSolution(current, lesson.practice.length, lesson.transfer.length), evidenceIds: [...(current.evidenceIds || []), attempt.attemptId] }));
+    try {
+      const { attempt } = await submitAttempt(item, response, { sessionId, unseen: submissionState.repairSource === 'transfer', evidenceType: 'revealed_solution', helped: true, revealed: true });
+      const nextState = { ...acceptWorkedSolution(submissionState, lesson.practice.length, lesson.transfer.length), evidenceIds: [...(submissionState.evidenceIds || []), attempt.attemptId] };
+      if (stateOwnerKey.current === submissionOwnerKey && canWrite()) {
+        writeJson(submissionOwnerKey, nextState);
+        setState(nextState);
+      }
+    } finally {
+      if (stateOwnerKey.current === submissionOwnerKey) {
+        submittingRef.current = false;
+        setSubmitting(false);
+      }
+    }
   };
 
   const finish = (reflection) => {
+    if (!canWrite()) return;
     const completed = completeReflection(state, reflection);
     setState(completed);
     writeJson(`spelling-lesson-complete:${activeProfileId}:${sessionId}`, { sessionId, episodeId, completedAt: new Date().toISOString(), evidenceIds: completed.evidenceIds || [], reflection });
+  };
+
+  const takeOverHere = () => {
+    takeOver();
+    stateOwnerKey.current = storageKey;
+    setState(readJson(storageKey, createLessonState()));
+    setHelped(false);
+    setSubmitting(false);
+    submittingRef.current = false;
   };
 
   const completedTasks = state.practiceIndex + (state.stage === 'teach' ? 0 : 1) + (state.stage === 'transfer' || state.stage === 'reflection' || state.stage === 'complete' ? state.transferIndex + 1 : 0);
   const totalTasks = lesson.practice.length + lesson.transfer.length;
   return <div className={styles.page}>
     <p className={styles.notice} role="note">{DRAFT_NOTICE}</p>
+    {!writable && <div className={styles.notice} role="status"><strong>This lesson is open in another tab.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}
     <div className={styles.progress} aria-label={`${Math.min(completedTasks, totalTasks)} of ${totalTasks} lesson tasks reached`}><span style={{ width: `${Math.min(100, (completedTasks / totalTasks) * 100)}%` }} /></div>
     <section className={styles.card}>
       <p className={styles.meta}>{lesson.skillId} · {saveStatus}</p><h1>{lesson.title}</h1>
-      {state.stage === 'teach' && <><h2>Learn the rule</h2><p>{lesson.rule}</p>{lesson.examples.map((example) => <div className={styles.feedback} key={example.id}><strong>{example.prompt}</strong><p>{example.explanation}</p></div>)}<button className={styles.primary} onClick={() => setState(startLesson(state))}>Start six independent questions</button></>}
-      {['attempt', 'repair', 'transfer'].includes(state.stage) && <><h2>{state.stage === 'repair' ? 'Guided repair' : state.stage === 'transfer' ? `Unseen transfer ${state.transferIndex + 1} of ${lesson.transfer.length}` : `Independent question ${state.practiceIndex + 1} of ${lesson.practice.length}`}</h2>{state.stage === 'repair' && <p>Your first answer is preserved. This correction is recorded separately as assisted.</p>}<Question key={`${state.stage}-${item.id}-${state.retryCount}`} item={item} onAnswer={answer} busy={submitting} /><div className={styles.actions}>{!helped && <button className={styles.secondary} disabled={submitting} onClick={() => setHelped(true)}>Show help</button>}<button className={styles.secondary} disabled={submitting} onClick={() => answer(null, { omitted: true })}>I don’t know yet</button><Link className={styles.secondary} to="/case">Pause and return to the case</Link></div>{helped && <div className={styles.feedback}><strong>Help used</strong>{item.helpSteps.map((step) => <p key={step}>{step}</p>)}<p>This response will be excluded from independent mastery evidence.</p></div>}</>}
-      {state.stage === 'feedback' && <><div className={styles.feedback}><h2>{state.lastResult.correct ? 'Correct' : state.lastResult.omitted ? 'Not answered yet' : 'Not yet'}</h2><p>{state.lastResult.omitted ? 'This item remains unresolved. Use the guided repair before moving on.' : item.explanation}</p></div><button className={styles.primary} onClick={() => setState(continueLesson(state, lesson.practice.length, lesson.transfer.length))}>{state.lastResult.correct ? 'Continue' : state.retryCount >= 2 ? 'See worked solution' : 'Repair this answer'}</button></>}
-      {state.stage === 'worked_solution' && <><h2>Worked solution</h2><p><strong>Accepted answer:</strong> {item.choices?.find((choice) => choice.id === item.acceptedAnswers?.[0])?.text || item.acceptedAnswers?.[0]}</p><p>{item.explanation}</p><button className={styles.primary} onClick={revealAndContinue}>I understand; continue</button></>}
-      {state.stage === 'reflection' && <><h2>Reflect</h2><p>Choose the statement that best describes what you used.</p>{lesson.reflectionChoices.map((choice) => <button className={styles.choice} key={choice} onClick={() => finish(choice)}>{choice}</button>)}</>}
-      {state.stage === 'complete' && <><div className={styles.success}><h2>Lesson complete</h2><p>All required practice and transfer tasks were resolved. Draft evidence remains excluded from mastery.</p></div><div className={styles.actions}><Link className={styles.primary} to="/case">Return to the case</Link><Link className={styles.secondary} to="/progress">View skill evidence</Link><button className={styles.secondary} onClick={() => { const fresh = createLessonState(); setState(fresh); writeJson(storageKey, fresh); }}>Restart draft lesson</button></div></>}
+      {state.stage === 'teach' && <><h2>Learn the rule</h2><p>{lesson.rule}</p>{lesson.examples.map((example) => <div className={styles.feedback} key={example.id}><strong>{example.prompt}</strong><p>{example.explanation}</p></div>)}<button className={styles.primary} disabled={!writable} onClick={() => { if (canWrite()) setState(startLesson(state)); }}>Start six independent questions</button></>}
+      {['attempt', 'repair', 'transfer'].includes(state.stage) && <><h2>{state.stage === 'repair' ? 'Guided repair' : state.stage === 'transfer' ? `Unseen transfer ${state.transferIndex + 1} of ${lesson.transfer.length}` : `Independent question ${state.practiceIndex + 1} of ${lesson.practice.length}`}</h2>{state.stage === 'repair' && <p>Your first answer is preserved. This correction is recorded separately as assisted.</p>}<Question key={`${state.stage}-${item.id}-${state.retryCount}`} item={item} onAnswer={answer} busy={submitting || !writable} /><div className={styles.actions}>{!helped && <button className={styles.secondary} disabled={submitting || !writable} onClick={() => { if (canWrite()) setHelped(true); }}>Show help</button>}<button className={styles.secondary} disabled={submitting || !writable} onClick={() => answer(null, { omitted: true })}>I don’t know yet</button><Link className={styles.secondary} to="/case">Pause and return to the case</Link></div>{helped && <div className={styles.feedback}><strong>Help used</strong>{item.helpSteps.map((step) => <p key={step}>{step}</p>)}<p>This response will be excluded from independent mastery evidence.</p></div>}</>}
+      {state.stage === 'feedback' && <><div className={styles.feedback}><h2>{state.lastResult.correct ? 'Correct' : state.lastResult.omitted ? 'Not answered yet' : 'Not yet'}</h2><p>{state.lastResult.omitted ? 'This item remains unresolved. Use the guided repair before moving on.' : item.explanation}</p></div><button className={styles.primary} disabled={!writable} onClick={() => { if (canWrite()) setState(continueLesson(state, lesson.practice.length, lesson.transfer.length)); }}>{state.lastResult.correct ? 'Continue' : state.retryCount >= 2 ? 'See worked solution' : 'Repair this answer'}</button></>}
+      {state.stage === 'worked_solution' && <><h2>Worked solution</h2><p><strong>Accepted answer:</strong> {item.choices?.find((choice) => choice.id === item.acceptedAnswers?.[0])?.text || item.acceptedAnswers?.[0]}</p><p>{item.explanation}</p><button className={styles.primary} disabled={submitting || !writable} onClick={revealAndContinue}>I understand; continue</button></>}
+      {state.stage === 'reflection' && <><h2>Reflect</h2><p>Choose the statement that best describes what you used.</p>{lesson.reflectionChoices.map((choice) => <button className={styles.choice} key={choice} disabled={!writable} onClick={() => finish(choice)}>{choice}</button>)}</>}
+      {state.stage === 'complete' && <><div className={styles.success}><h2>Lesson complete</h2><p>All required practice and transfer tasks were resolved. Draft evidence remains excluded from mastery.</p></div><div className={styles.actions}><Link className={styles.primary} to="/case">Return to the case</Link><Link className={styles.secondary} to="/progress">View skill evidence</Link><button className={styles.secondary} disabled={!writable} onClick={() => { if (!canWrite()) return; const fresh = createLessonState(); setState(fresh); writeJson(storageKey, fresh); }}>Restart draft lesson</button></div></>}
     </section>
   </div>;
 }

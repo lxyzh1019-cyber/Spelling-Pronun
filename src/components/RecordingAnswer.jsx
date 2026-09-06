@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { saveRecording } from '../persistence/indexedDb';
 import { assessRecordingQuality, recordingSupport, startAudioRecording } from '../utils/recording';
 
-export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady, onReset }) {
+export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady, onReset, disabled = false }) {
   const controllerRef = useRef(null);
   const urlRef = useRef(null);
   const [status, setStatus] = useState('idle');
@@ -22,7 +22,17 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady,
     };
   }, [itemId, learnerId, sessionId]);
 
+  useEffect(() => {
+    if (!disabled || !controllerRef.current) return;
+    controllerRef.current.cancel();
+    controllerRef.current = null;
+    setStatus('idle');
+    setMessage('Recording stopped because this session became read-only.');
+    onReady(null);
+  }, [disabled, onReady]);
+
   const start = async () => {
+    if (disabled) return;
     if (onReset) onReset();
     else onReady(null);
     setMessage('');
@@ -39,6 +49,7 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady,
   };
 
   const stop = async () => {
+    if (disabled) return;
     setStatus('saving');
     try {
       const result = await controllerRef.current.stop();
@@ -67,8 +78,8 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady,
   if (!support.supported) return <p role="status">Microphone recording is unavailable in this browser. Continue as a technical issue; this is not a wrong answer.</p>;
   return <div>
     <div>
-      {status !== 'recording' && status !== 'saving' && <button type="button" onClick={start}>{status === 'ready' ? 'Record again' : 'Start recording'}</button>}
-      {status === 'recording' && <button type="button" onClick={stop}>Stop recording</button>}
+      {status !== 'recording' && status !== 'saving' && <button type="button" disabled={disabled} onClick={start}>{status === 'ready' ? 'Record again' : 'Start recording'}</button>}
+      {status === 'recording' && <button type="button" disabled={disabled} onClick={stop}>Stop recording</button>}
       {status === 'saving' && <button type="button" disabled>Saving recording…</button>}
     </div>
     {playbackUrl && <audio controls src={playbackUrl}>Audio playback is not supported.</audio>}
