@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import skillsData from '../src/data/skills.json' with { type: 'json' };
 import { validateContent } from '../src/learning/contentValidator.js';
 import { pilotEpisode, pilotItems } from '../src/data/pilotFixtures.js';
+import storyDraft from '../src/data/story.c0.draft.json' with { type: 'json' };
+import sourceData from '../src/data/sources.json' with { type: 'json' };
 
 test('engineering fixtures are valid but explicitly barred from mastery', () => {
   const result = validateContent({ skills: skillsData.skills, items: pilotItems, episodes: [pilotEpisode] });
@@ -11,4 +13,16 @@ test('engineering fixtures are valid but explicitly barred from mastery', () => 
   assert.ok(pilotItems.every((item) => item.authorStatus === 'engineering_fixture'));
   assert.ok(pilotItems.every((item) => item.reviewStatus === 'not_reviewed'));
   assert.ok(pilotItems.every((item) => item.evidenceEligibility === 'fixture_only'));
+});
+
+test('C0 story draft has two sourced, explicitly fictionalized episodes', () => {
+  const sourceIds = new Set(sourceData.sources.map((source) => source.id));
+  assert.equal(storyDraft.episodes.length, 2);
+  for (const episode of storyDraft.episodes) {
+    assert.equal(episode.fictionLabel, 'Fictional reconstruction');
+    assert.ok(episode.sourceIds.length >= 2);
+    assert.ok(episode.sourceIds.every((id) => sourceIds.has(id)));
+    const words = episode.historyBehindMystery.trim().split(/\s+/).length;
+    assert.ok(words >= 40 && words <= 80, `${episode.id} history note is ${words} words`);
+  }
 });

@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "accessedDate": "2026-09-05",
+  "sources": [
+    {
+      "id": "ab-elal-2022-overview",
+      "authority": "Government of Alberta",
+      "title": "English language arts and literature",
+      "url": "https://www.alberta.ca/curriculum-english-language-arts",
+      "supports": [
+        "Grades 4–6 apply grammar, spelling, and punctuation in written communication.",
+        "The curriculum includes reading, writing, listening, speaking, viewing, and representing."
+      ]
+    },
+    {
+      "id": "ab-eal-benchmarks-4-6",
+      "authority": "Alberta Education",
+      "title": "Alberta K–12 ESL Proficiency Benchmarks: Grades 4–6",
+      "url": "https://curriculum.learnalberta.ca/cdn/resources/m/documents/eslapb/ESL%20Benchmarks%20Grades%204-6.pdf",
+      "supports": [
+        "Grades 4–6 writing observations include pronouns, verb tense, plurals, word order, and subject–verb agreement.",
+        "Scaffolding and explicit instruction may be appropriate for learners developing academic English."
+      ]
+    },
+    {
+      "id": "tna-william-caxton",
+      "authority": "The National Archives (UK)",
+      "title": "William Caxton",
+      "url": "https://www.nationalarchives.gov.uk/education/resources/significant-people-collection/william-caxton/",
+      "supports": [
+        "William Caxton is thought to have brought the printing press to England.",
+        "The National Archives dates the first item printed in England by Caxton to 1476."
+      ]
+    },
+    {
+      "id": "bl-printer-guide",
+      "authority": "British Library",
+      "title": "The Printer",
+      "url": "https://idp.bl.uk/wp-content/uploads/2025/01/BL.SR_.Large_.Print_.Guide_.V3.pdf",
+      "supports": [
+        "Printing technology emerged in China centuries before it appeared in Europe.",
+        "Printing spread through workshops in multiple regions rather than beginning in England."
+      ]
+    },
+    {
+      "id": "bl-ames-printing-collections",
+      "authority": "British Library Archives and Manuscripts Catalogue",
+      "title": "Add MS 5151: Collections for a history of printing in England, Scotland and Ireland",
+      "url": "https://searcharchives.bl.uk/catalog/032-003320313",
+      "supports": [
+        "The collection contains papers, letters, memoranda, drafts, amendments, and printer-related records.",
+        "The catalogue documents later handwritten correction and copying within collections about printing history."
+      ]
+    }
+  ]
+}

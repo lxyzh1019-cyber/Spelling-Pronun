@@ -45,7 +45,7 @@ This ledger tracks implementation evidence separately from content review, real-
 |---|---:|---:|---:|---:|---:|---:|
 | C0 assessment A/B | 68 prompts | 0 | 0 | 0 | 0 | 0 |
 | C0 four pilot packs | 96 objects | 0 | 0 | 0 | 0 | 0 |
-| C0 chapter 1 | 2 episodes | 0 | 0 | 0 | 0 | 0 |
+| C0 chapter 1 | 2 episodes | 2 draft | 0 | 0 | 0 | 0 |
 | C1 | 480 objects + 6 episodes | 0 | 0 | 0 | 0 | 0 |
 | C2 | 432 objects + 4 episodes | 0 | 0 | 0 | 0 | 0 |
 
