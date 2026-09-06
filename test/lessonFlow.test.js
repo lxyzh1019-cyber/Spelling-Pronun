@@ -38,3 +38,13 @@ test('two misses lead to a worked solution without overwriting either attempt', 
   assert.equal(state.stage, 'attempt');
   assert.equal(state.practiceIndex, 1);
 });
+
+test('an omitted lesson item stays unresolved and enters guided repair', () => {
+  let state = startLesson(createLessonState());
+  state = submitLessonResult(state, false, { omitted: true });
+  assert.equal(state.lastResult.omitted, true);
+  assert.equal(state.retryCount, 1);
+  state = continueLesson(state, 6, 2);
+  assert.equal(state.stage, 'repair');
+  assert.equal(state.practiceIndex, 0);
+});

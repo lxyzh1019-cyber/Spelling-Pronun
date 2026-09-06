@@ -15,11 +15,11 @@ function advance(state, sourceStage, practiceCount, transferCount) {
   return { ...state, stage: 'reflection', retryCount: 0, lastResult: null };
 }
 
-export function submitLessonResult(state, correct) {
+export function submitLessonResult(state, correct, metadata = {}) {
   if (!['attempt', 'repair', 'transfer'].includes(state.stage)) return state;
   const sourceStage = state.stage === 'repair' ? state.repairSource : state.stage;
   const retryCount = correct ? state.retryCount : state.retryCount + 1;
-  return { ...state, stage: 'feedback', retryCount, lastResult: { correct, sourceStage } };
+  return { ...state, stage: 'feedback', retryCount, lastResult: { correct, sourceStage, omitted: Boolean(metadata.omitted) } };
 }
 
 export function continueLesson(state, practiceCount, transferCount) {
