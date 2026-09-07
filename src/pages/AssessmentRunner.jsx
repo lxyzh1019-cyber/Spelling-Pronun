@@ -4,12 +4,14 @@ import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import RecordingAnswer from '../components/RecordingAnswer';
 import { C0_ASSESSMENT_NOTICE, c0AssessmentForms } from '../data/assessment.c0.draft';
+import { c0AssessmentAudioAssets } from '../data/audio.c0';
 import { buildAssessmentReport } from '../learning/assessmentReport';
 import { useCancellableSpeech } from '../hooks/useCancellableSpeech';
 import { useDurableSession } from '../hooks/useDurableSession';
 import styles from './Learning.module.css';
 
 const createAssessmentState = () => ({ index: 0, results: [] });
+const assessmentAudioById = new Map(c0AssessmentAudioAssets.map((asset) => [asset.id, asset]));
 
 export default function AssessmentRunner() {
   const { sessionId } = useParams();
@@ -42,12 +44,17 @@ export default function AssessmentRunner() {
   }, [storageKey]);
   const complete = state.index >= items.length;
   const item = complete ? null : items[state.index];
-  const { play: playSpeech } = useCancellableSpeech(`${storageKey}:${item?.id || 'complete'}`);
+  const { play: playSpeech, playRecorded } = useCancellableSpeech(`${storageKey}:${item?.id || 'complete'}`);
   useEffect(() => setAudioMessage(''), [storageKey, item?.id]);
   const playItemAudio = async () => {
-    const result = await playSpeech(item.spokenText, { lang: 'en-CA', rate: 0.82 });
+    const reviewedAudio = item.audioRef ? assessmentAudioById.get(item.audioRef) : null;
+    const result = reviewedAudio
+      ? await playRecorded(reviewedAudio.url)
+      : await playSpeech(item.spokenText, { lang: 'en-CA', rate: 0.82 });
     if (result.reason === 'cancelled') return;
-    setAudioMessage(result.ok ? 'Audio played. You can replay it.' : 'Audio playback failed. Continue as a technical issue, not a wrong answer.');
+    if (!result.ok) return setAudioMessage('Audio playback failed. Continue as a technical issue, not a wrong answer.');
+    const localeNote = reviewedAudio?.locale === 'en-CA' ? 'Canadian English recording played.' : reviewedAudio?.localeDisclosure || 'Synthetic preview audio played; it is not assessment evidence.';
+    setAudioMessage(`${localeNote} You can replay it.`);
   };
   const report = useMemo(() => buildAssessmentReport({ form, results: state.results, completedAt: state.completedAt }), [form, state]);
   const saveResult = async (response, metadata = {}) => {

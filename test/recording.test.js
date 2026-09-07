@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { assessRecordingQuality, chooseRecordingMimeType, isAudiblePeak, recordingSupport } from '../src/utils/recording.js';
 import { speak, stopSpeech } from '../src/utils/speech.js';
+import { playRecordedAudio } from '../src/utils/audioPlayback.js';
 
 test('recording MIME selection prefers Opus and falls back without inventing support', () => {
   const Recorder = { isTypeSupported: (type) => type === 'audio/webm' };
@@ -48,6 +49,28 @@ test('speech playback can be aborted when the learner or route changes', async (
     controller.abort();
     assert.equal(cancellations, 2);
     assert.deepEqual(await speak('Do not play.', { signal: AbortSignal.abort() }), { ok: false, reason: 'cancelled' });
+  } finally {
+    globalThis.window = originalWindow;
+  }
+});
+
+test('reviewed recording playback is cancellable and reports browser limitations', async () => {
+  assert.deepEqual(await playRecordedAudio('/audio/word.mp3'), { ok: false, reason: 'unavailable' });
+  const originalWindow = globalThis.window;
+  let pauses = 0;
+  globalThis.window = {
+    Audio: class {
+      constructor(url) { this.url = url; this.currentTime = 4; }
+      addEventListener() {}
+      pause() { pauses += 1; }
+      play() { return Promise.resolve(); }
+    },
+  };
+  try {
+    const controller = new AbortController();
+    assert.deepEqual(await playRecordedAudio('/audio/word.mp3', { signal: controller.signal }), { ok: true, usedRecordedAudio: true });
+    controller.abort();
+    assert.equal(pauses, 1);
   } finally {
     globalThis.window = originalWindow;
   }
