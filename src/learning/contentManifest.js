@@ -26,12 +26,15 @@ export function buildContentManifest({ skills = [], packs = [], assessmentForms 
     challengedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => ['independently_challenged', 'reviewed'].includes(item.reviewStatus)).length,
     reviewedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.reviewStatus === 'reviewed').length,
     challengedEpisodes: episodes.filter((episode) => ['independently_challenged', 'reviewed', 'released'].includes(episode.reviewStatus)).length,
+    releasedObjects: packs.flatMap((pack) => pack.items).filter((item) => item.releaseStatus === 'released').length,
+    releasedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.releaseStatus === 'released').length,
+    releasedEpisodes: episodes.filter((episode) => episode.releaseStatus === 'released').length,
   };
   return {
     counts,
     errors,
     r2InventoryComplete: counts.packs >= 4 && counts.contentObjects >= 96 && counts.assessmentPrompts === 68 && counts.episodes >= 2,
     r3InventoryComplete: counts.skills === 42 && counts.packs === 42 && counts.contentObjects === 1008 && counts.assessmentPrompts === 68 && counts.episodes === 12,
-    releaseReady: errors.length === 0 && counts.reviewedObjects === counts.contentObjects && counts.reviewedAssessmentPrompts === counts.assessmentPrompts && counts.episodes > 0 && episodes.every((episode) => episode.status === 'released'),
+    releaseReady: errors.length === 0 && counts.releasedObjects === counts.contentObjects && counts.releasedAssessmentPrompts === counts.assessmentPrompts && counts.episodes > 0 && counts.releasedEpisodes === counts.episodes,
   };
 }

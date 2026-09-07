@@ -6,6 +6,7 @@ const base = {
   commonErrors: [],
   authorStatus: 'draft',
   reviewStatus: 'independently_challenged',
+  releaseStatus: 'not_released',
   sourceIds: ['ab-elal-2022-overview', 'ab-eal-benchmarks-4-6'],
   secondarySkills: [],
 };

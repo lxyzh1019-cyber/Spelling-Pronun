@@ -14,6 +14,7 @@ test('engineering fixtures are valid but explicitly barred from mastery', () => 
   assert.equal(pilotItems.length, 5);
   assert.ok(pilotItems.every((item) => item.authorStatus === 'engineering_fixture'));
   assert.ok(pilotItems.every((item) => item.reviewStatus === 'not_reviewed'));
+  assert.ok(pilotItems.every((item) => item.releaseStatus === 'fixture_only'));
   assert.ok(pilotItems.every((item) => item.evidenceEligibility === 'fixture_only'));
 });
 
@@ -31,6 +32,7 @@ test('C0 pilot draft has four exact 24-object packs and 22 learner tasks each', 
     assert.equal(pack.items.filter((item) => item.role === 'delayed_review').length, 4);
     assert.equal(pack.items.filter((item) => item.responseType !== 'display').length, 22);
     assert.ok(pack.items.every((item) => item.reviewStatus === 'independently_challenged'));
+    assert.ok(pack.items.every((item) => item.releaseStatus === 'not_released'));
     assert.ok(pack.items.every((item) => item.explanation.length >= 35));
     for (const item of pack.items.filter((candidate) => candidate.choices)) {
       const choiceIds = item.choices.map((choice) => choice.id);
@@ -61,6 +63,7 @@ test('C0 assessment draft has two distinct 34-prompt forms with the required blu
     assert.equal(form.items.filter((item) => item.category === 'writing').length, 1);
   }
   assert.ok(c0AssessmentItems.every((item) => item.reviewStatus === 'independently_challenged'));
+  assert.ok(c0AssessmentItems.every((item) => item.releaseStatus === 'not_released'));
   assert.ok(c0AssessmentItems.filter((item) => item.category === 'sentence').every((item) => !item.explanation.includes('reviewed release')));
   assert.ok(c0AssessmentItems.filter((item) => item.category === 'speaking').every((item) => item.rubric.targetPattern && item.rubric.ratingScale?.retry));
   for (const item of c0AssessmentItems.filter((candidate) => candidate.choices && candidate.evaluator === 'choice')) {

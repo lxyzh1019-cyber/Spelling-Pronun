@@ -43,6 +43,7 @@ function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
         transferGroup: `${skillId.toLowerCase()}-${row.transferGroup || index + 1}`,
         authorStatus: 'draft',
         reviewStatus,
+        releaseStatus: 'not_released',
         sourceIds,
       };
     }),

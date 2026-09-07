@@ -1,4 +1,4 @@
-const REQUIRED_ITEM_FIELDS = ['id', 'version', 'primarySkill', 'role', 'difficulty', 'prompt', 'responseType', 'evaluator', 'explanation', 'helpSteps', 'evidenceEligibility', 'transferGroup', 'authorStatus', 'reviewStatus'];
+const REQUIRED_ITEM_FIELDS = ['id', 'version', 'primarySkill', 'role', 'difficulty', 'prompt', 'responseType', 'evaluator', 'explanation', 'helpSteps', 'evidenceEligibility', 'transferGroup', 'authorStatus', 'reviewStatus', 'releaseStatus'];
 
 function hasPrerequisiteCycle(skills) {
   const graph = new Map(skills.map((skill) => [skill.id, skill.prerequisites || []]));
@@ -40,6 +40,11 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
       if (item.authorStatus !== 'reviewed') errors.push(`${item.id} is reviewed without reviewed author status`);
       if (String(item.evidenceEligibility).includes('fixture') || String(item.evidenceEligibility).includes('draft')) errors.push(`${item.id} has non-release evidence eligibility`);
       if (item.audioStatus === 'synthetic_preview') errors.push(`${item.id} cannot release synthetic preview audio`);
+    }
+    if (item.releaseStatus === 'released') {
+      if (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed') errors.push(`${item.id} is released without completed author and educational review`);
+      if (String(item.evidenceEligibility).includes('fixture') || String(item.evidenceEligibility).includes('draft')) errors.push(`${item.id} releases ineligible evidence`);
+      if (item.audioStatus === 'synthetic_preview') errors.push(`${item.id} releases synthetic preview audio`);
     }
   }
   const lessonIds = new Set(items.map(({ id }) => id));

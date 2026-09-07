@@ -85,7 +85,8 @@ export function LearningProvider({ children }) {
       evidenceType: metadata.evidenceType || 'independent_choice',
       eventTime: new Date().toISOString(),
       edmontonDate: edmontonDayKey(),
-      contentStatus: item.reviewStatus,
+      reviewStatus: item.reviewStatus,
+      contentStatus: item.releaseStatus || 'not_released',
     });
     if (activeLearnerRef.current === learnerId) {
       setAttempts((current) => {
@@ -111,7 +112,7 @@ export function LearningProvider({ children }) {
 
   const masteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
     skill.id,
-    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id) && attempt.contentStatus === 'reviewed')),
+    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id) && attempt.contentStatus === 'released')),
   ])), [attempts]);
   const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
   const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);

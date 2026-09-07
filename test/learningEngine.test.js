@@ -53,12 +53,12 @@ test('review scheduling advances only on unassisted success and caps due selecti
   assert.equal(selectDueReviews(Object.fromEntries(Array.from({ length: 6 }, (_, i) => [i, { id: i, reviewDue: '2026-09-01T00:00:00Z' }])), new Date('2026-09-05T00:00:00Z')).length, 4);
 });
 
-test('review progress excludes fixtures and resets reviewed failures to one day', () => {
+test('review progress excludes unreleased content and resets released failures to one day', () => {
   const attempts = [
     { eventTime: '2026-01-01T12:00:00Z', edmontonDate: '2026-01-01', skillIds: ['SE.complete'], correct: true, status: 'correct', contentStatus: 'not_reviewed' },
     { eventTime: '2026-01-01T12:00:00Z', edmontonDate: '2026-01-01', skillIds: ['PU.capitals-endmarks'], correct: true, status: 'correct', contentStatus: 'needs_independent_challenge' },
-    { eventTime: '2026-01-02T12:00:00Z', edmontonDate: '2026-01-02', skillIds: ['SP.patterns'], correct: true, status: 'correct', contentStatus: 'reviewed' },
-    { eventTime: '2026-01-05T12:00:00Z', edmontonDate: '2026-01-05', skillIds: ['SP.patterns'], correct: false, status: 'incorrect', contentStatus: 'reviewed' },
+    { eventTime: '2026-01-02T12:00:00Z', edmontonDate: '2026-01-02', skillIds: ['SP.patterns'], correct: true, status: 'correct', contentStatus: 'released' },
+    { eventTime: '2026-01-05T12:00:00Z', edmontonDate: '2026-01-05', skillIds: ['SP.patterns'], correct: false, status: 'incorrect', contentStatus: 'released' },
   ];
   const progress = deriveReviewProgress(attempts);
   assert.equal(progress['SE.complete'], undefined);
@@ -81,12 +81,13 @@ test('content validator rejects cycles, missing answers, and assessment overlap'
 
 test('content validator rejects broken release references and unsafe recording scoring', () => {
   const skills = [{ id: 'PR.target', prerequisites: [] }];
-  const item = { id: 'item-1', version: 1, primarySkill: 'PR.target', secondarySkills: ['missing'], role: 'independent', difficulty: 1, prerequisites: [], prompt: 'Record.', responseType: 'recording', evaluator: 'spelling', rubric: {}, explanation: 'Review the sound.', helpSteps: [], evidenceEligibility: 'draft_audio_only', transferGroup: 'g', authorStatus: 'draft', reviewStatus: 'reviewed', sourceIds: ['missing-source'], audioRef: 'missing-audio', audioStatus: 'synthetic_preview' };
+  const item = { id: 'item-1', version: 1, primarySkill: 'PR.target', secondarySkills: ['missing'], role: 'independent', difficulty: 1, prerequisites: [], prompt: 'Record.', responseType: 'recording', evaluator: 'spelling', rubric: {}, explanation: 'Review the sound.', helpSteps: [], evidenceEligibility: 'draft_audio_only', transferGroup: 'g', authorStatus: 'draft', reviewStatus: 'reviewed', releaseStatus: 'released', sourceIds: ['missing-source'], audioRef: 'missing-audio', audioStatus: 'synthetic_preview' };
   const result = validateContent({ skills, items: [item], episodes: [{ id: 'ep', taskIds: ['missing-task'], historical: true, sourceIds: ['only-one'], status: 'released' }], sources: [{ id: 'known' }] });
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.includes('unknown secondary skill')));
   assert.ok(result.errors.some((error) => error.includes('broken audio reference')));
   assert.ok(result.errors.some((error) => error.includes('recording must use human review')));
+  assert.ok(result.errors.some((error) => error.includes('released without completed')));
   assert.ok(result.errors.some((error) => error.includes('unknown task')));
   assert.ok(result.errors.some((error) => error.includes('fiction label')));
 });

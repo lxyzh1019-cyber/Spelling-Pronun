@@ -3,16 +3,22 @@ import assert from 'node:assert/strict';
 import { advanceReviewSession, buildReviewQueue, createReviewSession, recordReviewResult, resolveReviewItem } from '../src/learning/reviewQueue.js';
 
 function pack(skillId, status = 'reviewed') {
-  return { skillId, items: Array.from({ length: 4 }, (_, index) => ({ id: `${skillId}.${index}`, version: 3, role: 'delayed_review', responseType: 'choice', evaluator: 'choice', authorStatus: status, reviewStatus: status })) };
+  return { skillId, items: Array.from({ length: 4 }, (_, index) => ({ id: `${skillId}.${index}`, version: 3, role: 'delayed_review', responseType: 'choice', evaluator: 'choice', authorStatus: status, reviewStatus: status, releaseStatus: status === 'reviewed' ? 'released' : 'not_released' })) };
 }
 
-test('review queue admits only reviewed delayed variants and caps at four', () => {
+test('review queue admits only reviewed and released delayed variants and caps at four', () => {
   const due = Array.from({ length: 6 }, (_, index) => ({ skillId: `skill-${index}`, reviewStage: index, reviewDue: `2026-09-0${index + 1}T00:00:00.000Z` }));
   const packs = due.map(({ skillId }, index) => pack(skillId, index === 1 ? 'needs_independent_challenge' : 'reviewed'));
   const queue = buildReviewQueue(due, packs);
   assert.equal(queue.length, 4);
   assert.deepEqual(queue.map(({ skillId }) => skillId), ['skill-0', 'skill-2', 'skill-3', 'skill-4']);
   assert.equal(queue[1].itemId, 'skill-2.2');
+});
+
+test('educationally reviewed but unreleased items cannot enter the mastery review queue', () => {
+  const reviewed = pack('SE.complete');
+  reviewed.items = reviewed.items.map((item) => ({ ...item, releaseStatus: 'not_released' }));
+  assert.deepEqual(buildReviewQueue([{ skillId: 'SE.complete', reviewStage: 0 }], [reviewed]), []);
 });
 
 test('review queue leaves recording and human-rubric work in pending-review workflows', () => {

@@ -57,6 +57,7 @@ export function validateContentReviews({ reviews = [], packs = [], sources = [] 
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
       if (pack.status !== 'independently_challenged') errors.push(`${label} promotion does not match pack status`);
       if (pack.items.some((item) => item.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match item status`);
+      if (pack.items.some((item) => item.releaseStatus === 'released')) errors.push(`${label} challenge-stage content cannot already be released`);
     }
   }
 
@@ -108,6 +109,7 @@ export function validateAssessmentReviews({ reviews = [], assessments = [], sour
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
       if (assessment.status !== 'independently_challenged') errors.push(`${label} promotion does not match assessment status`);
       if (assessment.items.some((item) => item.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match item status`);
+      if (assessment.items.some((item) => item.releaseStatus === 'released')) errors.push(`${label} challenge-stage assessment cannot already be released`);
     }
   }
   return { valid: errors.length === 0, errors };
@@ -149,6 +151,7 @@ export function validateStoryReviews({ reviews = [], story, items = [], sources 
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
       if (story?.status !== 'independently_challenged') errors.push(`${label} promotion does not match story status`);
       if ([...episodeById.values()].some((episode) => episode.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match episode status`);
+      if ([...episodeById.values()].some((episode) => episode.releaseStatus === 'released')) errors.push(`${label} challenge-stage story cannot already be released`);
     }
   }
   return { valid: errors.length === 0, errors };

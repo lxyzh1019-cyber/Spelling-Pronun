@@ -5,6 +5,7 @@ export function buildReviewQueue(dueReviews, packs, limit = 4) {
     const variants = pack?.items?.filter((item) => item.role === 'delayed_review'
       && item.authorStatus === 'reviewed'
       && item.reviewStatus === 'reviewed'
+      && item.releaseStatus === 'released'
       && ['choice', 'text'].includes(item.responseType)
       && item.evaluator !== 'human_rubric') || [];
     if (!variants.length) continue;
