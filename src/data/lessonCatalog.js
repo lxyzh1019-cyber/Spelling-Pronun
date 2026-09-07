@@ -7,6 +7,13 @@ const sessionIds = {
   'GR.subject-object-pronouns': 'pilot-gr-pronouns',
 };
 
+const trackBySkillPrefix = {
+  SP: 'spelling',
+  GR: 'grammar',
+  SE: 'sentences',
+  PU: 'punctuation',
+};
+
 export const c0LessonCatalog = Object.fromEntries(c0PilotPacks.map((pack) => [sessionIds[pack.skillId], {
   sessionId: sessionIds[pack.skillId],
   packId: pack.id,
@@ -26,4 +33,9 @@ export const c0LessonCatalog = Object.fromEntries(c0PilotPacks.map((pack) => [se
 
 export function lessonBySessionId(sessionId) {
   return c0LessonCatalog[sessionId] || null;
+}
+
+export function previewLessonForTrack(track) {
+  const entry = Object.values(c0LessonCatalog).find((lesson) => trackBySkillPrefix[lesson.skillId.split('.')[0]] === track);
+  return entry || null;
 }
