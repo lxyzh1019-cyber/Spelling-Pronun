@@ -253,6 +253,66 @@
       ]
     },
     {
+      "id": "ca-language-portal-direct-address",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "commas with direct address",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/commas-with-direct-address",
+      "supports": [
+        "A name or title used in direct address is separated from the rest of the sentence with commas.",
+        "A name in the middle of a sentence has a comma before and after it."
+      ]
+    },
+    {
+      "id": "ca-language-portal-apostrophe-possession",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "apostrophe: possession",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/apostrophe-possession",
+      "supports": [
+        "The primary use of the apostrophe is to indicate possession.",
+        "A singular word not ending in a sibilant generally forms the possessive with apostrophe-s."
+      ]
+    },
+    {
+      "id": "ca-language-portal-run-ons",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Run-on sentences",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/run-on-sentences",
+      "supports": [
+        "A comma alone cannot join two independent clauses.",
+        "A comma and coordinating conjunction can correctly join two independent clauses."
+      ]
+    },
+    {
+      "id": "ca-language-portal-coordinate-elements",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Commas with coordinate elements",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/coordinate-elements-serial-commas",
+      "supports": [
+        "Commas separate coordinate words or phrases in a series.",
+        "The final serial comma is optional where clarity permits and useful where omission could cause ambiguity."
+      ]
+    },
+    {
+      "id": "ca-language-portal-indefinite-agreement",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Verb agreement with indefinite pronouns",
+      "url": "https://our-languages.canada.ca/en/writing-tips-plus/verb-agreement-with-indefinite-pronouns",
+      "supports": [
+        "Each and neither are singular indefinite pronouns and take singular verbs.",
+        "The verb must agree with the grammatical number of its indefinite-pronoun subject."
+      ]
+    },
+    {
+      "id": "ca-language-portal-tense-sequence",
+      "authority": "Government of Canada, Language Portal of Canada",
+      "title": "Using verb tenses in sequence",
+      "url": "https://our-languages.canada.ca/en/hypergrammar-2/using-verb-tenses-in-sequence",
+      "supports": [
+        "Verb tense sequence should fit the time and logic of the sentence.",
+        "Compound clauses use tenses consistent with their intended time relationship."
+      ]
+    },
+    {
       "id": "tna-william-caxton",
       "authority": "The National Archives (UK)",
       "title": "William Caxton",

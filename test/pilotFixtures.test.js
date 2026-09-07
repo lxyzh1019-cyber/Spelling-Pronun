@@ -63,7 +63,8 @@ test('C0 assessment draft has two distinct 34-prompt forms with the required blu
     assert.equal(form.items.filter((item) => item.category === 'editing').length, 1);
     assert.equal(form.items.filter((item) => item.category === 'writing').length, 1);
   }
-  assert.ok(c0AssessmentItems.every((item) => item.reviewStatus === 'independently_challenged'));
+  assert.equal(c0AssessmentItems.filter((item) => item.reviewStatus === 'reviewed').length, 28);
+  assert.equal(c0AssessmentItems.filter((item) => item.reviewStatus === 'independently_challenged').length, 40);
   assert.ok(c0AssessmentItems.every((item) => item.releaseStatus === 'not_released'));
   assert.ok(c0AssessmentItems.filter((item) => item.category === 'sentence').every((item) => !item.explanation.includes('reviewed release')));
   assert.ok(c0AssessmentItems.filter((item) => item.category === 'speaking').every((item) => item.rubric.targetPattern && item.rubric.ratingScale?.retry));

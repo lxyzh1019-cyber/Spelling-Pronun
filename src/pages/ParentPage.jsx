@@ -57,7 +57,7 @@ export default function ParentPage() {
         <div className={styles.actions}><button className={styles.primary} disabled={busy}>{busy ? 'Working…' : mode === 'register' ? 'Create and import' : 'Sign in and sync'}</button><button className={styles.secondary} type="button" onClick={() => { setMode(mode === 'register' ? 'signin' : 'register'); setMessage(''); }}>{mode === 'register' ? 'Use existing account' : 'Create an account'}</button></div>
       </form> : <><p>Local immutable attempts reconcile additively with this account. Legacy word totals import automatically only when that learner has no cloud totals, preventing accidental double counting.</p><button className={styles.secondary} disabled={busy} onClick={disconnect}>Sign out</button></>}
       {message && <p role="status">{message}</p>}
-      <h2>Current limitations</h2><p>Firebase email/password must be enabled by the parent in the Firebase console. Real cross-device verification, independently reviewed curriculum content, calibrated pronunciation scoring, and the family pilot are not complete. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p>
+      <h2>Current limitations</h2><p>Firebase email/password must be enabled by the parent in the Firebase console. Real cross-device verification, complete assessment/audio review, calibrated pronunciation scoring, and the family pilot are not complete. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p>
     </section>
   </div>;
 }

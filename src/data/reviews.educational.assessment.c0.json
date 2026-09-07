@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "protocol": "MASTER_PLAN.md sections 0.7, 0.8 and R2 assessment release gates",
+  "reviews": [
+    {
+      "id": "c0.educational.assessment-a.v1",
+      "challengeReviewId": "c0.challenge.assessment-a.v1",
+      "assessmentId": "c0.assessment.a",
+      "assessmentVersion": 1,
+      "form": "A",
+      "stage": "partial_educational_source_review",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_educational_source_review",
+      "sourceIds": [
+        "ab-elal-2022-overview", "ab-eal-benchmarks-4-6", "ca-language-portal-subject", "ca-language-portal-predicate", "ca-language-portal-sentence-structure", "ca-language-portal-fragments", "ca-language-portal-sentence-purpose", "ca-language-portal-capitalization-general", "ca-language-portal-personal-pronouns", "ca-language-portal-prepositions", "ca-language-portal-run-ons", "ca-language-portal-coordinate-elements", "ca-language-portal-direct-address", "ca-language-portal-apostrophe-possession", "ca-language-portal-indefinite-agreement", "ca-language-portal-tense-sequence"
+      ],
+      "dimensions": ["curriculum_alignment", "answer_accuracy", "rubric_clarity", "feedback_quality", "source_mapping", "age_accessibility", "release_blockers"],
+      "reviewedItemIds": [
+        "c0.assessment.a.21", "c0.assessment.a.22", "c0.assessment.a.23", "c0.assessment.a.24", "c0.assessment.a.25", "c0.assessment.a.26", "c0.assessment.a.27", "c0.assessment.a.28", "c0.assessment.a.29", "c0.assessment.a.30", "c0.assessment.a.31", "c0.assessment.a.32", "c0.assessment.a.33", "c0.assessment.a.34"
+      ],
+      "blockedItemIds": [
+        "c0.assessment.a.01", "c0.assessment.a.02", "c0.assessment.a.03", "c0.assessment.a.04", "c0.assessment.a.05", "c0.assessment.a.06", "c0.assessment.a.07", "c0.assessment.a.08", "c0.assessment.a.09", "c0.assessment.a.10", "c0.assessment.a.11", "c0.assessment.a.12", "c0.assessment.a.13", "c0.assessment.a.14", "c0.assessment.a.15", "c0.assessment.a.16", "c0.assessment.a.17", "c0.assessment.a.18", "c0.assessment.a.19", "c0.assessment.a.20"
+      ],
+      "blockedGroups": [
+        {
+          "itemIds": ["c0.assessment.a.01", "c0.assessment.a.02", "c0.assessment.a.03", "c0.assessment.a.04", "c0.assessment.a.05", "c0.assessment.a.06", "c0.assessment.a.07", "c0.assessment.a.08", "c0.assessment.a.13", "c0.assessment.a.14", "c0.assessment.a.15", "c0.assessment.a.16"],
+          "blocker": "Synthetic preview audio must be replaced by independently reviewed human audio before these spelling and listening prompts can complete educational review."
+        },
+        {
+          "itemIds": ["c0.assessment.a.09", "c0.assessment.a.10", "c0.assessment.a.11", "c0.assessment.a.12", "c0.assessment.a.17", "c0.assessment.a.18", "c0.assessment.a.19", "c0.assessment.a.20"],
+          "blocker": "The decoding choices and pronunciation targets require a specialist phonics/pronunciation source-and-rubric pass before educational review can complete."
+        }
+      ],
+      "findings": "All fourteen Part B prompts have exact answers or visible human-review rubrics, age-appropriate instructions, and source-supported grammar, sentence, punctuation, editing, or writing targets. Part A remains challenge-only because the required human audio and specialist pronunciation/decoding review are not available.",
+      "discrepancies": [
+        {
+          "itemId": "c0.assessment.a.31",
+          "severity": "minor",
+          "status": "resolved",
+          "resolution": "Clarified that the final serial comma is an accepted clarity choice rather than a universal Canadian requirement; the alternative still omits all necessary list separators."
+        }
+      ],
+      "releaseDecision": "partial_reviewed_not_released"
+    },
+    {
+      "id": "c0.educational.assessment-b.v1",
+      "challengeReviewId": "c0.challenge.assessment-b.v1",
+      "assessmentId": "c0.assessment.b",
+      "assessmentVersion": 1,
+      "form": "B",
+      "stage": "partial_educational_source_review",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_educational_source_review",
+      "sourceIds": [
+        "ab-elal-2022-overview", "ab-eal-benchmarks-4-6", "ca-language-portal-subject", "ca-language-portal-predicate", "ca-language-portal-sentence-structure", "ca-language-portal-fragments", "ca-language-portal-sentence-purpose", "ca-language-portal-capitalization-general", "ca-language-portal-personal-pronouns", "ca-language-portal-prepositions", "ca-language-portal-run-ons", "ca-language-portal-coordinate-elements", "ca-language-portal-direct-address", "ca-language-portal-apostrophe-possession", "ca-language-portal-indefinite-agreement", "ca-language-portal-tense-sequence"
+      ],
+      "dimensions": ["curriculum_alignment", "answer_accuracy", "rubric_clarity", "feedback_quality", "source_mapping", "age_accessibility", "release_blockers"],
+      "reviewedItemIds": [
+        "c0.assessment.b.21", "c0.assessment.b.22", "c0.assessment.b.23", "c0.assessment.b.24", "c0.assessment.b.25", "c0.assessment.b.26", "c0.assessment.b.27", "c0.assessment.b.28", "c0.assessment.b.29", "c0.assessment.b.30", "c0.assessment.b.31", "c0.assessment.b.32", "c0.assessment.b.33", "c0.assessment.b.34"
+      ],
+      "blockedItemIds": [
+        "c0.assessment.b.01", "c0.assessment.b.02", "c0.assessment.b.03", "c0.assessment.b.04", "c0.assessment.b.05", "c0.assessment.b.06", "c0.assessment.b.07", "c0.assessment.b.08", "c0.assessment.b.09", "c0.assessment.b.10", "c0.assessment.b.11", "c0.assessment.b.12", "c0.assessment.b.13", "c0.assessment.b.14", "c0.assessment.b.15", "c0.assessment.b.16", "c0.assessment.b.17", "c0.assessment.b.18", "c0.assessment.b.19", "c0.assessment.b.20"
+      ],
+      "blockedGroups": [
+        {
+          "itemIds": ["c0.assessment.b.01", "c0.assessment.b.02", "c0.assessment.b.03", "c0.assessment.b.04", "c0.assessment.b.05", "c0.assessment.b.06", "c0.assessment.b.07", "c0.assessment.b.08", "c0.assessment.b.13", "c0.assessment.b.14", "c0.assessment.b.15", "c0.assessment.b.16"],
+          "blocker": "Synthetic preview audio must be replaced by independently reviewed human audio before these spelling and listening prompts can complete educational review."
+        },
+        {
+          "itemIds": ["c0.assessment.b.09", "c0.assessment.b.10", "c0.assessment.b.11", "c0.assessment.b.12", "c0.assessment.b.17", "c0.assessment.b.18", "c0.assessment.b.19", "c0.assessment.b.20"],
+          "blocker": "The decoding choices and pronunciation targets require a specialist phonics/pronunciation source-and-rubric pass before educational review can complete."
+        }
+      ],
+      "findings": "All fourteen Part B prompts have exact answers or visible human-review rubrics, age-appropriate instructions, and source-supported grammar, sentence, punctuation, editing, or writing targets. Part A remains challenge-only because the required human audio and specialist pronunciation/decoding review are not available.",
+      "discrepancies": [
+        {
+          "itemId": "c0.assessment.b.31",
+          "severity": "minor",
+          "status": "resolved",
+          "resolution": "Clarified that the final serial comma is an accepted clarity choice rather than a universal Canadian requirement; the alternative still omits all necessary list separators."
+        }
+      ],
+      "releaseDecision": "partial_reviewed_not_released"
+    }
+  ]
+}

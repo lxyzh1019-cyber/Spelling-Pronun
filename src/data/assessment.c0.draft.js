@@ -21,6 +21,8 @@ function item(form, number, values) {
     transferGroup: `assessment-${form}-${number}`,
     evidenceEligibility: values.evaluator === 'human_rubric' ? 'pending_human_review' : 'independent_first_answer',
     ...values,
+    authorStatus: values.part === 'B' ? 'reviewed' : base.authorStatus,
+    reviewStatus: values.part === 'B' ? 'reviewed' : base.reviewStatus,
   };
 }
 
@@ -46,7 +48,7 @@ const formBanks = {
       ['Choose the best repair for the fragment “Because the gate was locked.”', 'SE.fragments', 'a', [['a', 'We waited because the gate was locked.'], ['b', 'Because the locked gate.']], 'Choice a adds an independent clause, We waited, to complete the because-clause.'],
       ['Choose the best repair for “The bell rang, everyone entered.”', 'SE.runons', 'b', [['a', 'The bell, rang everyone entered.'], ['b', 'The bell rang, and everyone entered.']], 'Choice b joins the two complete thoughts with a comma and the conjunction and.'],
       ['Choose the sentence with correct end punctuation.', 'PU.capitals-endmarks', 'a', [['a', 'Where did the folder go?'], ['b', 'Where did the folder go.']], 'A direct question ends with a question mark.'],
-      ['Choose the sentence with correct list commas.', 'PU.list-commas', 'b', [['a', 'We packed paper ink and string.'], ['b', 'We packed paper, ink, and string.']], 'Commas separate the three listed items: paper, ink, and string.'],
+      ['Choose the sentence with correct list commas.', 'PU.list-commas', 'b', [['a', 'We packed paper ink and string.'], ['b', 'We packed paper, ink, and string.']], 'The commas clearly separate the three listed items; the final serial comma is an accepted clarity choice.'],
       ['Choose the correctly punctuated direct address.', 'PU.direct-address', 'a', [['a', 'Maya, please check this line.'], ['b', 'Maya please, check this line.']], 'The comma after Maya separates the person being addressed from the request.'],
     ],
     editing: 'Edit this sentence for exactly four targets: a capital, an end mark, subject–verb agreement, and a pronoun. “mia check the two labels because her are different”',
@@ -73,7 +75,7 @@ const formBanks = {
       ['Choose the best repair for the fragment “While the bus was waiting.”', 'SE.fragments', 'b', [['a', 'While waiting bus.'], ['b', 'We boarded while the bus was waiting.']], 'Choice b adds the independent clause We boarded to complete the while-clause.'],
       ['Choose the best repair for “I found the date, I wrote it down.”', 'SE.runons', 'a', [['a', 'I found the date, so I wrote it down.'], ['b', 'I found, the date I wrote it down.']], 'Choice a joins the two complete thoughts with a comma and the conjunction so.'],
       ['Choose the sentence with correct end punctuation.', 'PU.capitals-endmarks', 'b', [['a', 'Please close the case?'], ['b', 'Please close the case.']], 'A mild command with please normally ends with a period.'],
-      ['Choose the sentence with correct list commas.', 'PU.list-commas', 'a', [['a', 'The box held maps, notes, and photographs.'], ['b', 'The box held maps notes and photographs.']], 'Commas separate the three listed items: maps, notes, and photographs.'],
+      ['Choose the sentence with correct list commas.', 'PU.list-commas', 'a', [['a', 'The box held maps, notes, and photographs.'], ['b', 'The box held maps notes and photographs.']], 'The commas clearly separate the three listed items; the final serial comma is an accepted clarity choice.'],
       ['Choose the correctly punctuated direct address.', 'PU.direct-address', 'b', [['a', 'Please Amira, read the title.'], ['b', 'Please, Amira, read the title.']], 'The commas around Amira separate the person being addressed from the request.'],
     ],
     editing: 'Edit this sentence for exactly four targets: a capital, an end mark, verb tense, and a possessive apostrophe. “yesterday we inspect the teachers folder carefully”',
@@ -95,7 +97,7 @@ function buildForm(form) {
   bank.sentences.forEach(([prompt, skill, answer, choices, explanation]) => items.push(item(form, items.length + 1, { part: 'B', category: 'sentence', primarySkill: skill, prompt, responseType: 'choice', evaluator: 'choice', acceptedAnswers: [answer], choices: choices.map(([id, text]) => ({ id, text })), explanation })));
   items.push(item(form, items.length + 1, { part: 'B', category: 'editing', primarySkill: 'ED.locate', prompt: bank.editing, responseType: 'text', evaluator: 'human_rubric', rubric: { targets: 4, dimensions: ['locate', 'repair', 'preserve_meaning'], scoring: 'Award one point for each named correction only when the repaired sentence preserves the original meaning; record any reasonable alternative for human review.' }, explanation: 'A reviewer checks each of the four named targets separately and does not penalize an otherwise valid wording variant automatically.' }));
   items.push(item(form, items.length + 1, { part: 'B', category: 'writing', primarySkill: 'ED.explain', prompt: bank.writing, responseType: 'text', evaluator: 'human_rubric', rubric: { sentenceCount: 2, dimensions: ['complete_sentences', 'clear_sequence'], scoring: { complete_sentences: 'Both requested sentences express complete thoughts.', clear_sequence: 'The response gives a sensible check or next step in an order a reader can follow.', reviewRequired: 'A human records each dimension separately; spelling errors outside the named dimensions do not make the response wrong.' } }, explanation: 'Open writing remains pending until a human applies both visible rubric dimensions.' }));
-  return { id: `c0.assessment.${form.toLowerCase()}`, form, version: 1, status: 'independently_challenged', items };
+  return { id: `c0.assessment.${form.toLowerCase()}`, form, version: 1, status: 'partial_educational_source_review', items };
 }
 
 export const c0AssessmentForms = [buildForm('A'), buildForm('B')];

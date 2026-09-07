@@ -106,8 +106,8 @@ export function validateAssessmentReviews({ reviews = [], assessments = [], sour
     if (review.promotion === 'independently_challenged') {
       if (results.some((result) => result.outcome !== 'pass')) errors.push(`${label} promotes with a non-passing item`);
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
-      if (!['independently_challenged', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(assessment.status)) errors.push(`${label} promotion is not reflected in assessment status`);
-      if (assessment.items.some((item) => item.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match item status`);
+      if (!['independently_challenged', 'partial_educational_source_review', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(assessment.status)) errors.push(`${label} promotion is not reflected in assessment status`);
+      if (assessment.items.some((item) => !['independently_challenged', 'reviewed'].includes(item.reviewStatus))) errors.push(`${label} promotion is not reflected in item status`);
     }
   }
   return { valid: errors.length === 0, errors };
@@ -247,6 +247,60 @@ export function validateEducationalStoryReviews({ reviews = [], challengeReviews
     if (unresolved.length) errors.push(`${label} has unresolved discrepancies`);
     if (!['educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(story?.status)) errors.push(`${label} promotion is not reflected in story status`);
     if ([...episodeById.values()].some((episode) => episode.authorStatus !== 'reviewed' || episode.reviewStatus !== 'reviewed')) errors.push(`${label} promotion is not reflected in episode review state`);
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+export function validateEducationalAssessmentReviews({ reviews = [], challengeReviews = [], assessments = [], sources = [] }) {
+  const errors = [];
+  const assessmentById = new Map(assessments.map((assessment) => [assessment.id, assessment]));
+  const challengeById = new Map(challengeReviews.map((review) => [review.id, review]));
+  const sourceIds = new Set(sources.map((source) => source.id));
+  const reviewIds = reviews.map((review) => review.id);
+  if (new Set(reviewIds).size !== reviewIds.length) errors.push('Educational assessment review IDs must be unique');
+
+  for (const review of reviews) {
+    const label = review.id || 'unknown educational assessment review';
+    const assessment = assessmentById.get(review.assessmentId);
+    if (!assessment) {
+      errors.push(`${label} targets unknown assessment ${review.assessmentId}`);
+      continue;
+    }
+    const challenge = challengeById.get(review.challengeReviewId);
+    if (!challenge || challenge.assessmentId !== assessment.id || challenge.status !== 'complete') errors.push(`${label} has no completed challenge for ${assessment.id}`);
+    if (review.assessmentVersion !== assessment.version) errors.push(`${label} targets stale assessment version`);
+    if (review.form !== assessment.form) errors.push(`${label} form does not match ${assessment.id}`);
+    if (review.stage !== 'partial_educational_source_review' || review.status !== 'complete') errors.push(`${label} partial educational review is not complete`);
+    if (review.releaseDecision !== 'partial_reviewed_not_released') errors.push(`${label} must record the partial-reviewed-not-released decision`);
+    for (const dimension of ['curriculum_alignment', 'answer_accuracy', 'rubric_clarity', 'feedback_quality', 'source_mapping', 'age_accessibility', 'release_blockers']) {
+      if (!review.dimensions?.includes(dimension)) errors.push(`${label} did not record ${dimension}`);
+    }
+    const mappedSources = new Set(review.sourceIds || []);
+    for (const sourceId of mappedSources) if (!sourceIds.has(sourceId)) errors.push(`${label} has unknown source ${sourceId}`);
+    for (const item of assessment.items) for (const sourceId of item.sourceIds || []) if (!mappedSources.has(sourceId)) errors.push(`${label} omits assessment source ${sourceId}`);
+    const reviewedIds = review.reviewedItemIds || [];
+    const blockedIds = review.blockedItemIds || [];
+    const expectedIds = assessment.items.map((item) => item.id);
+    if (new Set(reviewedIds).size !== reviewedIds.length) errors.push(`${label} repeats a reviewed item`);
+    if (new Set(blockedIds).size !== blockedIds.length) errors.push(`${label} repeats a blocked item`);
+    if (reviewedIds.some((id) => blockedIds.includes(id))) errors.push(`${label} overlaps reviewed and blocked items`);
+    const recordedIds = [...reviewedIds, ...blockedIds];
+    const missing = expectedIds.filter((id) => !recordedIds.includes(id));
+    const extra = recordedIds.filter((id) => !expectedIds.includes(id));
+    if (missing.length) errors.push(`${label} misses items: ${missing.join(', ')}`);
+    if (extra.length) errors.push(`${label} includes unknown items: ${extra.join(', ')}`);
+    const blockedByGroup = (review.blockedGroups || []).flatMap((group) => group.itemIds || []);
+    if (new Set(blockedByGroup).size !== blockedByGroup.length || blockedIds.some((id) => !blockedByGroup.includes(id)) || blockedByGroup.some((id) => !blockedIds.includes(id))) errors.push(`${label} blocked groups do not exactly explain blocked items`);
+    if ((review.blockedGroups || []).some((group) => !group.blocker?.trim())) errors.push(`${label} has a blocked group without a reason`);
+    for (const item of assessment.items) {
+      if (reviewedIds.includes(item.id) && (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed')) errors.push(`${label} does not reflect reviewed state for ${item.id}`);
+      if (blockedIds.includes(item.id) && item.reviewStatus !== 'independently_challenged') errors.push(`${label} does not preserve challenge-only state for ${item.id}`);
+      if (item.releaseStatus === 'released') errors.push(`${label} cannot release ${item.id}`);
+    }
+    if (!review.findings?.trim()) errors.push(`${label} has no recorded findings`);
+    const unresolved = (review.discrepancies || []).filter((discrepancy) => discrepancy.status !== 'resolved');
+    if (unresolved.length) errors.push(`${label} has unresolved discrepancies`);
+    if (assessment.status !== 'partial_educational_source_review') errors.push(`${label} promotion is not reflected in assessment status`);
   }
   return { valid: errors.length === 0, errors };
 }
