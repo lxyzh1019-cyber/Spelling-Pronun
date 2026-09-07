@@ -11,7 +11,7 @@ test('chapter-one story challenge covers both versioned episodes and every sourc
   const validation = validateStoryReviews({ reviews: reviewData.reviews, story, items: c0PilotItems, sources: sourceData.sources });
   assert.deepEqual(validation.errors, []);
   assert.equal(reviewData.reviews[0].results.length, 2);
-  assert.ok(story.episodes.every((episode) => episode.version === 1 && episode.reviewStatus === 'reviewed'));
+  assert.ok(story.episodes.every((episode) => episode.version === 2 && episode.reviewStatus === 'reviewed'));
 });
 
 test('story task links exactly match the learner tasks in its linked lessons', () => {

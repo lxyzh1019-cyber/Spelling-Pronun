@@ -1,8 +1,8 @@
-export function parseLocalSession(raw) {
+export function parseLocalSession(raw, expected) {
   if (typeof raw !== 'string') return null;
   try {
     const value = JSON.parse(raw);
-    return value && typeof value === 'object' ? value : null;
+    return isCompatibleSession(value, expected) ? value.state : null;
   } catch {
     return null;
   }
@@ -21,11 +21,15 @@ export function isCompatibleSession(snapshot, { id, learnerId, mode, contentVers
 }
 
 export function selectSessionState({ localRaw, durableSnapshot, expected, fallback }) {
-  const localState = parseLocalSession(localRaw);
+  const localState = parseLocalSession(localRaw, expected);
   const durableCompatible = isCompatibleSession(durableSnapshot, expected);
   if (localState) return { state: localState, source: 'local', revision: durableCompatible ? durableSnapshot.revision || 0 : 0 };
   if (durableCompatible) return { state: durableSnapshot.state, source: 'indexeddb', revision: durableSnapshot.revision || 0 };
   return { state: fallback(), source: 'new', revision: 0 };
+}
+
+export function createLocalSessionMirror({ id, learnerId, mode, contentVersion, state }) {
+  return { mirrorVersion: 1, id, learnerId, mode, contentVersion, state };
 }
 
 export function createSessionSnapshot({ id, learnerId, mode, contentVersion, orderedItemIds = [], state, revision }) {

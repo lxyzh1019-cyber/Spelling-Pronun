@@ -107,6 +107,8 @@ test('C0 story draft has two sourced, explicitly fictionalized episodes', () => 
     assert.ok(episode.sourceIds.every((id) => sourceIds.has(id)));
     const words = episode.historyBehindMystery.trim().split(/\s+/).length;
     assert.ok(words >= 40 && words <= 80, `${episode.id} history note is ${words} words`);
+    const recapSentences = episode.recap.match(/[.!?](?:\s|$)/g) || [];
+    assert.equal(recapSentences.length, 2, `${episode.id} must have a two-sentence recap`);
   }
   const validation = validateContent({ skills: skillsData.skills, items: c0PilotItems, episodes: storyDraft.episodes, sources: sourceData.sources });
   assert.deepEqual(validation.errors, []);

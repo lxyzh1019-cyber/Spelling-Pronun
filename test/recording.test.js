@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { assessRecordingQuality, chooseRecordingMimeType, isAudiblePeak, recordingSupport } from '../src/utils/recording.js';
-import { stopSpeech } from '../src/utils/speech.js';
+import { speak, stopSpeech } from '../src/utils/speech.js';
 
 test('recording MIME selection prefers Opus and falls back without inventing support', () => {
   const Recorder = { isTypeSupported: (type) => type === 'audio/webm' };
@@ -24,4 +24,31 @@ test('recording quality rejects empty, too-short, and silent captures without sc
 
 test('speech cancellation is safe when no browser synthesizer exists', () => {
   assert.equal(stopSpeech(), false);
+});
+
+test('speech playback can be aborted when the learner or route changes', async () => {
+  const originalWindow = globalThis.window;
+  let cancellations = 0;
+  const synth = {
+    cancel: () => { cancellations += 1; },
+    getVoices: () => [{ lang: 'en-CA' }],
+    speak: () => {},
+  };
+  globalThis.window = {
+    speechSynthesis: synth,
+    SpeechSynthesisUtterance: class {
+      constructor(text) { this.text = text; }
+    },
+  };
+  try {
+    const controller = new AbortController();
+    const result = await speak('A two-sentence recap.', { lang: 'en-CA', signal: controller.signal });
+    assert.equal(result.ok, true);
+    assert.equal(result.usedRequestedLocale, true);
+    controller.abort();
+    assert.equal(cancellations, 2);
+    assert.deepEqual(await speak('Do not play.', { signal: AbortSignal.abort() }), { ok: false, reason: 'cancelled' });
+  } finally {
+    globalThis.window = originalWindow;
+  }
 });

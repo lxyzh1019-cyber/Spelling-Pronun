@@ -32,8 +32,9 @@ function ensureVoices() {
 
 export async function speak(
   text,
-  { rate = 0.9, pitch = 1, lang = 'en-US' } = {}
+  { rate = 0.9, pitch = 1, lang = 'en-US', signal } = {}
 ) {
+  if (signal?.aborted) return { ok: false, reason: 'cancelled' };
   if (typeof window === 'undefined') return { ok: false, reason: 'unavailable' };
   const synth = window.speechSynthesis;
   if (!synth || typeof window.SpeechSynthesisUtterance !== 'function') return { ok: false, reason: 'unsupported' };
@@ -44,6 +45,7 @@ export async function speak(
   } catch {
     return { ok: false, reason: 'voice-load-failed' };
   }
+  if (signal?.aborted) return { ok: false, reason: 'cancelled' };
   const voice =
     voices.find((v) => v.lang === lang) ||
     voices.find((v) => v.lang?.startsWith(lang.split('-')[0]));
@@ -54,10 +56,16 @@ export async function speak(
   u.pitch = pitch;
   u.lang = lang;
   if (voice) u.voice = voice;
+  const cancel = () => synth.cancel();
+  const detach = () => signal?.removeEventListener('abort', cancel);
+  signal?.addEventListener('abort', cancel, { once: true });
+  u.onend = detach;
+  u.onerror = detach;
   try {
     synth.speak(u);
     return { ok: true, usedRequestedLocale: voice?.lang === lang };
   } catch {
+    detach();
     return { ok: false, reason: 'playback-failed' };
   }
 }

@@ -98,7 +98,7 @@ export default function LessonPage() {
     if (!canWrite()) return;
     const completed = completeReflection(state, reflection);
     setState(completed);
-    writeJson(`spelling-lesson-complete:${activeProfileId}:${sessionId}`, { sessionId, episodeId, completedAt: new Date().toISOString(), evidenceIds: completed.evidenceIds || [], reflection });
+    writeJson(`spelling-lesson-complete:${activeProfileId}:${sessionId}`, { sessionId, contentVersion: lesson.version, episodeId, completedAt: new Date().toISOString(), evidenceIds: completed.evidenceIds || [], reflection });
   };
 
   const takeOverHere = () => {

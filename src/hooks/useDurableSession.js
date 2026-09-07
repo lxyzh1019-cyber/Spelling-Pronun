@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { db } from '../firebase';
-import { createSessionSnapshot, selectSessionState } from '../persistence/durableSession';
+import { createLocalSessionMirror, createSessionSnapshot, selectSessionState } from '../persistence/durableSession';
 import { getOrCreateDeviceId } from '../persistence/deviceIdentity';
 import { claimRemoteSession, saveRemoteSession } from '../persistence/firebaseSessionStore';
 import { loadSession, saveSession } from '../persistence/indexedDb';
@@ -118,7 +118,9 @@ export function useDurableSession({ storageKey, learnerId, mode, contentVersion,
   useEffect(() => {
     if (!localReady || ownerKeyRef.current !== storageKey || !lease.writable || !canWriteLocalRef.current()) return;
     let localSaved = true;
-    try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch { localSaved = false; }
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(createLocalSessionMirror({ id: storageKey, learnerId, mode, contentVersion, state })));
+    } catch { localSaved = false; }
     const revision = revisionRef.current + 1;
     revisionRef.current = revision;
     const config = configRef.current;

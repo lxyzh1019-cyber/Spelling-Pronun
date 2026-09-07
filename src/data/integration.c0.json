@@ -32,17 +32,17 @@
       "releaseDecision": "integrated_not_released"
     },
     {
-      "id": "c0.integration.story-chapter-1.v1",
+      "id": "c0.integration.story-chapter-1.v2",
       "type": "story",
       "stage": "content_integration",
       "status": "complete",
-      "integratedAt": "2026-09-06",
-      "storyVersion": 1,
+      "integratedAt": "2026-09-07",
+      "storyVersion": 2,
       "episodeIds": ["c0.story.01", "c0.story.02"],
       "expectedObjectCount": 2,
       "routeArtifacts": ["/case", "/lesson/:sessionId"],
-      "checks": ["schema_validation", "route_resolution", "content_version_pinning", "release_exclusion", "task_reachability"],
-      "evidence": "Both episodes render in sequence, link only to exact lesson practice/transfer tasks, preserve their version and fiction label, and reveal only after the linked lesson completions.",
+      "checks": ["schema_validation", "route_resolution", "content_version_pinning", "release_exclusion", "task_reachability", "two_sentence_recap", "narration_cancellation"],
+      "evidence": "Both episodes render in sequence, link only to exact lesson practice/transfer tasks, preserve their version and fiction label, and reveal only after the linked lesson completions. Each episode now renders an independently challenged and educationally reviewed two-sentence recap with replayable narration, truthful locale fallback, and cancellation on learner or route change.",
       "releaseDecision": "integrated_not_released"
     }
   ]

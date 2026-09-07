@@ -1,12 +1,18 @@
 import { Link } from 'react-router-dom';
-import { C0_ASSESSMENT_NOTICE } from '../data/assessment.c0.draft';
+import { C0_ASSESSMENT_NOTICE, c0AssessmentForms } from '../data/assessment.c0.draft';
 import { useWords } from '../context/WordProvider';
+import { parseLocalSession } from '../persistence/durableSession';
 import styles from './Learning.module.css';
 
 export default function AssessmentPage() {
   const { activeProfileId } = useWords();
   const exposed = (form) => {
-    try { return (JSON.parse(localStorage.getItem(`spelling-assessment:${activeProfileId}:${form}`))?.results?.length || 0) > 0; } catch { return false; }
+    const storageKey = `spelling-assessment:${activeProfileId}:${form}`;
+    const contentVersion = c0AssessmentForms.find((candidate) => candidate.form === form)?.version;
+    try {
+      const state = parseLocalSession(localStorage.getItem(storageKey), { id: storageKey, learnerId: activeProfileId, mode: 'assessment', contentVersion });
+      return (state?.results?.length || 0) > 0;
+    } catch { return false; }
   };
   return <div className={styles.page}>
     <p className={styles.notice} role="note">{C0_ASSESSMENT_NOTICE}</p>
