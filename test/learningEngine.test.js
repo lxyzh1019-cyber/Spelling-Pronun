@@ -91,3 +91,22 @@ test('content validator rejects broken release references and unsafe recording s
   assert.ok(result.errors.some((error) => error.includes('unknown task')));
   assert.ok(result.errors.some((error) => error.includes('fiction label')));
 });
+
+test('content validator requires a reviewed, labelled human-audio asset before spoken content can release', () => {
+  const skills = [{ id: 'SP.patterns', prerequisites: [] }];
+  const item = {
+    id: 'spoken-1', version: 1, primarySkill: 'SP.patterns', secondarySkills: [], role: 'independent', difficulty: 1,
+    prerequisites: [], prompt: 'Listen and type the word.', spokenText: 'carefully', responseType: 'text', evaluator: 'spelling',
+    acceptedAnswers: ['carefully'], explanation: 'Listen for each syllable.', helpSteps: ['Replay the word.'],
+    evidenceEligibility: 'independent_first_answer', transferGroup: 'audio-1', authorStatus: 'reviewed', reviewStatus: 'reviewed',
+    integrationStatus: 'integrated', releaseStatus: 'released', audioRef: 'audio-carefully', audioStatus: 'reviewed_human',
+  };
+  const audioAsset = { id: 'audio-carefully', version: 1, url: '/audio/carefully.mp3', transcript: 'carefully', locale: 'en-CA', reviewStatus: 'reviewed' };
+  assert.deepEqual(validateContent({ skills, items: [item], audioAssets: [audioAsset] }).errors, []);
+
+  const invalidAsset = { ...audioAsset, locale: 'en-US', reviewStatus: 'pending' };
+  const result = validateContent({ skills, items: [item], audioAssets: [invalidAsset] });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes('non-Canadian locale without a learner-facing disclosure')));
+  assert.ok(result.errors.some((error) => error.includes('without a reviewed audio asset')));
+});
