@@ -113,4 +113,45 @@ export function validateAssessmentReviews({ reviews = [], assessments = [], sour
   return { valid: errors.length === 0, errors };
 }
 
+export function validateStoryReviews({ reviews = [], story, items = [], sources = [] }) {
+  const errors = [];
+  const episodeById = new Map((story?.episodes || []).map((episode) => [episode.id, episode]));
+  const itemIds = new Set(items.map((item) => item.id));
+  const sourceIds = new Set(sources.map((source) => source.id));
+  const requiredDimensions = ['historical_claims', 'source_mapping', 'fact_fiction_boundary', 'task_reachability', 'answer_leak', 'reading_load', 'decision_consequence', 'episode_progression'];
+  for (const review of reviews) {
+    const label = review.id || 'unknown story review';
+    if (review.storyVersion !== story?.version) errors.push(`${label} targets stale story version`);
+    if (review.chapter !== story?.chapter) errors.push(`${label} targets the wrong chapter`);
+    if (review.stage !== 'independent_challenge' || review.status !== 'complete') errors.push(`${label} challenge is not complete`);
+    for (const dimension of requiredDimensions) if (!review.dimensions?.includes(dimension)) errors.push(`${label} did not record ${dimension}`);
+    for (const sourceId of review.sourceIds || []) if (sources.length && !sourceIds.has(sourceId)) errors.push(`${label} has unknown source ${sourceId}`);
+    const results = review.results || [];
+    const resultIds = results.map((result) => result.episodeId);
+    const expectedIds = [...episodeById.keys()];
+    const missing = expectedIds.filter((id) => !resultIds.includes(id));
+    const extra = resultIds.filter((id) => !episodeById.has(id));
+    if (new Set(resultIds).size !== resultIds.length) errors.push(`${label} repeats an episode result`);
+    if (missing.length) errors.push(`${label} misses episodes: ${missing.join(', ')}`);
+    if (extra.length) errors.push(`${label} includes unknown episodes: ${extra.join(', ')}`);
+    for (const result of results) {
+      const episode = episodeById.get(result.episodeId);
+      if (episode && result.episodeVersion !== episode.version) errors.push(`${label} has stale version for ${result.episodeId}`);
+      if (!['pass', 'flag'].includes(result.outcome)) errors.push(`${label} has invalid outcome for ${result.episodeId}`);
+      if (!result.note?.trim()) errors.push(`${label} has no result note for ${result.episodeId}`);
+    }
+    for (const episode of story?.episodes || []) {
+      for (const taskId of episode.taskIds || []) if (!itemIds.has(taskId)) errors.push(`${episode.id} links unknown task ${taskId}`);
+    }
+    const unresolved = (review.discrepancies || []).filter((discrepancy) => discrepancy.status !== 'resolved');
+    if (review.promotion === 'independently_challenged') {
+      if (results.some((result) => result.outcome !== 'pass')) errors.push(`${label} promotes with a non-passing episode`);
+      if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
+      if (story?.status !== 'independently_challenged') errors.push(`${label} promotion does not match story status`);
+      if ([...episodeById.values()].some((episode) => episode.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match episode status`);
+    }
+  }
+  return { valid: errors.length === 0, errors };
+}
+
 export { REQUIRED_CHALLENGE_DIMENSIONS };

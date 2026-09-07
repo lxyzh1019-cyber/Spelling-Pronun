@@ -1,11 +1,14 @@
 {
   "version": 1,
-  "status": "draft_needs_independent_review",
+  "status": "independently_challenged",
   "chapter": 1,
   "title": "The Printed Difference",
   "episodes": [
     {
       "id": "c0.story.01",
+      "version": 1,
+      "authorStatus": "draft",
+      "reviewStatus": "independently_challenged",
       "chapter": 1,
       "sequence": 1,
       "title": "The First Proof",
@@ -26,6 +29,9 @@
     },
     {
       "id": "c0.story.02",
+      "version": 1,
+      "authorStatus": "draft",
+      "reviewStatus": "independently_challenged",
       "chapter": 1,
       "sequence": 2,
       "title": "Marks in the Margin",

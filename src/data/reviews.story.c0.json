@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "protocol": "MASTER_PLAN.md sections 0.7 and 0.8",
+  "reviews": [
+    {
+      "id": "c0.challenge.story-chapter-1.v1",
+      "stage": "independent_challenge",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_content_challenge_pass",
+      "storyVersion": 1,
+      "chapter": 1,
+      "sourceIds": ["tna-william-caxton", "bl-printer-guide", "bl-ames-printing-collections"],
+      "dimensions": [
+        "historical_claims",
+        "source_mapping",
+        "fact_fiction_boundary",
+        "task_reachability",
+        "answer_leak",
+        "reading_load",
+        "decision_consequence",
+        "episode_progression"
+      ],
+      "results": [
+        {
+          "episodeId": "c0.story.01",
+          "episodeVersion": 1,
+          "outcome": "pass",
+          "note": "All historical statements map to the National Archives or British Library records; the archive box, reproduction, label, proof and pencilled clue are visibly covered by the fictional-reconstruction label and the history note. All sixteen task IDs exist and exactly match the six practice plus two transfer items from each linked spelling and capitals lesson. The setup names skill types but exposes no assessment or lesson answer. The reveal follows only after both linked lessons complete and leaves a concrete question for Episode 2."
+        },
+        {
+          "episodeId": "c0.story.02",
+          "episodeVersion": 1,
+          "outcome": "pass",
+          "note": "The British Library collection description supports the general list of papers, letters, memoranda, drafts, amendments and handwritten material, while the margin note, port file and recipient puzzle are explicitly invented. All eight task IDs exist and exactly match the complete-sentence lesson's six practice plus two transfer items. The prose explains the target concept without repeating any answer, and the reveal preserves fragments as clues rather than claiming they are meaningless."
+        }
+      ],
+      "discrepancies": [
+        {
+          "episodeId": "c0.story.01",
+          "severity": "material",
+          "status": "resolved",
+          "resolution": "Added a pinned episode version and explicit author/review lifecycle fields; applied the same lifecycle repair to Episode 2."
+        }
+      ],
+      "promotion": "independently_challenged"
+    }
+  ]
+}
