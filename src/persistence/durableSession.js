@@ -2,19 +2,20 @@ export function parseLocalSession(raw, expected) {
   if (typeof raw !== 'string') return null;
   try {
     const value = JSON.parse(raw);
-    return isCompatibleSession(value, expected) ? value.state : null;
+    return value?.mirrorVersion === 1 && isCompatibleSession(value, expected) ? value.state : null;
   } catch {
     return null;
   }
 }
 
-export function isCompatibleSession(snapshot, { id, learnerId, mode, contentVersion }) {
+export function isCompatibleSession(snapshot, { id, learnerId, mode, contentVersion, orderedItemIds }) {
   return Boolean(
     snapshot
     && snapshot.id === id
     && snapshot.learnerId === learnerId
     && snapshot.mode === mode
     && snapshot.contentVersion === contentVersion
+    && (!orderedItemIds || JSON.stringify(snapshot.orderedItemIds || []) === JSON.stringify(orderedItemIds))
     && snapshot.state
     && typeof snapshot.state === 'object',
   );
@@ -28,8 +29,8 @@ export function selectSessionState({ localRaw, durableSnapshot, expected, fallba
   return { state: fallback(), source: 'new', revision: 0 };
 }
 
-export function createLocalSessionMirror({ id, learnerId, mode, contentVersion, state }) {
-  return { mirrorVersion: 1, id, learnerId, mode, contentVersion, state };
+export function createLocalSessionMirror({ id, learnerId, mode, contentVersion, orderedItemIds = [], state }) {
+  return { mirrorVersion: 1, id, learnerId, mode, contentVersion, orderedItemIds: [...orderedItemIds], state };
 }
 
 export function createSessionSnapshot({ id, learnerId, mode, contentVersion, orderedItemIds = [], state, revision }) {

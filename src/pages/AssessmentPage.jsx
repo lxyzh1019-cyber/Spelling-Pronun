@@ -8,9 +8,9 @@ export default function AssessmentPage() {
   const { activeProfileId } = useWords();
   const exposed = (form) => {
     const storageKey = `spelling-assessment:${activeProfileId}:${form}`;
-    const contentVersion = c0AssessmentForms.find((candidate) => candidate.form === form)?.version;
+    const formData = c0AssessmentForms.find((candidate) => candidate.form === form);
     try {
-      const state = parseLocalSession(localStorage.getItem(storageKey), { id: storageKey, learnerId: activeProfileId, mode: 'assessment', contentVersion });
+      const state = parseLocalSession(localStorage.getItem(storageKey), { id: storageKey, learnerId: activeProfileId, mode: 'assessment', contentVersion: formData?.version, orderedItemIds: formData?.items.map((item) => item.id) });
       return (state?.results?.length || 0) > 0;
     } catch { return false; }
   };

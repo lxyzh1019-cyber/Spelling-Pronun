@@ -22,7 +22,7 @@ export function useDurableSession({ storageKey, learnerId, mode, contentVersion,
   const [state, setState] = useState(() => selectSessionState({
     localRaw: readLocalRaw(storageKey),
     durableSnapshot: null,
-    expected: { id: storageKey, learnerId, mode, contentVersion },
+    expected: { id: storageKey, learnerId, mode, contentVersion, orderedItemIds },
     fallback: initialState,
   }).state);
   const [readyKey, setReadyKey] = useState(null);
@@ -68,7 +68,7 @@ export function useDurableSession({ storageKey, learnerId, mode, contentVersion,
       const selected = selectSessionState({
         localRaw: readLocalRaw(config.storageKey),
         durableSnapshot,
-        expected: { id: config.storageKey, learnerId: config.learnerId, mode: config.mode, contentVersion: config.contentVersion },
+        expected: { id: config.storageKey, learnerId: config.learnerId, mode: config.mode, contentVersion: config.contentVersion, orderedItemIds: config.orderedItemIds },
         fallback: config.initialState,
       });
 
@@ -119,7 +119,7 @@ export function useDurableSession({ storageKey, learnerId, mode, contentVersion,
     if (!localReady || ownerKeyRef.current !== storageKey || !lease.writable || !canWriteLocalRef.current()) return;
     let localSaved = true;
     try {
-      localStorage.setItem(storageKey, JSON.stringify(createLocalSessionMirror({ id: storageKey, learnerId, mode, contentVersion, state })));
+      localStorage.setItem(storageKey, JSON.stringify(createLocalSessionMirror({ id: storageKey, learnerId, mode, contentVersion, orderedItemIds: configRef.current.orderedItemIds, state })));
     } catch { localSaved = false; }
     const revision = revisionRef.current + 1;
     revisionRef.current = revision;
@@ -183,7 +183,7 @@ export function useDurableSession({ storageKey, learnerId, mode, contentVersion,
       const selected = selectSessionState({
         localRaw: readLocalRaw(storageKey),
         durableSnapshot: null,
-        expected: { id: storageKey, learnerId, mode, contentVersion },
+        expected: { id: storageKey, learnerId, mode, contentVersion, orderedItemIds: configRef.current.orderedItemIds },
         fallback: initialState,
       });
       setState(selected.state);

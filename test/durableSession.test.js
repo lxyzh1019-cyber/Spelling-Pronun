@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLocalSessionMirror, createSessionSnapshot, selectSessionState, shouldStoreSession } from '../src/persistence/durableSession.js';
 
-const expected = { id: 'lesson:jenn:one', learnerId: 'jenn', mode: 'lesson', contentVersion: 3 };
+const expected = { id: 'lesson:jenn:one', learnerId: 'jenn', mode: 'lesson', contentVersion: 3, orderedItemIds: ['a', 'b'] };
 const fallback = () => ({ stage: 'teach' });
 
 test('a valid local session remains the primary fast bootstrap', () => {
@@ -18,7 +18,9 @@ test('IndexedDB recovers a missing, corrupt, unversioned, or mismatched local se
   const durableSnapshot = { ...expected, revision: 7, state: { stage: 'repair', index: 3 } };
   const wrongLearner = createLocalSessionMirror({ ...expected, learnerId: 'jess', state: { stage: 'complete' } });
   const wrongVersion = createLocalSessionMirror({ ...expected, contentVersion: 2, state: { stage: 'complete' } });
-  for (const localRaw of [null, '{bad json', JSON.stringify({ stage: 'complete' }), JSON.stringify(wrongLearner), JSON.stringify(wrongVersion)]) {
+  const wrongOrder = createLocalSessionMirror({ ...expected, orderedItemIds: ['b', 'a'], state: { stage: 'complete' } });
+  const wrongMirrorVersion = { ...createLocalSessionMirror({ ...expected, state: { stage: 'complete' } }), mirrorVersion: 99 };
+  for (const localRaw of [null, '{bad json', JSON.stringify({ stage: 'complete' }), JSON.stringify(wrongLearner), JSON.stringify(wrongVersion), JSON.stringify(wrongOrder), JSON.stringify(wrongMirrorVersion)]) {
     const selected = selectSessionState({ localRaw, durableSnapshot, expected, fallback });
     assert.deepEqual(selected.state, durableSnapshot.state);
     assert.equal(selected.source, 'indexeddb');
