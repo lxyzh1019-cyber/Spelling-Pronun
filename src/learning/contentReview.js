@@ -55,9 +55,8 @@ export function validateContentReviews({ reviews = [], packs = [], sources = [] 
     if (review.promotion === 'independently_challenged') {
       if (results.some((result) => result.outcome !== 'pass')) errors.push(`${label} promotes with a non-passing item`);
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
-      if (pack.status !== 'independently_challenged') errors.push(`${label} promotion does not match pack status`);
-      if (pack.items.some((item) => item.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match item status`);
-      if (pack.items.some((item) => item.releaseStatus === 'released')) errors.push(`${label} challenge-stage content cannot already be released`);
+      if (!['independently_challenged', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(pack.status)) errors.push(`${label} promotion is not reflected in pack status`);
+      if (pack.items.some((item) => !['independently_challenged', 'reviewed'].includes(item.reviewStatus))) errors.push(`${label} promotion is not reflected in item status`);
     }
   }
 
@@ -107,9 +106,8 @@ export function validateAssessmentReviews({ reviews = [], assessments = [], sour
     if (review.promotion === 'independently_challenged') {
       if (results.some((result) => result.outcome !== 'pass')) errors.push(`${label} promotes with a non-passing item`);
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
-      if (assessment.status !== 'independently_challenged') errors.push(`${label} promotion does not match assessment status`);
+      if (!['independently_challenged', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(assessment.status)) errors.push(`${label} promotion is not reflected in assessment status`);
       if (assessment.items.some((item) => item.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match item status`);
-      if (assessment.items.some((item) => item.releaseStatus === 'released')) errors.push(`${label} challenge-stage assessment cannot already be released`);
     }
   }
   return { valid: errors.length === 0, errors };
@@ -149,10 +147,55 @@ export function validateStoryReviews({ reviews = [], story, items = [], sources 
     if (review.promotion === 'independently_challenged') {
       if (results.some((result) => result.outcome !== 'pass')) errors.push(`${label} promotes with a non-passing episode`);
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
-      if (story?.status !== 'independently_challenged') errors.push(`${label} promotion does not match story status`);
+      if (!['independently_challenged', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(story?.status)) errors.push(`${label} promotion is not reflected in story status`);
       if ([...episodeById.values()].some((episode) => episode.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match episode status`);
-      if ([...episodeById.values()].some((episode) => episode.releaseStatus === 'released')) errors.push(`${label} challenge-stage story cannot already be released`);
     }
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+export function validateEducationalPackReviews({ reviews = [], challengeReviews = [], packs = [], sources = [] }) {
+  const errors = [];
+  const packById = new Map(packs.map((pack) => [pack.id, pack]));
+  const challengeById = new Map(challengeReviews.map((review) => [review.id, review]));
+  const sourceIds = new Set(sources.map((source) => source.id));
+  const reviewIds = reviews.map((review) => review.id);
+  if (new Set(reviewIds).size !== reviewIds.length) errors.push('Educational review IDs must be unique');
+  const reviewedPackIds = reviews.map((review) => review.packId);
+  if (new Set(reviewedPackIds).size !== reviewedPackIds.length) errors.push('Each pack may have only one current educational review');
+
+  for (const review of reviews) {
+    const label = review.id || 'unknown educational review';
+    const pack = packById.get(review.packId);
+    if (!pack) {
+      errors.push(`${label} targets unknown pack ${review.packId}`);
+      continue;
+    }
+    const challenge = challengeById.get(review.challengeReviewId);
+    if (!challenge || challenge.packId !== pack.id || challenge.status !== 'complete') errors.push(`${label} has no completed challenge for ${pack.id}`);
+    if (review.packVersion !== pack.version) errors.push(`${label} targets stale pack version`);
+    if (review.skillId !== pack.skillId) errors.push(`${label} skill does not match ${pack.id}`);
+    if (review.stage !== 'educational_source_review' || review.status !== 'complete') errors.push(`${label} educational review is not complete`);
+    if (review.releaseDecision !== 'reviewed_not_released') errors.push(`${label} must record the reviewed-not-released decision`);
+    for (const dimension of ['curriculum_alignment', 'rule_accuracy', 'answer_accuracy', 'feedback_quality', 'source_mapping', 'age_accessibility']) {
+      if (!review.dimensions?.includes(dimension)) errors.push(`${label} did not record ${dimension}`);
+    }
+    for (const sourceId of review.sourceIds || []) if (!sourceIds.has(sourceId)) errors.push(`${label} has unknown source ${sourceId}`);
+    const mappedSources = new Set(review.sourceIds || []);
+    for (const sourceId of pack.sourceIds || []) if (!mappedSources.has(sourceId)) errors.push(`${label} omits pack source ${sourceId}`);
+    const itemIds = review.itemIds || [];
+    if (new Set(itemIds).size !== itemIds.length) errors.push(`${label} repeats an item in its reviewed range`);
+    const expectedIds = pack.items.map((item) => item.id);
+    const missing = expectedIds.filter((id) => !itemIds.includes(id));
+    const extra = itemIds.filter((id) => !expectedIds.includes(id));
+    if (missing.length) errors.push(`${label} misses items: ${missing.join(', ')}`);
+    if (extra.length) errors.push(`${label} includes unknown items: ${extra.join(', ')}`);
+    if (review.outcome !== 'pass') errors.push(`${label} does not have a passing outcome`);
+    if (!review.findings?.trim()) errors.push(`${label} has no recorded findings`);
+    const unresolved = (review.discrepancies || []).filter((discrepancy) => discrepancy.status !== 'resolved');
+    if (unresolved.length) errors.push(`${label} has unresolved discrepancies`);
+    if (!['educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(pack.status)) errors.push(`${label} promotion is not reflected in pack status`);
+    if (pack.items.some((item) => item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed')) errors.push(`${label} promotion is not reflected in item review state`);
   }
   return { valid: errors.length === 0, errors };
 }

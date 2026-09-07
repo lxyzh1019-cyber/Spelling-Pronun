@@ -8,7 +8,7 @@ import { useDurableSession } from '../hooks/useDurableSession';
 import { writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
-const DRAFT_NOTICE = 'Draft C0 preview: these items meet the planned structure but have not completed independent educational and source review. Their attempts cannot affect mastery.';
+const DRAFT_NOTICE = 'Reviewed C0 preview: these items completed challenge and educational/source review, but not integration and learner testing. Their attempts cannot affect mastery.';
 
 function Question({ item, onAnswer, busy }) {
   const [answer, setAnswer] = useState('');
