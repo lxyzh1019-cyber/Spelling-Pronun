@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
-import { speak } from '../utils/speech';
+import { useCancellableSpeech } from '../hooks/useCancellableSpeech';
 import { shuffle } from '../utils/shuffle';
 import { EMPTY_SCORE, createSessionSnapshot, isPerfectScore, nextScore, restoreSessionSnapshot, scoreTotal } from '../learning/r1Core';
 import { readJson, sessionStorageKey, writeJson } from '../utils/localStore';
@@ -49,6 +49,7 @@ function SpellingTestInner({ sessionLearnerId }) {
   const [showHintContent, setShowHintContent] = useState(false);
   const [speechError, setSpeechError] = useState(null);
   const inputRef = useRef(null);
+  const speechTimerRef = useRef(null);
 
   const resetSession = useCallback((autoStart = false) => {
     const freshWords = mode === 'daily' ? [...availableWords] : shuffle(availableWords);
@@ -91,20 +92,29 @@ function SpellingTestInner({ sessionLearnerId }) {
   }, [sessionKey, learnerId, mode, category, words, index, score, started, finished]);
 
   const current = words[index];
+  const { play: playSpeech } = useCancellableSpeech(`${sessionKey}:${current?.id || current?.word || 'none'}`);
+
+  useEffect(() => () => clearTimeout(speechTimerRef.current), [sessionKey]);
 
   const speakWord = useCallback(async (word = current) => {
     if (!word) return;
-    const result = await speak(word.word, { lang: 'en-CA' });
+    const result = await playSpeech(word.word, { lang: 'en-CA' });
+    if (result.reason === 'cancelled') return;
     setSpeechError(result?.ok ? null : 'Audio could not start. Tap Play Again to retry, or continue without audio.');
-  }, [current]);
+  }, [current, playSpeech]);
+
+  const queueWordSpeech = (word) => {
+    clearTimeout(speechTimerRef.current);
+    speechTimerRef.current = setTimeout(() => {
+      speakWord(word);
+      inputRef.current?.focus();
+    }, 100);
+  };
 
   const handleStart = () => {
     const startingWords = finished ? resetSession(true) : words;
     setStarted(true);
-    setTimeout(() => {
-      speakWord(startingWords[0]);
-      inputRef.current?.focus();
-    }, 100);
+    queueWordSpeech(startingWords[0]);
   };
 
   const handleUseHint = async () => {
@@ -167,10 +177,7 @@ function SpellingTestInner({ sessionLearnerId }) {
     setInput('');
     setFeedback(null);
     setShowHintContent(false);
-    setTimeout(() => {
-      speakWord(nextWord);
-      inputRef.current?.focus();
-    }, 100);
+    queueWordSpeech(nextWord);
   };
 
   const handleSkip = () => {

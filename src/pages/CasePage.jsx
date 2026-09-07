@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import storyDraft from '../data/story.c0.draft.json';
 import { lessonBySessionId } from '../data/lessonCatalog';
 import { isCurrentLessonCompletion } from '../learning/storyProgress';
+import { useCancellableSpeech } from '../hooks/useCancellableSpeech';
 import { readJson } from '../utils/localStore';
-import { speak, stopSpeech } from '../utils/speech';
 import styles from './Learning.module.css';
 
 const episodeLessons = {
@@ -19,21 +19,14 @@ const episodeLessons = {
 export default function CasePage() {
   const { activeProfileId } = useWords();
   const [audioStatus, setAudioStatus] = useState({ episodeId: null, message: '' });
-  const audioControllerRef = useRef(null);
+  const { play: playSpeech } = useCancellableSpeech(activeProfileId);
   useEffect(() => {
     setAudioStatus({ episodeId: null, message: '' });
-    return () => {
-      audioControllerRef.current?.abort();
-      stopSpeech();
-    };
   }, [activeProfileId]);
   const playRecap = async (episode) => {
-    audioControllerRef.current?.abort();
-    const controller = new AbortController();
-    audioControllerRef.current = controller;
     setAudioStatus({ episodeId: episode.id, message: 'Starting recap audio…' });
-    const result = await speak(episode.recap, { lang: 'en-CA', rate: 0.88, signal: controller.signal });
-    if (audioControllerRef.current !== controller || controller.signal.aborted) return;
+    const result = await playSpeech(episode.recap, { lang: 'en-CA', rate: 0.88 });
+    if (result.reason === 'cancelled') return;
     setAudioStatus({
       episodeId: episode.id,
       message: result.ok

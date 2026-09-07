@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useWords } from '../context/WordProvider';
-import { speak } from '../utils/speech';
+import { useCancellableSpeech } from '../hooks/useCancellableSpeech';
 import { shuffle } from '../utils/shuffle';
 import MultiplayerWrapper from '../components/MultiplayerWrapper';
 import styles from './Flashcards.module.css';
@@ -27,6 +27,7 @@ function FlashcardsInner({ sessionLearnerId }) {
   }, [activeWords, sessionLearnerId]);
 
   const current = cards[index];
+  const { play: playSpeech } = useCancellableSpeech(`${sessionLearnerId}:${current?.id || current?.word || 'none'}`);
 
   const handleFlip = () => setFlipped((f) => !f);
 
@@ -63,8 +64,8 @@ function FlashcardsInner({ sessionLearnerId }) {
   };
 
   const speakWord = useCallback(() => {
-    if (current) speak(current.word);
-  }, [current]);
+    if (current) playSpeech(current.word);
+  }, [current, playSpeech]);
 
   if (!activeWords.length) {
     return (
