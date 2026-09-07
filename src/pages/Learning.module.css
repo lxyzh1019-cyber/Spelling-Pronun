@@ -12,6 +12,10 @@
 .success { padding: 14px; border-radius: 10px; background: #ecfdf5; color: #065f46; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
 .skill { padding: 14px; border: 1px solid #d1d5db; border-radius: 10px; background: white; }
+.gateList { display: grid; gap: 10px; }
+.gate { padding: 12px; border-left: 4px solid #f59e0b; border-radius: 8px; background: #fffbeb; }
+.gate p { margin: 0 0 6px; }
+.gate p:last-child { margin-bottom: 0; }
 .meta { color: #6b7280; font-size: .92rem; }
 .progress { height: 10px; border-radius: 99px; overflow: hidden; background: #e5e7eb; }
 .progress > span { display: block; height: 100%; background: #2563eb; }

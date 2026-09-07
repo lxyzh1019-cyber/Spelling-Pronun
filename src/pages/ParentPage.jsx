@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import { registerParent, signInParent, signOutParent } from '../firebase';
+import { gateStateLabel, r2GateTracker } from '../data/r2GateTracker';
 import styles from './Learning.module.css';
 
 function friendlyAuthError(code) {
@@ -57,7 +58,7 @@ export default function ParentPage() {
         <div className={styles.actions}><button className={styles.primary} disabled={busy}>{busy ? 'Working…' : mode === 'register' ? 'Create and import' : 'Sign in and sync'}</button><button className={styles.secondary} type="button" onClick={() => { setMode(mode === 'register' ? 'signin' : 'register'); setMessage(''); }}>{mode === 'register' ? 'Use existing account' : 'Create an account'}</button></div>
       </form> : <><p>Local immutable attempts reconcile additively with this account. Legacy word totals import automatically only when that learner has no cloud totals, preventing accidental double counting.</p><button className={styles.secondary} disabled={busy} onClick={disconnect}>Sign out</button></>}
       {message && <p role="status">{message}</p>}
-      <h2>Current limitations</h2><p>Firebase email/password must be enabled by the parent in the Firebase console. Real cross-device verification, complete assessment/audio review, calibrated pronunciation scoring, and the family pilot are not complete. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p>
+      <h2>R2 pilot gate tracker</h2><p>This is a truthful readiness list, not a release claim. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p><div className={styles.gateList}>{r2GateTracker.map((gate) => <article className={styles.gate} key={gate.id}><p><strong>{gate.label}</strong> <span className={styles.meta}>— {gateStateLabel(gate.state)}</span></p><p>{gate.detail}</p></article>)}</div>
     </section>
   </div>;
 }
