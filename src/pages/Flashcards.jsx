@@ -19,15 +19,22 @@ function FlashcardsInner({ sessionLearnerId }) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [shuffledMode, setShuffledMode] = useState(false);
+  const [audioMessage, setAudioMessage] = useState('');
+
+  const current = cards[index];
 
   useEffect(() => {
     setCards(shuffledMode ? shuffle(activeWords) : [...activeWords]);
     setIndex(0);
     setFlipped(false);
+    setAudioMessage('');
   }, [activeWords, sessionLearnerId]);
 
-  const current = cards[index];
   const { play: playSpeech } = useCancellableSpeech(`${sessionLearnerId}:${current?.id || current?.word || 'none'}`);
+
+  useEffect(() => {
+    setAudioMessage('');
+  }, [current?.id, sessionLearnerId]);
 
   const handleFlip = () => setFlipped((f) => !f);
 
@@ -63,8 +70,14 @@ function FlashcardsInner({ sessionLearnerId }) {
     setFlipped(false);
   };
 
-  const speakWord = useCallback(() => {
-    if (current) playSpeech(current.word);
+  const speakWord = useCallback(async () => {
+    if (!current) return;
+    setAudioMessage('Starting audio…');
+    const result = await playSpeech(current.word, { lang: 'en-CA' });
+    if (result.reason === 'cancelled') return;
+    setAudioMessage(result.ok
+      ? result.usedRequestedLocale ? 'Playing in Canadian English.' : 'Playing with an available English voice; a Canadian English voice was not available.'
+      : 'Audio could not start. Tap Listen to retry, or continue without audio.');
   }, [current, playSpeech]);
 
   if (!activeWords.length) {
@@ -112,6 +125,7 @@ function FlashcardsInner({ sessionLearnerId }) {
           Next<span aria-hidden="true"> →</span>
         </button>
       </div>
+      {audioMessage && <p role="status">{audioMessage}</p>}
 
       {flipped && (
         <div className={styles.controls}>
