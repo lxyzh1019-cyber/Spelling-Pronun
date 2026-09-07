@@ -11,6 +11,8 @@ const base = {
   secondarySkills: [],
 };
 
+export const C0_ASSESSMENT_NOTICE = 'Partially integrated C0 assessment preview: all prompts completed challenge review; 28 Part-B prompts completed educational/source review and app integration. The 40 Part-A prompts remain blocked by human-audio or specialist review. No result can affect placement or mastery.';
+
 function item(form, number, values) {
   return {
     ...base,

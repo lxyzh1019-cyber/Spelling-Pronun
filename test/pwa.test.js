@@ -18,4 +18,5 @@ test('iPad standalone metadata and service-worker registration are present', asy
   assert.match(html, /apple-mobile-web-app-capable/);
   assert.match(html, /apple-touch-icon/);
   assert.match(main, /serviceWorker\.register/);
+  assert.match(main, /import\.meta\.env\.PROD\s*&&\s*'serviceWorker' in navigator/);
 });
