@@ -341,6 +341,46 @@
         "The collection contains papers, letters, memoranda, drafts, amendments, and printer-related records.",
         "The catalogue documents later handwritten correction and copying within collections about printing history."
       ]
+    },
+    {
+      "id": "tna-passengers",
+      "authority": "The National Archives (UK)",
+      "title": "Passengers",
+      "url": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/passengers",
+      "supports": [
+        "The National Archives identifies surviving outward passenger lists for people boarding at UK and Irish ports between 1890 and 1960.",
+        "The guide describes the limits of the records and directs researchers to identify a ship and departure/arrival ports."
+      ]
+    },
+    {
+      "id": "lac-newspaper-guide",
+      "authority": "Library and Archives Canada",
+      "title": "Finding newspapers",
+      "url": "https://library-archives.canada.ca/eng/collection/research-help/newspaper-collection/Pages/newspaper-guide.aspx",
+      "supports": [
+        "The guide explains how to locate Canadian newspaper holdings by title, publication place, and date.",
+        "A specific issue and its context must still be chosen before any historical claim is written."
+      ]
+    },
+    {
+      "id": "lac-land-settlement-records",
+      "authority": "Library and Archives Canada",
+      "title": "Land Settlement Records for Immigrants",
+      "url": "https://recherche-collection-search.bac-lac.gc.ca/eng/home/record?IdNumber=5125365&app=fonandcol",
+      "supports": [
+        "This Canadian National Railway fonds sub-series contains immigrant and family records, including correspondence, information cards, trip receipts, passenger information, and destination locations.",
+        "The cited sub-series dates from about 1920 to 1960 and cannot support a story set outside that range."
+      ]
+    },
+    {
+      "id": "paa-search-tools",
+      "authority": "Provincial Archives of Alberta",
+      "title": "Search Tools",
+      "url": "https://www.provincialarchives.alberta.ca/index.php/search-tools",
+      "supports": [
+        "The Provincial Archives directs researchers to its Access to Memory database for archival records.",
+        "A specific fonds or item must be selected and reviewed before an Alberta historical claim is authored."
+      ]
     }
   ]
 }

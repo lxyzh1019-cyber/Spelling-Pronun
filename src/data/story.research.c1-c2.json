@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "status": "pre_authoring_research_plan",
+  "chapters": [
+    {
+      "chapter": 2,
+      "setting": "British port and Atlantic departure",
+      "sourceIds": ["tna-passengers"],
+      "claimBoundary": "No named ship, port event, passenger, or period claim is approved. The National Archives passenger-list guide applies only to the surviving record ranges it identifies.",
+      "openRequirements": ["Choose a compatible period", "Select two episode-specific sources", "Verify the departure and Canadian arrival context before drafting"],
+      "status": "pre_authoring_not_verified"
+    },
+    {
+      "chapter": 3,
+      "setting": "Community in what is now Canada",
+      "sourceIds": ["lac-land-settlement-records"],
+      "claimBoundary": "This is a candidate collection, not evidence for a chosen community. It cannot stand in for the relevant Indigenous nation’s own sources or community-specific history.",
+      "openRequirements": ["Choose a compatible period and locale", "Consult relevant Indigenous nation/community sources", "Select two episode-specific sources and map every claim"],
+      "status": "pre_authoring_not_verified"
+    },
+    {
+      "chapter": 4,
+      "setting": "Canadian newspaper office",
+      "sourceIds": ["lac-newspaper-guide"],
+      "claimBoundary": "The guide identifies how to locate holdings; it does not verify a newspaper office, reporter, article, or transcription event.",
+      "openRequirements": ["Choose a compatible newspaper title, issue, and date", "Select a second independent source", "Separate any fictional article from documented context"],
+      "status": "pre_authoring_not_verified"
+    },
+    {
+      "chapter": 5,
+      "setting": "Railway journey west",
+      "sourceIds": ["lac-land-settlement-records"],
+      "claimBoundary": "The candidate collection may help establish an appropriate twentieth-century research direction, but it does not verify a railway journey, route, or individual event for the story.",
+      "openRequirements": ["Choose a compatible railway period and route", "Add authoritative railway and affected-community sources", "Select two episode-specific sources and map every claim"],
+      "status": "pre_authoring_not_verified"
+    },
+    {
+      "chapter": 6,
+      "setting": "Alberta archive",
+      "sourceIds": ["paa-search-tools"],
+      "claimBoundary": "The Provincial Archives search tool is a research destination, not a source for a specific Alberta archive object or historical assertion.",
+      "openRequirements": ["Select a compatible fonds or item", "Add a second episode-specific source and relevant community context", "Map documented facts, fictional reconstruction, and uncertainty before drafting"],
+      "status": "pre_authoring_not_verified"
+    }
+  ]
+}
