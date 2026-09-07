@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { saveRecording } from '../persistence/indexedDb';
 import { assessRecordingQuality, recordingSupport, startAudioRecording } from '../utils/recording';
+import styles from './RecordingAnswer.module.css';
 
 export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady, onReset, disabled = false }) {
   const controllerRef = useRef(null);
@@ -76,13 +77,13 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady,
   };
 
   if (!support.supported) return <p role="status">Microphone recording is unavailable in this browser. Continue as a technical issue; this is not a wrong answer.</p>;
-  return <div>
-    <div>
-      {status !== 'recording' && status !== 'saving' && <button type="button" disabled={disabled} onClick={start}>{status === 'ready' ? 'Record again' : 'Start recording'}</button>}
-      {status === 'recording' && <button type="button" disabled={disabled} onClick={stop}>Stop recording</button>}
-      {status === 'saving' && <button type="button" disabled>Saving recording…</button>}
+  return <div className={styles.recordingAnswer}>
+    <div className={styles.controls}>
+      {status !== 'recording' && status !== 'saving' && <button className={`${styles.recordButton} ${styles.startButton}`} type="button" disabled={disabled} onClick={start}>{status === 'ready' ? 'Record again' : 'Start recording'}</button>}
+      {status === 'recording' && <button className={`${styles.recordButton} ${styles.stopButton}`} type="button" disabled={disabled} onClick={stop}>Stop recording</button>}
+      {status === 'saving' && <button className={`${styles.recordButton} ${styles.savingButton}`} type="button" disabled>Saving recording…</button>}
     </div>
-    {playbackUrl && <audio controls src={playbackUrl}>Audio playback is not supported.</audio>}
-    {message && <p role={status === 'error' ? 'alert' : 'status'}>{message}</p>}
+    {playbackUrl && <audio className={styles.playback} controls src={playbackUrl}>Audio playback is not supported.</audio>}
+    {message && <p className={styles.message} role={status === 'error' ? 'alert' : 'status'}>{message}</p>}
   </div>;
 }

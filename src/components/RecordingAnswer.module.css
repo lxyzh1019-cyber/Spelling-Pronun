@@ -1,0 +1,54 @@
+.recordingAnswer {
+  display: grid;
+  gap: 12px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.recordButton {
+  min-height: 56px;
+  min-width: 190px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.recordButton:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 3px;
+}
+
+.recordButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.startButton {
+  background: #047857;
+}
+
+.stopButton {
+  background: #b91c1c;
+}
+
+.savingButton {
+  background: #475569;
+}
+
+.playback {
+  max-width: 100%;
+}
+
+.message {
+  margin: 0;
+}

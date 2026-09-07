@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { assessRecordingQuality, chooseRecordingMimeType, isAudiblePeak, recordingSupport } from '../src/utils/recording.js';
 import { speak, stopSpeech } from '../src/utils/speech.js';
 import { playRecordedAudio } from '../src/utils/audioPlayback.js';
@@ -74,4 +75,13 @@ test('reviewed recording playback is cancellable and reports browser limitations
   } finally {
     globalThis.window = originalWindow;
   }
+});
+
+test('recording controls use a large, touch-friendly visual treatment', async () => {
+  const component = await readFile(new URL('../src/components/RecordingAnswer.jsx', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../src/components/RecordingAnswer.module.css', import.meta.url), 'utf8');
+  assert.match(component, /styles\.recordButton/);
+  assert.match(css, /min-height: 56px/);
+  assert.match(css, /min-width: 190px/);
+  assert.match(css, /font-size: 1\.125rem/);
 });
