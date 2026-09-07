@@ -41,8 +41,10 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
       if (String(item.evidenceEligibility).includes('fixture') || String(item.evidenceEligibility).includes('draft')) errors.push(`${item.id} has non-release evidence eligibility`);
       if (item.audioStatus === 'synthetic_preview') errors.push(`${item.id} cannot release synthetic preview audio`);
     }
+    if (item.integrationStatus === 'integrated' && (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed')) errors.push(`${item.id} is integrated without completed educational review`);
     if (item.releaseStatus === 'released') {
       if (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed') errors.push(`${item.id} is released without completed author and educational review`);
+      if (item.integrationStatus !== 'integrated') errors.push(`${item.id} is released without completed integration`);
       if (String(item.evidenceEligibility).includes('fixture') || String(item.evidenceEligibility).includes('draft')) errors.push(`${item.id} releases ineligible evidence`);
       if (item.audioStatus === 'synthetic_preview') errors.push(`${item.id} releases synthetic preview audio`);
     }
@@ -55,6 +57,8 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
     if (episode.historical && (episode.sourceIds?.length || 0) < 2) errors.push(`${episode.id} needs at least two historical sources`);
     for (const sourceId of episode.sourceIds || []) if (sources.length && !sourceIds.has(sourceId)) errors.push(`${episode.id} has unknown source ${sourceId}`);
     if (episode.status === 'released' && !episode.fictionLabel) errors.push(`${episode.id} is released without a fiction label`);
+    if (episode.integrationStatus === 'integrated' && (episode.authorStatus !== 'reviewed' || episode.reviewStatus !== 'reviewed')) errors.push(`${episode.id} is integrated without completed educational review`);
+    if (episode.releaseStatus === 'released' && episode.integrationStatus !== 'integrated') errors.push(`${episode.id} is released without completed integration`);
   }
   return { valid: errors.length === 0, errors };
 }

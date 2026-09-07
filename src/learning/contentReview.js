@@ -106,7 +106,7 @@ export function validateAssessmentReviews({ reviews = [], assessments = [], sour
     if (review.promotion === 'independently_challenged') {
       if (results.some((result) => result.outcome !== 'pass')) errors.push(`${label} promotes with a non-passing item`);
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
-      if (!['independently_challenged', 'partial_educational_source_review', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(assessment.status)) errors.push(`${label} promotion is not reflected in assessment status`);
+      if (!['independently_challenged', 'partial_educational_source_review', 'partial_integration', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(assessment.status)) errors.push(`${label} promotion is not reflected in assessment status`);
       if (assessment.items.some((item) => !['independently_challenged', 'reviewed'].includes(item.reviewStatus))) errors.push(`${label} promotion is not reflected in item status`);
     }
   }
@@ -300,7 +300,65 @@ export function validateEducationalAssessmentReviews({ reviews = [], challengeRe
     if (!review.findings?.trim()) errors.push(`${label} has no recorded findings`);
     const unresolved = (review.discrepancies || []).filter((discrepancy) => discrepancy.status !== 'resolved');
     if (unresolved.length) errors.push(`${label} has unresolved discrepancies`);
-    if (assessment.status !== 'partial_educational_source_review') errors.push(`${label} promotion is not reflected in assessment status`);
+    if (!['partial_educational_source_review', 'partial_integration'].includes(assessment.status)) errors.push(`${label} promotion is not reflected in assessment status`);
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+export function validateContentIntegration({ records = [], packs = [], assessments = [], story }) {
+  const errors = [];
+  const packById = new Map(packs.map((pack) => [pack.id, pack]));
+  const assessmentItems = assessments.flatMap((assessment) => assessment.items);
+  const assessmentItemById = new Map(assessmentItems.map((item) => [item.id, item]));
+  const episodeById = new Map((story?.episodes || []).map((episode) => [episode.id, episode]));
+  const recordIds = records.map((record) => record.id);
+  if (new Set(recordIds).size !== recordIds.length) errors.push('Content integration record IDs must be unique');
+
+  for (const record of records) {
+    const label = record.id || 'unknown integration record';
+    if (record.stage !== 'content_integration' || record.status !== 'complete') errors.push(`${label} integration is not complete`);
+    if (record.releaseDecision !== 'integrated_not_released') errors.push(`${label} must record the integrated-not-released decision`);
+    for (const check of ['schema_validation', 'route_resolution', 'content_version_pinning', 'release_exclusion']) {
+      if (!record.checks?.includes(check)) errors.push(`${label} did not record ${check}`);
+    }
+    if (!record.routeArtifacts?.length || record.routeArtifacts.some((route) => !route.trim())) errors.push(`${label} has no route artifacts`);
+
+    if (record.type === 'lesson_packs') {
+      const ids = record.packIds || [];
+      if (new Set(ids).size !== ids.length) errors.push(`${label} repeats a pack`);
+      const missing = [...packById.keys()].filter((id) => !ids.includes(id));
+      const extra = ids.filter((id) => !packById.has(id));
+      if (missing.length) errors.push(`${label} misses packs: ${missing.join(', ')}`);
+      if (extra.length) errors.push(`${label} includes unknown packs: ${extra.join(', ')}`);
+      const items = ids.flatMap((id) => packById.get(id)?.items || []);
+      if (record.expectedObjectCount !== items.length) errors.push(`${label} object count does not match integrated packs`);
+      if (items.some((item) => item.reviewStatus !== 'reviewed' || item.integrationStatus !== 'integrated')) errors.push(`${label} includes a lesson item that is not reviewed and integrated`);
+      if (items.some((item) => item.releaseStatus === 'released')) errors.push(`${label} includes a released lesson item`);
+    } else if (record.type === 'assessment_items') {
+      const ids = record.itemIds || [];
+      const expected = assessmentItems.filter((item) => item.integrationStatus === 'integrated').map((item) => item.id);
+      if (new Set(ids).size !== ids.length) errors.push(`${label} repeats an assessment item`);
+      const missing = expected.filter((id) => !ids.includes(id));
+      const extra = ids.filter((id) => !assessmentItemById.has(id) || !expected.includes(id));
+      if (missing.length) errors.push(`${label} misses assessment items: ${missing.join(', ')}`);
+      if (extra.length) errors.push(`${label} includes non-integrated assessment items: ${extra.join(', ')}`);
+      if (record.expectedObjectCount !== ids.length) errors.push(`${label} object count does not match assessment items`);
+      if (ids.some((id) => assessmentItemById.get(id)?.reviewStatus !== 'reviewed')) errors.push(`${label} includes an unreviewed assessment item`);
+      if (ids.some((id) => assessmentItemById.get(id)?.releaseStatus === 'released')) errors.push(`${label} includes a released assessment item`);
+    } else if (record.type === 'story') {
+      const ids = record.episodeIds || [];
+      if (record.storyVersion !== story?.version) errors.push(`${label} targets stale story version`);
+      if (new Set(ids).size !== ids.length) errors.push(`${label} repeats an episode`);
+      const missing = [...episodeById.keys()].filter((id) => !ids.includes(id));
+      const extra = ids.filter((id) => !episodeById.has(id));
+      if (missing.length) errors.push(`${label} misses episodes: ${missing.join(', ')}`);
+      if (extra.length) errors.push(`${label} includes unknown episodes: ${extra.join(', ')}`);
+      if (record.expectedObjectCount !== ids.length) errors.push(`${label} object count does not match episodes`);
+      if (ids.some((id) => episodeById.get(id)?.reviewStatus !== 'reviewed' || episodeById.get(id)?.integrationStatus !== 'integrated')) errors.push(`${label} includes an episode that is not reviewed and integrated`);
+      if (ids.some((id) => episodeById.get(id)?.releaseStatus === 'released')) errors.push(`${label} includes a released episode`);
+    } else {
+      errors.push(`${label} has unsupported integration type ${record.type}`);
+    }
   }
   return { valid: errors.length === 0, errors };
 }

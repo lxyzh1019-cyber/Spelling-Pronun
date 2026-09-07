@@ -7,6 +7,7 @@ const common = {
   evidenceEligibility: 'fixture_only',
   authorStatus: 'engineering_fixture',
   reviewStatus: 'not_reviewed',
+  integrationStatus: 'fixture_only',
   releaseStatus: 'fixture_only',
   secondarySkills: [],
   sourceIds: [],

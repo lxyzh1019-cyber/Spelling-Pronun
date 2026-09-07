@@ -18,7 +18,7 @@ export default function CasePage() {
   const episodeComplete = (episodeId) => episodeLessons[episodeId].every((lesson) => completed(lesson.id));
   const firstComplete = episodeComplete('c0.story.01');
   return <div className={styles.page}>
-    <p className={styles.notice} role="note">Reviewed C0 story preview. The episodes completed challenge and educational/source review, but still require integration and learner testing before release.</p>
+    <p className={styles.notice} role="note">Integrated C0 story preview. The episodes completed challenge, educational/source review, and app integration, but still require learner testing before release.</p>
     <h1>{storyDraft.title}</h1>
     {storyDraft.episodes.map((episode, index) => {
       const unlocked = index === 0 || firstComplete;

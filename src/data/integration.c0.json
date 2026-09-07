@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "protocol": "MASTER_PLAN.md lifecycle and R2-G1",
+  "records": [
+    {
+      "id": "c0.integration.lesson-packs.v1",
+      "type": "lesson_packs",
+      "stage": "content_integration",
+      "status": "complete",
+      "integratedAt": "2026-09-06",
+      "packIds": ["c0.pack.sp.patterns", "c0.pack.se.complete", "c0.pack.pu.capitals-endmarks", "c0.pack.gr.subject-object-pronouns"],
+      "expectedObjectCount": 96,
+      "routeArtifacts": ["/case", "/lesson/:sessionId", "/review", "/progress"],
+      "checks": ["schema_validation", "route_resolution", "content_version_pinning", "release_exclusion"],
+      "evidence": "All four packs resolve through the lesson catalog and version-pinned session runner. Automated tests cover the 24-object role distribution, 22 learner tasks, help/repair/transfer flow, review-queue exclusion, and content validation.",
+      "releaseDecision": "integrated_not_released"
+    },
+    {
+      "id": "c0.integration.assessment-part-b.v1",
+      "type": "assessment_items",
+      "stage": "content_integration",
+      "status": "complete",
+      "integratedAt": "2026-09-06",
+      "itemIds": [
+        "c0.assessment.a.21", "c0.assessment.a.22", "c0.assessment.a.23", "c0.assessment.a.24", "c0.assessment.a.25", "c0.assessment.a.26", "c0.assessment.a.27", "c0.assessment.a.28", "c0.assessment.a.29", "c0.assessment.a.30", "c0.assessment.a.31", "c0.assessment.a.32", "c0.assessment.a.33", "c0.assessment.a.34",
+        "c0.assessment.b.21", "c0.assessment.b.22", "c0.assessment.b.23", "c0.assessment.b.24", "c0.assessment.b.25", "c0.assessment.b.26", "c0.assessment.b.27", "c0.assessment.b.28", "c0.assessment.b.29", "c0.assessment.b.30", "c0.assessment.b.31", "c0.assessment.b.32", "c0.assessment.b.33", "c0.assessment.b.34"
+      ],
+      "expectedObjectCount": 28,
+      "routeArtifacts": ["/assessment", "/assessment/:sessionId", "/progress", "/parent"],
+      "checks": ["schema_validation", "route_resolution", "content_version_pinning", "release_exclusion"],
+      "evidence": "The reviewed Part-B items run in the same version-pinned 34-item form sessions, preserve first answers and pending human-rubric states, and remain excluded from placement and mastery.",
+      "releaseDecision": "integrated_not_released"
+    },
+    {
+      "id": "c0.integration.story-chapter-1.v1",
+      "type": "story",
+      "stage": "content_integration",
+      "status": "complete",
+      "integratedAt": "2026-09-06",
+      "storyVersion": 1,
+      "episodeIds": ["c0.story.01", "c0.story.02"],
+      "expectedObjectCount": 2,
+      "routeArtifacts": ["/case", "/lesson/:sessionId"],
+      "checks": ["schema_validation", "route_resolution", "content_version_pinning", "release_exclusion", "task_reachability"],
+      "evidence": "Both episodes render in sequence, link only to exact lesson practice/transfer tasks, preserve their version and fiction label, and reveal only after the linked lesson completions.",
+      "releaseDecision": "integrated_not_released"
+    }
+  ]
+}

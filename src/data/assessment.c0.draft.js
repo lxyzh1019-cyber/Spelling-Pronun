@@ -23,6 +23,7 @@ function item(form, number, values) {
     ...values,
     authorStatus: values.part === 'B' ? 'reviewed' : base.authorStatus,
     reviewStatus: values.part === 'B' ? 'reviewed' : base.reviewStatus,
+    integrationStatus: values.part === 'B' ? 'integrated' : 'not_integrated',
   };
 }
 
@@ -97,7 +98,7 @@ function buildForm(form) {
   bank.sentences.forEach(([prompt, skill, answer, choices, explanation]) => items.push(item(form, items.length + 1, { part: 'B', category: 'sentence', primarySkill: skill, prompt, responseType: 'choice', evaluator: 'choice', acceptedAnswers: [answer], choices: choices.map(([id, text]) => ({ id, text })), explanation })));
   items.push(item(form, items.length + 1, { part: 'B', category: 'editing', primarySkill: 'ED.locate', prompt: bank.editing, responseType: 'text', evaluator: 'human_rubric', rubric: { targets: 4, dimensions: ['locate', 'repair', 'preserve_meaning'], scoring: 'Award one point for each named correction only when the repaired sentence preserves the original meaning; record any reasonable alternative for human review.' }, explanation: 'A reviewer checks each of the four named targets separately and does not penalize an otherwise valid wording variant automatically.' }));
   items.push(item(form, items.length + 1, { part: 'B', category: 'writing', primarySkill: 'ED.explain', prompt: bank.writing, responseType: 'text', evaluator: 'human_rubric', rubric: { sentenceCount: 2, dimensions: ['complete_sentences', 'clear_sequence'], scoring: { complete_sentences: 'Both requested sentences express complete thoughts.', clear_sequence: 'The response gives a sensible check or next step in an order a reader can follow.', reviewRequired: 'A human records each dimension separately; spelling errors outside the named dimensions do not make the response wrong.' } }, explanation: 'Open writing remains pending until a human applies both visible rubric dimensions.' }));
-  return { id: `c0.assessment.${form.toLowerCase()}`, form, version: 1, status: 'partial_educational_source_review', items };
+  return { id: `c0.assessment.${form.toLowerCase()}`, form, version: 1, status: 'partial_integration', items };
 }
 
 export const c0AssessmentForms = [buildForm('A'), buildForm('B')];

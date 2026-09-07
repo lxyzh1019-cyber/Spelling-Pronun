@@ -13,6 +13,7 @@ function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
   const sourceIds = options.sourceIds || defaultSourceIds;
   const reviewStatus = options.reviewStatus || 'needs_independent_challenge';
   const authorStatus = options.authorStatus || 'draft';
+  const integrationStatus = options.integrationStatus || 'not_integrated';
   return {
     id: `c0.pack.${skillId.toLowerCase()}`,
     version: 1,
@@ -44,6 +45,7 @@ function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
         transferGroup: `${skillId.toLowerCase()}-${row.transferGroup || index + 1}`,
         authorStatus,
         reviewStatus,
+        integrationStatus,
         releaseStatus: 'not_released',
         sourceIds,
       };
@@ -165,7 +167,8 @@ const pronounRows = [
 
 export const c0PilotPacks = [
   makePack('SP.patterns', 'Spelling Patterns', 'Use the base word, vowel pattern, and ending together. Patterns help predict spelling, but legitimate exceptions and variants must be taught explicitly.', ['Say the base word.', 'Mark the vowel and final letters.', 'Try the applicable pattern, then check for an exception.'], spellingRows, {
-    status: 'educational_source_reviewed',
+    status: 'integrated',
+    integrationStatus: 'integrated',
     authorStatus: 'reviewed',
     reviewStatus: 'reviewed',
     sourceIds: [
@@ -180,7 +183,8 @@ export const c0PilotPacks = [
     ],
   }),
   makePack('SE.complete', 'Complete Sentences', 'A complete sentence expresses a complete thought and has a subject and a predicate. Commands may have an understood subject.', ['Find who or what the words are about.', 'Find what that subject is or does.', 'Ask whether the thought can stand alone.'], sentenceRows, {
-    status: 'educational_source_reviewed',
+    status: 'integrated',
+    integrationStatus: 'integrated',
     authorStatus: 'reviewed',
     reviewStatus: 'reviewed',
     sourceIds: [
@@ -193,7 +197,8 @@ export const c0PilotPacks = [
     ],
   }),
   makePack('PU.capitals-endmarks', 'Capitals and End Marks', 'Begin sentences and proper names with capitals. Choose a period, question mark, or exclamation mark from the sentence’s purpose.', ['Find the beginning and any proper names.', 'Decide whether the sentence states, asks, or strongly exclaims.', 'Check the matching final mark.'], punctuationRows, {
-    status: 'educational_source_reviewed',
+    status: 'integrated',
+    integrationStatus: 'integrated',
     authorStatus: 'reviewed',
     reviewStatus: 'reviewed',
     sourceIds: [
@@ -208,7 +213,8 @@ export const c0PilotPacks = [
     ],
   }),
   makePack('GR.subject-object-pronouns', 'Subject and Object Pronouns', 'Use subject forms for who or what performs the action and object forms after verbs or prepositions.', ['Find the verb.', 'Ask who performs it and who receives it.', 'Remove the other noun in a compound to check the pronoun form.'], pronounRows, {
-    status: 'educational_source_reviewed',
+    status: 'integrated',
+    integrationStatus: 'integrated',
     authorStatus: 'reviewed',
     reviewStatus: 'reviewed',
     sourceIds: [

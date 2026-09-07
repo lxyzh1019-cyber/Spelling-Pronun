@@ -22,7 +22,7 @@ test('both C0 story episodes have complete educational/source review records', (
 });
 
 test('reviewed C0 story episodes remain explicitly unreleased', () => {
-  assert.equal(story.status, 'educational_source_reviewed');
+  assert.equal(story.status, 'integrated');
   assert.ok(story.episodes.every((episode) => episode.releaseStatus === 'not_released'));
   assert.equal(educationalData.reviews[0].releaseDecision, 'reviewed_not_released');
 });

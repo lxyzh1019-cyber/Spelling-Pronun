@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "educational_source_reviewed",
+  "status": "integrated",
   "chapter": 1,
   "title": "The Printed Difference",
   "episodes": [
@@ -9,6 +9,7 @@
       "version": 1,
       "authorStatus": "reviewed",
       "reviewStatus": "reviewed",
+      "integrationStatus": "integrated",
       "releaseStatus": "not_released",
       "chapter": 1,
       "sequence": 1,
@@ -33,6 +34,7 @@
       "version": 1,
       "authorStatus": "reviewed",
       "reviewStatus": "reviewed",
+      "integrationStatus": "integrated",
       "releaseStatus": "not_released",
       "chapter": 1,
       "sequence": 2,
