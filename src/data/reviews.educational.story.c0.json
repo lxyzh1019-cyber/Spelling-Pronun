@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "protocol": "MASTER_PLAN.md sections 0.7 and 0.8",
+  "reviews": [
+    {
+      "id": "c0.educational.story-chapter-1.v1",
+      "challengeReviewId": "c0.challenge.story-chapter-1.v1",
+      "stage": "educational_source_review",
+      "status": "complete",
+      "reviewedAt": "2026-09-06",
+      "reviewerRole": "separate_educational_source_review",
+      "storyVersion": 1,
+      "chapter": 1,
+      "sourceIds": ["tna-william-caxton", "bl-printer-guide", "bl-ames-printing-collections"],
+      "dimensions": [
+        "historical_accuracy",
+        "source_mapping",
+        "fact_fiction_boundary",
+        "reading_accessibility",
+        "task_alignment",
+        "narrative_coherence"
+      ],
+      "results": [
+        {
+          "episodeId": "c0.story.01",
+          "episodeVersion": 1,
+          "outcome": "pass",
+          "note": "The qualified Caxton claim and 1476 date map to The National Archives, while the earlier history of printing in China maps to the British Library guide. The archive box, exhibit label, copied proof and pencilled checker are consistently identified as invented. The sixteen linked tasks exactly support the spelling and capitalization decisions without presenting a lesson answer in the story prose."
+        },
+        {
+          "episodeId": "c0.story.02",
+          "episodeVersion": 1,
+          "outcome": "pass",
+          "note": "The British Library catalogue supports the general description of papers, letters, memoranda, drafts, amendments and handwritten copying. The working sheet, margin directions, port file and recipient puzzle are explicitly fictional. The eight linked tasks support the complete-sentence decision, and the prose distinguishes fragments from complete directions without leaking a task answer."
+        }
+      ],
+      "discrepancies": [],
+      "releaseDecision": "reviewed_not_released"
+    }
+  ]
+}

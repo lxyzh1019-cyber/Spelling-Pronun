@@ -148,7 +148,7 @@ export function validateStoryReviews({ reviews = [], story, items = [], sources 
       if (results.some((result) => result.outcome !== 'pass')) errors.push(`${label} promotes with a non-passing episode`);
       if (unresolved.length) errors.push(`${label} promotes with unresolved discrepancies`);
       if (!['independently_challenged', 'educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(story?.status)) errors.push(`${label} promotion is not reflected in story status`);
-      if ([...episodeById.values()].some((episode) => episode.reviewStatus !== 'independently_challenged')) errors.push(`${label} promotion does not match episode status`);
+      if ([...episodeById.values()].some((episode) => !['independently_challenged', 'reviewed'].includes(episode.reviewStatus))) errors.push(`${label} promotion is not reflected in episode status`);
     }
   }
   return { valid: errors.length === 0, errors };
@@ -196,6 +196,57 @@ export function validateEducationalPackReviews({ reviews = [], challengeReviews 
     if (unresolved.length) errors.push(`${label} has unresolved discrepancies`);
     if (!['educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(pack.status)) errors.push(`${label} promotion is not reflected in pack status`);
     if (pack.items.some((item) => item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed')) errors.push(`${label} promotion is not reflected in item review state`);
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+export function validateEducationalStoryReviews({ reviews = [], challengeReviews = [], story, items = [], sources = [] }) {
+  const errors = [];
+  const episodeById = new Map((story?.episodes || []).map((episode) => [episode.id, episode]));
+  const challengeById = new Map(challengeReviews.map((review) => [review.id, review]));
+  const sourceIds = new Set(sources.map((source) => source.id));
+  const itemIds = new Set(items.map((item) => item.id));
+  const reviewIds = reviews.map((review) => review.id);
+  if (new Set(reviewIds).size !== reviewIds.length) errors.push('Educational story review IDs must be unique');
+
+  for (const review of reviews) {
+    const label = review.id || 'unknown educational story review';
+    const challenge = challengeById.get(review.challengeReviewId);
+    if (!challenge || challenge.storyVersion !== story?.version || challenge.chapter !== story?.chapter || challenge.status !== 'complete') errors.push(`${label} has no completed challenge for this story`);
+    if (review.storyVersion !== story?.version) errors.push(`${label} targets stale story version`);
+    if (review.chapter !== story?.chapter) errors.push(`${label} targets the wrong chapter`);
+    if (review.stage !== 'educational_source_review' || review.status !== 'complete') errors.push(`${label} educational review is not complete`);
+    if (review.releaseDecision !== 'reviewed_not_released') errors.push(`${label} must record the reviewed-not-released decision`);
+    for (const dimension of ['historical_accuracy', 'source_mapping', 'fact_fiction_boundary', 'reading_accessibility', 'task_alignment', 'narrative_coherence']) {
+      if (!review.dimensions?.includes(dimension)) errors.push(`${label} did not record ${dimension}`);
+    }
+    const mappedSources = new Set(review.sourceIds || []);
+    for (const sourceId of mappedSources) if (!sourceIds.has(sourceId)) errors.push(`${label} has unknown source ${sourceId}`);
+    for (const episode of episodeById.values()) {
+      for (const sourceId of episode.sourceIds || []) {
+        if (!sourceIds.has(sourceId)) errors.push(`${episode.id} has unknown source ${sourceId}`);
+        if (!mappedSources.has(sourceId)) errors.push(`${label} omits episode source ${sourceId}`);
+      }
+      for (const taskId of episode.taskIds || []) if (!itemIds.has(taskId)) errors.push(`${episode.id} links unknown task ${taskId}`);
+    }
+    const results = review.results || [];
+    const resultIds = results.map((result) => result.episodeId);
+    const expectedIds = [...episodeById.keys()];
+    if (new Set(resultIds).size !== resultIds.length) errors.push(`${label} repeats an episode result`);
+    const missing = expectedIds.filter((id) => !resultIds.includes(id));
+    const extra = resultIds.filter((id) => !episodeById.has(id));
+    if (missing.length) errors.push(`${label} misses episodes: ${missing.join(', ')}`);
+    if (extra.length) errors.push(`${label} includes unknown episodes: ${extra.join(', ')}`);
+    for (const result of results) {
+      const episode = episodeById.get(result.episodeId);
+      if (episode && result.episodeVersion !== episode.version) errors.push(`${label} has stale version for ${result.episodeId}`);
+      if (result.outcome !== 'pass') errors.push(`${label} does not have a passing outcome for ${result.episodeId}`);
+      if (!result.note?.trim()) errors.push(`${label} has no result note for ${result.episodeId}`);
+    }
+    const unresolved = (review.discrepancies || []).filter((discrepancy) => discrepancy.status !== 'resolved');
+    if (unresolved.length) errors.push(`${label} has unresolved discrepancies`);
+    if (!['educational_source_reviewed', 'integrated', 'learner_tested', 'released'].includes(story?.status)) errors.push(`${label} promotion is not reflected in story status`);
+    if ([...episodeById.values()].some((episode) => episode.authorStatus !== 'reviewed' || episode.reviewStatus !== 'reviewed')) errors.push(`${label} promotion is not reflected in episode review state`);
   }
   return { valid: errors.length === 0, errors };
 }
