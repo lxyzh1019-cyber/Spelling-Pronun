@@ -1,9 +1,9 @@
 export const r2GateTracker = [
   {
     id: 'c0-audio-review',
-    label: 'C0 Part-A audio and specialist review',
+    label: 'C0 Part-A audio listening check and educational review',
     state: 'blocked',
-    detail: '24 reviewed recordings and 16 specialist checks are required before the assessment can be promoted beyond its partial preview state.',
+    detail: 'The 24 spoken prompts need a recorded listening check confirming the audio matches its transcript, is intelligible on the target iPad, and is labelled with the voice actually used. Model audio is acceptable when labelled truthfully; a human recording is required only for isolated phoneme audio. The 16 decoding and speaking prompts need an educational review of their targets and rubrics.',
   },
   {
     id: 'shared-identity',

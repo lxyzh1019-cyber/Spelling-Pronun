@@ -277,3 +277,40 @@ test('each assessment run records its own attempt session so a retake is not a r
   assert.equal(ordinalFor(firstRun, 'assessment-A-run1', 'c0.assessment.a.01'), 2, 'a repeat inside one run is a retry');
   assert.equal(ordinalFor(firstRun, 'assessment-A-run2', 'c0.assessment.a.01'), 1, 'a retake starts a fresh first attempt');
 });
+
+test('reviewed audio may be a labelled model voice, but a human recording is required for phoneme audio', async () => {
+  const { validateContent } = await import('../src/learning/contentValidator.js');
+  const skills = [{ id: 'a' }];
+  const spokenItem = (overrides) => ({
+    id: 'i', version: 1, primarySkill: 'a', role: 'independent', difficulty: 1, prompt: 'Listen and type.',
+    spokenText: 'adventure', responseType: 'text', evaluator: 'spelling', acceptedAnswers: ['adventure'],
+    explanation: 'e', helpSteps: ['h'], evidenceEligibility: 'independent', transferGroup: 't',
+    authorStatus: 'reviewed', reviewStatus: 'reviewed', releaseStatus: 'not_released', audioRef: 'aud1', ...overrides,
+  });
+  const asset = (overrides = {}) => ({ id: 'aud1', version: 1, url: '/audio/adventure.mp3', transcript: 'adventure', locale: 'en-CA', reviewStatus: 'reviewed', kind: 'model_speech', ...overrides });
+
+  // A labelled model voice satisfies a reviewed spoken item.
+  assert.deepEqual(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model' })], audioAssets: [asset()] }).errors, []);
+  // Synthetic preview audio still cannot be called reviewed.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'synthetic_preview' })], audioAssets: [asset()] }).errors.some((error) => error.includes('without reviewed audio')));
+  // Model speech can never be presented as a human recording.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_human' })], audioAssets: [asset()] }).errors.some((error) => error.includes('claims a human recording for a model_speech asset')));
+  // Isolated phoneme audio still requires a real recording.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model', requiresHumanAudio: true })], audioAssets: [asset()] }).errors.some((error) => error.includes('requires a human recording')));
+  assert.deepEqual(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_human', requiresHumanAudio: true })], audioAssets: [asset({ kind: 'human_recording' })] }).errors, []);
+  // A transcript that does not match the spoken text is still rejected, whatever the kind.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model' })], audioAssets: [asset({ transcript: 'different' })] }).errors.some((error) => error.includes('transcript does not match')));
+  // A non-Canadian locale still needs a learner-facing disclosure.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model' })], audioAssets: [asset({ locale: 'en-US' })] }).errors.some((error) => error.includes('non-Canadian locale')));
+});
+
+test('the audio handoff records the withdrawn requirement instead of silently dropping it', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const doc = await readFile(new URL('../docs/AUDIO_REVIEW_HANDOFF.md', import.meta.url), 'utf8');
+  assert.match(doc, /withdrawn and replaced/);
+  assert.match(doc, /CHG-07/);
+  assert.match(doc, /human recording is required only where the item sets `requiresHumanAudio`/);
+  assert.doesNotMatch(doc, /24 reviewed human-audio and 16 specialist/);
+  const tracker = await readFile(new URL('../src/data/r2GateTracker.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(tracker, /24 reviewed recordings and 16 specialist checks/);
+});
