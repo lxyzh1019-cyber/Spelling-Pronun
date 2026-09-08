@@ -63,23 +63,25 @@ test('Edmonton day key follows the configured family timezone across midnight', 
 });
 
 test('Edmonton day key handles both DST transitions and ignores the device timezone', () => {
-  // Spring forward: 2026-03-08 02:00 MST becomes 03:00 MDT. Midnight that night is 06:00Z.
-  assert.equal(edmontonDayKey(new Date('2026-03-08T08:59:59Z')), '2026-03-08', 'just before the skipped hour');
-  assert.equal(edmontonDayKey(new Date('2026-03-08T09:00:00Z')), '2026-03-08', 'just after the skipped hour');
-  assert.equal(edmontonDayKey(new Date('2026-03-09T05:59:59Z')), '2026-03-08', 'MDT midnight boundary');
-  assert.equal(edmontonDayKey(new Date('2026-03-09T06:00:00Z')), '2026-03-09');
-  // Fall back: 2026-11-01 02:00 MDT becomes 01:00 MST. Midnight after that is 07:00Z again.
-  assert.equal(edmontonDayKey(new Date('2026-11-01T05:59:59Z')), '2026-10-31', 'MDT midnight before fall back');
-  assert.equal(edmontonDayKey(new Date('2026-11-01T06:00:00Z')), '2026-11-01');
-  assert.equal(edmontonDayKey(new Date('2026-11-01T07:30:00Z')), '2026-11-01', 'the repeated 01:xx hour is still the same day');
-  assert.equal(edmontonDayKey(new Date('2026-11-02T06:59:59Z')), '2026-11-01', 'MST midnight boundary after fall back');
-  assert.equal(edmontonDayKey(new Date('2026-11-02T07:00:00Z')), '2026-11-02');
+  // Settled past transitions are used so the expectations do not depend on the tzdata version
+  // bundled with a given Node release (future rules can legitimately differ between versions).
+  // Spring forward: 2024-03-10 02:00 MST became 03:00 MDT. Midnight that night was 06:00Z.
+  assert.equal(edmontonDayKey(new Date('2024-03-10T08:59:59Z')), '2024-03-10', 'just before the skipped hour');
+  assert.equal(edmontonDayKey(new Date('2024-03-10T09:00:00Z')), '2024-03-10', 'just after the skipped hour');
+  assert.equal(edmontonDayKey(new Date('2024-03-11T05:59:59Z')), '2024-03-10', 'MDT midnight boundary');
+  assert.equal(edmontonDayKey(new Date('2024-03-11T06:00:00Z')), '2024-03-11');
+  // Fall back: 2024-11-03 02:00 MDT became 01:00 MST. Midnight after that was 07:00Z again.
+  assert.equal(edmontonDayKey(new Date('2024-11-03T05:59:59Z')), '2024-11-02', 'MDT midnight before fall back');
+  assert.equal(edmontonDayKey(new Date('2024-11-03T06:00:00Z')), '2024-11-03');
+  assert.equal(edmontonDayKey(new Date('2024-11-03T07:30:00Z')), '2024-11-03', 'the repeated 01:xx hour is still the same day');
+  assert.equal(edmontonDayKey(new Date('2024-11-04T06:59:59Z')), '2024-11-03', 'MST midnight boundary after fall back');
+  assert.equal(edmontonDayKey(new Date('2024-11-04T07:00:00Z')), '2024-11-04');
 
   const previousTz = process.env.TZ;
   try {
     process.env.TZ = 'Asia/Shanghai';
-    assert.equal(new Date('2026-11-02T06:59:59Z').getDate(), 2, 'device clock is on a different calendar day');
-    assert.equal(edmontonDayKey(new Date('2026-11-02T06:59:59Z')), '2026-11-01', 'day key does not follow the device zone');
+    assert.equal(new Date('2024-11-04T06:59:59Z').getDate(), 4, 'device clock is on a different calendar day');
+    assert.equal(edmontonDayKey(new Date('2024-11-04T06:59:59Z')), '2024-11-03', 'day key does not follow the device zone');
   } finally {
     if (previousTz === undefined) delete process.env.TZ; else process.env.TZ = previousTz;
   }
