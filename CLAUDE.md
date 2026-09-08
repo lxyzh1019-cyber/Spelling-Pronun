@@ -41,7 +41,11 @@ Pure modules with no React or Firebase imports; every rule has a test in `test/`
 - `lessonFlow.js` — teach → attempt → feedback → repair/worked solution → transfer → reflection → complete; technical failures defer; lesson length is guidance only.
 - `assessmentReport.js`, `reviewQueue.js`, `sessionEngine.js` (tested, not yet wired to a page), `contentValidator.js`, `contentReview.js`, `contentManifest.js`, `importPreview.js`, `crossword.js`, `speedRound.js`, `r1Core.js`.
 
-Content lives in `src/data/` (C0 packs, assessment forms, story, review records, integration records). Content status is lifecycle-gated: only `released` content can affect mastery or enter the delayed-review queue, and nothing is released yet.
+- `pilotApproval.js` — the `pilot_approved` lifecycle state and the two evidence tracks. `deriveMastery`, `deriveReviewProgress`, and `buildReviewQueue` all take a `track`; released and pilot evidence are derived separately and never mix.
+- `contentCorrections.js` — quarantine. An item with an open correction is withheld from lessons and assessments; the correction's proposer may never resolve it.
+- `progressAggregate.js` — word totals derived from the immutable attempt record, with legacy imports kept as a recorded base and a guard against lowering another device's count.
+
+Content lives in `src/data/` (C0 packs, assessment forms, story, review records, integration records, pilot approvals, corrections). The lifecycle is `draft → schema-valid → independently challenged → reviewed → integrated → pilot_approved → learner_tested → released`. Only `released` content produces validated mastery evidence; `pilot_approved` content runs the same loop into a separate pilot record. Nothing is released or pilot-approved yet.
 
 ### Persistence (`src/persistence/`)
 

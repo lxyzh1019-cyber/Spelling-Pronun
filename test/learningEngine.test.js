@@ -26,6 +26,7 @@ test('helped and self-report attempts are excluded from mastery evidence', () =>
 test('secure mastery requires sessions, dates, unseen transfer, and delayed review', () => {
   const attempts = Array.from({ length: 10 }, (_, index) => ({
     evidenceType: index === 8 ? 'independent_transfer' : index === 9 ? 'delayed_review' : 'independent_spelling',
+    contentStatus: 'released',
     correct: index !== 7,
     helped: false,
     sessionId: index < 5 ? 's1' : 's2',
@@ -151,7 +152,7 @@ test('a same-day retry never advances the review schedule, helped or not', () =>
 
 test('two failures in the last five eligible attempts flag a skill for review without erasing history', () => {
   const base = (index, correct) => ({
-    evidenceType: 'independent_spelling', correct, helped: false, sessionId: 's1', edmontonDate: '2026-09-01',
+    evidenceType: 'independent_spelling', contentStatus: 'released', correct, helped: false, sessionId: 's1', edmontonDate: '2026-09-01',
     eventTime: new Date(Date.UTC(2026, 8, 1, index)).toISOString(),
   });
   const developing = [true, true, true, true, false, false].map((correct, index) => base(index, correct));
@@ -165,7 +166,7 @@ test('two failures in the last five eligible attempts flag a skill for review wi
 
   const secure = Array.from({ length: 10 }, (_, index) => ({
     evidenceType: index === 8 ? 'independent_transfer' : index === 9 ? 'delayed_review' : 'independent_spelling',
-    correct: index !== 7, helped: false, sessionId: index < 5 ? 's1' : 's2', edmontonDate: index < 5 ? '2026-09-01' : '2026-09-09',
+    contentStatus: 'released', correct: index !== 7, helped: false, sessionId: index < 5 ? 's1' : 's2', edmontonDate: index < 5 ? '2026-09-01' : '2026-09-09',
     eventTime: new Date(Date.UTC(2026, 8, 1 + index)).toISOString(), unseen: index < 3,
   }));
   assert.equal(deriveMastery(secure).status, 'secure');
@@ -211,4 +212,105 @@ test('typed C0 sentence items permit review of reasonable unlisted answers while
   assert.ok(typedSentences.every((item) => item.allowReview === true));
   assert.ok(typedSpelling.every((item) => !item.allowReview));
   assert.equal(evaluateItem(typedSentences[0], 'A totally different sentence?').status, 'pending');
+});
+
+test('a coordinating join never accepts a lower-cased I or declared proper noun', () => {
+  const goggles = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['I packed my bag. I forgot my goggles.'],
+    repairScope: { clauses: ['I packed my bag', 'I forgot my goggles'], allowedJoins: ['period', 'semicolon', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(goggles, 'I packed my bag, and i forgot my goggles.').status, 'pending', 'lower-case i is a spelling error, not a style choice');
+  assert.equal(evaluateItem(goggles, 'I packed my bag, and I forgot my goggles.').status, 'correct');
+  assert.equal(evaluateItem(goggles, 'I packed my bag. I forgot my goggles.').status, 'correct');
+
+  const proper = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['The bell rang. Mia closed the folder.'],
+    repairScope: { clauses: ['The bell rang', 'Mia closed the folder'], allowedJoins: ['period', 'coordinating'], properNouns: ['Mia'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(proper, 'The bell rang, and mia closed the folder.').status, 'pending', 'a declared proper noun keeps its capital');
+  assert.equal(evaluateItem(proper, 'The bell rang, and Mia closed the folder.').status, 'correct');
+
+  const common = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['The bell rang. The runners returned.'],
+    repairScope: { clauses: ['The bell rang', 'The runners returned'], allowedJoins: ['period', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(common, 'The bell rang, and the runners returned.').status, 'correct', 'an ordinary clause is lower-cased mid-sentence');
+  assert.equal(evaluateItem(common, 'The bell rang, and The runners returned.').status, 'pending', 'a mid-sentence capital is not accepted for an ordinary clause');
+});
+
+test('progress evidence is summarized by what actually counts toward mastery', async () => {
+  const { summarizeSkillEvidence } = await import('../src/learning/mastery.js');
+  const attempts = [
+    { evidenceType: 'independent_choice', contentStatus: 'released', ordinal: 1 },
+    { evidenceType: 'independent_choice', contentStatus: 'released', ordinal: 1, helped: true },
+    { evidenceType: 'independent_choice', contentStatus: 'pilot_approved', ordinal: 1 },
+    { evidenceType: 'independent_choice', contentStatus: 'not_released', ordinal: 1 },
+    { evidenceType: 'self_report', contentStatus: 'released', ordinal: 1 },
+  ];
+  assert.deepEqual(summarizeSkillEvidence(attempts), { recorded: 5, released: 1, pilot: 1, notCounted: 3 });
+  assert.deepEqual(summarizeSkillEvidence([]), { recorded: 0, released: 0, pilot: 0, notCounted: 0 });
+  const { readFile } = await import('node:fs/promises');
+  const page = await readFile(new URL('../src/pages/ProgressPage.jsx', import.meta.url), 'utf8');
+  assert.match(page, /count toward mastery/);
+  assert.doesNotMatch(page, /contentStatus !== 'not_reviewed'/, 'the display no longer treats unreleased attempts as eligible');
+});
+
+test('each assessment run records its own attempt session so a retake is not a retry', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const runner = await readFile(new URL('../src/pages/AssessmentRunner.jsx', import.meta.url), 'utf8');
+  assert.match(runner, /function newAttemptSessionId\(form\)/);
+  assert.match(runner, /attemptSessionId: newAttemptSessionId\(form\)/);
+  assert.doesNotMatch(runner, /sessionId: `assessment-\$\{form\}`/, 'attempts no longer share one session per form');
+  assert.doesNotMatch(runner, /sessionId=\{`assessment-\$\{form\}`\}/, 'recordings no longer share one session per form');
+  assert.match(runner, /setState\(createAssessmentState\(form\)\(\)\)/, 'clearing the preview mints a new attempt session');
+
+  // The ordinal that decides first-attempt eligibility is per session and item, so two runs of the
+  // same item under different session IDs are both first attempts.
+  const ordinalFor = (priorAttempts, sessionId, itemId) => priorAttempts.filter((entry) => entry.sessionId === sessionId && entry.itemId === itemId && !entry.technicalFailure).length + 1;
+  const firstRun = [{ sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }];
+  assert.equal(ordinalFor(firstRun, 'assessment-A-run1', 'c0.assessment.a.01'), 2, 'a repeat inside one run is a retry');
+  assert.equal(ordinalFor(firstRun, 'assessment-A-run2', 'c0.assessment.a.01'), 1, 'a retake starts a fresh first attempt');
+});
+
+test('reviewed audio may be a labelled model voice, but a human recording is required for phoneme audio', async () => {
+  const { validateContent } = await import('../src/learning/contentValidator.js');
+  const skills = [{ id: 'a' }];
+  const spokenItem = (overrides) => ({
+    id: 'i', version: 1, primarySkill: 'a', role: 'independent', difficulty: 1, prompt: 'Listen and type.',
+    spokenText: 'adventure', responseType: 'text', evaluator: 'spelling', acceptedAnswers: ['adventure'],
+    explanation: 'e', helpSteps: ['h'], evidenceEligibility: 'independent', transferGroup: 't',
+    authorStatus: 'reviewed', reviewStatus: 'reviewed', releaseStatus: 'not_released', audioRef: 'aud1', ...overrides,
+  });
+  const asset = (overrides = {}) => ({ id: 'aud1', version: 1, url: '/audio/adventure.mp3', transcript: 'adventure', locale: 'en-CA', reviewStatus: 'reviewed', kind: 'model_speech', ...overrides });
+
+  // A labelled model voice satisfies a reviewed spoken item.
+  assert.deepEqual(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model' })], audioAssets: [asset()] }).errors, []);
+  // Synthetic preview audio still cannot be called reviewed.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'synthetic_preview' })], audioAssets: [asset()] }).errors.some((error) => error.includes('without reviewed audio')));
+  // Model speech can never be presented as a human recording.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_human' })], audioAssets: [asset()] }).errors.some((error) => error.includes('claims a human recording for a model_speech asset')));
+  // Isolated phoneme audio still requires a real recording.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model', requiresHumanAudio: true })], audioAssets: [asset()] }).errors.some((error) => error.includes('requires a human recording')));
+  assert.deepEqual(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_human', requiresHumanAudio: true })], audioAssets: [asset({ kind: 'human_recording' })] }).errors, []);
+  // A transcript that does not match the spoken text is still rejected, whatever the kind.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model' })], audioAssets: [asset({ transcript: 'different' })] }).errors.some((error) => error.includes('transcript does not match')));
+  // A non-Canadian locale still needs a learner-facing disclosure.
+  assert.ok(validateContent({ skills, items: [spokenItem({ audioStatus: 'reviewed_model' })], audioAssets: [asset({ locale: 'en-US' })] }).errors.some((error) => error.includes('non-Canadian locale')));
+});
+
+test('the audio handoff records the withdrawn requirement instead of silently dropping it', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const doc = await readFile(new URL('../docs/AUDIO_REVIEW_HANDOFF.md', import.meta.url), 'utf8');
+  assert.match(doc, /withdrawn and replaced/);
+  assert.match(doc, /CHG-07/);
+  assert.match(doc, /human recording is required only where the item sets `requiresHumanAudio`/);
+  assert.doesNotMatch(doc, /24 reviewed human-audio and 16 specialist/);
+  const tracker = await readFile(new URL('../src/data/r2GateTracker.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(tracker, /24 reviewed recordings and 16 specialist checks/);
 });

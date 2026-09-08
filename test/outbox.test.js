@@ -25,24 +25,23 @@ test('a failed delivery keeps that entry and every later entry queued, then a re
   assert.deepEqual([...sent].sort(), ['a1', 'a2', 'a3', 'a4', 'a5'], 'every entry was written exactly once');
 });
 
-test('reconnect flush plans idempotent writes for lesson attempts and word-game attempts', () => {
+test('reconnect flush plans idempotent writes and defers word totals to a derivation', () => {
   const lesson = planOutboxWrites({ kind: 'attempt', payload: { attemptId: 'x', learnerId: 'jess', correct: true } }, { uid: 'u1' });
   assert.equal(lesson.length, 1);
   assert.equal(lesson[0].mode, 'create-if-missing');
   assert.equal(lesson[0].id, 'u1_jess_x');
   assert.equal(lesson[0].data.userId, 'u1');
 
-  const localProgress = { jess: { w1: { attempts: 4, correct: 3, streak: 2 } } };
   const word = planOutboxWrites(
     { kind: 'word-attempt', payload: { attemptId: 'y', learnerId: 'jess', wordId: 'w1', correct: true, evidenceType: 'independent_dictation' } },
-    { uid: 'u1', readLocalProgress: (learnerId) => localProgress[learnerId] },
+    { uid: 'u1' },
   );
   assert.equal(word.length, 2);
   assert.equal(word[0].mode, 'create-if-missing');
-  assert.equal(word[1].mode, 'merge');
-  assert.equal(word[1].collection, 'spelling-progress');
-  assert.deepEqual({ attempts: word[1].data.attempts, correct: word[1].data.correct, streak: word[1].data.streak }, { attempts: 4, correct: 3, streak: 2 });
-  assert.ok(!('increment' in word[1].data), 'aggregate rows are rewritten from local totals, never incremented on retry');
+  assert.equal(word[0].collection, 'spelling-attempts');
+  assert.deepEqual(word[1], { mode: 'reconcile-progress', learnerId: 'jess', wordId: 'w1' });
+  // The plan carries no totals at all, so a flush cannot push this device's counts over another's.
+  assert.ok(!word.some((write) => write.collection === 'spelling-progress'), 'totals are derived, not written from the device');
 });
 
 test('outbox planning refuses to write without an authenticated owner or an unknown kind', () => {

@@ -52,22 +52,36 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
     for (const sourceId of item.sourceIds || []) if (sources.length && !sourceIds.has(sourceId)) errors.push(`${item.id} has unknown source ${sourceId}`);
     if (item.audioRef && !audioIds.has(item.audioRef)) errors.push(`${item.id} has broken audio reference ${item.audioRef}`);
     const audioAsset = item.audioRef ? audioById.get(item.audioRef) : null;
-    if (item.audioStatus === 'reviewed_human' && !item.audioRef) errors.push(`${item.id} claims reviewed human audio without an audio reference`);
-    if (item.audioStatus === 'reviewed_human' && audioAsset?.reviewStatus !== 'reviewed') errors.push(`${item.id} claims reviewed human audio without a reviewed audio asset`);
-    if (item.audioStatus === 'reviewed_human' && item.spokenText && audioAsset?.transcript !== item.spokenText) errors.push(`${item.id} reviewed audio transcript does not match its spoken text`);
+    // Two reviewed audio statuses. `reviewed_human` is a person's recording; `reviewed_model` is
+    // model or synthetic speech that a listener has checked against the transcript and labelled
+    // truthfully. Neither may be claimed without a reviewed asset whose transcript matches.
+    const reviewedAudio = ['reviewed_human', 'reviewed_model'].includes(item.audioStatus);
+    if (reviewedAudio && !item.audioRef) errors.push(`${item.id} claims reviewed audio without an audio reference`);
+    if (reviewedAudio && audioAsset?.reviewStatus !== 'reviewed') errors.push(`${item.id} claims reviewed audio without a reviewed audio asset`);
+    if (reviewedAudio && item.spokenText && audioAsset?.transcript !== item.spokenText) errors.push(`${item.id} reviewed audio transcript does not match its spoken text`);
+    if (item.audioStatus === 'reviewed_human' && audioAsset && audioAsset.kind && audioAsset.kind !== 'human_recording') errors.push(`${item.id} claims a human recording for a ${audioAsset.kind} asset`);
+    // Isolated phoneme audio must be a real recording: ordinary synthesis reading letter names is
+    // not phonics instruction (master plan section 10).
+    if (item.requiresHumanAudio && item.audioStatus === 'reviewed_model') errors.push(`${item.id} requires a human recording rather than model audio`);
     if (item.responseType === 'recording' && item.evaluator !== 'human_rubric') errors.push(`${item.id} recording must use human review`);
     if (item.reviewStatus === 'reviewed') {
       if (item.authorStatus !== 'reviewed') errors.push(`${item.id} is reviewed without reviewed author status`);
       if (String(item.evidenceEligibility).includes('fixture') || String(item.evidenceEligibility).includes('draft')) errors.push(`${item.id} has non-release evidence eligibility`);
       if (item.audioStatus === 'synthetic_preview') errors.push(`${item.id} cannot release synthetic preview audio`);
-      if (item.spokenText && item.audioStatus !== 'reviewed_human') errors.push(`${item.id} marks spoken content reviewed without reviewed human audio`);
+      if (item.spokenText && !['reviewed_human', 'reviewed_model'].includes(item.audioStatus)) errors.push(`${item.id} marks spoken content reviewed without reviewed audio`);
     }
     if (item.integrationStatus === 'integrated' && (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed')) errors.push(`${item.id} is integrated without completed educational review`);
+    if (item.releaseStatus === 'pilot_approved') {
+      if (item.reviewStatus !== 'reviewed' || item.authorStatus !== 'reviewed') errors.push(`${item.id} is pilot-approved without completed author and educational review`);
+      if (item.integrationStatus !== 'integrated') errors.push(`${item.id} is pilot-approved without completed integration`);
+      if (item.correctionStatus === 'changes_required') errors.push(`${item.id} is pilot-approved while a correction is open`);
+    }
     if (item.releaseStatus === 'released') {
       if (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed') errors.push(`${item.id} is released without completed author and educational review`);
       if (item.integrationStatus !== 'integrated') errors.push(`${item.id} is released without completed integration`);
       if (String(item.evidenceEligibility).includes('fixture') || String(item.evidenceEligibility).includes('draft')) errors.push(`${item.id} releases ineligible evidence`);
       if (item.audioStatus === 'synthetic_preview') errors.push(`${item.id} releases synthetic preview audio`);
+      if (item.correctionStatus === 'changes_required') errors.push(`${item.id} is released while a correction is open`);
     }
   }
   const lessonIds = new Set(items.map(({ id }) => id));

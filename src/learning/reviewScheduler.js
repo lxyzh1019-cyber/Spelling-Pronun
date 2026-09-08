@@ -1,3 +1,5 @@
+import { EVIDENCE_TRACKS, attemptIsInTrack } from './pilotApproval.js';
+
 export const REVIEW_INTERVAL_DAYS = [1, 3, 7, 14, 30];
 
 export function nextReview({ eventTime, reviewStage = -1, correct, helped = false, sameDay = false }) {
@@ -17,10 +19,12 @@ export function selectDueReviews(progress, now = new Date(), limit = 4) {
     .slice(0, limit);
 }
 
-export function deriveReviewProgress(attempts) {
+// `track` selects which evidence record is being built: the released record (default) or the
+// separate pilot record. They never mix.
+export function deriveReviewProgress(attempts, { track = EVIDENCE_TRACKS.RELEASED } = {}) {
   const progress = {};
   const sorted = [...attempts]
-    .filter((attempt) => attempt.contentStatus === 'released' && !attempt.technicalFailure && attempt.status !== 'pending' && attempt.status !== 'omitted')
+    .filter((attempt) => attemptIsInTrack(attempt, track) && !attempt.technicalFailure && attempt.status !== 'pending' && attempt.status !== 'omitted')
     .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime));
   for (const attempt of sorted) {
     for (const skillId of attempt.skillIds || []) {

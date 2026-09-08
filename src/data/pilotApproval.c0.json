@@ -1,0 +1,4 @@
+{
+  "note": "Approved-for-private-pilot decisions. This file ships EMPTY. A record is added only after the parent records the decision in docs/IMPLEMENTATION_STATUS.md; adding one here without that decision would be a false claim that a pilot was authorized. Each record needs scopeId, scopeType, scopeVersion, decision, decidedBy: 'parent', decidedAt, and the review evidence it relies on.",
+  "approvals": []
+}

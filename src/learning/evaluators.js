@@ -63,6 +63,26 @@ function capitalizeFirst(text) {
   return text.charAt(0).toLocaleUpperCase('en-CA') + text.slice(1);
 }
 
+function lowercaseFirst(text) {
+  return text.charAt(0).toLocaleLowerCase('en-CA') + text.slice(1);
+}
+
+// Words that keep their capital letter mid-sentence: the pronoun I (including contractions) and
+// any proper noun the item declares. Lower-casing these is a spelling error, not a style choice.
+function keepsCapitalMidSentence(clause, scope) {
+  const firstWord = normalizeSentenceSpacing(clause).split(' ')[0] || '';
+  if (/^I(?:$|['’])/.test(firstWord)) return true;
+  return (scope?.properNouns || []).some((noun) => firstWord.replace(/[^\p{L}'’]/gu, '') === noun);
+}
+
+// Forms of a clause accepted at a given boundary. A new sentence (period or semicolon join) must be
+// capitalized; after a coordinating conjunction the clause continues the sentence, so it is
+// lower-cased unless its first word keeps its capital.
+function clauseVariantsAfterJoin(clause, join, scope) {
+  if (join !== 'coordinating') return [capitalizeFirst(clause)];
+  return keepsCapitalMidSentence(clause, scope) ? [capitalizeFirst(clause)] : [lowercaseFirst(clause)];
+}
+
 /**
  * Scoped structural check for sentence repairs. It never accepts a response merely because it
  * contains a period or conjunction: every declared clause must appear verbatim, in order, and each
@@ -75,10 +95,13 @@ export function evaluateRepairScope(scope, response) {
   if (clauses.length < 2 || !allowedJoins.length) return null;
   const endMarks = scope.endMarks || ['.'];
   let remaining = normalizeSentenceSpacing(response);
+  let acceptedClauseForms = [];
   const joinsUsed = [];
   for (let index = 0; index < clauses.length; index++) {
     const clause = clauses[index];
-    const candidates = index === 0 ? [capitalizeFirst(clause)] : [clause, clause.charAt(0).toLocaleLowerCase('en-CA') + clause.slice(1), capitalizeFirst(clause)];
+    // Index 0 opens the sentence; later clauses were already validated against the join that
+    // introduced them, so the same accepted form is consumed here.
+    const candidates = index === 0 ? [capitalizeFirst(clause)] : acceptedClauseForms;
     const match = candidates.find((candidate) => remaining.startsWith(candidate));
     if (!match) return null;
     remaining = remaining.slice(match.length);
@@ -87,16 +110,11 @@ export function evaluateRepairScope(scope, response) {
     if (!boundary) return null;
     const join = allowedJoins.find((name) => JOIN_PATTERNS[name].test(boundary[0]));
     if (!join) return null;
-    // A period or semicolon join requires the next clause to start with a capital letter; a
-    // coordinating join requires lower case.
     const nextClause = clauses[index + 1];
     const afterJoin = remaining.slice(boundary[0].length);
-    // The pronoun I and proper names stay capitalized after a coordinating join, so either the
-    // declared form or its lower-cased form is acceptable there; a new sentence must be capitalized.
-    const acceptableNext = join === 'coordinating'
-      ? [nextClause, nextClause.charAt(0).toLocaleLowerCase('en-CA') + nextClause.slice(1)]
-      : [capitalizeFirst(nextClause)];
+    const acceptableNext = clauseVariantsAfterJoin(nextClause, join, scope);
     if (!acceptableNext.some((candidate) => afterJoin.startsWith(candidate))) return null;
+    acceptedClauseForms = acceptableNext;
     joinsUsed.push(join);
     remaining = remaining.slice(boundary[0].length);
   }

@@ -3,12 +3,22 @@ import assert from 'node:assert/strict';
 import { acceptWorkedSolution, completeReflection, continueLesson, createLessonState, startLesson, submitLessonResult } from '../src/learning/lessonFlow.js';
 import { c0LessonCatalog } from '../src/data/lessonCatalog.js';
 
-test('each C0 lesson uses two examples, six independent questions, and two unseen transfers', () => {
+test('each C0 lesson serves two examples and six independent questions, withholding quarantined items', async () => {
+  const { c0PilotPacks } = await import('../src/data/packs.c0.draft.js');
+  const { isQuarantined } = await import('../src/learning/contentCorrections.js');
   assert.equal(Object.keys(c0LessonCatalog).length, 4);
   for (const lesson of Object.values(c0LessonCatalog)) {
+    const pack = c0PilotPacks.find((candidate) => candidate.id === lesson.packId);
+    // The pack still holds the full required inventory; quarantine withholds items from the
+    // served lesson rather than deleting them, and the reduction is reported.
+    assert.equal(pack.items.length, 24);
+    assert.equal(pack.items.filter((item) => item.role === 'transfer').length, 2);
     assert.equal(lesson.examples.length, 2);
-    assert.equal(lesson.practice.length, 6);
-    assert.equal(lesson.transfer.length, 2);
+    assert.equal(lesson.practice.length, 6, 'the next unaffected question replaces a quarantined one');
+    const quarantinedTransfers = pack.items.filter((item) => item.role === 'transfer' && isQuarantined(item)).length;
+    assert.equal(lesson.transfer.length, 2 - quarantinedTransfers);
+    assert.equal(lesson.quarantinedCount, pack.items.filter(isQuarantined).length);
+    assert.ok(lesson.practice.every((item) => !isQuarantined(item)), 'no quarantined item is ever served');
   }
 });
 
