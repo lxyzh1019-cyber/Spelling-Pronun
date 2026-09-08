@@ -1,12 +1,15 @@
 import { evidenceEligible } from './evaluators.js';
+import { EVIDENCE_TRACKS, attemptIsInTrack } from './pilotApproval.js';
 
 const DAY_MS = 86_400_000;
 export const REGRESSION_WINDOW = 5;
 export const REGRESSION_FAILURES = 2;
 
-export function deriveMastery(attempts, { derivationVersion = 2 } = {}) {
-  const eligible = attempts.filter(evidenceEligible).sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime));
-  if (!eligible.length) return { status: 'unassessed', derivationVersion, eligibleCount: 0, needsReview: false };
+// `track` selects the evidence record. Pilot evidence is derived with the same rules but kept in
+// its own record, so it can never be read as validated released progress.
+export function deriveMastery(attempts, { derivationVersion = 2, track = EVIDENCE_TRACKS.RELEASED } = {}) {
+  const eligible = attempts.filter((attempt) => attemptIsInTrack(attempt, track) && evidenceEligible(attempt)).sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime));
+  if (!eligible.length) return { status: 'unassessed', track, derivationVersion, eligibleCount: 0, needsReview: false };
   const correct = eligible.filter((attempt) => attempt.correct);
   const sessions = new Set(correct.map((attempt) => attempt.sessionId));
   const dates = new Set(correct.map((attempt) => attempt.edmontonDate));
@@ -25,7 +28,7 @@ export function deriveMastery(attempts, { derivationVersion = 2 } = {}) {
   if (correct.length >= 3) status = 'developing';
   if (eligible.length >= 10 && correct.length >= 9 && accuracy >= 0.9 && sessions.size >= 2 && dates.size >= 2 && unseenCount >= 3 && transfer && delayedReview) status = 'secure';
   if (needsReview && status === 'secure') status = 'developing';
-  return { status, needsReview, recentFailures, derivationVersion, eligibleCount: eligible.length, correctCount: correct.length, accuracy, sessionCount: sessions.size, dateCount: dates.size, unseenCount, hasTransfer: transfer, hasDelayedReview: delayedReview };
+  return { status, track, needsReview, recentFailures, derivationVersion, eligibleCount: eligible.length, correctCount: correct.length, accuracy, sessionCount: sessions.size, dateCount: dates.size, unseenCount, hasTransfer: transfer, hasDelayedReview: delayedReview };
 }
 
 // Splits a learner's attempts for one skill into the buckets a progress screen may show. Released

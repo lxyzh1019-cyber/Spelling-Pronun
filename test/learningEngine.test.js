@@ -26,6 +26,7 @@ test('helped and self-report attempts are excluded from mastery evidence', () =>
 test('secure mastery requires sessions, dates, unseen transfer, and delayed review', () => {
   const attempts = Array.from({ length: 10 }, (_, index) => ({
     evidenceType: index === 8 ? 'independent_transfer' : index === 9 ? 'delayed_review' : 'independent_spelling',
+    contentStatus: 'released',
     correct: index !== 7,
     helped: false,
     sessionId: index < 5 ? 's1' : 's2',
@@ -151,7 +152,7 @@ test('a same-day retry never advances the review schedule, helped or not', () =>
 
 test('two failures in the last five eligible attempts flag a skill for review without erasing history', () => {
   const base = (index, correct) => ({
-    evidenceType: 'independent_spelling', correct, helped: false, sessionId: 's1', edmontonDate: '2026-09-01',
+    evidenceType: 'independent_spelling', contentStatus: 'released', correct, helped: false, sessionId: 's1', edmontonDate: '2026-09-01',
     eventTime: new Date(Date.UTC(2026, 8, 1, index)).toISOString(),
   });
   const developing = [true, true, true, true, false, false].map((correct, index) => base(index, correct));
@@ -165,7 +166,7 @@ test('two failures in the last five eligible attempts flag a skill for review wi
 
   const secure = Array.from({ length: 10 }, (_, index) => ({
     evidenceType: index === 8 ? 'independent_transfer' : index === 9 ? 'delayed_review' : 'independent_spelling',
-    correct: index !== 7, helped: false, sessionId: index < 5 ? 's1' : 's2', edmontonDate: index < 5 ? '2026-09-01' : '2026-09-09',
+    contentStatus: 'released', correct: index !== 7, helped: false, sessionId: index < 5 ? 's1' : 's2', edmontonDate: index < 5 ? '2026-09-01' : '2026-09-09',
     eventTime: new Date(Date.UTC(2026, 8, 1 + index)).toISOString(), unseen: index < 3,
   }));
   assert.equal(deriveMastery(secure).status, 'secure');

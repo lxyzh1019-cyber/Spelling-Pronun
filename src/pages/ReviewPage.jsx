@@ -4,6 +4,7 @@ import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import { c0PilotPacks } from '../data/packs.c0.draft';
 import { advanceReviewSession, buildReviewQueue, createReviewSession, recordReviewResult, resolveReviewItem } from '../learning/reviewQueue';
+import { EVIDENCE_TRACKS } from '../learning/pilotApproval';
 import { useDurableSession } from '../hooks/useDurableSession';
 import styles from './Learning.module.css';
 
@@ -20,9 +21,15 @@ function ReviewQuestion({ item, answer, setAnswer, disabled }) {
 
 export default function ReviewPage() {
   const { activeProfileId, user } = useWords();
-  const { attempts, dueReviews, reviewProgress, submitAttempt, saveStatus } = useLearning();
+  const { attempts, dueReviews, pilotDueReviews, pilotScopeIds, reviewProgress, submitAttempt, saveStatus } = useLearning();
+  // Released content is always preferred. A private pilot serves the pilot queue only while the
+  // parent's approval records exist, and every screen says so.
+  const pilotMode = pilotScopeIds.length > 0;
   const recent = attempts.slice(-8).reverse();
-  const available = useMemo(() => buildReviewQueue(dueReviews, c0PilotPacks), [dueReviews]);
+  const releasedQueue = useMemo(() => buildReviewQueue(dueReviews, c0PilotPacks), [dueReviews]);
+  const pilotQueue = useMemo(() => (pilotMode ? buildReviewQueue(pilotDueReviews, c0PilotPacks, 4, { track: EVIDENCE_TRACKS.PILOT }) : []), [pilotDueReviews, pilotMode]);
+  const available = releasedQueue.length ? releasedQueue : pilotQueue;
+  const servingPilot = releasedQueue.length === 0 && pilotQueue.length > 0;
   const storageKey = `spelling-review-session:${activeProfileId}`;
   const { state: session, setState: setSession, ready, writable, canWrite, takeOverHere: takeOverSession, ownerKeyRef, sessionSaveStatus } = useDurableSession({
     storageKey,
@@ -135,6 +142,7 @@ export default function ReviewPage() {
     {session.stage === 'feedback' && item && <><div className={styles.feedback}><h2>{session.lastResult.correct ? 'Correct' : session.lastResult.omitted ? 'Not answered yet' : session.lastResult.status === 'pending' ? 'Pending review' : 'Review the rule'}</h2><p>{item.explanation}</p>{!session.lastResult.correct && accepted && <p><strong>Accepted answer:</strong> {accepted}</p>}</div><button className={styles.primary} disabled={submitting || !writable} onClick={continueAfterFeedback}>{submitting ? 'Saving teaching step…' : session.index + 1 < session.entries.length ? 'Continue review' : 'Finish review'}</button></>}
     {session.stage === 'complete' && <><div className={styles.success}><h2>Review complete</h2><p>{session.entries.length} due item{session.entries.length === 1 ? '' : 's'} resolved. Independent successes advance the schedule; helped, omitted, or revealed work returns after teaching.</p></div><button className={styles.secondary} disabled={!writable} onClick={() => persist(createReviewSession())}>Close this review</button></>}
     {['attempt', 'feedback'].includes(session.stage) && !item && <div className={styles.feedback}><h2>Saved review content is unavailable</h2><p>The pinned item version was not found, so no answer or score was invented. Return after the reviewed content version is restored.</p></div>}
+    {servingPilot && <p className={styles.notice} role="status"><strong>Pilot evidence.</strong> These items are approved for the private pilot only. Answers are kept in a separate pilot record and are not validated progress.</p>}
     {Object.keys(reviewProgress).length > dueReviews.length && <p className={styles.meta}>{Object.keys(reviewProgress).length - dueReviews.length} reviewed skill(s) are scheduled for later.</p>}
     {recent.length ? <><h2>Recent attempts</h2>{recent.map((attempt) => <p key={attempt.attemptId}><strong>{attempt.skillIds[0]}</strong>: {attempt.omitted ? 'not answered yet' : attempt.correct ? 'correct' : attempt.status === 'pending' ? 'pending review' : 'needs repair'} <span className={styles.meta}>({attempt.contentStatus})</span></p>)}</> : <p>No attempts have been saved for this learner yet.</p>}
     <Link className={styles.primary} to="/case">Continue my case</Link>

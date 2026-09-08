@@ -18,6 +18,12 @@ export const r2GateTracker = [
     detail: 'Record playback, microphone, interruption, resume, offline, and install behavior on the target iPad. Desktop emulation does not close this gate.',
   },
   {
+    id: 'pilot-approval',
+    label: 'Approved-for-private-pilot decision',
+    state: 'requires_parent_setup',
+    detail: 'Reviewed and integrated C0 content can run the complete loop once the parent records a pilot approval. Until then no content is pilot-approved, and pilot answers are kept in a separate record that is never validated progress.',
+  },
+  {
     id: 'family-pilot',
     label: 'Family pilot',
     state: 'blocked',

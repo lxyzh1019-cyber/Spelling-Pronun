@@ -13,6 +13,8 @@ import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import skillsData from '../data/skills.json';
+import pilotApprovalData from '../data/pilotApproval.c0.json';
+import { EVIDENCE_TRACKS, approvedPilotScopeIds } from '../learning/pilotApproval';
 
 const LearningContext = createContext(null);
 
@@ -244,14 +246,24 @@ export function LearningProvider({ children }) {
     return true;
   }, [recordImportDecision]);
 
+  // Two separate evidence records. The released record is the only one that represents validated
+  // progress; the pilot record lets approved content run the full loop during a private pilot
+  // without being presented as validated.
   const masteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
     skill.id,
-    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id) && attempt.contentStatus === 'released')),
+    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id)), { track: EVIDENCE_TRACKS.RELEASED }),
+  ])), [attempts]);
+  const pilotMasteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
+    skill.id,
+    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id)), { track: EVIDENCE_TRACKS.PILOT }),
   ])), [attempts]);
   const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
   const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);
+  const pilotReviewProgress = useMemo(() => deriveReviewProgress(attempts, { track: EVIDENCE_TRACKS.PILOT }), [attempts]);
+  const pilotDueReviews = useMemo(() => selectDueReviews(pilotReviewProgress), [pilotReviewProgress]);
+  const pilotScopeIds = useMemo(() => approvedPilotScopeIds(pilotApprovalData.approvals), []);
 
-  const value = useMemo(() => ({ attempts, submitAttempt, syncCloud, reconcileWordProgress, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, syncCloud, reconcileWordProgress, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
+  const value = useMemo(() => ({ attempts, submitAttempt, syncCloud, reconcileWordProgress, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, pilotMasteryBySkill, reviewProgress, dueReviews, pilotReviewProgress, pilotDueReviews, pilotScopeIds, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, syncCloud, reconcileWordProgress, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, pilotMasteryBySkill, reviewProgress, dueReviews, pilotReviewProgress, pilotDueReviews, pilotScopeIds, saveStatus]);
   return <LearningContext.Provider value={value}>{children}</LearningContext.Provider>;
 }
 

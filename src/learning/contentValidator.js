@@ -63,6 +63,11 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
       if (item.spokenText && item.audioStatus !== 'reviewed_human') errors.push(`${item.id} marks spoken content reviewed without reviewed human audio`);
     }
     if (item.integrationStatus === 'integrated' && (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed')) errors.push(`${item.id} is integrated without completed educational review`);
+    if (item.releaseStatus === 'pilot_approved') {
+      if (item.reviewStatus !== 'reviewed' || item.authorStatus !== 'reviewed') errors.push(`${item.id} is pilot-approved without completed author and educational review`);
+      if (item.integrationStatus !== 'integrated') errors.push(`${item.id} is pilot-approved without completed integration`);
+      if (item.correctionStatus === 'changes_required') errors.push(`${item.id} is pilot-approved while a correction is open`);
+    }
     if (item.releaseStatus === 'released') {
       if (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed') errors.push(`${item.id} is released without completed author and educational review`);
       if (item.integrationStatus !== 'integrated') errors.push(`${item.id} is released without completed integration`);

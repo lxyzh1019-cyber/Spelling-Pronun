@@ -1,11 +1,16 @@
-export function buildReviewQueue(dueReviews, packs, limit = 4) {
+import { EVIDENCE_TRACKS, contentStatusesForTrack } from './pilotApproval.js';
+
+// Only content in the selected evidence track may be served. The released queue admits released
+// items alone; the pilot queue admits pilot-approved items alone.
+export function buildReviewQueue(dueReviews, packs, limit = 4, { track = EVIDENCE_TRACKS.RELEASED } = {}) {
+  const admissible = contentStatusesForTrack(track);
   const queue = [];
   for (const due of dueReviews || []) {
     const pack = (packs || []).find((candidate) => candidate.skillId === due.skillId);
     const variants = pack?.items?.filter((item) => item.role === 'delayed_review'
       && item.authorStatus === 'reviewed'
       && item.reviewStatus === 'reviewed'
-      && item.releaseStatus === 'released'
+      && admissible.includes(item.releaseStatus)
       && ['choice', 'text'].includes(item.responseType)
       && item.evaluator !== 'human_rubric') || [];
     if (!variants.length) continue;
