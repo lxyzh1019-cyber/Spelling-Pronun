@@ -113,3 +113,13 @@ test('C0 story draft has two sourced, explicitly fictionalized episodes', () => 
   const validation = validateContent({ skills: skillsData.skills, items: c0PilotItems, episodes: storyDraft.episodes, sources: sourceData.sources });
   assert.deepEqual(validation.errors, []);
 });
+
+test('the real C0 assessment forms pass the content validator with no overlap into the lesson pool', () => {
+  const assessments = c0AssessmentForms.map((form) => ({ id: form.id, itemIds: form.items.map((item) => item.id) }));
+  const separation = validateContent({ skills: skillsData.skills, items: c0PilotItems, assessments });
+  assert.deepEqual(separation.errors, []);
+  const assessmentItems = validateContent({ skills: skillsData.skills, items: c0AssessmentItems, sources: sourceData.sources });
+  assert.deepEqual(assessmentItems.errors, []);
+  const collision = validateContent({ skills: skillsData.skills, items: c0PilotItems, assessments: [{ id: 'bad', itemIds: [c0PilotItems[0].id] }] });
+  assert.ok(collision.errors.some((error) => error.includes('overlaps lesson pool')));
+});

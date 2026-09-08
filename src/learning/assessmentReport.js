@@ -61,3 +61,28 @@ export function compareAssessmentReports(previous, current) {
   }
   return { comparable: true, disclosure: 'This form was previously exposed; results are not all unseen.', tracks };
 }
+
+// Master plan §7: reassessment is manually available at any time; the UI suggests an interval
+// without creating a reminder or a mandatory schedule.
+export const REASSESSMENT_SUGGESTION = 'Reassessment is available at any time. If you want to compare progress, about 4–6 weeks later is a reasonable gap. This is a suggestion, not a schedule or a reminder.';
+
+export const ASSESSMENT_HISTORY_LIMIT = 6;
+
+export function assessmentHistoryKey(learnerId, form) {
+  return `spelling-assessment-history:${learnerId}:${form}`;
+}
+
+// Appends a completed report to the learner's per-form history. Incomplete reports and repeats
+// of the same completion are ignored; only the most recent entries are kept.
+export function appendAssessmentHistory(history = [], report) {
+  if (!report?.completedAt) return history;
+  if (history.some((entry) => entry.completedAt === report.completedAt)) return history;
+  return [...history, report].sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt)).slice(-ASSESSMENT_HISTORY_LIMIT);
+}
+
+export function latestComparison(history = []) {
+  if (history.length < 2) return null;
+  const previous = history[history.length - 2];
+  const current = history[history.length - 1];
+  return { previous, current, comparison: compareAssessmentReports(previous, current) };
+}
