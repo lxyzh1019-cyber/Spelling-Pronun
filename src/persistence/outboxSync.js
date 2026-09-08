@@ -11,7 +11,7 @@ export function progressDocId(uid, learnerId, wordId) {
   return `${uid}_${learnerId}_${wordId}`;
 }
 
-export function planOutboxWrites(entry, { uid, readLocalProgress = () => ({}) } = {}) {
+export function planOutboxWrites(entry, { uid } = {}) {
   if (!uid || !entry?.payload) return [];
   const { kind, payload } = entry;
   if (kind === 'attempt') {
@@ -23,7 +23,9 @@ export function planOutboxWrites(entry, { uid, readLocalProgress = () => ({}) } 
     }];
   }
   if (kind === 'word-attempt') {
-    const local = readLocalProgress(payload.learnerId)?.[payload.wordId] || {};
+    // Only the immutable attempt is written here. The word totals are a cache derived from the
+    // whole attempt record afterwards (see `reconcile-progress`), because writing this device's
+    // local totals could lower a total another device had already recorded.
     return [
       {
         collection: 'spelling-attempts',
@@ -32,20 +34,9 @@ export function planOutboxWrites(entry, { uid, readLocalProgress = () => ({}) } 
         mode: 'create-if-missing',
       },
       {
-        collection: 'spelling-progress',
-        id: progressDocId(uid, payload.learnerId, payload.wordId),
-        data: {
-          userId: uid,
-          profileId: payload.learnerId,
-          wordId: payload.wordId,
-          attempts: local.attempts || 0,
-          correct: local.correct || 0,
-          streak: local.streak || 0,
-          bestStreak: local.bestStreak || 0,
-          lastEvidenceType: payload.evidenceType,
-          reconciledFromDevice: true,
-        },
-        mode: 'merge',
+        mode: 'reconcile-progress',
+        learnerId: payload.learnerId,
+        wordId: payload.wordId,
       },
     ];
   }

@@ -8,6 +8,7 @@ import { flushOutbox, queueAttempt } from '../persistence/indexedDb';
 import { planOutboxWrites } from '../persistence/outboxSync';
 import { mergeAttempts } from '../persistence/sync';
 import { buildImportPreview, canAutoPush, importDecisionRecord } from '../learning/importPreview';
+import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -46,6 +47,34 @@ export function LearningProvider({ children }) {
     setSaveStatus('saved');
   }, [activeProfileId]);
 
+  // Recomputes the word-total cache for the named words from the account's immutable attempts.
+  // Nothing is written for a word whose derived total would be lower than the stored one.
+  const reconcileWordProgress = useCallback(async (account, learnerId, wordIds) => {
+    if (!account || !wordIds?.length) return { written: 0, heldBack: [] };
+    try {
+      const attemptSnapshot = await getDocs(query(
+        collection(db, 'spelling-attempts'),
+        where('userId', '==', account.uid),
+        where('learnerId', '==', learnerId),
+      ));
+      const attempts = attemptSnapshot.docs.map((entry) => entry.data());
+      const existingRows = {};
+      for (const wordId of wordIds) {
+        const rowSnapshot = await getDoc(doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`));
+        if (rowSnapshot.exists()) existingRows[wordId] = rowSnapshot.data();
+      }
+      const { rows, heldBack } = deriveWordRows({ existingRows, attempts, wordIds });
+      for (const write of planProgressWrites(account.uid, learnerId, rows)) {
+        await setDoc(doc(db, write.collection, write.id), write.data, { merge: true });
+      }
+      if (heldBack.length) console.warn('Word totals held back to avoid lowering a shared count:', heldBack);
+      return { written: Object.keys(rows).length, heldBack };
+    } catch (error) {
+      console.warn('Word total reconciliation deferred:', error);
+      return { written: 0, heldBack: wordIds };
+    }
+  }, []);
+
   // push: 'auto' respects the parent import decision (master plan §9: an existing account never
   // silently merges local history); 'force' is used after an explicit import decision.
   const syncCloud = useCallback(async (account = user, learnerId = activeProfileId, { push = 'auto' } = {}) => {
@@ -71,9 +100,16 @@ export function LearningProvider({ children }) {
         }
         return false;
       }
+      const wordsToReconcile = new Map();
       await flushOutbox(async (entry) => {
-        const writes = planOutboxWrites(entry, { uid: account.uid, readLocalProgress: (id) => readJson(progressStorageKey(id), {}) });
+        const writes = planOutboxWrites(entry, { uid: account.uid });
         for (const write of writes) {
+          if (write.mode === 'reconcile-progress') {
+            const pending = wordsToReconcile.get(write.learnerId) || new Set();
+            pending.add(write.wordId);
+            wordsToReconcile.set(write.learnerId, pending);
+            continue;
+          }
           const target = doc(db, write.collection, write.id);
           if (write.mode === 'create-if-missing') {
             const existing = await getDoc(target);
@@ -83,6 +119,9 @@ export function LearningProvider({ children }) {
           }
         }
       });
+      for (const [reconcileLearner, wordIds] of wordsToReconcile) {
+        await reconcileWordProgress(account, reconcileLearner, [...wordIds]);
+      }
       remote = await loadRemoteAttempts(account.uid, learnerId);
       const merged = mergeAttempts(readJson(attemptsKey(learnerId), []), remote);
       writeJson(attemptsKey(learnerId), merged);
@@ -96,7 +135,7 @@ export function LearningProvider({ children }) {
       if (activeLearnerRef.current === learnerId) setSaveStatus('saved-locally');
       return false;
     }
-  }, [activeProfileId, user]);
+  }, [activeProfileId, reconcileWordProgress, user]);
 
   useEffect(() => { if (user) syncCloud(user, activeProfileId); }, [user, activeProfileId, syncCloud]);
 
@@ -212,7 +251,7 @@ export function LearningProvider({ children }) {
   const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
   const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);
 
-  const value = useMemo(() => ({ attempts, submitAttempt, syncCloud, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, syncCloud, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
+  const value = useMemo(() => ({ attempts, submitAttempt, syncCloud, reconcileWordProgress, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, syncCloud, reconcileWordProgress, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
   return <LearningContext.Provider value={value}>{children}</LearningContext.Provider>;
 }
 

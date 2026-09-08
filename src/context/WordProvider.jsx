@@ -11,6 +11,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   query,
@@ -25,6 +26,7 @@ import { auth, db, ensureAuth } from '../firebase';
 import { achievementRecord, checkAchievements, mergeAchievements } from '../utils/achievements';
 import { queueOutboxEntry } from '../persistence/indexedDb';
 import { applyAttempts, createAttempt, dailyChallengeComplete, edmontonDayKey, progressStats } from '../learning/r1Core';
+import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { achievementsStorageKey, progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import wordData from '../data/words.json';
 
@@ -448,6 +450,34 @@ export function WordProvider({ children }) {
     })();
   }, [user, activeProfileId]);
 
+  // Recomputes the cloud word-total cache for the named words from this account's immutable
+  // attempts. Rows whose derived total would be lower than the stored one are held back.
+  const reconcileWordTotals = useCallback(async (account, learnerId, wordIds) => {
+    if (!account || !wordIds?.length) return { written: 0, heldBack: [] };
+    try {
+      const attemptSnapshot = await getDocs(query(
+        collection(db, 'spelling-attempts'),
+        where('userId', '==', account.uid),
+        where('learnerId', '==', learnerId),
+      ));
+      const attempts = attemptSnapshot.docs.map((entry) => entry.data());
+      const existingRows = {};
+      for (const wordId of wordIds) {
+        const rowSnapshot = await getDoc(doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`));
+        if (rowSnapshot.exists()) existingRows[wordId] = rowSnapshot.data();
+      }
+      const { rows, heldBack } = deriveWordRows({ existingRows, attempts, wordIds });
+      for (const write of planProgressWrites(account.uid, learnerId, rows)) {
+        await setDoc(doc(db, write.collection, write.id), { ...write.data, lastSeen: serverTimestamp() }, { merge: true });
+      }
+      if (heldBack.length) console.warn('Word totals held back to avoid lowering a shared count:', heldBack);
+      return { written: Object.keys(rows).length, heldBack };
+    } catch (error) {
+      console.warn('Word total reconciliation deferred:', error);
+      return { written: 0, heldBack: wordIds };
+    }
+  }, []);
+
   const recordResults = useCallback(async (results) => {
     if (!Array.isArray(results) || !results.length) return [];
     const knownProfiles = new Set(profiles.map(({ id }) => id));
@@ -488,31 +518,19 @@ export function WordProvider({ children }) {
           serverReceivedAt: serverTimestamp(),
         });
       }
-      const groupedWords = new Map();
-      for (const attempt of normalized) {
-        const key = `${attempt.learnerId}::${attempt.wordId}`;
-        const current = groupedWords.get(key) || { learnerId: attempt.learnerId, wordId: attempt.wordId, attempts: 0, correct: 0, lastCorrect: false, evidenceType: attempt.evidenceType };
-        current.attempts += 1;
-        current.correct += attempt.correct ? 1 : 0;
-        current.lastCorrect = attempt.correct;
-        current.evidenceType = attempt.evidenceType;
-        groupedWords.set(key, current);
-      }
-      for (const aggregate of groupedWords.values()) {
-        const local = readJson(progressStorageKey(aggregate.learnerId), {})[aggregate.wordId] || {};
-        batch.set(doc(db, 'spelling-progress', `${user.uid}_${aggregate.learnerId}_${aggregate.wordId}`), {
-          userId: user.uid,
-          profileId: aggregate.learnerId,
-          wordId: aggregate.wordId,
-          attempts: increment(aggregate.attempts),
-          correct: increment(aggregate.correct),
-          streak: local.streak || 0,
-          bestStreak: local.bestStreak || 0,
-          lastSeen: serverTimestamp(),
-          lastEvidenceType: aggregate.evidenceType,
-        }, { merge: true });
-      }
+      // Only the immutable attempts are written here. Word totals are recomputed from the whole
+      // attempt record afterwards, so a retry cannot double-count and this device cannot lower a
+      // total another device recorded.
       await batch.commit();
+      const wordsByLearner = new Map();
+      for (const attempt of normalized) {
+        const pending = wordsByLearner.get(attempt.learnerId) || new Set();
+        pending.add(attempt.wordId);
+        wordsByLearner.set(attempt.learnerId, pending);
+      }
+      for (const [learnerId, wordIds] of wordsByLearner) {
+        await reconcileWordTotals(user, learnerId, [...wordIds]);
+      }
       setSyncError(null);
     } catch (err) {
       console.error('Failed to record result batch:', err);
@@ -526,7 +544,7 @@ export function WordProvider({ children }) {
       }
     }
     return normalized;
-  }, [user, activeProfileId, profiles, persistAchievements]);
+  }, [user, activeProfileId, profiles, persistAchievements, reconcileWordTotals]);
 
   // Explicit legacy word-total import for the given words only (used after the parent confirms
   // the import preview). Each row is created only if the account has no row for that word.
