@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useWords } from '../context/WordProvider';
-import { speak } from '../utils/speech';
+import { useCancellableSpeech } from '../hooks/useCancellableSpeech';
 import { shuffle } from '../utils/shuffle';
 import MultiplayerWrapper from '../components/MultiplayerWrapper';
 import styles from './Flashcards.module.css';
@@ -13,14 +13,28 @@ export default function Flashcards() {
   );
 }
 
-function FlashcardsInner() {
+function FlashcardsInner({ sessionLearnerId }) {
   const { activeWords, recordResult } = useWords();
   const [cards, setCards] = useState(() => [...activeWords]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [shuffledMode, setShuffledMode] = useState(false);
+  const [audioMessage, setAudioMessage] = useState('');
 
   const current = cards[index];
+
+  useEffect(() => {
+    setCards(shuffledMode ? shuffle(activeWords) : [...activeWords]);
+    setIndex(0);
+    setFlipped(false);
+    setAudioMessage('');
+  }, [activeWords, sessionLearnerId]);
+
+  const { play: playSpeech } = useCancellableSpeech(`${sessionLearnerId}:${current?.id || current?.word || 'none'}`);
+
+  useEffect(() => {
+    setAudioMessage('');
+  }, [current?.id, sessionLearnerId]);
 
   const handleFlip = () => setFlipped((f) => !f);
 
@@ -35,7 +49,7 @@ function FlashcardsInner() {
   };
 
   const handleSelfRate = (gotIt) => {
-    if (current) recordResult(current.id, gotIt);
+    if (current) recordResult(current.id, gotIt, { learnerId: sessionLearnerId, evidenceType: 'self_report' });
     handleNext();
   };
 
@@ -56,9 +70,15 @@ function FlashcardsInner() {
     setFlipped(false);
   };
 
-  const speakWord = useCallback(() => {
-    if (current) speak(current.word);
-  }, [current]);
+  const speakWord = useCallback(async () => {
+    if (!current) return;
+    setAudioMessage('Starting audio…');
+    const result = await playSpeech(current.word, { lang: 'en-CA' });
+    if (result.reason === 'cancelled') return;
+    setAudioMessage(result.ok
+      ? result.usedRequestedLocale ? 'Playing in Canadian English.' : 'Playing with an available English voice; a Canadian English voice was not available.'
+      : 'Audio could not start. Tap Listen to retry, or continue without audio.');
+  }, [current, playSpeech]);
 
   if (!activeWords.length) {
     return (
@@ -105,6 +125,7 @@ function FlashcardsInner() {
           Next<span aria-hidden="true"> →</span>
         </button>
       </div>
+      {audioMessage && <p role="status">{audioMessage}</p>}
 
       {flipped && (
         <div className={styles.controls}>

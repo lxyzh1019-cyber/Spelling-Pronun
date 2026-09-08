@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { cloneElement, isValidElement, useEffect, useState } from 'react';
 import { useWords } from '../context/WordProvider';
 import styles from './MultiplayerWrapper.module.css';
 
@@ -8,12 +8,19 @@ export default function MultiplayerWrapper({ children }) {
   const [opponentId, setOpponentId] = useState(null);
   const [currentTurn, setCurrentTurn] = useState(activeProfileId);
 
+  useEffect(() => {
+    if (!multiplayerMode) setCurrentTurn(activeProfileId);
+  }, [activeProfileId, multiplayerMode]);
+
   const others = profiles.filter((p) => p.id !== activeProfileId);
 
   if (!multiplayerMode) {
+    const ownedChild = isValidElement(children)
+      ? cloneElement(children, { sessionLearnerId: activeProfileId })
+      : children;
     return (
       <>
-        {children}
+        {ownedChild}
         {others.length >= 1 && (
           <div className={styles.multiplayerPrompt}>
             <button
@@ -37,6 +44,9 @@ export default function MultiplayerWrapper({ children }) {
     profiles.find((p) => p.id === opponentId) || others[0];
   if (!opponent) return children;
   const me = profiles.find((p) => p.id === activeProfileId);
+  const ownedChild = isValidElement(children)
+    ? cloneElement(children, { sessionLearnerId: currentTurn, key: currentTurn })
+    : children;
 
   return (
     <div className={styles.multiplayerContainer}>
@@ -74,7 +84,7 @@ export default function MultiplayerWrapper({ children }) {
         </div>
       )}
 
-      <div className={styles.content}>{children}</div>
+      <div className={styles.content}>{ownedChild}</div>
 
       <div className={styles.footer}>
         <p>

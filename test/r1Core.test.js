@@ -1,0 +1,146 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  EMPTY_SCORE,
+  applyAttempts,
+  createAttempt,
+  dailyChallengeComplete,
+  edmontonDayKey,
+  isPerfectScore,
+  nextScore,
+  progressStats,
+  restoreSessionSnapshot,
+} from '../src/learning/r1Core.js';
+import { generateCrossword, validateCrossword } from '../src/learning/crossword.js';
+
+test('a skipped final word can never produce a perfect score', () => {
+  const before = { correct: 4, incorrect: 0, skipped: 0 };
+  const final = nextScore(before, 'skipped');
+  assert.deepEqual(final, { correct: 4, incorrect: 0, skipped: 1 });
+  assert.equal(isPerfectScore(final), false);
+});
+
+test('fresh session score is isolated from a completed score', () => {
+  const completed = { correct: 5, incorrect: 0, skipped: 0 };
+  assert.notDeepEqual(completed, EMPTY_SCORE);
+  assert.deepEqual({ ...EMPTY_SCORE }, { correct: 0, incorrect: 0, skipped: 0 });
+});
+
+test('daily challenge depends on current challenge attempts, not lifetime success', () => {
+  const ids = ['a', 'b', 'c', 'd', 'e'];
+  assert.equal(dailyChallengeComplete(ids, { a: true, b: true, c: true, d: true }), false);
+  assert.equal(dailyChallengeComplete(ids, Object.fromEntries(ids.map((id) => [id, true]))), true);
+});
+
+test('batched attempts preserve every distinct crossword result', () => {
+  const attempts = ['a', 'b', 'c', 'd', 'e'].map((wordId, index) => createAttempt({
+    attemptId: `attempt-${index}`,
+    wordId,
+    learnerId: 'jenn',
+    correct: index % 2 === 0,
+    evidenceType: 'crossword_practice',
+  }));
+  const progress = applyAttempts({}, attempts, new Date('2026-09-05T12:00:00Z'));
+  assert.equal(Object.keys(progress).length, 5);
+  assert.equal(Object.values(progress).reduce((sum, entry) => sum + entry.attempts, 0), 5);
+});
+
+test('self-report evidence remains explicitly labelled', () => {
+  const attempt = createAttempt({ attemptId: 'self-1', wordId: 'word', learnerId: 'jess', correct: true, evidenceType: 'self_report' });
+  assert.equal(attempt.evidenceType, 'self_report');
+});
+
+test('session restore rejects a different learner', () => {
+  const words = [{ id: 'a' }, { id: 'b' }];
+  const snapshot = { version: 1, learnerId: 'jenn', mode: 'practice', category: 'Grade 5', wordIds: ['a', 'b'], index: 1, score: { correct: 1, incorrect: 0, skipped: 0 } };
+  assert.equal(restoreSessionSnapshot(snapshot, { learnerId: 'jess', mode: 'practice', category: 'Grade 5', words }), null);
+  assert.equal(restoreSessionSnapshot(snapshot, { learnerId: 'jenn', mode: 'practice', category: 'Grade 5', words }).index, 1);
+});
+
+test('Edmonton day key follows the configured family timezone across midnight', () => {
+  assert.equal(edmontonDayKey(new Date('2026-03-08T06:59:59Z')), '2026-03-07');
+  assert.equal(edmontonDayKey(new Date('2026-03-08T07:00:00Z')), '2026-03-08');
+});
+
+test('Edmonton day key handles both DST transitions and ignores the device timezone', () => {
+  // Settled past transitions are used so the expectations do not depend on the tzdata version
+  // bundled with a given Node release (future rules can legitimately differ between versions).
+  // Spring forward: 2024-03-10 02:00 MST became 03:00 MDT. Midnight that night was 06:00Z.
+  assert.equal(edmontonDayKey(new Date('2024-03-10T08:59:59Z')), '2024-03-10', 'just before the skipped hour');
+  assert.equal(edmontonDayKey(new Date('2024-03-10T09:00:00Z')), '2024-03-10', 'just after the skipped hour');
+  assert.equal(edmontonDayKey(new Date('2024-03-11T05:59:59Z')), '2024-03-10', 'MDT midnight boundary');
+  assert.equal(edmontonDayKey(new Date('2024-03-11T06:00:00Z')), '2024-03-11');
+  // Fall back: 2024-11-03 02:00 MDT became 01:00 MST. Midnight after that was 07:00Z again.
+  assert.equal(edmontonDayKey(new Date('2024-11-03T05:59:59Z')), '2024-11-02', 'MDT midnight before fall back');
+  assert.equal(edmontonDayKey(new Date('2024-11-03T06:00:00Z')), '2024-11-03');
+  assert.equal(edmontonDayKey(new Date('2024-11-03T07:30:00Z')), '2024-11-03', 'the repeated 01:xx hour is still the same day');
+  assert.equal(edmontonDayKey(new Date('2024-11-04T06:59:59Z')), '2024-11-03', 'MST midnight boundary after fall back');
+  assert.equal(edmontonDayKey(new Date('2024-11-04T07:00:00Z')), '2024-11-04');
+
+  const previousTz = process.env.TZ;
+  try {
+    process.env.TZ = 'Asia/Shanghai';
+    assert.equal(new Date('2024-11-04T06:59:59Z').getDate(), 4, 'device clock is on a different calendar day');
+    assert.equal(edmontonDayKey(new Date('2024-11-04T06:59:59Z')), '2024-11-03', 'day key does not follow the device zone');
+  } finally {
+    if (previousTz === undefined) delete process.env.TZ; else process.env.TZ = previousTz;
+  }
+});
+
+test('crossword generator never truncates a long supported word', () => {
+  const words = [
+    { id: 'a', word: 'acknowledgement', definition: 'recognition' },
+    { id: 'b', word: 'knowledge', definition: 'understanding' },
+    { id: 'c', word: 'edge', definition: 'border' },
+    { id: 'd', word: 'gentle', definition: 'soft' },
+    { id: 'e', word: 'mental', definition: 'of the mind' },
+  ];
+  const puzzle = generateCrossword(words);
+  assert.ok(puzzle.size >= 'acknowledgement'.length);
+  assert.equal(validateCrossword(puzzle), true);
+  const long = puzzle.entries.find(({ word }) => word === 'acknowledgement');
+  assert.ok(long);
+  assert.equal(long.word.length, 15);
+});
+
+test('best same-word streak is a historical maximum that never decreases after a miss', () => {
+  const learnerId = 'jenn';
+  const attempt = (correct) => createAttempt({ attemptId: `${Math.random()}`, wordId: 'w1', learnerId, correct });
+  let progress = applyAttempts({}, [attempt(true), attempt(true), attempt(true)]);
+  assert.equal(progressStats(progress).bestWordStreak, 3);
+  progress = applyAttempts(progress, [attempt(false)]);
+  assert.equal(progress.w1.streak, 0, 'the current streak resets');
+  assert.equal(progressStats(progress).bestWordStreak, 3, 'the best streak is retained');
+  progress = applyAttempts(progress, [attempt(true)]);
+  assert.equal(progressStats(progress).bestWordStreak, 3);
+  // Legacy rows without bestStreak still report their live streak.
+  assert.equal(progressStats({ legacy: { attempts: 4, correct: 4, streak: 4 } }).bestWordStreak, 4);
+});
+
+test('crossword evaluation reports wrong entries and repairable cells without exposing answers', async () => {
+  const { evaluateCrosswordEntries, generateCrossword } = await import('../src/learning/crossword.js');
+  const words = [
+    { id: 'a', word: 'cat', definition: 'pet' },
+    { id: 'b', word: 'car', definition: 'vehicle' },
+    { id: 'c', word: 'tar', definition: 'sticky' },
+  ];
+  const puzzle = generateCrossword(words);
+  assert.ok(puzzle);
+  const grid = Array.from({ length: puzzle.size }, () => Array(puzzle.size).fill(''));
+  const first = puzzle.entries[0];
+  for (let i = 0; i < first.word.length; i++) {
+    const r = first.direction === 'across' ? first.row : first.row + i;
+    const c = first.direction === 'across' ? first.col + i : first.col;
+    grid[r][c] = first.word[i];
+  }
+  const evaluation = evaluateCrosswordEntries(puzzle, grid);
+  const firstResult = evaluation.results.find((result) => result.wordId === first.id);
+  assert.equal(firstResult.correct, true);
+  assert.equal(evaluation.wrongCount, puzzle.entries.length - 1);
+  assert.ok(evaluation.repairable.size > 0);
+  for (const key of firstResult.cells) assert.ok(!evaluation.repairable.has(key), 'cells of a correct entry are locked even where a wrong entry crosses them');
+  for (const result of evaluation.results) assert.ok(!('answer' in result) && !('grid' in result));
+  const page = await (await import('node:fs/promises')).readFile(new URL('../src/pages/Crossword.jsx', import.meta.url), 'utf8');
+  assert.match(page, /isRevealed \? cell : userValue/, 'solution letters render only in the revealed phase');
+  assert.match(page, /evidenceType: 'assisted_repair', helped: true/);
+});

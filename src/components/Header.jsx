@@ -4,11 +4,9 @@ import styles from './Header.module.css';
 
 const links = [
   { to: '/', label: 'Home', icon: '🏠' },
-  { to: '/test', label: 'Test', icon: '✏️' },
-  { to: '/flashcards', label: 'Flashcards', icon: '🃏' },
-  { to: '/scramble', label: 'Scramble', icon: '🔀' },
-  { to: '/hangman', label: 'Hangman', icon: '🎯' },
-  { to: '/crossword', label: 'Crossword', icon: '🧩' },
+  { to: '/case', label: 'Learn', icon: '📚' },
+  { to: '/assessment', label: 'Assessment', icon: '🧭' },
+  { to: '/progress', label: 'Progress', icon: '📈' },
 ];
 
 export default function Header() {

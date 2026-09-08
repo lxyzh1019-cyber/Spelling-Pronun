@@ -1,150 +1,21 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useWords } from '../context/WordProvider';
-import { shuffle } from '../utils/shuffle';
+import { evaluateCrosswordEntries, generateCrossword } from '../learning/crossword';
 import styles from './Crossword.module.css';
 
-const GRID_SIZE = 8;
-
-function generateCrossword(words) {
-  // Pick 3-5 words
-  const pool = shuffle(words).slice(0, 5);
-  const grid = Array.from({ length: GRID_SIZE }, () => Array.from({ length: GRID_SIZE }, () => null));
-  const entries = []; // { word, row, col, direction: 'across'|'down', number }
-
-  const placed = [];
-
-  // Place first word horizontally in the middle
-  const first = pool[0];
-  const firstRow = Math.floor(GRID_SIZE / 2) - 1;
-  const firstCol = Math.max(0, Math.floor((GRID_SIZE - first.word.length) / 2));
-
-  for (let c = 0; c < first.word.length; c++) {
-    if (firstCol + c < GRID_SIZE) {
-      grid[firstRow][firstCol + c] = first.word[c];
-    }
-  }
-  placed.push({ word: first.word, row: firstRow, col: firstCol, direction: 'across', num: 1 });
-
-  // Try to place remaining words
-  for (let w = 1; w < pool.length; w++) {
-    const current = pool[w];
-    let bestPlace = null;
-
-    // Look for intersections with placed words
-    for (const p of placed) {
-      for (let i = 0; i < p.word.length; i++) {
-        const sharedLetter = p.word[i];
-        const idxInCurrent = current.word.indexOf(sharedLetter);
-        if (idxInCurrent === -1) continue;
-
-        if (p.direction === 'across') {
-          // Try placing current vertically at this intersection
-          const col = p.col + i;
-          const row = p.row - idxInCurrent;
-          let fits = row >= 0 && (row + current.word.length - 1) < GRID_SIZE;
-
-          if (fits) {
-            for (let r = 0; r < current.word.length; r++) {
-              const cell = grid[row + r][col];
-              if (cell !== null && cell !== current.word[r]) {
-                fits = false;
-                break;
-              }
-              // Check adjacent cells aren't conflicting
-              if (cell === null) {
-                if (col > 0 && grid[row + r][col - 1] !== null) { fits = false; break; }
-                if (col < GRID_SIZE - 1 && grid[row + r][col + 1] !== null) { fits = false; break; }
-              }
-            }
-          }
-
-          if (fits) {
-            bestPlace = { word: current.word, row, col, direction: 'down', idxInCurrent, sharedIdxInPlaced: i, placed: p };
-            break;
-          }
-        } else {
-          // Try placing current horizontally at this intersection
-          const row = p.row + i;
-          const col = p.col - idxInCurrent;
-          let fits = col >= 0 && (col + current.word.length - 1) < GRID_SIZE;
-
-          if (fits) {
-            for (let c = 0; c < current.word.length; c++) {
-              const cell = grid[row][col + c];
-              if (cell !== null && cell !== current.word[c]) {
-                fits = false;
-                break;
-              }
-              if (cell === null) {
-                if (row > 0 && grid[row - 1][col + c] !== null) { fits = false; break; }
-                if (row < GRID_SIZE - 1 && grid[row + 1][col + c] !== null) { fits = false; break; }
-              }
-            }
-          }
-
-          if (fits) {
-            bestPlace = { word: current.word, row, col, direction: 'across', idxInCurrent, sharedIdxInPlaced: i, placed: p };
-            break;
-          }
-        }
-      }
-      if (bestPlace) break;
-    }
-
-    if (bestPlace) {
-      const { word, row, col, direction } = bestPlace;
-      for (let i = 0; i < word.length; i++) {
-        if (direction === 'across') {
-          grid[row][col + i] = word[i];
-        } else {
-          grid[row + i][col] = word[i];
-        }
-      }
-      placed.push({ word, row, col, direction, num: placed.length + 1 });
-    }
-  }
-
-  // Assign numbers
-  let num = 0;
-  const cellNumbers = Array.from({ length: GRID_SIZE }, () => Array.from({ length: GRID_SIZE }, () => 0));
-
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      if (grid[r][c] === null) continue;
-      const hasAcross = (c === 0 || grid[r][c - 1] === null) && (c + 1 < GRID_SIZE && grid[r][c + 1] !== null);
-      const hasDown = (r === 0 || grid[r - 1][c] === null) && (r + 1 < GRID_SIZE && grid[r + 1][c] !== null);
-      if (hasAcross || hasDown) {
-        num++;
-        cellNumbers[r][c] = num;
-      }
-    }
-  }
-
-  // Build clues
-  const acrossClues = [];
-  const downClues = [];
-
-  for (const p of placed) {
-    const n = cellNumbers[p.row][p.col];
-    const fullWord = words.find((w) => w.word === p.word);
-    if (p.direction === 'across') {
-      acrossClues.push({ number: n, word: p.word, definition: fullWord?.definition || '' });
-    } else {
-      downClues.push({ number: n, word: p.word, definition: fullWord?.definition || '' });
-    }
-  }
-
-  acrossClues.sort((a, b) => a.number - b.number);
-  downClues.sort((a, b) => a.number - b.number);
-
-  return { grid, cellNumbers, acrossClues, downClues, entries: placed };
-}
-
-export default function Crossword() {
-  const { activeWords, recordResult } = useWords();
+export default function Crossword({ sessionLearnerId }) {
+  const { activeWords, recordResults } = useWords();
   const [puzzle, setPuzzle] = useState(null);
   const [userGrid, setUserGrid] = useState([]);
-  const [checked, setChecked] = useState(false);
+  // phase: solving -> checked -> repair -> checked ... -> revealed. Solution letters are shown only
+  // in the revealed phase; the original Check results are recorded once and never rewritten.
+  const [phase, setPhase] = useState('solving');
+  const [attemptRecorded, setAttemptRecorded] = useState(false);
+  const [evaluation, setEvaluation] = useState(null);
+  const [repairable, setRepairable] = useState(new Set());
+  const [repairRounds, setRepairRounds] = useState(0);
+  const checked = phase !== 'solving' && phase !== 'repair';
+  const editable = (r, c) => phase === 'solving' || (phase === 'repair' && repairable.has(`${r},${c}`));
   const [focusedCell, setFocusedCell] = useState(null);
   const gridRef = useRef(null);
 
@@ -152,8 +23,13 @@ export default function Crossword() {
     if (activeWords.length < 3) return;
     const puzzleData = generateCrossword(activeWords);
     setPuzzle(puzzleData);
-    setUserGrid(Array.from({ length: GRID_SIZE }, () => Array.from({ length: GRID_SIZE }, () => '')));
-    setChecked(false);
+    if (!puzzleData) return;
+    setUserGrid(Array.from({ length: puzzleData.size }, () => Array.from({ length: puzzleData.size }, () => '')));
+    setPhase('solving');
+    setAttemptRecorded(false);
+    setEvaluation(null);
+    setRepairable(new Set());
+    setRepairRounds(0);
     setFocusedCell(null);
   }, [activeWords]);
 
@@ -162,34 +38,35 @@ export default function Crossword() {
   }, [newPuzzle]);
 
   const handleCellClick = (r, c) => {
-    if (checked || !puzzle?.grid[r][c]) return;
+    if (!puzzle?.grid[r][c] || !editable(r, c)) return;
     setFocusedCell({ r, c });
   };
 
   const handleKeyDown = (e) => {
-    if (!focusedCell || checked) return;
+    if (!focusedCell) return;
     const { r, c } = focusedCell;
+    if (!editable(r, c)) return;
 
     if (e.key === 'ArrowUp' && r > 0) {
       e.preventDefault();
       let nr = r - 1;
       while (nr >= 0 && !puzzle?.grid[nr][c]) nr--;
       if (nr >= 0) setFocusedCell({ r: nr, c });
-    } else if (e.key === 'ArrowDown' && r < GRID_SIZE - 1) {
+    } else if (e.key === 'ArrowDown' && r < puzzle.size - 1) {
       e.preventDefault();
       let nr = r + 1;
-      while (nr < GRID_SIZE && !puzzle?.grid[nr][c]) nr++;
-      if (nr < GRID_SIZE) setFocusedCell({ r: nr, c });
+      while (nr < puzzle.size && !puzzle?.grid[nr][c]) nr++;
+      if (nr < puzzle.size) setFocusedCell({ r: nr, c });
     } else if (e.key === 'ArrowLeft' && c > 0) {
       e.preventDefault();
       let nc = c - 1;
       while (nc >= 0 && !puzzle?.grid[r][nc]) nc--;
       if (nc >= 0) setFocusedCell({ r, c: nc });
-    } else if (e.key === 'ArrowRight' && c < GRID_SIZE - 1) {
+    } else if (e.key === 'ArrowRight' && c < puzzle.size - 1) {
       e.preventDefault();
       let nc = c + 1;
-      while (nc < GRID_SIZE && !puzzle?.grid[r][nc]) nc++;
-      if (nc < GRID_SIZE) setFocusedCell({ r, c: nc });
+      while (nc < puzzle.size && !puzzle?.grid[r][nc]) nc++;
+      if (nc < puzzle.size) setFocusedCell({ r, c: nc });
     } else if (e.key === 'Backspace' || e.key === 'Delete') {
       e.preventDefault();
       const newGrid = userGrid.map((row) => [...row]);
@@ -203,8 +80,8 @@ export default function Crossword() {
 
       // Auto-advance
       let nc = c + 1;
-      while (nc < GRID_SIZE && !puzzle?.grid[r][nc]) nc++;
-      if (nc < GRID_SIZE) {
+      while (nc < puzzle.size && !puzzle?.grid[r][nc]) nc++;
+      if (nc < puzzle.size) {
         setFocusedCell({ r, c: nc });
       }
     }
@@ -223,7 +100,7 @@ export default function Crossword() {
   const handleHiddenInput = (e) => {
     const value = e.target.value;
     e.target.value = '';
-    if (!focusedCell || checked || !value) return;
+    if (!focusedCell || !value || !editable(focusedCell.r, focusedCell.c)) return;
     const ch = value.slice(-1);
     if (!/^[a-zA-Z]$/.test(ch)) return;
     const { r, c } = focusedCell;
@@ -231,29 +108,38 @@ export default function Crossword() {
     newGrid[r][c] = ch.toLowerCase();
     setUserGrid(newGrid);
     let nc = c + 1;
-    while (nc < GRID_SIZE && !puzzle?.grid[r][nc]) nc++;
-    if (nc < GRID_SIZE) setFocusedCell({ r, c: nc });
+    while (nc < puzzle.size && !puzzle?.grid[r][nc]) nc++;
+    if (nc < puzzle.size) setFocusedCell({ r, c: nc });
   };
 
   const handleCheck = () => {
-    setChecked(true);
     if (!puzzle) return;
-    // Record one result per placed entry: correct only if every cell of the
-    // word matches. Look the word back up in activeWords to get its stable id.
-    for (const entry of puzzle.entries) {
-      let correct = true;
-      for (let i = 0; i < entry.word.length; i++) {
-        const r = entry.direction === 'across' ? entry.row : entry.row + i;
-        const c = entry.direction === 'across' ? entry.col + i : entry.col;
-        if ((userGrid[r]?.[c] || '').toLowerCase() !== entry.word[i].toLowerCase()) {
-          correct = false;
-          break;
-        }
-      }
-      const wordEntry = activeWords.find((w) => w.word === entry.word);
-      if (wordEntry) recordResult(wordEntry.id, correct);
+    const next = evaluateCrosswordEntries(puzzle, userGrid);
+    setFocusedCell(null);
+    if (!attemptRecorded) {
+      // Original results: recorded exactly once as practice evidence.
+      recordResults(next.results.filter(({ wordId }) => wordId).map(({ wordId, correct }) => ({ wordId, correct, evidenceType: 'crossword_practice', learnerId: sessionLearnerId })));
+      setAttemptRecorded(true);
+    } else if (phase === 'repair' && evaluation) {
+      // Repair results: only the entries that were wrong before, recorded separately as assisted.
+      const previouslyWrong = new Set(evaluation.results.filter((result) => !result.correct).map((result) => result.wordId));
+      const repairs = next.results.filter(({ wordId }) => wordId && previouslyWrong.has(wordId)).map(({ wordId, correct }) => ({ wordId, correct, evidenceType: 'assisted_repair', helped: true, learnerId: sessionLearnerId }));
+      if (repairs.length) recordResults(repairs);
+      setRepairRounds((rounds) => rounds + 1);
     }
+    setEvaluation(next);
+    setRepairable(next.repairable);
+    setPhase('checked');
   };
+
+  const startRepair = () => {
+    if (!evaluation || evaluation.wrongCount === 0) return;
+    setPhase('repair');
+    const first = [...evaluation.repairable][0];
+    if (first) { const [r, c] = first.split(',').map(Number); setFocusedCell({ r, c }); }
+  };
+
+  const revealAnswers = () => { setPhase('revealed'); setFocusedCell(null); };
 
   if (!activeWords.length || !puzzle) {
     return (
@@ -286,18 +172,21 @@ export default function Crossword() {
           <div
             ref={gridRef}
             className={styles.grid}
+            style={{ '--crossword-cell-size': `min(42px, calc((100vw - 40px) / ${puzzle.size}))` }}
             onKeyDown={handleKeyDown}
             role="grid"
-            aria-label={`Crossword grid, ${GRID_SIZE} by ${GRID_SIZE}`}
-            aria-rowcount={GRID_SIZE}
-            aria-colcount={GRID_SIZE}
+            aria-label={`Crossword grid, ${puzzle.size} by ${puzzle.size}`}
+            aria-rowcount={puzzle.size}
+            aria-colcount={puzzle.size}
           >
             {puzzle.grid.map((row, r) => (
               <div key={r} className={styles.gridRow} role="row" aria-rowindex={r + 1}>
                 {row.map((cell, c) => {
                   const isFocused = focusedCell?.r === r && focusedCell?.c === c;
-                  const isCorrect = checked && cell && userGrid[r][c]?.toLowerCase() === cell;
-                  const isWrong = checked && cell && userGrid[r][c]?.toLowerCase() !== cell;
+                  const inWrongEntry = Boolean(cell) && repairable.has(`${r},${c}`);
+                  const isCorrect = (checked || phase === 'repair') && cell && !inWrongEntry;
+                  const isWrong = checked && inWrongEntry && phase !== 'revealed';
+                  const isRevealed = phase === 'revealed';
 
                   if (cell === null) {
                     return (
@@ -333,7 +222,7 @@ export default function Crossword() {
                       {puzzle.cellNumbers[r][c] > 0 && (
                         <span className={styles.cellNum} aria-hidden="true">{puzzle.cellNumbers[r][c]}</span>
                       )}
-                      <span className={styles.cellLetter} aria-hidden="true">{checked ? cell : userValue}</span>
+                      <span className={styles.cellLetter} aria-hidden="true">{isRevealed ? cell : userValue}</span>
                     </div>
                   );
                 })}
@@ -369,17 +258,39 @@ export default function Crossword() {
         </div>
       </div>
 
+      {evaluation && phase !== 'revealed' && (
+        <p className={styles.repairNote} role="status">
+          {evaluation.wrongCount === 0
+            ? 'Every word is correct.'
+            : `${evaluation.wrongCount} word${evaluation.wrongCount === 1 ? ' is' : 's are'} not right yet. Your first answers are kept; a repair is recorded separately as assisted practice.`}
+        </p>
+      )}
+      {phase === 'revealed' && <p className={styles.repairNote} role="status">Answers shown. Your original results were kept and nothing further is recorded.</p>}
       <div className={styles.buttonRow}>
-        {!checked && (
+        {phase === 'solving' && (
           <button className={styles.checkBtn} onClick={handleCheck}>
             Check Answers
           </button>
         )}
-        {checked && (
-          <button className={styles.newBtn} onClick={newPuzzle}>
-            New Puzzle
+        {phase === 'repair' && (
+          <button className={styles.checkBtn} onClick={handleCheck}>
+            Check Repair
           </button>
         )}
+        {phase === 'checked' && (
+          <>
+            {evaluation?.wrongCount > 0 && (
+              <button className={styles.checkBtn} onClick={startRepair}>
+                Repair Mistakes
+              </button>
+            )}
+            {evaluation?.wrongCount > 0 && repairRounds >= 1 && (
+              <button className={styles.newBtn} onClick={revealAnswers}>Show Answers</button>
+            )}
+            <button className={styles.newBtn} onClick={newPuzzle}>New Puzzle</button>
+          </>
+        )}
+        {phase === 'revealed' && <button className={styles.newBtn} onClick={newPuzzle}>New Puzzle</button>}
       </div>
     </div>
   );

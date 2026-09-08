@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "status": "pre_pilot_source_and_mapping_preparation",
+  "purpose": "Prepare the remaining source map and episode/workshop routing without authoring, reviewing, integrating, learner-testing, or releasing C1/C2 content before pilot feedback.",
+  "batches": [
+    {
+      "id": "C1",
+      "expectedObjectCount": 480,
+      "expectedEpisodeCount": 6,
+      "entries": [
+        {"skillId":"SE.fragments","workshopId":"workshop.se.fragments","episodeIds":["c1.chapter4.episode1"],"sourceIds":["ab-elal-2022-overview","ca-language-portal-fragments"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"SE.clauses","workshopId":"workshop.se.clauses","episodeIds":["c1.chapter3.episode1"],"sourceIds":["ab-elal-2022-overview","ca-language-portal-recognizing-clauses"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"SE.runons","workshopId":"workshop.se.runons","episodeIds":["c1.chapter4.episode1"],"sourceIds":["ab-elal-2022-overview","ca-language-portal-run-ons"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"SE.combining","workshopId":"workshop.se.combining","episodeIds":["c1.chapter4.episode2"],"sourceIds":["ab-elal-2022-overview","ca-language-portal-sentence-structure"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"GR.antecedents","workshopId":"workshop.gr.antecedents","episodeIds":["c1.chapter2.episode1"],"sourceIds":["ab-eal-benchmarks-4-6","ca-language-portal-personal-pronouns"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"GR.agreement","workshopId":"workshop.gr.agreement","episodeIds":["c1.chapter3.episode1"],"sourceIds":["ab-eal-benchmarks-4-6","ca-language-portal-indefinite-agreement"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"GR.tense","workshopId":"workshop.gr.tense","episodeIds":["c1.chapter3.episode2"],"sourceIds":["ab-eal-benchmarks-4-6","ca-language-portal-tense-sequence"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"GR.articles-plurals","workshopId":"workshop.gr.articles-plurals","episodeIds":["c1.chapter3.episode2"],"sourceIds":["ab-eal-benchmarks-4-6","ab-elal-2022-overview"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"GR.possessives","workshopId":"workshop.gr.possessives","episodeIds":["c1.chapter2.episode2"],"sourceIds":["ca-language-portal-apostrophe-possession","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"GR.reflexives","workshopId":"workshop.gr.reflexives","episodeIds":["c1.chapter3.episode2"],"sourceIds":["ca-language-portal-personal-pronouns","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"GR.relative","workshopId":"workshop.gr.relative","episodeIds":["c1.chapter3.episode1"],"sourceIds":["ca-language-portal-recognizing-clauses","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"GR.interrogative","workshopId":"workshop.gr.interrogative","episodeIds":["c1.chapter2.episode2"],"sourceIds":["ca-language-portal-sentence-purpose","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"GR.demonstrative","workshopId":"workshop.gr.demonstrative","episodeIds":["c1.chapter3.episode1"],"sourceIds":["ca-language-portal-personal-pronouns","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"GR.indefinite","workshopId":"workshop.gr.indefinite","episodeIds":["c1.chapter3.episode2"],"sourceIds":["ca-language-portal-indefinite-agreement","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"PU.list-commas","workshopId":"workshop.pu.list-commas","episodeIds":["c1.chapter4.episode1"],"sourceIds":["ca-language-portal-coordinate-elements","ab-elal-2022-overview"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"PU.direct-address","workshopId":"workshop.pu.direct-address","episodeIds":["c1.chapter2.episode1"],"sourceIds":["ca-language-portal-direct-address","ab-elal-2022-overview"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"PU.introductory","workshopId":"workshop.pu.introductory","episodeIds":["c1.chapter4.episode2"],"sourceIds":["ca-language-portal-sentence-structure","ab-elal-2022-overview"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"PU.clause-commas","workshopId":"workshop.pu.clause-commas","episodeIds":["c1.chapter4.episode1"],"sourceIds":["ca-language-portal-run-ons","ca-language-portal-recognizing-clauses"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"PU.apostrophes","workshopId":"workshop.pu.apostrophes","episodeIds":["c1.chapter3.episode2"],"sourceIds":["ca-language-portal-apostrophe-possession","ab-elal-2022-overview"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"PU.dialogue","workshopId":"workshop.pu.dialogue","episodeIds":["c1.chapter4.episode2"],"sourceIds":["ca-language-portal-direct-address","ca-language-portal-sentence-purpose"],"sourcePreparationStatus":"needs_item_level_source_selection"}
+      ]
+    },
+    {
+      "id": "C2",
+      "expectedObjectCount": 432,
+      "expectedEpisodeCount": 4,
+      "entries": [
+        {"skillId":"SP.inflections","workshopId":"workshop.sp.inflections","episodeIds":["c2.chapter5.episode1"],"sourceIds":["ca-language-portal-double-consonant","ca-language-portal-silent-e"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"SP.wordparts","workshopId":"workshop.sp.wordparts","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ca-language-portal-prefix-in","ab-elal-2022-overview"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"SP.confusables","workshopId":"workshop.sp.confusables","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ca-language-portal-canadian-spelling","ca-language-portal-analyze"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"SP.dictation","workshopId":"workshop.sp.dictation","episodeIds":["c2.chapter5.episode1"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_reviewed_human_audio_and_item_level_source_selection"},
+        {"skillId":"PH.blend-segment","workshopId":"workshop.ph.blend-segment","episodeIds":["c2.chapter5.episode1"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_phonics_source"},
+        {"skillId":"PH.vowels","workshopId":"workshop.ph.vowels","episodeIds":["c2.chapter5.episode1"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_phonics_source"},
+        {"skillId":"PH.digraphs-clusters","workshopId":"workshop.ph.digraphs-clusters","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_phonics_source"},
+        {"skillId":"PH.syllables","workshopId":"workshop.ph.syllables","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_phonics_source"},
+        {"skillId":"PH.multisyllable","workshopId":"workshop.ph.multisyllable","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_phonics_source"},
+        {"skillId":"PR.discrimination","workshopId":"workshop.pr.discrimination","episodeIds":["c2.chapter5.episode1"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_pronunciation_source_and_reviewed_audio"},
+        {"skillId":"PR.target-sounds","workshopId":"workshop.pr.target-sounds","episodeIds":["c2.chapter5.episode1"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_pronunciation_source_and_reviewed_audio"},
+        {"skillId":"PR.endings","workshopId":"workshop.pr.endings","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_pronunciation_source_and_reviewed_audio"},
+        {"skillId":"PR.word-stress","workshopId":"workshop.pr.word-stress","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_pronunciation_source_and_reviewed_audio"},
+        {"skillId":"PR.sentence-reading","workshopId":"workshop.pr.sentence-reading","episodeIds":["c2.chapter5.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_specialist_pronunciation_source_and_reviewed_audio"},
+        {"skillId":"ED.locate","workshopId":"workshop.ed.locate","episodeIds":["c2.chapter6.episode1"],"sourceIds":["ab-elal-2022-overview","ca-language-portal-sentence-structure"],"sourcePreparationStatus":"mapped_for_item_level_review"},
+        {"skillId":"ED.repair","workshopId":"workshop.ed.repair","episodeIds":["c2.chapter6.episode1"],"sourceIds":["ab-elal-2022-overview","ca-language-portal-run-ons"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"ED.explain","workshopId":"workshop.ed.explain","episodeIds":["c2.chapter6.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_item_level_source_selection"},
+        {"skillId":"ED.transfer","workshopId":"workshop.ed.transfer","episodeIds":["c2.chapter6.episode2"],"sourceIds":["ab-elal-2022-overview","ab-eal-benchmarks-4-6"],"sourcePreparationStatus":"needs_item_level_source_selection"}
+      ]
+    }
+  ]
+}

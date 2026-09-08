@@ -233,3 +233,8 @@
     font-size: 2rem;
   }
 }
+
+.missList { text-align: left; margin: 16px auto 0; max-width: 480px; }
+.missHeading { font-size: 1.05rem; margin: 0 0 8px; }
+.missList ul { padding-left: 20px; margin: 0; }
+.missList li { margin: 4px 0; }

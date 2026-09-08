@@ -31,14 +31,14 @@ export const ACHIEVEMENTS = {
   five_streak: {
     id: 'five_streak',
     name: '🔥 On Fire',
-    description: 'Get a 5-word streak',
+    description: 'Get the same word right 5 times in a row',
     icon: '🔥',
     condition: (stats) => stats.bestStreak >= 5,
   },
   ten_streak: {
     id: 'ten_streak',
     name: '⚡ Unstoppable',
-    description: 'Get a 10-word streak',
+    description: 'Get the same word right 10 times in a row',
     icon: '⚡',
     condition: (stats) => stats.bestStreak >= 10,
   },
@@ -70,24 +70,43 @@ export const ACHIEVEMENTS = {
     icon: '💡',
     condition: () => false, // Set manually in game logic
   },
+  daily_champion: {
+    id: 'daily_champion',
+    name: '🎯 Daily Champion',
+    description: 'Attempt every word in a daily challenge',
+    icon: '🎯',
+    condition: () => false,
+  },
 };
+
+export function achievementRecord(id, unlockedAt = new Date()) {
+  const definition = ACHIEVEMENTS[id];
+  if (!definition) return null;
+  return {
+    id,
+    name: definition.name,
+    icon: definition.icon,
+    unlockedAt: unlockedAt instanceof Date ? unlockedAt.toISOString() : unlockedAt,
+  };
+}
 
 export function checkAchievements(stats, existingAchievements = []) {
   const existingIds = new Set(existingAchievements.map((a) => a.id));
-  const newAchievements = [];
+  return Object.values(ACHIEVEMENTS)
+    .filter((achievement) => !existingIds.has(achievement.id) && achievement.condition(stats))
+    .map((achievement) => achievementRecord(achievement.id));
+}
 
-  Object.values(ACHIEVEMENTS).forEach((achievement) => {
-    if (!existingIds.has(achievement.id) && achievement.condition(stats)) {
-      newAchievements.push({
-        id: achievement.id,
-        name: achievement.name,
-        icon: achievement.icon,
-        unlockedAt: new Date(),
-      });
-    }
-  });
-
-  return newAchievements;
+// Merges award lists by ID. The earliest record for an ID wins, so a re-run (reload, second
+// device, retried write) never duplicates or re-dates a badge.
+export function mergeAchievements(existing = [], incoming = []) {
+  const byId = new Map();
+  for (const record of [...existing, ...incoming]) {
+    if (!record?.id) continue;
+    const current = byId.get(record.id);
+    if (!current) byId.set(record.id, record);
+  }
+  return [...byId.values()];
 }
 
 export function getAchievementById(id) {

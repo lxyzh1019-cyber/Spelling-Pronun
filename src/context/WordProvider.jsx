@@ -6,7 +6,6 @@ import {
   useRef,
   useCallback,
   useMemo,
-  useRef,
 } from 'react';
 import {
   collection,
@@ -20,9 +19,13 @@ import {
   serverTimestamp,
   increment,
   arrayUnion,
+  writeBatch,
 } from 'firebase/firestore';
-import { db, ensureAuth } from '../firebase';
-import { checkAchievements } from '../utils/achievements';
+import { auth, db, ensureAuth } from '../firebase';
+import { achievementRecord, checkAchievements, mergeAchievements } from '../utils/achievements';
+import { queueOutboxEntry } from '../persistence/indexedDb';
+import { applyAttempts, createAttempt, dailyChallengeComplete, edmontonDayKey, progressStats } from '../learning/r1Core';
+import { achievementsStorageKey, progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import wordData from '../data/words.json';
 
 const WordContext = createContext(null);
@@ -95,6 +98,8 @@ const FALLBACK_CATEGORIES = withIds(wordData.categories || []);
 export function WordProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authStatus, setAuthStatus] = useState('loading');
+  const [syncError, setSyncError] = useState(null);
   const [categories] = useState(FALLBACK_CATEGORIES);
   const [profiles, setProfiles] = useState(() =>
     DEFAULT_PROFILES.map((p) => ({ ...p, createdAt: new Date() }))
@@ -103,6 +108,9 @@ export function WordProvider({ children }) {
   useEffect(() => { profilesRef.current = profiles; }, [profiles]);
   const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILES[0].id);
   const [progress, setProgress] = useState({});
+  const progressRef = useRef(progress);
+  const progressImportCheckedRef = useRef(new Set());
+  useEffect(() => { progressRef.current = progress; }, [progress]);
   const [selectedCategory, setSelectedCategory] = useState(
     () => FALLBACK_CATEGORIES[0]?.name ?? ''
   );
@@ -111,21 +119,53 @@ export function WordProvider({ children }) {
   const [hintsUsedToday, setHintsUsedToday] = useState(0);
   const [dailyChallengeWord, setDailyChallengeWord] = useState(null);
   const [dailyChallengeDone, setDailyChallengeComplete] = useState(false);
+  const [dailyChallengeId, setDailyChallengeId] = useState(null);
+  const [dailyChallengeAttempts, setDailyChallengeAttempts] = useState({});
+  const dailyChallengeAttemptsRef = useRef(dailyChallengeAttempts);
+  const dailyChallengeCompleteRef = useRef(false);
+  useEffect(() => { dailyChallengeCompleteRef.current = dailyChallengeDone; }, [dailyChallengeDone]);
+  const activeProfileRef = useRef(activeProfileId);
+  useEffect(() => { activeProfileRef.current = activeProfileId; }, [activeProfileId]);
+  useEffect(() => { dailyChallengeAttemptsRef.current = dailyChallengeAttempts; }, [dailyChallengeAttempts]);
   const [multiplayer, setMultiplayer] = useState(null);
-  // recordResult needs to call completeDailyChallenge but it's defined later;
-  // mirror through a ref so we don't have to reorder declarations.
-  const completeDailyChallengeRef = useRef(null);
+
+  const refreshAuthState = useCallback(() => {
+    const current = auth.currentUser;
+    setUser(current);
+    setAuthStatus(current ? 'online' : 'local-only');
+    setSyncError(null);
+    setLoading(false);
+    return current;
+  }, []);
 
   // 1. Initialize auth
   useEffect(() => {
     let mounted = true;
-    ensureAuth().then((u) => {
-      if (mounted) setUser(u);
-    });
+    ensureAuth()
+      .then((u) => {
+        if (!mounted) return;
+        setUser(u);
+        setAuthStatus(u ? 'online' : 'local-only');
+        if (!u) setLoading(false);
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        console.error('Authentication initialization failed:', err);
+        setAuthStatus('error');
+        setSyncError('Cloud sign-in is unavailable. Progress is being saved on this device.');
+        setLoading(false);
+      });
     return () => {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (user || loading) return;
+    const localProgress = readJson(progressStorageKey(activeProfileId), {});
+    progressRef.current = localProgress;
+    setProgress(localProgress);
+  }, [user, loading, activeProfileId]);
 
   // 2. Load profiles from Firestore
   useEffect(() => {
@@ -215,7 +255,38 @@ export function WordProvider({ children }) {
 
     const unsub = onSnapshot(
       q,
-      (snapshot) => {
+      async (snapshot) => {
+        const importKey = `${user.uid}:${activeProfileId}`;
+        if (!progressImportCheckedRef.current.has(importKey)) {
+          progressImportCheckedRef.current.add(importKey);
+          const local = readJson(progressStorageKey(activeProfileId), {});
+          if (snapshot.empty && Object.keys(local).length) {
+            try {
+              const entries = Object.entries(local);
+              for (let start = 0; start < entries.length; start += 450) {
+                const batch = writeBatch(db);
+                for (const [wordId, entry] of entries.slice(start, start + 450)) {
+                  batch.set(doc(db, 'spelling-progress', `${user.uid}_${activeProfileId}_${wordId}`), {
+                    userId: user.uid,
+                    profileId: activeProfileId,
+                    wordId,
+                    attempts: entry.attempts || 0,
+                    correct: entry.correct || 0,
+                    streak: entry.streak || 0,
+                    lastSeen: entry.lastSeen || serverTimestamp(),
+                    importedFromLocal: true,
+                  });
+                }
+                await batch.commit();
+              }
+              setSyncError(null);
+              return;
+            } catch (error) {
+              console.warn('Local legacy practice import deferred:', error);
+              setSyncError('Local practice is safe on this device but could not be imported to the parent account yet.');
+            }
+          }
+        }
         const progressMap = {};
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
@@ -223,10 +294,17 @@ export function WordProvider({ children }) {
             attempts: data.attempts || 0,
             correct: data.correct || 0,
             streak: data.streak || 0,
+            bestStreak: Math.max(data.bestStreak || 0, data.streak || 0),
             lastSeen: data.lastSeen,
           };
         });
+        // Words practised on this device but not yet imported to the account stay visible and
+        // are never dropped from local storage; the parent import preview decides their fate.
+        const localOnly = readJson(progressStorageKey(activeProfileId), {});
+        for (const [wordId, entry] of Object.entries(localOnly)) if (!(wordId in progressMap)) progressMap[wordId] = { ...entry, localOnly: true };
+        progressRef.current = progressMap;
         setProgress(progressMap);
+        writeJson(progressStorageKey(activeProfileId), progressMap);
       },
       (err) => console.error('Progress listener error:', err)
     );
@@ -234,23 +312,69 @@ export function WordProvider({ children }) {
     return () => unsub();
   }, [user, activeProfileId]);
 
-  // 4. Load achievements for active profile
+  useEffect(() => {
+    if (user || loading || !activeProfileId) return;
+    const today = edmontonDayKey();
+    const key = `spelling-r1-daily:${activeProfileId}:${today}`;
+    let challenge = readJson(key);
+    if (!challenge) {
+      const pool = [...FALLBACK_CATEGORIES.flatMap((category) => category.words)];
+      const words = [];
+      while (words.length < 5 && pool.length) words.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      challenge = { challengeId: `${activeProfileId}:${today}`, date: today, words, attempts: {}, completed: false };
+      writeJson(key, challenge);
+    }
+    setDailyChallengeId(challenge.challengeId);
+    setDailyChallengeWord(challenge.words);
+    setDailyChallengeAttempts(challenge.attempts || {});
+    setDailyChallengeComplete(Boolean(challenge.completed));
+  }, [user, loading, activeProfileId]);
+
+  // 4. Load achievements for active profile: local record first so badges survive local-only
+  // mode and reloads, then merge the cloud record by ID when signed in.
+  useEffect(() => {
+    if (!activeProfileId) return;
+    setAchievements(readJson(achievementsStorageKey(activeProfileId), []));
+  }, [activeProfileId]);
+
   useEffect(() => {
     if (!user || !activeProfileId) return;
+    const learnerId = activeProfileId;
     (async () => {
       try {
-        const achievementsDocRef = doc(
-          db,
-          'spelling-achievements',
-          `${user.uid}_${activeProfileId}`
-        );
+        const achievementsDocRef = doc(db, 'spelling-achievements', `${user.uid}_${learnerId}`);
         const snap = await getDoc(achievementsDocRef);
-        setAchievements(snap.exists() ? snap.data().achievements || [] : []);
+        const remote = (snap.exists() ? snap.data().achievements || [] : []).map((record) => ({
+          ...record,
+          unlockedAt: record.unlockedAt?.toDate ? record.unlockedAt.toDate().toISOString() : record.unlockedAt,
+        }));
+        const merged = mergeAchievements(readJson(achievementsStorageKey(learnerId), []), remote);
+        writeJson(achievementsStorageKey(learnerId), merged);
+        if (activeProfileRef.current === learnerId) setAchievements(merged);
       } catch (err) {
         console.error('Failed to load achievements:', err);
       }
     })();
   }, [user, activeProfileId]);
+
+  // Persists new awards for a learner: local record always, cloud record with arrayUnion so two
+  // concurrent awards cannot overwrite each other. Returns only the records that were new.
+  const persistAchievements = useCallback(async (learnerId, records) => {
+    const existing = readJson(achievementsStorageKey(learnerId), []);
+    const merged = mergeAchievements(existing, records);
+    const added = merged.filter((record) => !existing.some(({ id }) => id === record.id));
+    if (!added.length) return [];
+    writeJson(achievementsStorageKey(learnerId), merged);
+    if (activeProfileRef.current === learnerId) setAchievements((current) => mergeAchievements(current, added));
+    if (user) {
+      try {
+        await setDoc(doc(db, 'spelling-achievements', `${user.uid}_${learnerId}`), { achievements: arrayUnion(...added) }, { merge: true });
+      } catch (err) {
+        console.error('Failed to save achievements:', err);
+      }
+    }
+    return added;
+  }, [user]);
 
   // 5. Daily hints reset (check if new day)
   useEffect(() => {
@@ -263,7 +387,7 @@ export function WordProvider({ children }) {
           `${user.uid}_${activeProfileId}`
         );
         const snap = await getDoc(hintsDocRef);
-        const today = new Date().toDateString();
+        const today = edmontonDayKey();
 
         if (snap.exists() && snap.data().date === today) {
           setHintsUsedToday(snap.data().usedToday || 0);
@@ -282,7 +406,7 @@ export function WordProvider({ children }) {
     if (!user || !activeProfileId) return;
     (async () => {
       try {
-        const today = new Date().toDateString();
+        const today = edmontonDayKey();
         const challengeDocRef = doc(
           db,
           'spelling-daily-challenges',
@@ -293,6 +417,8 @@ export function WordProvider({ children }) {
         if (challengeDoc.exists() && challengeDoc.data().date === today) {
           const challenge = challengeDoc.data();
           setDailyChallengeWord(challenge.words);
+          setDailyChallengeId(challenge.challengeId || `${activeProfileId}:${today}`);
+          setDailyChallengeAttempts(challenge.attempts || {});
           setDailyChallengeComplete(challenge.completed || false);
         } else {
           // Pick 5 random words for today's challenge
@@ -304,10 +430,15 @@ export function WordProvider({ children }) {
             words.splice(idx, 1);
           }
           setDailyChallengeWord(challenge);
+          const challengeId = `${activeProfileId}:${today}`;
+          setDailyChallengeId(challengeId);
+          setDailyChallengeAttempts({});
           setDailyChallengeComplete(false);
           await setDoc(challengeDocRef, {
             date: today,
+            challengeId,
             words: challenge,
+            attempts: {},
             completed: false,
           });
         }
@@ -317,141 +448,164 @@ export function WordProvider({ children }) {
     })();
   }, [user, activeProfileId]);
 
-  const recordResult = useCallback(
-    async (wordId, correct) => {
-      if (!activeProfileId || !wordId) return;
+  const recordResults = useCallback(async (results) => {
+    if (!Array.isArray(results) || !results.length) return [];
+    const knownProfiles = new Set(profiles.map(({ id }) => id));
+    const now = new Date();
+    const normalized = results.map((result) => {
+      const learnerId = result.learnerId || activeProfileId;
+      if (!knownProfiles.has(learnerId)) throw new Error(`Unknown learner: ${learnerId}`);
+      const attemptId = result.attemptId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
+      return createAttempt({ ...result, learnerId, attemptId, clientTime: now.toISOString() });
+    });
 
-      const entry = progress[wordId] || {
-        attempts: 0,
-        correct: 0,
-        streak: 0,
-      };
-      const nextStreak = correct ? entry.streak + 1 : 0;
-      const nextEntry = {
-        attempts: entry.attempts + 1,
-        correct: entry.correct + (correct ? 1 : 0),
-        streak: nextStreak,
-        lastSeen: new Date(),
-      };
-      const nextProgress = { ...progress, [wordId]: nextEntry };
+    const byLearner = Map.groupBy
+      ? Map.groupBy(normalized, (attempt) => attempt.learnerId)
+      : normalized.reduce((map, attempt) => map.set(attempt.learnerId, [...(map.get(attempt.learnerId) || []), attempt]), new Map());
 
-      // Optimistic local update so the UI reflects the result even before the
-      // Firestore snapshot round-trips back.
-      setProgress(nextProgress);
-
-      // Run rule-based achievement checks against the post-update stats so
-      // every game (not just SpellingTest/SpeedRound) feeds the badge engine.
-      const nextStats = {
-        totalAttempts: Object.values(nextProgress).reduce((s, e) => s + e.attempts, 0),
-        totalCorrect: Object.values(nextProgress).reduce((s, e) => s + e.correct, 0),
-        wordsSeen: Object.keys(nextProgress).length,
-        bestStreak: Object.values(nextProgress).reduce((m, e) => Math.max(m, e.streak), 0),
-      };
-      const earned = checkAchievements(nextStats, achievements);
-      if (earned.length) {
-        const merged = [...achievements, ...earned];
-        setAchievements(merged);
-        if (user) {
-          try {
-            const achievementsDocRef = doc(
-              db,
-              'spelling-achievements',
-              `${user.uid}_${activeProfileId}`
-            );
-            await setDoc(
-              achievementsDocRef,
-              { achievements: merged },
-              { merge: true }
-            );
-          } catch (err) {
-            console.error('Failed to persist earned achievements:', err);
-          }
-        }
+    for (const [learnerId, attempts] of byLearner) {
+      const base = learnerId === activeProfileId
+        ? progressRef.current
+        : readJson(progressStorageKey(learnerId), {});
+      const nextProgress = applyAttempts(base, attempts, now);
+      writeJson(progressStorageKey(learnerId), nextProgress);
+      if (learnerId === activeProfileId) {
+        progressRef.current = nextProgress;
+        setProgress(nextProgress);
+        const summary = progressStats(nextProgress);
+        const earned = checkAchievements({ ...summary, bestStreak: summary.bestWordStreak }, readJson(achievementsStorageKey(learnerId), []));
+        if (earned.length) persistAchievements(learnerId, earned);
       }
+    }
 
-      // If the user just got a daily-challenge word right and now has at least
-      // one correct attempt on each of the 5 daily words, mark the daily
-      // challenge complete.
-      if (
-        correct &&
-        !dailyChallengeDone &&
-        Array.isArray(dailyChallengeWord) &&
-        dailyChallengeWord.some((w) => w.id === wordId)
-      ) {
-        const allDone = dailyChallengeWord.every(
-          (w) => (nextProgress[w.id]?.correct || 0) >= 1
-        );
-        if (allDone) {
-          completeDailyChallengeRef.current?.();
-        }
+    if (!user) return normalized;
+    try {
+      const batch = writeBatch(db);
+      for (const attempt of normalized) {
+        batch.set(doc(db, 'spelling-attempts', `${user.uid}_${attempt.learnerId}_${attempt.attemptId}`), {
+          ...attempt,
+          userId: user.uid,
+          serverReceivedAt: serverTimestamp(),
+        });
       }
-
-      if (!user) return;
-
+      const groupedWords = new Map();
+      for (const attempt of normalized) {
+        const key = `${attempt.learnerId}::${attempt.wordId}`;
+        const current = groupedWords.get(key) || { learnerId: attempt.learnerId, wordId: attempt.wordId, attempts: 0, correct: 0, lastCorrect: false, evidenceType: attempt.evidenceType };
+        current.attempts += 1;
+        current.correct += attempt.correct ? 1 : 0;
+        current.lastCorrect = attempt.correct;
+        current.evidenceType = attempt.evidenceType;
+        groupedWords.set(key, current);
+      }
+      for (const aggregate of groupedWords.values()) {
+        const local = readJson(progressStorageKey(aggregate.learnerId), {})[aggregate.wordId] || {};
+        batch.set(doc(db, 'spelling-progress', `${user.uid}_${aggregate.learnerId}_${aggregate.wordId}`), {
+          userId: user.uid,
+          profileId: aggregate.learnerId,
+          wordId: aggregate.wordId,
+          attempts: increment(aggregate.attempts),
+          correct: increment(aggregate.correct),
+          streak: local.streak || 0,
+          bestStreak: local.bestStreak || 0,
+          lastSeen: serverTimestamp(),
+          lastEvidenceType: aggregate.evidenceType,
+        }, { merge: true });
+      }
+      await batch.commit();
+      setSyncError(null);
+    } catch (err) {
+      console.error('Failed to record result batch:', err);
+      setSyncError('Saved on this device. Cloud sync will retry when the connection is available.');
+      // Queue each attempt so the next flush (reconnect, tab return, or next lesson save) writes
+      // it exactly once and rewrites the word totals from this device's local record.
       try {
-        const docRef = doc(
-          db,
-          'spelling-progress',
-          `${user.uid}_${activeProfileId}_${wordId}`
-        );
-        // Use increment so concurrent writes for the same word don't clobber
-        // each other's counts. Streak isn't safe to increment atomically, so we
-        // accept eventual consistency on it.
-        await setDoc(
-          docRef,
-          {
-            userId: user.uid,
-            profileId: activeProfileId,
-            wordId,
-            attempts: increment(1),
-            correct: increment(correct ? 1 : 0),
-            streak: nextStreak,
-            lastSeen: serverTimestamp(),
-          },
-          { merge: true }
-        );
-      } catch (err) {
-        console.error('Failed to record result:', err);
+        await Promise.all(normalized.map((attempt) => queueOutboxEntry({ id: attempt.attemptId, kind: 'word-attempt', payload: attempt })));
+      } catch (queueError) {
+        console.warn('Word attempt outbox unavailable:', queueError);
       }
-    },
-    [user, activeProfileId, progress, achievements, dailyChallengeWord, dailyChallengeDone]
-  );
+    }
+    return normalized;
+  }, [user, activeProfileId, profiles, persistAchievements]);
+
+  // Explicit legacy word-total import for the given words only (used after the parent confirms
+  // the import preview). Each row is created only if the account has no row for that word.
+  const importLegacyProgress = useCallback(async (learnerId, wordIds, account = user) => {
+    if (!account || !wordIds?.length) return 0;
+    const local = readJson(progressStorageKey(learnerId), {});
+    let written = 0;
+    for (let start = 0; start < wordIds.length; start += 200) {
+      const batch = writeBatch(db);
+      let batched = 0;
+      for (const wordId of wordIds.slice(start, start + 200)) {
+        const entry = local[wordId];
+        if (!entry) continue;
+        const ref = doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`);
+        const existing = await getDoc(ref);
+        if (existing.exists()) continue;
+        batch.set(ref, { userId: account.uid, profileId: learnerId, wordId, attempts: entry.attempts || 0, correct: entry.correct || 0, streak: entry.streak || 0, lastSeen: entry.lastSeen || serverTimestamp(), importedFromLocal: true });
+        batched += 1;
+      }
+      if (batched) { await batch.commit(); written += batched; }
+    }
+    return written;
+  }, [user]);
+
+  const recordResult = useCallback((wordId, correct, options = {}) => (
+    recordResults([{ ...options, wordId, correct }])
+  ), [recordResults]);
 
   const unlockAchievement = useCallback(
-    async (achievementId) => {
-      if (!user || !activeProfileId) return;
-
-      const isAlreadyUnlocked = achievements.some((a) => a.id === achievementId);
-      if (isAlreadyUnlocked) return;
-
-      const newAchievement = {
-        id: achievementId,
-        unlockedAt: new Date(),
-      };
-
-      try {
-        const achievementsDocRef = doc(
-          db,
-          'spelling-achievements',
-          `${user.uid}_${activeProfileId}`
-        );
-        await setDoc(
-          achievementsDocRef,
-          {
-            achievements: [...achievements, newAchievement],
-          },
-          { merge: true }
-        );
-        setAchievements([...achievements, newAchievement]);
-      } catch (err) {
-        console.error('Failed to unlock achievement:', err);
-      }
+    async (achievementId, learnerId = activeProfileId) => {
+      if (!learnerId) return [];
+      const record = achievementRecord(achievementId);
+      if (!record) return [];
+      return persistAchievements(learnerId, [record]);
     },
-    [user, activeProfileId, achievements]
+    [activeProfileId, persistAchievements]
   );
 
+  const recordDailyChallengeAttempt = useCallback(async (wordId, outcome) => {
+    if (!dailyChallengeId || !dailyChallengeWord?.some((word) => word.id === wordId)) return;
+    const today = edmontonDayKey();
+    const attempts = {
+      ...dailyChallengeAttemptsRef.current,
+      [wordId]: { outcome, recordedAt: new Date().toISOString() },
+    };
+    const completed = dailyChallengeComplete(dailyChallengeWord.map(({ id }) => id), attempts);
+    const newlyCompleted = completed && !dailyChallengeCompleteRef.current;
+    dailyChallengeCompleteRef.current = completed;
+    if (newlyCompleted) unlockAchievement('daily_champion', activeProfileId);
+    dailyChallengeAttemptsRef.current = attempts;
+    setDailyChallengeAttempts(attempts);
+    setDailyChallengeComplete(completed);
+    writeJson(`spelling-r1-daily:${activeProfileId}:${today}`, {
+      challengeId: dailyChallengeId,
+      date: today,
+      words: dailyChallengeWord,
+      attempts,
+      completed,
+    });
+    if (!user) return;
+    try {
+      await setDoc(doc(db, 'spelling-daily-challenges', `${user.uid}_${activeProfileId}`), {
+        date: today,
+        challengeId: dailyChallengeId,
+        attempts,
+        completed,
+      }, { merge: true });
+    } catch (err) {
+      console.error('Failed to save daily challenge attempt:', err);
+      setSyncError('Daily challenge progress is saved on this device and waiting to sync.');
+    }
+  }, [user, activeProfileId, dailyChallengeId, dailyChallengeWord, unlockAchievement]);
+
   const useHint = useCallback(async () => {
-    if (!user || !activeProfileId || hintsUsedToday >= 3) return false;
+    if (!activeProfileId || hintsUsedToday >= 3) return false;
+    if (!user) {
+      setHintsUsedToday((previous) => previous + 1);
+      return true;
+    }
 
     try {
       const hintsDocRef = doc(
@@ -459,7 +613,7 @@ export function WordProvider({ children }) {
         'spelling-hints',
         `${user.uid}_${activeProfileId}`
       );
-      const today = new Date().toDateString();
+      const today = edmontonDayKey();
       await setDoc(
         hintsDocRef,
         { date: today, usedToday: increment(1) },
@@ -473,36 +627,12 @@ export function WordProvider({ children }) {
     }
   }, [user, activeProfileId, hintsUsedToday]);
 
-  const completeDailyChallenge = useCallback(async () => {
-    if (!user || !activeProfileId || dailyChallengeDone) return;
-
-    try {
-      const today = new Date().toDateString();
-      const challengeDocRef = doc(
-        db,
-        'spelling-daily-challenges',
-        `${user.uid}_${activeProfileId}`
-      );
-      await setDoc(
-        challengeDocRef,
-        { date: today, completed: true },
-        { merge: true }
-      );
-      setDailyChallengeComplete(true);
-      await unlockAchievement('daily_champion');
-    } catch (err) {
-      console.error('Failed to complete daily challenge:', err);
-    }
-  }, [user, activeProfileId, dailyChallengeDone, unlockAchievement]);
-
-  useEffect(() => {
-    completeDailyChallengeRef.current = completeDailyChallenge;
-  }, [completeDailyChallenge]);
-
   const switchProfile = useCallback(
     async (profileId) => {
       setActiveProfileId(profileId);
-      setProgress({});
+      const localProgress = readJson(progressStorageKey(profileId), {});
+      progressRef.current = localProgress;
+      setProgress(localProgress);
       if (!user) return;
       try {
         const userDocRef = doc(db, 'spelling-users', user.uid);
@@ -644,24 +774,19 @@ export function WordProvider({ children }) {
   const allWords = useMemo(() => categories.flatMap((c) => c.words), [categories]);
 
   const stats = useMemo(
-    () => ({
-      totalAttempts: Object.values(progress).reduce(
-        (s, e) => s + e.attempts,
-        0
-      ),
-      totalCorrect: Object.values(progress).reduce((s, e) => s + e.correct, 0),
-      wordsSeen: Object.keys(progress).length,
-      bestStreak: Object.values(progress).reduce(
-        (max, e) => Math.max(max, e.streak),
-        0
-      ),
-    }),
+    () => {
+      const summary = progressStats(progress);
+      return { ...summary, bestStreak: summary.bestWordStreak };
+    },
     [progress]
   );
 
   const value = {
     user,
+    refreshAuthState,
     loading,
+    authStatus,
+    syncError,
     categories,
     profiles,
     activeProfileId,
@@ -674,16 +799,20 @@ export function WordProvider({ children }) {
     allWords,
     progress,
     recordResult,
+    recordResults,
     stats,
     soundEnabled,
     toggleSound,
     achievements,
     unlockAchievement,
+    importLegacyProgress,
     hintsUsedToday,
     useHint,
     dailyChallengeWord,
+    dailyChallengeId,
+    dailyChallengeAttempts,
     dailyChallengeDone,
-    completeDailyChallenge,
+    recordDailyChallengeAttempt,
     updateProfileAvatar,
     multiplayer,
     setMultiplayer,
