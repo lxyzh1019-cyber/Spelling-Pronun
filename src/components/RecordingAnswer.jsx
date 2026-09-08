@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { saveRecording } from '../persistence/indexedDb';
+import { deleteRecording, saveRecording } from '../persistence/indexedDb';
 import { assessRecordingQuality, recordingSupport, startAudioRecording } from '../utils/recording';
 import styles from './RecordingAnswer.module.css';
 
@@ -9,12 +9,31 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady,
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
   const [playbackUrl, setPlaybackUrl] = useState('');
+  const [recordingId, setRecordingId] = useState(null);
   const support = recordingSupport();
+
+  // Recordings stay on this device until the learner deletes them; nothing is uploaded.
+  const remove = async () => {
+    if (disabled || !recordingId) return;
+    try {
+      await deleteRecording(recordingId);
+      if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+      urlRef.current = null;
+      setPlaybackUrl('');
+      setRecordingId(null);
+      setStatus('idle');
+      setMessage('Recording deleted from this device. You can record again or continue as a technical issue.');
+      onReady(null);
+    } catch {
+      setMessage('The recording could not be deleted. It remains only on this device.');
+    }
+  };
 
   useEffect(() => {
     setStatus('idle');
     setMessage('');
     setPlaybackUrl('');
+    setRecordingId(null);
     return () => {
       controllerRef.current?.cancel();
       controllerRef.current = null;
@@ -65,8 +84,9 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady,
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
       urlRef.current = URL.createObjectURL(result.blob);
       setPlaybackUrl(urlRef.current);
+      setRecordingId(recordingId);
       setStatus('ready');
-      setMessage('Recording saved on this device. Play it back before submitting. A human review is still required.');
+      setMessage('Recording saved on this device only, until you delete it. Nothing is uploaded. Play it back before submitting; a human review is still required.');
       onReady({ recordingId, durationMs: result.durationMs, mimeType: result.mimeType });
     } catch {
       setStatus('error');
@@ -84,6 +104,7 @@ export default function RecordingAnswer({ itemId, learnerId, sessionId, onReady,
       {status === 'saving' && <button className={`${styles.recordButton} ${styles.savingButton}`} type="button" disabled>Saving recording…</button>}
     </div>
     {playbackUrl && <audio className={styles.playback} controls src={playbackUrl}>Audio playback is not supported.</audio>}
+    {status === 'ready' && recordingId && <button className={styles.deleteButton} type="button" disabled={disabled} onClick={remove}>Delete this recording</button>}
     {message && <p className={styles.message} role={status === 'error' ? 'alert' : 'status'}>{message}</p>}
   </div>;
 }

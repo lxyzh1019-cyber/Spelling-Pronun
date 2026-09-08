@@ -52,3 +52,5 @@
 .message {
   margin: 0;
 }
+
+.deleteButton { min-height: 44px; padding: 8px 14px; border-radius: 10px; border: 2px solid #b91c1c; background: white; color: #b91c1c; font-weight: 700; }

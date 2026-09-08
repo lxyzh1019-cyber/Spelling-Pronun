@@ -56,11 +56,15 @@ export function applyAttempts(progress, attempts, now = new Date()) {
   const next = { ...progress };
   for (const attempt of attempts) {
     const previous = next[attempt.wordId] || { attempts: 0, correct: 0, streak: 0 };
+    const streak = attempt.correct ? previous.streak + 1 : 0;
     next[attempt.wordId] = {
       ...previous,
       attempts: previous.attempts + 1,
       correct: previous.correct + (attempt.correct ? 1 : 0),
-      streak: attempt.correct ? previous.streak + 1 : 0,
+      streak,
+      // Historical maximum for this word: never decreases, so the Best Same-Word Streak stat and
+      // its badges cannot disappear after a later miss.
+      bestStreak: Math.max(previous.bestStreak || 0, previous.streak || 0, streak),
       lastSeen: now,
       lastEvidenceType: attempt.evidenceType,
     };
@@ -74,7 +78,7 @@ export function progressStats(progress) {
     totalAttempts: entries.reduce((sum, entry) => sum + (entry.attempts || 0), 0),
     totalCorrect: entries.reduce((sum, entry) => sum + (entry.correct || 0), 0),
     wordsSeen: entries.length,
-    bestWordStreak: entries.reduce((max, entry) => Math.max(max, entry.streak || 0), 0),
+    bestWordStreak: entries.reduce((max, entry) => Math.max(max, entry.bestStreak || 0, entry.streak || 0), 0),
   };
 }
 

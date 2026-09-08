@@ -294,6 +294,7 @@ export function WordProvider({ children }) {
             attempts: data.attempts || 0,
             correct: data.correct || 0,
             streak: data.streak || 0,
+            bestStreak: Math.max(data.bestStreak || 0, data.streak || 0),
             lastSeen: data.lastSeen,
           };
         });
@@ -506,6 +507,7 @@ export function WordProvider({ children }) {
           attempts: increment(aggregate.attempts),
           correct: increment(aggregate.correct),
           streak: local.streak || 0,
+          bestStreak: local.bestStreak || 0,
           lastSeen: serverTimestamp(),
           lastEvidenceType: aggregate.evidenceType,
         }, { merge: true });

@@ -60,6 +60,10 @@ export function saveRecording(recording) {
   return withStore('recordings', 'readwrite', (store) => requestResult(store.put({ ...recording, savedAt: new Date().toISOString() })));
 }
 
+export function deleteRecording(recordingId) {
+  return withStore('recordings', 'readwrite', (store) => requestResult(store.delete(recordingId)));
+}
+
 export function loadRecording(recordingId) {
   return withStore('recordings', 'readonly', (store) => requestResult(store.get(recordingId)));
 }

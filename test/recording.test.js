@@ -85,3 +85,14 @@ test('recording controls use a large, touch-friendly visual treatment', async ()
   assert.match(css, /min-width: 190px/);
   assert.match(css, /font-size: 1\.125rem/);
 });
+
+test('recordings can be deleted from the device and the copy never implies upload or session-only storage', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const component = await readFile(new URL('../src/components/RecordingAnswer.jsx', import.meta.url), 'utf8');
+  const store = await readFile(new URL('../src/persistence/indexedDb.js', import.meta.url), 'utf8');
+  assert.match(store, /export function deleteRecording\(recordingId\)/);
+  assert.match(component, /Delete this recording/);
+  assert.match(component, /until you delete it/);
+  assert.match(component, /Nothing is uploaded/);
+  assert.doesNotMatch(component, /upload\(|Storage/);
+});

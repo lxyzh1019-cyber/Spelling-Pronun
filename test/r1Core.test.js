@@ -8,6 +8,7 @@ import {
   edmontonDayKey,
   isPerfectScore,
   nextScore,
+  progressStats,
   restoreSessionSnapshot,
 } from '../src/learning/r1Core.js';
 import { generateCrossword, validateCrossword } from '../src/learning/crossword.js';
@@ -98,4 +99,46 @@ test('crossword generator never truncates a long supported word', () => {
   const long = puzzle.entries.find(({ word }) => word === 'acknowledgement');
   assert.ok(long);
   assert.equal(long.word.length, 15);
+});
+
+test('best same-word streak is a historical maximum that never decreases after a miss', () => {
+  const learnerId = 'jenn';
+  const attempt = (correct) => createAttempt({ attemptId: `${Math.random()}`, wordId: 'w1', learnerId, correct });
+  let progress = applyAttempts({}, [attempt(true), attempt(true), attempt(true)]);
+  assert.equal(progressStats(progress).bestWordStreak, 3);
+  progress = applyAttempts(progress, [attempt(false)]);
+  assert.equal(progress.w1.streak, 0, 'the current streak resets');
+  assert.equal(progressStats(progress).bestWordStreak, 3, 'the best streak is retained');
+  progress = applyAttempts(progress, [attempt(true)]);
+  assert.equal(progressStats(progress).bestWordStreak, 3);
+  // Legacy rows without bestStreak still report their live streak.
+  assert.equal(progressStats({ legacy: { attempts: 4, correct: 4, streak: 4 } }).bestWordStreak, 4);
+});
+
+test('crossword evaluation reports wrong entries and repairable cells without exposing answers', async () => {
+  const { evaluateCrosswordEntries, generateCrossword } = await import('../src/learning/crossword.js');
+  const words = [
+    { id: 'a', word: 'cat', definition: 'pet' },
+    { id: 'b', word: 'car', definition: 'vehicle' },
+    { id: 'c', word: 'tar', definition: 'sticky' },
+  ];
+  const puzzle = generateCrossword(words);
+  assert.ok(puzzle);
+  const grid = Array.from({ length: puzzle.size }, () => Array(puzzle.size).fill(''));
+  const first = puzzle.entries[0];
+  for (let i = 0; i < first.word.length; i++) {
+    const r = first.direction === 'across' ? first.row : first.row + i;
+    const c = first.direction === 'across' ? first.col + i : first.col;
+    grid[r][c] = first.word[i];
+  }
+  const evaluation = evaluateCrosswordEntries(puzzle, grid);
+  const firstResult = evaluation.results.find((result) => result.wordId === first.id);
+  assert.equal(firstResult.correct, true);
+  assert.equal(evaluation.wrongCount, puzzle.entries.length - 1);
+  assert.ok(evaluation.repairable.size > 0);
+  for (const key of firstResult.cells) assert.ok(!evaluation.repairable.has(key), 'cells of a correct entry are locked even where a wrong entry crosses them');
+  for (const result of evaluation.results) assert.ok(!('answer' in result) && !('grid' in result));
+  const page = await (await import('node:fs/promises')).readFile(new URL('../src/pages/Crossword.jsx', import.meta.url), 'utf8');
+  assert.match(page, /isRevealed \? cell : userValue/, 'solution letters render only in the revealed phase');
+  assert.match(page, /evidenceType: 'assisted_repair', helped: true/);
 });

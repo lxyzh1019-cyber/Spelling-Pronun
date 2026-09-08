@@ -5,12 +5,9 @@ import { shuffle } from '../utils/shuffle';
 import { playCorrectSound, playIncorrectSound, playMilestoneSound } from '../utils/sounds';
 import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
 import { triggerConfetti } from '../utils/confetti';
+import { SPEED_MODES as MODES, buildSpeedRoundList, evidenceTypeForMode, recordSpeedOutcome } from '../learning/speedRound';
 import styles from './SpeedRound.module.css';
 
-const MODES = {
-  quick: { label: 'Quick (60s)', timeLimit: 60, count: 20, icon: '⚡' },
-  short: { label: 'Short Round (200 words)', timeLimit: 0, count: 200, icon: '📚' },
-};
 const PASS_AFTER_MS = 5000;
 
 export default function SpeedRound() {
@@ -24,6 +21,10 @@ export default function SpeedRound() {
   const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [canPass, setCanPass] = useState(false);
+  const [misses, setMisses] = useState([]);
+  // Guards a double Enter on the same word: one submission per index.
+  const advancingRef = useRef(false);
+  useEffect(() => { advancingRef.current = false; }, [index, gameState]);
   const inputRef = useRef(null);
   const gameTimerRef = useRef(null);
   const passTimerRef = useRef(null);
@@ -46,12 +47,9 @@ export default function SpeedRound() {
 
   const startGame = () => {
     const cfg = MODES[mode];
-    const pool = shuffle(allWords);
-    const list =
-      cfg.count <= pool.length
-        ? pool.slice(0, cfg.count)
-        : Array.from({ length: cfg.count }, (_, i) => pool[i % pool.length]);
+    const list = buildSpeedRoundList(shuffle(allWords), cfg.count);
     setWords(list);
+    setMisses([]);
     setIndex(0);
     setScore(0);
     scoreRef.current = 0;
@@ -98,10 +96,12 @@ export default function SpeedRound() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!input.trim() || !words[index]) return;
+    if (!input.trim() || !words[index] || advancingRef.current) return;
+    advancingRef.current = true;
 
     const current = words[index];
     const isCorrect = input.trim().toLowerCase() === current.word.toLowerCase();
+    const evidenceType = evidenceTypeForMode(mode);
 
     if (isCorrect) {
       scoreRef.current += 1;
@@ -109,11 +109,12 @@ export default function SpeedRound() {
       if (soundEnabled) playCorrectSound();
       hapticSuccess();
       triggerConfetti('light');
-      recordResult(current.id, true, { evidenceType: 'timed_retrieval_practice' });
+      recordResult(current.id, true, { evidenceType });
     } else {
       if (soundEnabled) playIncorrectSound();
       hapticError();
-      recordResult(current.id, false, { evidenceType: 'timed_retrieval_practice' });
+      setMisses((list) => recordSpeedOutcome(list, current, { typed: input }));
+      recordResult(current.id, false, { evidenceType });
     }
 
     advance(true);
@@ -121,7 +122,10 @@ export default function SpeedRound() {
 
   const handlePass = () => {
     const current = words[index];
-    if (current) recordResult(current.id, false, { evidenceType: 'timed_retrieval_practice', skipped: true });
+    if (!current || advancingRef.current) return;
+    advancingRef.current = true;
+    setMisses((list) => recordSpeedOutcome(list, current, { passed: true }));
+    recordResult(current.id, false, { evidenceType: evidenceTypeForMode(mode), skipped: true });
     advance(false);
   };
 
@@ -160,8 +164,8 @@ export default function SpeedRound() {
           </div>
           <p className={styles.desc}>
             {cfg.timeLimit > 0
-              ? `Type as many words as you can in ${cfg.timeLimit} seconds!`
-              : `Work through ${cfg.count} words at your own pace.`}
+              ? `Type as many words as you can in ${cfg.timeLimit} seconds! This is timed retrieval practice, not a lesson.`
+              : `Untimed practice through up to ${cfg.count} words at your own pace. It is optional practice, not a required lesson.`}
             {' '}If you're stuck for 5 seconds, a Pass button appears.
           </p>
           <button className={styles.startBtn} onClick={startGame}>
@@ -182,6 +186,19 @@ export default function SpeedRound() {
           <h1 className={styles.title}>Round Complete!</h1>
           <p className={styles.score}>{score} words</p>
           {score >= 8 && <p className={styles.badge}>🏅 Speed Demon unlocked!</p>}
+          {misses.length > 0 ? (
+            <div className={styles.missList} aria-label="Words to review">
+              <h2 className={styles.missHeading}>Review these {misses.length} word{misses.length === 1 ? '' : 's'}</h2>
+              <ul>
+                {misses.map((miss, position) => (
+                  <li key={`${miss.wordId}-${position}`}>
+                    <strong>{miss.word}</strong> — {miss.definition}
+                    {miss.passed ? ' (passed)' : miss.typed ? ` (you typed “${miss.typed}”)` : ''}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : <p className={styles.desc}>No misses to review.</p>}
           <button className={styles.startBtn} onClick={startGame}>
             Try Again
           </button>

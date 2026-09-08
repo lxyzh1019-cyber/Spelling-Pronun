@@ -41,6 +41,7 @@ export function planOutboxWrites(entry, { uid, readLocalProgress = () => ({}) } 
           attempts: local.attempts || 0,
           correct: local.correct || 0,
           streak: local.streak || 0,
+          bestStreak: local.bestStreak || 0,
           lastEvidenceType: payload.evidenceType,
           reconciledFromDevice: true,
         },

@@ -92,3 +92,26 @@ export function generateCrossword(words) {
   if (!validateCrossword(puzzle)) throw new Error('Crossword generator created an invalid puzzle');
   return puzzle;
 }
+
+// Cells covered by an entry, as "row,col" keys.
+export function entryCells(entry) {
+  return Array.from({ length: entry.word.length }, (_, index) => `${entry.direction === 'across' ? entry.row : entry.row + index},${entry.direction === 'across' ? entry.col + index : entry.col}`);
+}
+
+// Compares the learner's grid with each entry. It reports which entries are wrong and which cells
+// belong to a wrong entry, without exposing the solution letters.
+export function evaluateCrosswordEntries(puzzle, userGrid) {
+  const results = puzzle.entries.map((entry) => {
+    const cells = entryCells(entry);
+    const correct = cells.every((key, index) => {
+      const [r, c] = key.split(',').map(Number);
+      return (userGrid[r]?.[c] || '').toLowerCase() === entry.word[index].toLowerCase();
+    });
+    return { wordId: entry.id, word: entry.word, correct, cells };
+  });
+  // Cells of a correct entry stay locked even where a wrong entry crosses them, so a repair can
+  // never break a word that was already right.
+  const locked = new Set(results.filter((result) => result.correct).flatMap((result) => result.cells));
+  const repairable = new Set(results.filter((result) => !result.correct).flatMap((result) => result.cells).filter((key) => !locked.has(key)));
+  return { results, repairable, wrongCount: results.filter((result) => !result.correct).length };
+}
