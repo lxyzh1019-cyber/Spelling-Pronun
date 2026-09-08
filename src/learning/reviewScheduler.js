@@ -1,10 +1,13 @@
 export const REVIEW_INTERVAL_DAYS = [1, 3, 7, 14, 30];
 
-export function nextReview({ eventTime, reviewStage = -1, correct, helped = false }) {
+export function nextReview({ eventTime, reviewStage = -1, correct, helped = false, sameDay = false }) {
   const base = new Date(eventTime);
-  const nextStage = correct && !helped ? Math.min(reviewStage + 1, REVIEW_INTERVAL_DAYS.length - 1) : 0;
+  let nextStage;
+  if (!correct || helped) nextStage = 0;
+  else if (sameDay) nextStage = Math.max(reviewStage, 0);
+  else nextStage = Math.min(reviewStage + 1, REVIEW_INTERVAL_DAYS.length - 1);
   const due = new Date(base.getTime() + REVIEW_INTERVAL_DAYS[nextStage] * 86_400_000);
-  return { reviewStage: nextStage, reviewDue: due.toISOString() };
+  return { reviewStage: nextStage, reviewDue: due.toISOString(), advanced: correct && !helped && !sameDay };
 }
 
 export function selectDueReviews(progress, now = new Date(), limit = 4) {
@@ -22,12 +25,15 @@ export function deriveReviewProgress(attempts) {
   for (const attempt of sorted) {
     for (const skillId of attempt.skillIds || []) {
       const previous = progress[skillId];
-      const sameDayRepair = attempt.helped && previous?.lastAttemptDate === attempt.edmontonDate;
+      // A retry on the same Edmonton date as the previous attempt for this skill is a same-day
+      // repair, whether or not help was used. It never advances the review schedule.
+      const sameDay = Boolean(previous) && previous.lastAttemptDate === attempt.edmontonDate;
       const scheduled = nextReview({
         eventTime: attempt.eventTime,
-        reviewStage: sameDayRepair ? previous?.reviewStage ?? -1 : previous?.reviewStage ?? -1,
-        correct: attempt.correct && !sameDayRepair,
-        helped: attempt.helped,
+        reviewStage: previous?.reviewStage ?? -1,
+        correct: Boolean(attempt.correct),
+        helped: Boolean(attempt.helped),
+        sameDay,
       });
       progress[skillId] = {
         skillId,

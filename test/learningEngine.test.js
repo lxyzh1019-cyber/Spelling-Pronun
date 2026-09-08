@@ -110,3 +110,105 @@ test('content validator requires a reviewed, labelled human-audio asset before s
   assert.ok(result.errors.some((error) => error.includes('non-Canadian locale without a learner-facing disclosure')));
   assert.ok(result.errors.some((error) => error.includes('without a reviewed audio asset')));
 });
+
+test('a same-day retry never advances the review schedule, helped or not', () => {
+  const released = { skillIds: ['SP.patterns'], status: 'correct', contentStatus: 'released' };
+  const dayOne = [
+    { ...released, eventTime: '2026-01-01T12:00:00Z', edmontonDate: '2026-01-01', correct: true },
+    { ...released, eventTime: '2026-01-03T12:00:00Z', edmontonDate: '2026-01-03', correct: true },
+  ];
+  const advanced = deriveReviewProgress(dayOne)['SP.patterns'];
+  assert.equal(advanced.reviewStage, 1);
+
+  const unhelpedSameDay = deriveReviewProgress([
+    ...dayOne,
+    { ...released, eventTime: '2026-01-03T12:05:00Z', edmontonDate: '2026-01-03', correct: false, status: 'incorrect' },
+    { ...released, eventTime: '2026-01-03T12:10:00Z', edmontonDate: '2026-01-03', correct: true },
+  ])['SP.patterns'];
+  assert.equal(unhelpedSameDay.reviewStage, 0, 'same-day unhelped retry after a miss stays at the reset stage');
+  assert.equal(unhelpedSameDay.advanced, false);
+
+  const sameDayAfterSuccess = deriveReviewProgress([
+    ...dayOne,
+    { ...released, eventTime: '2026-01-03T12:10:00Z', edmontonDate: '2026-01-03', correct: true },
+  ])['SP.patterns'];
+  assert.equal(sameDayAfterSuccess.reviewStage, 1, 'same-day repeat success keeps the current stage');
+  assert.equal(sameDayAfterSuccess.advanced, false);
+
+  const helpedSameDay = deriveReviewProgress([
+    ...dayOne,
+    { ...released, eventTime: '2026-01-03T12:10:00Z', edmontonDate: '2026-01-03', correct: true, helped: true },
+  ])['SP.patterns'];
+  assert.equal(helpedSameDay.reviewStage, 0, 'helped repair resets to one day');
+
+  const nextDay = deriveReviewProgress([
+    ...dayOne,
+    { ...released, eventTime: '2026-01-07T12:00:00Z', edmontonDate: '2026-01-07', correct: true },
+  ])['SP.patterns'];
+  assert.equal(nextDay.reviewStage, 2);
+  assert.equal(nextDay.advanced, true);
+});
+
+test('two failures in the last five eligible attempts flag a skill for review without erasing history', () => {
+  const base = (index, correct) => ({
+    evidenceType: 'independent_spelling', correct, helped: false, sessionId: 's1', edmontonDate: '2026-09-01',
+    eventTime: new Date(Date.UTC(2026, 8, 1, index)).toISOString(),
+  });
+  const developing = [true, true, true, true, false, false].map((correct, index) => base(index, correct));
+  const result = deriveMastery(developing);
+  assert.equal(result.status, 'developing');
+  assert.equal(result.needsReview, true);
+  assert.equal(result.correctCount, 4, 'earlier successes remain counted');
+
+  const oneFailure = [true, true, true, true, false].map((correct, index) => base(index, correct));
+  assert.equal(deriveMastery(oneFailure).needsReview, false);
+
+  const secure = Array.from({ length: 10 }, (_, index) => ({
+    evidenceType: index === 8 ? 'independent_transfer' : index === 9 ? 'delayed_review' : 'independent_spelling',
+    correct: index !== 7, helped: false, sessionId: index < 5 ? 's1' : 's2', edmontonDate: index < 5 ? '2026-09-01' : '2026-09-09',
+    eventTime: new Date(Date.UTC(2026, 8, 1 + index)).toISOString(), unseen: index < 3,
+  }));
+  assert.equal(deriveMastery(secure).status, 'secure');
+  const regressed = [...secure, { ...base(11, false), edmontonDate: '2026-09-20', eventTime: '2026-09-20T12:00:00Z' }, { ...base(12, false), edmontonDate: '2026-09-21', eventTime: '2026-09-21T12:00:00Z' }];
+  const demoted = deriveMastery(regressed);
+  assert.equal(demoted.status, 'developing');
+  assert.equal(demoted.needsReview, true);
+  assert.equal(demoted.correctCount, 9);
+});
+
+test('only a first attempt at an item within a session is independent evidence', () => {
+  assert.equal(evidenceEligible({ evidenceType: 'independent_spelling', ordinal: 1, correct: true }), true);
+  assert.equal(evidenceEligible({ evidenceType: 'independent_spelling', ordinal: 2, correct: true }), false);
+  assert.equal(evidenceEligible({ evidenceType: 'independent_transfer', ordinal: 3, correct: true }), false);
+});
+
+test('sentence repair accepts only declared clauses joined by explicitly allowed joins', () => {
+  const item = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['I packed my bag. I forgot my goggles.', 'I packed my bag, but I forgot my goggles.'],
+    repairScope: { clauses: ['I packed my bag', 'I forgot my goggles'], allowedJoins: ['period', 'semicolon', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(item, 'I packed my bag. I forgot my goggles.').status, 'correct');
+  assert.equal(evaluateItem(item, 'I packed my bag; I forgot my goggles.').status, 'correct');
+  assert.equal(evaluateItem(item, 'I packed my bag; I forgot my goggles.').reason, 'accepted_structural_repair:semicolon');
+  assert.equal(evaluateItem(item, 'I packed my bag, so I forgot my goggles.').status, 'correct');
+  assert.equal(evaluateItem(item, 'I packed my bag, I forgot my goggles.').status, 'pending', 'comma splice is not accepted');
+  assert.equal(evaluateItem(item, 'I packed, my bag I forgot my goggles.').status, 'pending', 'mangled clause boundary is not accepted');
+  assert.equal(evaluateItem(item, 'I packed my bag. I forgot.').status, 'pending', 'a period alone never satisfies the check');
+  assert.equal(evaluateItem(item, 'I packed my bag; i forgot my goggles.').status, 'pending', 'semicolon join requires the next clause capitalized');
+  const strict = { ...item, allowReview: false, repairScope: { clauses: item.repairScope.clauses, allowedJoins: ['period'] } };
+  assert.equal(evaluateItem(strict, 'I packed my bag; I forgot my goggles.').status, 'incorrect', 'a join the item does not allow is rejected');
+  assert.equal(evaluateItem(strict, 'I packed my bag. I forgot my goggles.').status, 'correct');
+});
+
+test('typed C0 sentence items permit review of reasonable unlisted answers while spelling stays exact', async () => {
+  const { c0PilotPacks } = await import('../src/data/packs.c0.draft.js');
+  const items = c0PilotPacks.flatMap((pack) => pack.items);
+  const typedSentences = items.filter((item) => item.responseType === 'text' && item.evaluator === 'punctuation');
+  const typedSpelling = items.filter((item) => item.responseType === 'text' && item.evaluator === 'spelling');
+  assert.ok(typedSentences.length > 0);
+  assert.ok(typedSentences.every((item) => item.allowReview === true));
+  assert.ok(typedSpelling.every((item) => !item.allowReview));
+  assert.equal(evaluateItem(typedSentences[0], 'A totally different sentence?').status, 'pending');
+});

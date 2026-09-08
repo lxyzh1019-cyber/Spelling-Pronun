@@ -38,6 +38,7 @@ function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
         evaluator: displayOnly ? 'human_rubric' : row.evaluator || 'choice',
         ...(displayOnly ? { rubric: { displayOnly: true } } : { acceptedAnswers: row.acceptedAnswers }),
         ...(row.choices ? { choices: row.choices.map(([id, text]) => ({ id, text })) } : {}),
+        ...(row.allowReview ? { allowReview: true } : {}),
         explanation: row.explanation,
         helpSteps,
         commonErrors: row.commonErrors || [],
@@ -54,7 +55,9 @@ function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
 }
 
 const choice = (prompt, answer, choices, explanation, transferGroup) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup });
-const text = (prompt, answers, explanation, evaluator = 'spelling', transferGroup) => ({ prompt, responseType: 'text', evaluator, acceptedAnswers: answers, explanation, transferGroup });
+// Typed sentence answers may have a reasonable wording the key did not list. Those items allow
+// `Review this answer` (pending) instead of forcing an incorrect label; spelling stays exact.
+const text = (prompt, answers, explanation, evaluator = 'spelling', transferGroup) => ({ prompt, responseType: 'text', evaluator, acceptedAnswers: answers, explanation, transferGroup, ...(evaluator === 'spelling' ? {} : { allowReview: true }) });
 const example = (prompt, explanation, transferGroup) => ({ prompt, explanation, transferGroup });
 
 const spellingRows = [

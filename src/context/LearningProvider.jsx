@@ -67,6 +67,8 @@ export function LearningProvider({ children }) {
   const submitAttempt = useCallback(async (item, response, metadata = {}) => {
     const learnerId = activeProfileId;
     const evaluation = evaluateItem(item, response);
+    const priorAttempts = readJson(attemptsKey(learnerId), []);
+    const ordinal = metadata.ordinal ?? (priorAttempts.filter((entry) => entry.sessionId === metadata.sessionId && entry.itemId === item.id && !entry.technicalFailure).length + 1);
     const attempt = Object.freeze({
       attemptId: metadata.attemptId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
       learnerId,
@@ -82,6 +84,7 @@ export function LearningProvider({ children }) {
       helped: Boolean(metadata.helped),
       revealed: Boolean(metadata.revealed),
       unseen: Boolean(metadata.unseen),
+      ordinal,
       evidenceType: metadata.evidenceType || 'independent_choice',
       eventTime: new Date().toISOString(),
       edmontonDate: edmontonDayKey(),
