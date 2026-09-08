@@ -4,6 +4,7 @@ import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import RecordingAnswer from '../components/RecordingAnswer';
 import { C0_ASSESSMENT_NOTICE, c0AssessmentForms } from '../data/assessment.c0.draft';
+import { isQuarantined, usableItems } from '../learning/contentCorrections';
 import { c0AssessmentAudioAssets } from '../data/audio.c0';
 import { previewLessonForTrack } from '../data/lessonCatalog';
 import { REASSESSMENT_SUGGESTION, appendAssessmentHistory, assessmentHistoryKey, buildAssessmentReport } from '../learning/assessmentReport';
@@ -27,7 +28,10 @@ export default function AssessmentRunner() {
   const { sessionId } = useParams();
   const form = sessionId === 'form-b' ? 'B' : 'A';
   const formData = c0AssessmentForms.find((candidate) => candidate.form === form);
-  const items = formData.items;
+  // Prompts with an open correction are withheld until the reviewer resolves them. The count is
+  // shown rather than hidden, because withholding a prompt reduces the form's coverage.
+  const items = usableItems(formData.items);
+  const withheldCount = formData.items.filter(isQuarantined).length;
   const { activeProfileId, user } = useWords();
   const { submitAttempt, saveStatus } = useLearning();
   const storageKey = `spelling-assessment:${activeProfileId}:${form}`;
@@ -43,6 +47,7 @@ export default function AssessmentRunner() {
   const [answer, setAnswer] = useState('');
   const [helped, setHelped] = useState(false);
   const [audioMessage, setAudioMessage] = useState('');
+  const [selfCheck, setSelfCheck] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
   useEffect(() => {
@@ -87,8 +92,15 @@ export default function AssessmentRunner() {
       const nextIndex = submissionState.index + 1;
       const nextState = { ...submissionState, index: nextIndex, completedAt: nextIndex === items.length ? new Date().toISOString() : null, results: [...submissionState.results, { itemId: item.id, skillId: item.primarySkill, status: attempt.status, correct: attempt.correct, helped: attempt.helped, omitted: attempt.omitted, technicalFailure: attempt.technicalFailure }] };
       if (stateOwnerKey.current === submissionOwnerKey && canWrite()) {
-        setState(nextState);
-        setAnswer(''); setHelped(false); setAudioMessage('');
+        // Open writing and editing answers stay pending human review. With no rater available the
+        // learner gets a self-check against the stated rubric; it is recorded as self-report and is
+        // never scored or counted as independent evidence.
+        if (item.evaluator === 'human_rubric' && item.responseType === 'text' && !metadata.omitted && !metadata.technicalFailure) {
+          setSelfCheck({ item, response, next: nextState });
+        } else {
+          setState(nextState);
+          setAnswer(''); setHelped(false); setAudioMessage('');
+        }
       }
     } finally {
       if (stateOwnerKey.current === submissionOwnerKey) {
@@ -101,13 +113,20 @@ export default function AssessmentRunner() {
     event.preventDefault(); if (!answer || !canWrite()) return;
     await saveResult(answer);
   };
+  const finishSelfCheck = () => {
+    if (!selfCheck) return;
+    setState(selfCheck.next);
+    setSelfCheck(null);
+    setAnswer(''); setHelped(false); setAudioMessage('');
+  };
+
   const takeOverHere = () => {
-    setAnswer(''); setHelped(false); setAudioMessage(''); setSubmitting(false); submittingRef.current = false;
+    setAnswer(''); setHelped(false); setAudioMessage(''); setSubmitting(false); setSelfCheck(null); submittingRef.current = false;
     takeOverSession();
   };
   const displayedSaveStatus = saveStatus === 'saved' ? sessionSaveStatus : saveStatus;
-  return <div className={styles.page}><p className={styles.notice}>{C0_ASSESSMENT_NOTICE}</p>{!ready ? <div className={styles.notice} role="status">Restoring the saved assessment…</div> : !writable && <div className={styles.notice} role="status"><strong>This assessment is open in another tab or linked device.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}<section className={styles.card}>
+  return <div className={styles.page}><p className={styles.notice}>{C0_ASSESSMENT_NOTICE}</p>{withheldCount > 0 && <p className={styles.notice} role="status"><strong>{withheldCount} prompt{withheldCount === 1 ? ' is' : 's are'} withheld</strong> while a correction is reviewed. This form is {items.length} prompts instead of {formData.items.length}, so its coverage is incomplete.</p>}{!ready ? <div className={styles.notice} role="status">Restoring the saved assessment…</div> : !writable && <div className={styles.notice} role="status"><strong>This assessment is open in another tab or linked device.</strong> This view is read-only. <button className={styles.secondary} type="button" onClick={takeOverHere}>Take over here</button></div>}<section className={styles.card}>
     <p className={styles.meta}>Preview Form {form} · {displayedSaveStatus}</p><h1>Assessment preview</h1>
-    {!complete ? <form onSubmit={submit}><p>Part {item.part} · Question {state.index + 1} of {items.length}</p><h2>{item.prompt}</h2>{item.spokenText && <div className={styles.actions}><button className={styles.secondary} type="button" disabled={submitting} onClick={playItemAudio}>Play audio</button></div>}{audioMessage && <p role="status">{audioMessage}</p>}{item.choices?.map((choice) => <label className={styles.choice} key={choice.id}><input type="radio" name="answer" checked={answer === choice.id} disabled={submitting || !writable} onChange={() => setAnswer(choice.id)} /> {choice.text}</label>)}{item.responseType === 'text' && <textarea className={styles.input} aria-label="Your answer" value={answer} disabled={submitting || !writable} onChange={(event) => setAnswer(event.target.value)} />}{item.responseType === 'recording' && <RecordingAnswer itemId={item.id} learnerId={activeProfileId} sessionId={attemptSessionId} disabled={submitting || !writable} onReady={setAnswer} />}{helped && <p className={styles.feedback}>Help used: {item.helpSteps[0]} This answer will be reported as assisted.</p>}<div className={styles.actions}><button className={styles.primary} disabled={!answer || submitting || !writable}>{submitting ? 'Saving…' : 'Save first answer'}</button><button className={styles.secondary} type="button" disabled={submitting || !writable} onClick={() => { if (canWrite()) setHelped(true); }}>I need help</button><button className={styles.secondary} type="button" disabled={submitting || !writable} onClick={() => saveResult(null, { omitted: true })}>I don’t know yet</button>{(item.spokenText || item.responseType === 'recording') && <button className={styles.secondary} type="button" disabled={submitting || !writable} onClick={() => saveResult(null, { technicalFailure: true })}>Audio or microphone did not work</button>}<Link className={styles.secondary} to="/assessment">Pause assessment</Link></div></form> : <><div className={styles.success}><h2>Preview complete</h2><p>{report.totals.answered} answered, {report.totals.assisted} assisted, {report.totals.omissions} omitted, {report.totals.pendingReview} pending review, and {report.totals.technicalFailures} technical issue(s). This draft result is not placement evidence.</p></div><h2>Evidence by track</h2>{Object.entries(report.tracks).map(([track, counts]) => <p key={track}><strong>{track}</strong>: {counts.firstTryCorrect}/{counts.independentScored} independent first tries; {counts.assisted} assisted; {counts.omissions} omitted; {counts.pendingReview} pending; {counts.technicalFailures} technical — {counts.coverage.replaceAll('_', ' ')}</p>)}<p>First follow-up signal: <strong>{report.suggestedTrack || 'more evidence needed'}</strong>. This is a preview signal, not a placement decision.</p><p className={styles.meta}>{REASSESSMENT_SUGGESTION}</p>{recommendedLesson ? <div className={styles.feedback}><p>Recommended integrated preview lesson: <strong>{recommendedLesson.title}</strong>. It teaches the matching C0 {report.suggestedTrack} skill through attempt, explanation, repair, and unseen transfer.</p><Link className={styles.primary} to={`/lesson/${recommendedLesson.sessionId}`}>Start recommended lesson</Link></div> : <div className={styles.feedback}><p>There is not yet an integrated C0 lesson for this {report.suggestedTrack || 'result'} signal. The preview does not substitute a different skill as a recommendation.</p><Link className={styles.secondary} to="/case">Choose an available C0 lesson</Link></div>}<div className={styles.actions}><button className={styles.secondary} disabled={!writable} onClick={() => { if (!canWrite()) return; setState(createAssessmentState(form)()); }}>Clear this preview</button></div></>}
+    {selfCheck ? <section className={styles.feedback} aria-label="Self check"><h2>Check your own answer</h2><p>This answer is kept for a person to read later. Nothing here is scored, and it does not count as independent evidence.</p><p><strong>You wrote:</strong> {selfCheck.response}</p>{selfCheck.item.rubric?.dimensions && <><p><strong>What this task asks for:</strong></p><ul>{selfCheck.item.rubric.dimensions.map((dimension) => <li key={dimension}>{typeof selfCheck.item.rubric.scoring === 'object' ? selfCheck.item.rubric.scoring[dimension] || dimension.replaceAll('_', ' ') : dimension.replaceAll('_', ' ')}</li>)}</ul></>}<p className={styles.meta}>Compare your answer with the list, then continue.</p><button className={styles.primary} type="button" onClick={finishSelfCheck}>I have compared my answer</button></section> : !complete ? <form onSubmit={submit}><p>Part {item.part} · Question {state.index + 1} of {items.length}</p><h2>{item.prompt}</h2>{item.spokenText && <div className={styles.actions}><button className={styles.secondary} type="button" disabled={submitting} onClick={playItemAudio}>Play audio</button></div>}{audioMessage && <p role="status">{audioMessage}</p>}{item.choices?.map((choice) => <label className={styles.choice} key={choice.id}><input type="radio" name="answer" checked={answer === choice.id} disabled={submitting || !writable} onChange={() => setAnswer(choice.id)} /> {choice.text}</label>)}{item.responseType === 'text' && <textarea className={styles.input} aria-label="Your answer" value={answer} disabled={submitting || !writable} onChange={(event) => setAnswer(event.target.value)} />}{item.responseType === 'recording' && <RecordingAnswer itemId={item.id} learnerId={activeProfileId} sessionId={attemptSessionId} disabled={submitting || !writable} onReady={setAnswer} />}{helped && <p className={styles.feedback}>Help used: {item.helpSteps[0]} This answer will be reported as assisted.</p>}<div className={styles.actions}><button className={styles.primary} disabled={!answer || submitting || !writable}>{submitting ? 'Saving…' : 'Save first answer'}</button><button className={styles.secondary} type="button" disabled={submitting || !writable} onClick={() => { if (canWrite()) setHelped(true); }}>I need help</button><button className={styles.secondary} type="button" disabled={submitting || !writable} onClick={() => saveResult(null, { omitted: true })}>I don’t know yet</button>{(item.spokenText || item.responseType === 'recording') && <button className={styles.secondary} type="button" disabled={submitting || !writable} onClick={() => saveResult(null, { technicalFailure: true })}>Audio or microphone did not work</button>}<Link className={styles.secondary} to="/assessment">Pause assessment</Link></div></form> : <><div className={styles.success}><h2>Preview complete</h2><p>{report.totals.answered} answered, {report.totals.assisted} assisted, {report.totals.omissions} omitted, {report.totals.pendingReview} pending review, and {report.totals.technicalFailures} technical issue(s). This draft result is not placement evidence.</p></div><h2>Evidence by track</h2>{Object.entries(report.tracks).map(([track, counts]) => <p key={track}><strong>{track}</strong>: {counts.firstTryCorrect}/{counts.independentScored} independent first tries; {counts.assisted} assisted; {counts.omissions} omitted; {counts.pendingReview} pending; {counts.technicalFailures} technical — {counts.coverage.replaceAll('_', ' ')}</p>)}<p>First follow-up signal: <strong>{report.suggestedTrack || 'more evidence needed'}</strong>. This is a preview signal, not a placement decision.</p><p className={styles.meta}>{REASSESSMENT_SUGGESTION}</p>{recommendedLesson ? <div className={styles.feedback}><p>Recommended integrated preview lesson: <strong>{recommendedLesson.title}</strong>. It teaches the matching C0 {report.suggestedTrack} skill through attempt, explanation, repair, and unseen transfer.</p><Link className={styles.primary} to={`/lesson/${recommendedLesson.sessionId}`}>Start recommended lesson</Link></div> : <div className={styles.feedback}><p>There is not yet an integrated C0 lesson for this {report.suggestedTrack || 'result'} signal. The preview does not substitute a different skill as a recommendation.</p><Link className={styles.secondary} to="/case">Choose an available C0 lesson</Link></div>}<div className={styles.actions}><button className={styles.secondary} disabled={!writable} onClick={() => { if (!canWrite()) return; setState(createAssessmentState(form)()); }}>Clear this preview</button></div></>}
   </section></div>;
 }

@@ -1,3 +1,5 @@
+import { applyCorrections } from '../learning/contentCorrections.js';
+import correctionData from './corrections.c0.json' with { type: 'json' };
 const ROLE_SEQUENCE = [
   'worked_example', 'worked_example',
   ...Array(6).fill('guided'),
@@ -168,7 +170,7 @@ const pronounRows = [
   choice('Choose the correct sentence.', 'a', [['a', 'He and I arrived early.'], ['b', 'Him and me arrived early.']], 'He and I are subject pronouns because they perform arrived.', 'review-compound'),
 ];
 
-export const c0PilotPacks = [
+const rawC0PilotPacks = [
   makePack('SP.patterns', 'Spelling Patterns', 'Use the base word, vowel pattern, and ending together. Patterns help predict spelling, but legitimate exceptions and variants must be taught explicitly.', ['Say the base word.', 'Mark the vowel and final letters.', 'Try the applicable pattern, then check for an exception.'], spellingRows, {
     status: 'integrated',
     integrationStatus: 'integrated',
@@ -231,4 +233,6 @@ export const c0PilotPacks = [
   }),
 ];
 
+// Items with an open correction are stamped so every consumer sees the quarantine.
+export const c0PilotPacks = rawC0PilotPacks.map((pack) => ({ ...pack, items: applyCorrections(pack.items, correctionData.corrections) }));
 export const c0PilotItems = c0PilotPacks.flatMap((pack) => pack.items);

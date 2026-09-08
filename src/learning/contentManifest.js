@@ -30,6 +30,8 @@ export function buildContentManifest({ skills = [], packs = [], assessmentForms 
     challengedEpisodes: episodes.filter((episode) => ['independently_challenged', 'reviewed', 'released'].includes(episode.reviewStatus)).length,
     reviewedEpisodes: episodes.filter((episode) => ['reviewed', 'released'].includes(episode.reviewStatus)).length,
     integratedEpisodes: episodes.filter((episode) => episode.integrationStatus === 'integrated').length,
+    quarantinedObjects: packs.flatMap((pack) => pack.items).filter((item) => item.correctionStatus === 'changes_required').length,
+    quarantinedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.correctionStatus === 'changes_required').length,
     pilotApprovedObjects: packs.flatMap((pack) => pack.items).filter((item) => item.releaseStatus === 'pilot_approved').length,
     pilotApprovedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.releaseStatus === 'pilot_approved').length,
     pilotApprovedEpisodes: episodes.filter((episode) => episode.releaseStatus === 'pilot_approved').length,
@@ -40,6 +42,8 @@ export function buildContentManifest({ skills = [], packs = [], assessmentForms 
   return {
     counts,
     errors,
+    // Open corrections reduce usable coverage. R2-G1 cannot be complete while any remain.
+    correctionsOpen: counts.quarantinedObjects + counts.quarantinedAssessmentPrompts > 0,
     r2InventoryComplete: counts.packs >= 4 && counts.contentObjects >= 96 && counts.assessmentPrompts === 68 && counts.episodes >= 2,
     r3InventoryComplete: counts.skills === 42 && counts.packs === 42 && counts.contentObjects === 1008 && counts.assessmentPrompts === 68 && counts.episodes === 12,
     releaseReady: errors.length === 0 && counts.releasedObjects === counts.contentObjects && counts.releasedAssessmentPrompts === counts.assessmentPrompts && counts.episodes > 0 && counts.releasedEpisodes === counts.episodes,

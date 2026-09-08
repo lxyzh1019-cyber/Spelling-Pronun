@@ -1,3 +1,5 @@
+import { applyCorrections } from '../learning/contentCorrections.js';
+import correctionData from './corrections.c0.json' with { type: 'json' };
 const base = {
   version: 1,
   difficulty: 1,
@@ -103,5 +105,8 @@ function buildForm(form) {
   return { id: `c0.assessment.${form.toLowerCase()}`, form, version: 1, status: 'partial_integration', items };
 }
 
-export const c0AssessmentForms = [buildForm('A'), buildForm('B')];
+const rawC0AssessmentForms = [buildForm('A'), buildForm('B')];
+// Prompts with an open correction stay in the form for auditing but are stamped as quarantined;
+// the runner withholds them and reports the reduced coverage.
+export const c0AssessmentForms = rawC0AssessmentForms.map((form) => ({ ...form, items: applyCorrections(form.items, correctionData.corrections) }));
 export const c0AssessmentItems = c0AssessmentForms.flatMap((form) => form.items);
