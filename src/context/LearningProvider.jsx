@@ -4,10 +4,10 @@ import { evaluateItem } from '../learning/evaluators';
 import { deriveMastery } from '../learning/mastery';
 import { deriveReviewProgress, selectDueReviews } from '../learning/reviewScheduler';
 import { edmontonDayKey } from '../learning/r1Core';
-import { queueAttempt } from '../persistence/indexedDb';
-import { flushOutbox } from '../persistence/indexedDb';
-import { attemptDocumentId, mergeAttempts } from '../persistence/sync';
-import { readJson, writeJson } from '../utils/localStore';
+import { flushOutbox, queueAttempt } from '../persistence/indexedDb';
+import { planOutboxWrites } from '../persistence/outboxSync';
+import { mergeAttempts } from '../persistence/sync';
+import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import skillsData from '../data/skills.json';
@@ -35,11 +35,16 @@ export function LearningProvider({ children }) {
     if (activeLearnerRef.current === learnerId) setSaveStatus('syncing');
     try {
       await flushOutbox(async (entry) => {
-        if (entry.kind !== 'attempt') return;
-        const documentId = attemptDocumentId(account.uid, entry.payload);
-        const target = doc(db, 'spelling-attempts', documentId);
-        const existing = await getDoc(target);
-        if (!existing.exists()) await setDoc(target, { ...entry.payload, userId: account.uid });
+        const writes = planOutboxWrites(entry, { uid: account.uid, readLocalProgress: (id) => readJson(progressStorageKey(id), {}) });
+        for (const write of writes) {
+          const target = doc(db, write.collection, write.id);
+          if (write.mode === 'create-if-missing') {
+            const existing = await getDoc(target);
+            if (!existing.exists()) await setDoc(target, write.data);
+          } else {
+            await setDoc(target, write.data, { merge: true });
+          }
+        }
       });
       const snapshot = await getDocs(query(
         collection(db, 'spelling-attempts'),
@@ -63,6 +68,19 @@ export function LearningProvider({ children }) {
   }, [activeProfileId, user]);
 
   useEffect(() => { if (user) syncCloud(user, activeProfileId); }, [user, activeProfileId, syncCloud]);
+
+  // Reconnecting or returning to the tab flushes the outbox; without this, offline answers waited
+  // for the next submit or a reload before reconciling.
+  useEffect(() => {
+    if (!user || typeof window === 'undefined') return undefined;
+    const retry = () => { if (document.visibilityState !== 'hidden') syncCloud(user, activeLearnerRef.current); };
+    window.addEventListener('online', retry);
+    document.addEventListener('visibilitychange', retry);
+    return () => {
+      window.removeEventListener('online', retry);
+      document.removeEventListener('visibilitychange', retry);
+    };
+  }, [user, syncCloud]);
 
   const submitAttempt = useCallback(async (item, response, metadata = {}) => {
     const learnerId = activeProfileId;

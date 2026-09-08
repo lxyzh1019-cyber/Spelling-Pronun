@@ -37,3 +37,7 @@ export function progressStorageKey(learnerId) {
 export function sessionStorageKey(learnerId, mode, category) {
   return `spelling-r1-session:${learnerId}:${mode}:${category}`;
 }
+
+export function achievementsStorageKey(learnerId) {
+  return `spelling-r1-achievements:${learnerId}`;
+}

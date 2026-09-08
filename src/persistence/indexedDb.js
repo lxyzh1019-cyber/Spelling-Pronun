@@ -1,4 +1,5 @@
 import { shouldStoreSession } from './durableSession';
+import { deliverOutbox } from './outboxSync';
 
 const DB_NAME = 'spelling-pronun-learning';
 const DB_VERSION = 2;
@@ -63,9 +64,13 @@ export function loadRecording(recordingId) {
   return withStore('recordings', 'readonly', (store) => requestResult(store.get(recordingId)));
 }
 
+export function queueOutboxEntry({ id, kind, payload }) {
+  return withStore('outbox', 'readwrite', (store) => requestResult(store.put({ id, kind, payload, queuedAt: new Date().toISOString() })));
+}
+
 export async function queueAttempt(attempt) {
   await saveAttempt(attempt);
-  return withStore('outbox', 'readwrite', (store) => requestResult(store.put({ id: attempt.attemptId, kind: 'attempt', payload: attempt, queuedAt: new Date().toISOString() })));
+  return queueOutboxEntry({ id: attempt.attemptId, kind: 'attempt', payload: attempt });
 }
 
 export function listOutbox() {
@@ -78,15 +83,5 @@ export function removeOutboxItem(id) {
 
 export async function flushOutbox(send) {
   const queued = await listOutbox();
-  const results = [];
-  for (const entry of queued) {
-    try {
-      await send(entry);
-      await removeOutboxItem(entry.id);
-      results.push({ id: entry.id, status: 'sent' });
-    } catch (error) {
-      results.push({ id: entry.id, status: 'failed', error: String(error?.message || error) });
-    }
-  }
-  return results;
+  return deliverOutbox(queued, { send, remove: removeOutboxItem });
 }

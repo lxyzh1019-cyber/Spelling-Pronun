@@ -61,6 +61,29 @@ test('Edmonton day key follows the configured family timezone across midnight', 
   assert.equal(edmontonDayKey(new Date('2026-03-08T07:00:00Z')), '2026-03-08');
 });
 
+test('Edmonton day key handles both DST transitions and ignores the device timezone', () => {
+  // Spring forward: 2026-03-08 02:00 MST becomes 03:00 MDT. Midnight that night is 06:00Z.
+  assert.equal(edmontonDayKey(new Date('2026-03-08T08:59:59Z')), '2026-03-08', 'just before the skipped hour');
+  assert.equal(edmontonDayKey(new Date('2026-03-08T09:00:00Z')), '2026-03-08', 'just after the skipped hour');
+  assert.equal(edmontonDayKey(new Date('2026-03-09T05:59:59Z')), '2026-03-08', 'MDT midnight boundary');
+  assert.equal(edmontonDayKey(new Date('2026-03-09T06:00:00Z')), '2026-03-09');
+  // Fall back: 2026-11-01 02:00 MDT becomes 01:00 MST. Midnight after that is 07:00Z again.
+  assert.equal(edmontonDayKey(new Date('2026-11-01T05:59:59Z')), '2026-10-31', 'MDT midnight before fall back');
+  assert.equal(edmontonDayKey(new Date('2026-11-01T06:00:00Z')), '2026-11-01');
+  assert.equal(edmontonDayKey(new Date('2026-11-01T07:30:00Z')), '2026-11-01', 'the repeated 01:xx hour is still the same day');
+  assert.equal(edmontonDayKey(new Date('2026-11-02T06:59:59Z')), '2026-11-01', 'MST midnight boundary after fall back');
+  assert.equal(edmontonDayKey(new Date('2026-11-02T07:00:00Z')), '2026-11-02');
+
+  const previousTz = process.env.TZ;
+  try {
+    process.env.TZ = 'Asia/Shanghai';
+    assert.equal(new Date('2026-11-02T06:59:59Z').getDate(), 2, 'device clock is on a different calendar day');
+    assert.equal(edmontonDayKey(new Date('2026-11-02T06:59:59Z')), '2026-11-01', 'day key does not follow the device zone');
+  } finally {
+    if (previousTz === undefined) delete process.env.TZ; else process.env.TZ = previousTz;
+  }
+});
+
 test('crossword generator never truncates a long supported word', () => {
   const words = [
     { id: 'a', word: 'acknowledgement', definition: 'recognition' },
