@@ -21,6 +21,7 @@ export const c0LessonCatalog = Object.fromEntries(c0PilotPacks.map((pack) => [se
   skillId: pack.skillId,
   title: pack.title,
   rule: pack.rule,
+  ...(pack.ruleHelpZh ? { ruleHelpZh: pack.ruleHelpZh } : {}),
   examples: pack.items.filter((item) => item.role === 'worked_example'),
   practice: pack.items.filter((item) => item.role === 'independent').slice(0, 6),
   transfer: pack.items.filter((item) => item.role === 'transfer'),

@@ -47,6 +47,7 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
     if (!skillIds.has(item.primarySkill)) errors.push(`${item.id} has unknown primary skill ${item.primarySkill}`);
     for (const secondary of item.secondarySkills || []) if (!skillIds.has(secondary)) errors.push(`${item.id} has unknown secondary skill ${secondary}`);
     if (!item.acceptedAnswers?.length && !item.rubric) errors.push(`${item.id} has no answer or rubric`);
+    if (item.ruleHelpZh !== undefined && (typeof item.ruleHelpZh !== 'string' || !item.ruleHelpZh.trim())) errors.push(`${item.id} has an empty or non-string Chinese rule help`);
     if (item.sourceRequired && !item.sourceIds?.length) errors.push(`${item.id} is missing required sources`);
     for (const sourceId of item.sourceIds || []) if (sources.length && !sourceIds.has(sourceId)) errors.push(`${item.id} has unknown source ${sourceId}`);
     if (item.audioRef && !audioIds.has(item.audioRef)) errors.push(`${item.id} has broken audio reference ${item.audioRef}`);

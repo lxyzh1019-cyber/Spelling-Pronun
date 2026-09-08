@@ -41,3 +41,7 @@ export function sessionStorageKey(learnerId, mode, category) {
 export function achievementsStorageKey(learnerId) {
   return `spelling-r1-achievements:${learnerId}`;
 }
+
+export function lessonMinutesStorageKey(learnerId) {
+  return `spelling-lesson-minutes:${learnerId}`;
+}
