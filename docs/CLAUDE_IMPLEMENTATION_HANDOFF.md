@@ -99,10 +99,11 @@ Claude should continue on the existing working branch and PR unless the user exp
 
 ### R2-G1: finish C0 assessment review and integration
 
-Status: blocked on real review inputs.
+Status: blocked on real review inputs, and on six open content corrections.
 
-- Supply and independently review 24 human-audio assets listed in `docs/AUDIO_REVIEW_HANDOFF.md`.
-- Complete qualified phonics/pronunciation review for the 16 listed decoding and speaking prompts.
+- Complete the listening check for the 24 spoken prompts in `docs/AUDIO_REVIEW_HANDOFF.md`. Reviewed model audio is acceptable when labelled truthfully; a human recording is required only for isolated phoneme audio (decision CHG-07, 2026-09-08).
+- Complete the educational review for the 16 listed decoding and speaking prompts.
+- Resolve `corr.c0.001`–`corr.c0.006` in `src/data/corrections.c0.json`. Their items are withheld from lessons and assessments until Codex records a review; Claude proposed them and may not resolve them.
 - Record reviewer role/date, sources, findings, and resolved discrepancies.
 - Attach versioned audio assets with exact transcripts and truthful locale metadata.
 - Promote only verified Part-A items from challenge-only to educational/source reviewed, then integrated.
@@ -169,6 +170,17 @@ Begin final C1/C2 authoring only after the R2 pilot feedback is reviewed, as req
 - Complete item-level challenge, educational/source review, integration, learner testing, device regression, and final acceptance-matrix evidence.
 - Update README/CLAUDE documentation to actual final behavior only after implementation is true.
 
+## Items awaiting Codex review (opened 2026-09-08)
+
+| Correction | Items | What Claude proposed |
+|---|---|---|
+| `corr.c0.001` | `c0.pu.capitals-endmarks.19` | Explanation rewritten: "Falling rocks." is a fragment that is conventional on a sign, not a complete sentence |
+| `corr.c0.002` | `c0.sp.patterns.06` | Explanation rewritten: the tch rule keyed to the vowel sound, with the Canadian pronunciation of *watch* described honestly |
+| `corr.c0.003` / `corr.c0.004` | `c0.assessment.a.11`, `.12`, `c0.assessment.b.11`, `.12` | Print-only segmentation item plus an unscored read-aloud self-comparison; decoding reported as not measured |
+| `corr.c0.005` / `corr.c0.006` | `c0.assessment.a.33`, `c0.assessment.b.33` | Explicit intended meaning, a four-target answer key, and the ambiguous alternative named and excluded |
+
+Codex resolves each by setting `reviewStatus` to `reviewed` with `reviewedBy: 'codex'`, or by returning it with findings. The validator rejects a correction reviewed by the role that proposed it.
+
 ## Rules Claude must preserve
 
 - Never convert synthetic speech into `reviewed_human` audio.
@@ -180,7 +192,9 @@ Begin final C1/C2 authoring only after the R2 pilot feedback is reviewed, as req
 - Never reduce the required inventory silently.
 - Preserve legacy data and immutable attempt history; do not use destructive migrations.
 - Keep historical facts, fictional reconstruction, and uncertainty visibly separate.
-- Do not merge PR #17 while the user intends it to represent a completed plan and the listed release gates remain open.
+- Do not merge PR #17 while the user intends it to represent a completed plan and the listed release gates remain open. (PR #17 was merged on 2026-09-08 at `6f76557`; the audit corrections continue on `codex/r2-correction`.)
+- Never present pilot evidence as released evidence, and never add a pilot approval record without a recorded parent decision.
+- Never resolve a content correction Claude proposed; only the named reviewer may.
 
 ## Claude delivery protocol
 
