@@ -212,3 +212,67 @@ test('typed C0 sentence items permit review of reasonable unlisted answers while
   assert.ok(typedSpelling.every((item) => !item.allowReview));
   assert.equal(evaluateItem(typedSentences[0], 'A totally different sentence?').status, 'pending');
 });
+
+test('a coordinating join never accepts a lower-cased I or declared proper noun', () => {
+  const goggles = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['I packed my bag. I forgot my goggles.'],
+    repairScope: { clauses: ['I packed my bag', 'I forgot my goggles'], allowedJoins: ['period', 'semicolon', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(goggles, 'I packed my bag, and i forgot my goggles.').status, 'pending', 'lower-case i is a spelling error, not a style choice');
+  assert.equal(evaluateItem(goggles, 'I packed my bag, and I forgot my goggles.').status, 'correct');
+  assert.equal(evaluateItem(goggles, 'I packed my bag. I forgot my goggles.').status, 'correct');
+
+  const proper = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['The bell rang. Mia closed the folder.'],
+    repairScope: { clauses: ['The bell rang', 'Mia closed the folder'], allowedJoins: ['period', 'coordinating'], properNouns: ['Mia'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(proper, 'The bell rang, and mia closed the folder.').status, 'pending', 'a declared proper noun keeps its capital');
+  assert.equal(evaluateItem(proper, 'The bell rang, and Mia closed the folder.').status, 'correct');
+
+  const common = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['The bell rang. The runners returned.'],
+    repairScope: { clauses: ['The bell rang', 'The runners returned'], allowedJoins: ['period', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(common, 'The bell rang, and the runners returned.').status, 'correct', 'an ordinary clause is lower-cased mid-sentence');
+  assert.equal(evaluateItem(common, 'The bell rang, and The runners returned.').status, 'pending', 'a mid-sentence capital is not accepted for an ordinary clause');
+});
+
+test('progress evidence is summarized by what actually counts toward mastery', async () => {
+  const { summarizeSkillEvidence } = await import('../src/learning/mastery.js');
+  const attempts = [
+    { evidenceType: 'independent_choice', contentStatus: 'released', ordinal: 1 },
+    { evidenceType: 'independent_choice', contentStatus: 'released', ordinal: 1, helped: true },
+    { evidenceType: 'independent_choice', contentStatus: 'pilot_approved', ordinal: 1 },
+    { evidenceType: 'independent_choice', contentStatus: 'not_released', ordinal: 1 },
+    { evidenceType: 'self_report', contentStatus: 'released', ordinal: 1 },
+  ];
+  assert.deepEqual(summarizeSkillEvidence(attempts), { recorded: 5, released: 1, pilot: 1, notCounted: 3 });
+  assert.deepEqual(summarizeSkillEvidence([]), { recorded: 0, released: 0, pilot: 0, notCounted: 0 });
+  const { readFile } = await import('node:fs/promises');
+  const page = await readFile(new URL('../src/pages/ProgressPage.jsx', import.meta.url), 'utf8');
+  assert.match(page, /count toward mastery/);
+  assert.doesNotMatch(page, /contentStatus !== 'not_reviewed'/, 'the display no longer treats unreleased attempts as eligible');
+});
+
+test('each assessment run records its own attempt session so a retake is not a retry', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const runner = await readFile(new URL('../src/pages/AssessmentRunner.jsx', import.meta.url), 'utf8');
+  assert.match(runner, /function newAttemptSessionId\(form\)/);
+  assert.match(runner, /attemptSessionId: newAttemptSessionId\(form\)/);
+  assert.doesNotMatch(runner, /sessionId: `assessment-\$\{form\}`/, 'attempts no longer share one session per form');
+  assert.doesNotMatch(runner, /sessionId=\{`assessment-\$\{form\}`\}/, 'recordings no longer share one session per form');
+  assert.match(runner, /setState\(createAssessmentState\(form\)\(\)\)/, 'clearing the preview mints a new attempt session');
+
+  // The ordinal that decides first-attempt eligibility is per session and item, so two runs of the
+  // same item under different session IDs are both first attempts.
+  const ordinalFor = (priorAttempts, sessionId, itemId) => priorAttempts.filter((entry) => entry.sessionId === sessionId && entry.itemId === itemId && !entry.technicalFailure).length + 1;
+  const firstRun = [{ sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }];
+  assert.equal(ordinalFor(firstRun, 'assessment-A-run1', 'c0.assessment.a.01'), 2, 'a repeat inside one run is a retry');
+  assert.equal(ordinalFor(firstRun, 'assessment-A-run2', 'c0.assessment.a.01'), 1, 'a retake starts a fresh first attempt');
+});

@@ -27,3 +27,13 @@ export function deriveMastery(attempts, { derivationVersion = 2 } = {}) {
   if (needsReview && status === 'secure') status = 'developing';
   return { status, needsReview, recentFailures, derivationVersion, eligibleCount: eligible.length, correctCount: correct.length, accuracy, sessionCount: sessions.size, dateCount: dates.size, unseenCount, hasTransfer: transfer, hasDelayedReview: delayedReview };
 }
+
+// Splits a learner's attempts for one skill into the buckets a progress screen may show. Released
+// evidence is the only kind that feeds `deriveMastery`; pilot evidence is kept separate so it is
+// never presented as validated progress, and everything else is explicitly not counted.
+export function summarizeSkillEvidence(attempts = []) {
+  const recorded = attempts.length;
+  const released = attempts.filter((attempt) => attempt.contentStatus === 'released' && evidenceEligible(attempt)).length;
+  const pilot = attempts.filter((attempt) => attempt.contentStatus === 'pilot_approved' && evidenceEligible(attempt)).length;
+  return { recorded, released, pilot, notCounted: recorded - released - pilot };
+}
