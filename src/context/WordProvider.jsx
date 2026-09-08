@@ -297,6 +297,10 @@ export function WordProvider({ children }) {
             lastSeen: data.lastSeen,
           };
         });
+        // Words practised on this device but not yet imported to the account stay visible and
+        // are never dropped from local storage; the parent import preview decides their fate.
+        const localOnly = readJson(progressStorageKey(activeProfileId), {});
+        for (const [wordId, entry] of Object.entries(localOnly)) if (!(wordId in progressMap)) progressMap[wordId] = { ...entry, localOnly: true };
         progressRef.current = progressMap;
         setProgress(progressMap);
         writeJson(progressStorageKey(activeProfileId), progressMap);
@@ -521,6 +525,29 @@ export function WordProvider({ children }) {
     }
     return normalized;
   }, [user, activeProfileId, profiles, persistAchievements]);
+
+  // Explicit legacy word-total import for the given words only (used after the parent confirms
+  // the import preview). Each row is created only if the account has no row for that word.
+  const importLegacyProgress = useCallback(async (learnerId, wordIds, account = user) => {
+    if (!account || !wordIds?.length) return 0;
+    const local = readJson(progressStorageKey(learnerId), {});
+    let written = 0;
+    for (let start = 0; start < wordIds.length; start += 200) {
+      const batch = writeBatch(db);
+      let batched = 0;
+      for (const wordId of wordIds.slice(start, start + 200)) {
+        const entry = local[wordId];
+        if (!entry) continue;
+        const ref = doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`);
+        const existing = await getDoc(ref);
+        if (existing.exists()) continue;
+        batch.set(ref, { userId: account.uid, profileId: learnerId, wordId, attempts: entry.attempts || 0, correct: entry.correct || 0, streak: entry.streak || 0, lastSeen: entry.lastSeen || serverTimestamp(), importedFromLocal: true });
+        batched += 1;
+      }
+      if (batched) { await batch.commit(); written += batched; }
+    }
+    return written;
+  }, [user]);
 
   const recordResult = useCallback((wordId, correct, options = {}) => (
     recordResults([{ ...options, wordId, correct }])
@@ -776,6 +803,7 @@ export function WordProvider({ children }) {
     toggleSound,
     achievements,
     unlockAchievement,
+    importLegacyProgress,
     hintsUsedToday,
     useHint,
     dailyChallengeWord,

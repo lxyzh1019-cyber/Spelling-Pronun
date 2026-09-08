@@ -7,6 +7,7 @@ import { edmontonDayKey } from '../learning/r1Core';
 import { flushOutbox, queueAttempt } from '../persistence/indexedDb';
 import { planOutboxWrites } from '../persistence/outboxSync';
 import { mergeAttempts } from '../persistence/sync';
+import { buildImportPreview, canAutoPush, importDecisionRecord } from '../learning/importPreview';
 import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -18,8 +19,23 @@ function attemptsKey(learnerId) {
   return `spelling-learning-attempts:${learnerId}`;
 }
 
+function importDecisionKey(uid, learnerId) {
+  return `spelling-import-decision:${uid}:${learnerId}`;
+}
+
+async function loadRemoteAttempts(uid, learnerId) {
+  const snapshot = await getDocs(query(collection(db, 'spelling-attempts'), where('userId', '==', uid), where('learnerId', '==', learnerId)));
+  return snapshot.docs.map((entry) => entry.data());
+}
+
+async function loadRemoteProgress(uid, learnerId) {
+  const snapshot = await getDocs(query(collection(db, 'spelling-progress'), where('userId', '==', uid), where('profileId', '==', learnerId)));
+  return Object.fromEntries(snapshot.docs.map((entry) => [entry.data().wordId, entry.data()]));
+}
+
 export function LearningProvider({ children }) {
-  const { activeProfileId, user } = useWords();
+  const { activeProfileId, user, profiles, importLegacyProgress } = useWords();
+  const [heldImports, setHeldImports] = useState({});
   const [attempts, setAttempts] = useState(() => readJson(attemptsKey(activeProfileId), []));
   const [saveStatus, setSaveStatus] = useState('saved');
   const activeLearnerRef = useRef(activeProfileId);
@@ -30,10 +46,31 @@ export function LearningProvider({ children }) {
     setSaveStatus('saved');
   }, [activeProfileId]);
 
-  const syncCloud = useCallback(async (account = user, learnerId = activeProfileId) => {
+  // push: 'auto' respects the parent import decision (master plan §9: an existing account never
+  // silently merges local history); 'force' is used after an explicit import decision.
+  const syncCloud = useCallback(async (account = user, learnerId = activeProfileId, { push = 'auto' } = {}) => {
     if (!account) return false;
     if (activeLearnerRef.current === learnerId) setSaveStatus('syncing');
     try {
+      let remote = await loadRemoteAttempts(account.uid, learnerId);
+      let allowPush = push === 'force';
+      if (!allowPush) {
+        const decision = readJson(importDecisionKey(account.uid, learnerId));
+        allowPush = canAutoPush({ isAnonymous: account.isAnonymous, remoteAttemptCount: remote.length, remoteWordCount: decision ? 0 : Object.keys(await loadRemoteProgress(account.uid, learnerId)).length, importDecision: decision });
+      }
+      const local = readJson(attemptsKey(learnerId), []);
+      const remoteIds = new Set(remote.map(({ attemptId }) => attemptId));
+      const held = local.filter(({ attemptId }) => !remoteIds.has(attemptId)).length;
+      setHeldImports((current) => ({ ...current, [learnerId]: allowPush ? 0 : held }));
+      if (!allowPush) {
+        const merged = mergeAttempts(local, remote);
+        writeJson(attemptsKey(learnerId), merged);
+        if (activeLearnerRef.current === learnerId) {
+          setAttempts(merged);
+          setSaveStatus(held ? 'saved-locally' : 'saved');
+        }
+        return false;
+      }
       await flushOutbox(async (entry) => {
         const writes = planOutboxWrites(entry, { uid: account.uid, readLocalProgress: (id) => readJson(progressStorageKey(id), {}) });
         for (const write of writes) {
@@ -46,14 +83,8 @@ export function LearningProvider({ children }) {
           }
         }
       });
-      const snapshot = await getDocs(query(
-        collection(db, 'spelling-attempts'),
-        where('userId', '==', account.uid),
-        where('learnerId', '==', learnerId),
-      ));
-      const remote = snapshot.docs.map((entry) => entry.data());
-      const local = readJson(attemptsKey(learnerId), []);
-      const merged = mergeAttempts(local, remote);
+      remote = await loadRemoteAttempts(account.uid, learnerId);
+      const merged = mergeAttempts(readJson(attemptsKey(learnerId), []), remote);
       writeJson(attemptsKey(learnerId), merged);
       if (activeLearnerRef.current === learnerId) {
         setAttempts(merged);
@@ -131,6 +162,49 @@ export function LearningProvider({ children }) {
     return { attempt, evaluation };
   }, [activeProfileId, user, syncCloud]);
 
+  // Builds the parent-facing preview for every learner profile without writing anything.
+  const previewImport = useCallback(async (account = user) => {
+    if (!account) return null;
+    const learners = await Promise.all(profiles.map(async ({ id }) => ({
+      learnerId: id,
+      localAttempts: readJson(attemptsKey(id), []),
+      remoteAttempts: await loadRemoteAttempts(account.uid, id),
+      localProgress: readJson(progressStorageKey(id), {}),
+      remoteProgress: await loadRemoteProgress(account.uid, id),
+    })));
+    return buildImportPreview(learners);
+  }, [profiles, user]);
+
+  const recordImportDecision = useCallback(async (account, learnerPreview, decision) => {
+    const record = importDecisionRecord(decision, learnerPreview);
+    writeJson(importDecisionKey(account.uid, learnerPreview.learnerId), record);
+    try {
+      await setDoc(doc(db, 'spelling-users', account.uid), { imports: { [learnerPreview.learnerId]: record } }, { merge: true });
+    } catch (error) {
+      console.warn('Import decision saved on this device only:', error);
+    }
+    return record;
+  }, []);
+
+  const confirmImport = useCallback(async (account, preview) => {
+    if (!account || !preview) return false;
+    for (const learnerPreview of preview.learners) {
+      await recordImportDecision(account, learnerPreview, 'imported');
+      if (learnerPreview.newWordIds.length) await importLegacyProgress(learnerPreview.learnerId, learnerPreview.newWordIds, account);
+      await syncCloud(account, learnerPreview.learnerId, { push: 'force' });
+    }
+    return true;
+  }, [importLegacyProgress, recordImportDecision, syncCloud]);
+
+  const skipImport = useCallback(async (account, preview) => {
+    if (!account || !preview) return false;
+    for (const learnerPreview of preview.learners) {
+      await recordImportDecision(account, learnerPreview, 'skipped');
+      setHeldImports((current) => ({ ...current, [learnerPreview.learnerId]: learnerPreview.counts.newAttempts + learnerPreview.counts.newWords }));
+    }
+    return true;
+  }, [recordImportDecision]);
+
   const masteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
     skill.id,
     deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id) && attempt.contentStatus === 'released')),
@@ -138,7 +212,7 @@ export function LearningProvider({ children }) {
   const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
   const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);
 
-  const value = useMemo(() => ({ attempts, submitAttempt, syncCloud, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, syncCloud, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
+  const value = useMemo(() => ({ attempts, submitAttempt, syncCloud, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus, skills: skillsData.skills }), [attempts, submitAttempt, syncCloud, previewImport, confirmImport, skipImport, heldImports, masteryBySkill, reviewProgress, dueReviews, saveStatus]);
   return <LearningContext.Provider value={value}>{children}</LearningContext.Provider>;
 }
 

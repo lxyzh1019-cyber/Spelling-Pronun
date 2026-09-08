@@ -16,7 +16,9 @@ function friendlyAuthError(code) {
 
 export default function ParentPage() {
   const { activeProfileId, authStatus, syncError, user, refreshAuthState } = useWords();
-  const { attempts, saveStatus, syncCloud } = useLearning();
+  const { attempts, saveStatus, syncCloud, previewImport, confirmImport, skipImport, heldImports } = useLearning();
+  const [preview, setPreview] = useState(null);
+  const heldCount = Object.values(heldImports || {}).reduce((sum, count) => sum + count, 0);
   const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,12 +31,56 @@ export default function ParentPage() {
     try {
       const credential = mode === 'register' ? await registerParent(email.trim(), password) : await signInParent(email.trim(), password);
       refreshAuthState();
-      await syncCloud(credential.user);
       setPassword('');
-      setMessage(mode === 'register' ? 'Parent account created. Local attempts are being imported additively.' : 'Signed in. Local attempts are being reconciled with cloud attempts.');
+      if (mode === 'register') {
+        // Create path: the account has no history of its own, so local work imports additively.
+        const created = await previewImport(credential.user);
+        await confirmImport(credential.user, created);
+        setMessage(`Parent account created. Imported ${created.totals.newAttempts} attempt${created.totals.newAttempts === 1 ? '' : 's'} and ${created.totals.newWords} word total${created.totals.newWords === 1 ? '' : 's'} from this device.`);
+      } else {
+        // Existing account: nothing is written until the parent reviews the exact counts.
+        const proposed = await previewImport(credential.user);
+        if (proposed.nothingToImport) {
+          await syncCloud(credential.user, activeProfileId, { push: 'force' });
+          setMessage('Signed in. This device has nothing new to import; cloud history is now available here.');
+        } else {
+          setPreview(proposed);
+          setMessage('Signed in. Review what this device would add before importing.');
+        }
+      }
     } catch (error) {
       setMessage(friendlyAuthError(error.code));
     } finally { setBusy(false); }
+  };
+
+  const runImport = async () => {
+    if (!user || !preview) return;
+    setBusy(true); setMessage('');
+    try {
+      await confirmImport(user, preview);
+      setMessage(`Imported ${preview.totals.newAttempts} attempt${preview.totals.newAttempts === 1 ? '' : 's'} and ${preview.totals.newWords} word total${preview.totals.newWords === 1 ? '' : 's'}. Rows already in the account were left unchanged.`);
+      setPreview(null);
+    } catch { setMessage('The import did not complete. Nothing was removed from this device; try again when online.'); }
+    finally { setBusy(false); }
+  };
+
+  const declineImport = async () => {
+    if (!user || !preview) return;
+    setBusy(true); setMessage('');
+    try {
+      await skipImport(user, preview);
+      setMessage('Import skipped. Local work stays on this device and will not be merged until you choose Import.');
+      setPreview(null);
+    } catch { setMessage('The decision could not be saved.'); }
+    finally { setBusy(false); }
+  };
+
+  const reopenPreview = async () => {
+    if (!user) return;
+    setBusy(true); setMessage('');
+    try { setPreview(await previewImport(user)); }
+    catch { setMessage('The preview could not be loaded. Check the connection and try again.'); }
+    finally { setBusy(false); }
   };
 
   const disconnect = async () => {
@@ -56,7 +102,17 @@ export default function ParentPage() {
         <label>Email<input className={styles.input} type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
         <label>Password<input className={styles.input} type="password" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} minLength={6} required value={password} onChange={(event) => setPassword(event.target.value)} /></label>
         <div className={styles.actions}><button className={styles.primary} disabled={busy}>{busy ? 'Working…' : mode === 'register' ? 'Create and import' : 'Sign in and sync'}</button><button className={styles.secondary} type="button" onClick={() => { setMode(mode === 'register' ? 'signin' : 'register'); setMessage(''); }}>{mode === 'register' ? 'Use existing account' : 'Create an account'}</button></div>
-      </form> : <><p>Local immutable attempts reconcile additively with this account. Legacy word totals import automatically only when that learner has no cloud totals, preventing accidental double counting.</p><button className={styles.secondary} disabled={busy} onClick={disconnect}>Sign out</button></>}
+      </form> : <>
+        <p>Local immutable attempts reconcile additively with this account by attempt ID. An account that already has history never merges this device's work until you review the exact counts below; a brand-new account imports this device's work when it is created.</p>
+        {heldCount > 0 && !preview && <div className={styles.notice} role="status"><strong>{heldCount} local item{heldCount === 1 ? '' : 's'} waiting for your decision.</strong> New work is saved on this device only until you import. <button className={styles.secondary} type="button" disabled={busy} onClick={reopenPreview}>Review import</button></div>}
+        <button className={styles.secondary} disabled={busy} onClick={disconnect}>Sign out</button>
+      </>}
+      {preview && <section className={styles.feedback} aria-label="Import preview">
+        <h2>Import preview</h2>
+        <p>Nothing has been written yet. Importing adds only the rows below; rows already in the account are left exactly as they are.</p>
+        <table className={styles.table}><thead><tr><th>Learner</th><th>New attempts</th><th>New word totals</th><th>Already in account</th></tr></thead><tbody>{preview.learners.map((entry) => <tr key={entry.learnerId}><td>{entry.learnerId}</td><td>{entry.counts.newAttempts}</td><td>{entry.counts.newWords}</td><td>{entry.counts.alreadyInCloudAttempts + entry.counts.alreadyInCloudWords}</td></tr>)}</tbody></table>
+        <div className={styles.actions}><button className={styles.primary} type="button" disabled={busy || preview.nothingToImport} onClick={runImport}>{preview.nothingToImport ? 'Nothing to import' : `Import ${preview.totals.newAttempts + preview.totals.newWords} item${preview.totals.newAttempts + preview.totals.newWords === 1 ? '' : 's'}`}</button><button className={styles.secondary} type="button" disabled={busy} onClick={declineImport}>Skip for now</button></div>
+      </section>}
       {message && <p role="status">{message}</p>}
       <h2>R2 pilot gate tracker</h2><p>This is a truthful readiness list, not a release claim. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p><div className={styles.gateList}>{r2GateTracker.map((gate) => <article className={styles.gate} key={gate.id}><p><strong>{gate.label}</strong> <span className={styles.meta}>— {gateStateLabel(gate.state)}</span></p><p>{gate.detail}</p></article>)}</div>
     </section>
