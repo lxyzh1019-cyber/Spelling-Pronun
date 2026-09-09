@@ -23,3 +23,6 @@
 .table th, .table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #d1d5db; }
 .fieldset { border: 1px solid #d1d5db; border-radius: 10px; padding: 10px 14px 12px; display: grid; gap: 8px; }
 .fieldset legend { font-weight: 700; padding: 0 6px; }
+.printedWord { font-size: 1.9rem; font-weight: 750; letter-spacing: .02em; margin: 6px 0; }
+.audioChoice { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; }
+.audioChoice .choice { flex: 1 1 180px; margin: 0; }

@@ -1,3 +1,4 @@
+import { isQuarantined } from './contentCorrections.js';
 // Approved-for-private-pilot state.
 //
 // The master plan's release lifecycle had a circular dependency: content could not enter delayed
@@ -64,8 +65,8 @@ export function validatePilotApprovals({ approvals = [], packs = [], assessmentF
         errors.push(`${label} cannot be pilot-approved while ${item.id} is not reviewed and integrated`);
         break;
       }
-      if (item.correctionStatus === 'changes_required') {
-        errors.push(`${label} cannot be pilot-approved while ${item.id} has an open correction`);
+      if (isQuarantined(item)) {
+        errors.push(`${label} cannot be pilot-approved while ${item.id} has an unresolved correction or an uninstalled replacement`);
         break;
       }
     }
@@ -86,6 +87,6 @@ export function applyPilotApproval(item, approvedScopeIds = []) {
   if (item.releaseStatus === 'released') return item;
   if (!approvedScopeIds.includes(item.packId) && !approvedScopeIds.includes(item.formId) && !approvedScopeIds.includes(item.scopeId)) return item;
   if (item.reviewStatus !== 'reviewed' || item.integrationStatus !== 'integrated') return item;
-  if (item.correctionStatus === 'changes_required') return item;
+  if (isQuarantined(item)) return item;
   return { ...item, releaseStatus: 'pilot_approved' };
 }

@@ -1,5 +1,5 @@
 {
-  "note": "Content corrections proposed by Claude after the 2026-09-08 Codex audit. Each record quarantines the affected item until Codex records an educational review. Claude may propose a corrected version; it may never mark one reviewed. A quarantined item is withheld from lessons and assessments, and the manifest reports the reduced coverage rather than hiding it.",
+  "note": "Content corrections raised by the 2026-09-08 Codex audit. Claude proposes a corrected version; only the named reviewer may resolve it, and a resolved record alone never restores the defective content: the replacement must be installed at the recorded toVersion or the item stays withheld. A withheld item is kept out of lessons and assessments and the manifest reports the reduced coverage rather than hiding it.",
   "corrections": [
     {
       "id": "corr.c0.001",
@@ -13,161 +13,85 @@
       ],
       "proposedBy": "claude",
       "reviewer": "codex",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "raisedAt": "2026-09-08",
       "auditFinding": "1a",
       "itemIds": [
         "c0.pu.capitals-endmarks.19"
-      ]
+      ],
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-09",
+      "resolution": "Parent approved the corrected sign explanation on 2026-09-09 and directed that the transfer task be restored. Installed as version 2 of c0.pu.capitals-endmarks.19."
     },
     {
       "id": "corr.c0.002",
       "fromVersion": 1,
       "toVersion": 2,
-      "reason": "The explanation described watch as using \"the short a sound\". In ordinary Canadian English the vowel in watch is not the short a of cat, so the description misdescribes the pronunciation and undercuts the phonics teaching.",
-      "correctedExplanation": "Watch ends in tch. The tch spelling follows a single short vowel at the end of a one-syllable word. In Canadian English the vowel in watch sounds like the one in wash, not the one in cat, so listen for the vowel rather than the letter.",
+      "reason": "The explanation described watch as using \"the short a sound\". In ordinary Canadian English the vowel in watch is not the short a of cat, so the description misdescribes the pronunciation and undercuts the phonics teaching. The parent supplied the final wording, which avoids naming a phonics category for the vowel at all.",
+      "correctedExplanation": "Watch ends in tch. The spelling tch often appears at the end of a short one-syllable word after a vowel. The vowel in watch sounds like the vowel in wash for many Canadian speakers, so do not describe it as the short a in cat. Watch is a common spelling to learn and remember.",
       "correctedCommonErrors": [
         "Assuming the letter a always spells the vowel of cat.",
         "Writing wach or wotch by matching the letter instead of the sound."
       ],
       "proposedBy": "claude",
       "reviewer": "codex",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "raisedAt": "2026-09-08",
       "auditFinding": "1b",
       "itemIds": [
         "c0.sp.patterns.06"
-      ]
+      ],
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-09",
+      "resolution": "Parent approved a simplified explanation on 2026-09-09 and supplied the wording. Installed verbatim as version 2 of c0.sp.patterns.06."
     },
     {
       "id": "corr.c0.003",
       "fromVersion": 1,
       "toVersion": 2,
       "reason": "The invented-word prompts supplied the pronunciation (\"pronounced NAR-pish\") and then asked for a matching syllable break. That measures matching a given pronunciation to a segmentation, not reading an unfamiliar word independently.",
-      "redesign": "print_only_segmentation_plus_self_comparison",
+      "redesign": "receptive_audio_choice_plus_optional_read_aloud",
       "proposedBy": "claude",
       "reviewer": "codex",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "raisedAt": "2026-09-08",
       "auditFinding": "2a",
       "itemIds": [
         "c0.assessment.a.11",
         "c0.assessment.a.12"
       ],
-      "proposedItems": [
-        {
-          "part": "print_only_segmentation",
-          "prompt": "Read “Narpish” to yourself. It is an invented word. Choose the syllable break that matches how you read it.",
-          "acceptedAnswer": "nar-pish",
-          "choices": [
-            "nar-pish",
-            "narp-ish"
-          ],
-          "primarySkill": "PH.syllables",
-          "category": "segmentation",
-          "reportedAs": "Segmentation from spelling. Independent decoding is not measured by this item."
-        },
-        {
-          "part": "print_only_segmentation",
-          "prompt": "Read “Vemicate” to yourself. It is an invented word. Choose the syllable break that matches how you read it.",
-          "acceptedAnswer": "vem-i-cate",
-          "choices": [
-            "vem-i-cate",
-            "vemic-ate"
-          ],
-          "primarySkill": "PH.syllables",
-          "category": "segmentation",
-          "reportedAs": "Segmentation from spelling. Independent decoding is not measured by this item."
-        },
-        {
-          "part": "read_aloud_self_comparison",
-          "prompt": "Now read “Narpish” aloud and record it. Afterwards you will hear the model reading and can compare.",
-          "responseType": "recording",
-          "evaluator": "self_comparison",
-          "scoring": "None. The recording is kept as self-comparison evidence only and is never scored, because no qualified rater is available.",
-          "modelAudio": {
-            "spokenText": "Narpish",
-            "audioStatus": "synthetic_preview"
-          }
-        },
-        {
-          "part": "read_aloud_self_comparison",
-          "prompt": "Now read “Vemicate” aloud and record it. Afterwards you will hear the model reading and can compare.",
-          "responseType": "recording",
-          "evaluator": "self_comparison",
-          "scoring": "None. The recording is kept as self-comparison evidence only and is never scored, because no qualified rater is available.",
-          "modelAudio": {
-            "spokenText": "Vemicate",
-            "audioStatus": "synthetic_preview"
-          }
-        }
-      ],
-      "coverageNote": "With this redesign the decoding track reports segmentation only. Independent decoding remains unmeasured and must be reported as such."
+      "coverageNote": "The result reports recognizing a plausible pronunciation from spelling. Reading an unfamiliar word aloud unaided is still not measured, because no qualified rater is available, and the track disclosure says so.",
+      "supersededProposal": "Claude first proposed a print-only syllable-break item plus an unscored read-aloud self comparison. The parent replaced it on 2026-09-09 with a machine-scored receptive task, so the decoding section keeps a scored result instead of reporting nothing.",
+      "installedDesign": "The learner sees the printed word (Narpish and Vemicate) and chooses which of three recordings matches how the spelling would normally be read. The choice is machine-scored by recording id. The prompt never supplies the pronunciation. A read-aloud recording is offered afterwards as optional practice: it stays on the device, is never scored, and produces no attempt record.",
+      "reportedAs": "recognizing a plausible pronunciation from spelling",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-09",
+      "resolution": "Parent specified the receptive audio-choice format and approved it for Form A on 2026-09-09. Installed as version 2 of c0.assessment.a.11, c0.assessment.a.12. The three recordings are synthetic preview audio and are NOT pilot-eligible until the parent listening check confirms each one renders its intended reading.",
+      "pilotBlocker": "Audio listening check outstanding: the validator refuses pilot approval while these choices are synthetic preview audio."
     },
     {
       "id": "corr.c0.004",
       "fromVersion": 1,
       "toVersion": 2,
       "reason": "Same supplied-pronunciation defect as the Form A invented-word prompts.",
-      "redesign": "print_only_segmentation_plus_self_comparison",
+      "redesign": "receptive_audio_choice_plus_optional_read_aloud",
       "proposedBy": "claude",
       "reviewer": "codex",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "raisedAt": "2026-09-08",
       "auditFinding": "2a",
       "itemIds": [
         "c0.assessment.b.11",
         "c0.assessment.b.12"
       ],
-      "proposedItems": [
-        {
-          "part": "print_only_segmentation",
-          "prompt": "Read “Tembish” to yourself. It is an invented word. Choose the syllable break that matches how you read it.",
-          "acceptedAnswer": "tem-bish",
-          "choices": [
-            "tem-bish",
-            "temb-ish"
-          ],
-          "primarySkill": "PH.syllables",
-          "category": "segmentation",
-          "reportedAs": "Segmentation from spelling. Independent decoding is not measured by this item."
-        },
-        {
-          "part": "print_only_segmentation",
-          "prompt": "Read “Lopudent” to yourself. It is an invented word. Choose the syllable break that matches how you read it.",
-          "acceptedAnswer": "lo-pu-dent",
-          "choices": [
-            "lo-pu-dent",
-            "lop-udent"
-          ],
-          "primarySkill": "PH.syllables",
-          "category": "segmentation",
-          "reportedAs": "Segmentation from spelling. Independent decoding is not measured by this item."
-        },
-        {
-          "part": "read_aloud_self_comparison",
-          "prompt": "Now read “Tembish” aloud and record it. Afterwards you will hear the model reading and can compare.",
-          "responseType": "recording",
-          "evaluator": "self_comparison",
-          "scoring": "None. The recording is kept as self-comparison evidence only and is never scored, because no qualified rater is available.",
-          "modelAudio": {
-            "spokenText": "Tembish",
-            "audioStatus": "synthetic_preview"
-          }
-        },
-        {
-          "part": "read_aloud_self_comparison",
-          "prompt": "Now read “Lopudent” aloud and record it. Afterwards you will hear the model reading and can compare.",
-          "responseType": "recording",
-          "evaluator": "self_comparison",
-          "scoring": "None. The recording is kept as self-comparison evidence only and is never scored, because no qualified rater is available.",
-          "modelAudio": {
-            "spokenText": "Lopudent",
-            "audioStatus": "synthetic_preview"
-          }
-        }
-      ],
-      "coverageNote": "With this redesign the decoding track reports segmentation only. Independent decoding remains unmeasured and must be reported as such."
+      "coverageNote": "The result reports recognizing a plausible pronunciation from spelling. Reading an unfamiliar word aloud unaided is still not measured, because no qualified rater is available, and the track disclosure says so.",
+      "supersededProposal": "Claude first proposed a print-only syllable-break item plus an unscored read-aloud self comparison. The parent replaced it on 2026-09-09 with a machine-scored receptive task, so the decoding section keeps a scored result instead of reporting nothing.",
+      "installedDesign": "The learner sees the printed word (Tembish and Lopadent) and chooses which of three recordings matches how the spelling would normally be read. The choice is machine-scored by recording id. The prompt never supplies the pronunciation. A read-aloud recording is offered afterwards as optional practice: it stays on the device, is never scored, and produces no attempt record.",
+      "reportedAs": "recognizing a plausible pronunciation from spelling",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-09",
+      "resolution": "Parent specified the receptive audio-choice format and approved it for Form B on 2026-09-09. Installed as version 2 of c0.assessment.b.11, c0.assessment.b.12. The three recordings are synthetic preview audio and are NOT pilot-eligible until the parent listening check confirms each one renders its intended reading.",
+      "pilotBlocker": "Audio listening check outstanding: the validator refuses pilot approval while these choices are synthetic preview audio."
     },
     {
       "id": "corr.c0.005",
@@ -184,12 +108,15 @@
       "notAccepted": "Changing are to were. The intended meaning is present tense, and they are is already correct with the plural antecedent. A past-tense rewrite changes the meaning rather than repairing an error.",
       "proposedBy": "claude",
       "reviewer": "codex",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "raisedAt": "2026-09-08",
       "auditFinding": "2b",
       "itemIds": [
         "c0.assessment.a.33"
-      ]
+      ],
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-09",
+      "resolution": "Parent approved the explicit key for Form A on 2026-09-09. Installed as version 2 of c0.assessment.a.33: the prompt now states the intended meaning, and the rubric carries the model answer, the four named targets, and what is not accepted."
     },
     {
       "id": "corr.c0.006",
@@ -206,12 +133,15 @@
       "notAccepted": "Reading teachers as plural and writing teachers'. The intended meaning names one teacher; a reviewer records a plural reading as a reasonable alternative for review rather than a correct or incorrect answer.",
       "proposedBy": "claude",
       "reviewer": "codex",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "raisedAt": "2026-09-08",
       "auditFinding": "2b",
       "itemIds": [
         "c0.assessment.b.33"
-      ]
+      ],
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-09",
+      "resolution": "Parent approved the explicit key for Form B on 2026-09-09. Installed as version 2 of c0.assessment.b.33: the prompt now states the intended meaning, and the rubric carries the model answer, the four named targets, and what is not accepted."
     }
   ]
 }

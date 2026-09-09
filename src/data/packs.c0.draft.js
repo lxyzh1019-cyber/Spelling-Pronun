@@ -29,7 +29,9 @@ function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
       const displayOnly = role === 'worked_example';
       return {
         id: `c0.${skillId.toLowerCase()}.${String(index + 1).padStart(2, '0')}`,
-        version: 1,
+        // A corrected item is installed as a new version in place. The correction record stays in
+        // the repository so the defect and its replacement are both auditable.
+        version: row.version || 1,
         primarySkill: skillId,
         secondarySkills: [],
         role,
@@ -62,13 +64,25 @@ const choice = (prompt, answer, choices, explanation, transferGroup) => ({ promp
 const text = (prompt, answers, explanation, evaluator = 'spelling', transferGroup) => ({ prompt, responseType: 'text', evaluator, acceptedAnswers: answers, explanation, transferGroup, ...(evaluator === 'spelling' ? {} : { allowReview: true }) });
 const example = (prompt, explanation, transferGroup) => ({ prompt, explanation, transferGroup });
 
+// Installs a reviewed correction as a new version of a row. Editing an item in place without
+// bumping the version would let a status change alone appear to fix defective content.
+const revise = (row, { version = 2, explanation, commonErrors }) => ({
+  ...row,
+  version,
+  ...(explanation ? { explanation } : {}),
+  ...(commonErrors ? { commonErrors } : {}),
+});
+
 const spellingRows = [
   example('Compare hop → hopping and hope → hoping.', 'In hopping, the final consonant doubles after one short vowel. In hoping, the silent e is dropped before -ing.', 'double-or-drop'),
   example('Compare picnic → picnicking and panic → panicking.', 'A final c is followed by k before -ing so the new form keeps the /k/ sound: picnicking and panicking.', 'c-before-ing'),
   choice('Choose the correct spelling for “run” with -ing.', 'b', [['a', 'runing'], ['b', 'running'], ['c', 'runnning']], 'Running doubles the final n because run ends in one short vowel followed by one consonant.', 'double-short-vowel'),
   choice('Choose the correct spelling for “make” with -ing.', 'a', [['a', 'making'], ['b', 'makeing'], ['c', 'makking']], 'Making drops the silent e before adding -ing.', 'drop-silent-e'),
   choice('Choose the correctly spelled word meaning “having a lot of something”.', 'c', [['a', 'richh'], ['b', 'riche'], ['c', 'rich']], 'Rich is a common exception to the usual short-vowel spelling pattern: it ends in ch, not tch.', 'ch-exception-rich'),
-  choice('Choose the correct spelling for the small timepiece worn on a wrist.', 'b', [['a', 'wach'], ['b', 'watch'], ['c', 'wotch']], 'Watch uses tch after the short a sound.', 'tch-short-vowel'),
+  revise(choice('Choose the correct spelling for the small timepiece worn on a wrist.', 'b', [['a', 'wach'], ['b', 'watch'], ['c', 'wotch']], '', 'tch-short-vowel'), {
+    explanation: 'Watch ends in tch. The spelling tch often appears at the end of a short one-syllable word after a vowel. The vowel in watch sounds like the vowel in wash for many Canadian speakers, so do not describe it as the short a in cat. Watch is a common spelling to learn and remember.',
+    commonErrors: ['Assuming the letter a always spells the vowel of cat.', 'Writing wach or wotch by matching the letter instead of the sound.'],
+  }),
   choice('Choose the correct spelling for the opposite of “possible”.', 'a', [['a', 'impossible'], ['b', 'inpossible'], ['c', 'impossable']], 'The prefix in- changes to im- before p, producing impossible.', 'prefix-assimilation'),
   choice('Choose the correctly spelled word meaning “a place to sit”.', 'c', [['a', 'seet'], ['b', 'sete'], ['c', 'seat']], 'Seat uses ea for its long-e sound; vowel-team spellings must be learned word by word because exceptions exist.', 'vowel-team-ea'),
   choice('Which spelling completes “The puppy is ___ the ball”?', 'b', [['a', 'chaseing'], ['b', 'chasing'], ['c', 'chassing']], 'Chasing drops the silent e from chase before -ing.', 'drop-e-context'),
@@ -135,7 +149,10 @@ const punctuationRows = [
   choice('Choose the correctly written sentence.', 'c', [['a', 'On monday, we begin.'], ['b', 'on Monday, we begin?'], ['c', 'On Monday, we begin.']], 'The sentence and Monday begin with capitals, and the statement ends with a period.', 'day-statement'),
   choice('Which option asks a complete direct question?', 'a', [['a', 'Have you seen the keys?'], ['b', 'Have you seen the keys!']], 'A direct request for information ends with a question mark.', 'direct-question'),
   text('Correct the message: please call aunt rosa tonight', ['Please call Aunt Rosa tonight.'], 'Capitalize the first word and Aunt Rosa because the family title is part of the name; finish the request with a period.', 'punctuation', 'family-name'),
-  choice('A trail sign needs a clear warning. Choose the best version.', 'b', [['a', 'danger falling rocks.'], ['b', 'Danger! Falling rocks.']], 'The capitalized warning and exclamation mark signal danger; the following statement is also capitalized and complete.', 'transfer-sign'),
+  revise(choice('A trail sign needs a clear warning. Choose the best version.', 'b', [['a', 'danger falling rocks.'], ['b', 'Danger! Falling rocks.']], '', 'transfer-sign'), {
+    explanation: 'Signs often use short fragments. “Danger!” is an exclamation and “Falling rocks.” names a thing without saying what it does, so it is a fragment, not a complete sentence. Both still begin with a capital and take an end mark, and a sign is one of the few places a fragment is the right choice. In your own writing a complete sentence needs a subject and a verb.',
+    commonErrors: ['Calling any capitalized group of words with a period a complete sentence.', 'Copying sign style into ordinary writing, where a fragment is usually an error.'],
+  }),
   text('Write this exhibit question correctly: who made this wooden tool', ['Who made this wooden tool?'], 'Capitalize Who and add a question mark because the exhibit asks a direct question.', 'punctuation', 'transfer-exhibit'),
   choice('Choose the correctly punctuated statement.', 'a', [['a', 'The snow melted quickly.'], ['b', 'The snow melted quickly?']], 'This line gives information, so it ends with a period.', 'review-period'),
   choice('Choose the correctly capitalized sentence.', 'b', [['a', 'My friend moved to nova scotia.'], ['b', 'My friend moved to Nova Scotia.']], 'Nova Scotia is a proper place name, so both words begin with capitals.', 'review-place'),

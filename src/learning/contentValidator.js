@@ -1,3 +1,4 @@
+import { isQuarantined } from './contentCorrections.js';
 const REQUIRED_ITEM_FIELDS = ['id', 'version', 'primarySkill', 'role', 'difficulty', 'prompt', 'responseType', 'evaluator', 'explanation', 'helpSteps', 'evidenceEligibility', 'transferGroup', 'authorStatus', 'reviewStatus', 'releaseStatus'];
 const REQUIRED_AUDIO_ASSET_FIELDS = ['id', 'version', 'url', 'transcript', 'locale', 'reviewStatus'];
 
@@ -63,6 +64,18 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
     // Isolated phoneme audio must be a real recording: ordinary synthesis reading letter names is
     // not phonics instruction (master plan section 10).
     if (item.requiresHumanAudio && item.audioStatus === 'reviewed_model') errors.push(`${item.id} requires a human recording rather than model audio`);
+    // A receptive decoding item shows the written word and asks which recording matches it. The
+    // prompt must never supply the pronunciation, or the item measures matching rather than reading.
+    if (item.category === 'receptive_decoding') {
+      if (!item.printedWord) errors.push(`${item.id} must show the written word it asks about`);
+      if (/pronounced\s/i.test(item.prompt || '')) errors.push(`${item.id} supplies the pronunciation in its prompt`);
+      const spokenChoices = (item.choices || []).filter((choice) => choice.spokenText);
+      if (spokenChoices.length < 2) errors.push(`${item.id} needs at least two spoken choices to compare`);
+      if ((item.acceptedAnswers || []).length !== 1) errors.push(`${item.id} needs exactly one accepted recording`);
+      if (!item.targetPronunciation) errors.push(`${item.id} must name the target pronunciation for the listening check`);
+      if (!item.reportedAs) errors.push(`${item.id} must state what its result reports`);
+      if (item.optionalPractice && item.optionalPractice.evaluator !== 'self_comparison') errors.push(`${item.id} optional practice must stay a self comparison`);
+    }
     if (item.responseType === 'recording' && item.evaluator !== 'human_rubric') errors.push(`${item.id} recording must use human review`);
     if (item.reviewStatus === 'reviewed') {
       if (item.authorStatus !== 'reviewed') errors.push(`${item.id} is reviewed without reviewed author status`);
@@ -74,14 +87,19 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
     if (item.releaseStatus === 'pilot_approved') {
       if (item.reviewStatus !== 'reviewed' || item.authorStatus !== 'reviewed') errors.push(`${item.id} is pilot-approved without completed author and educational review`);
       if (item.integrationStatus !== 'integrated') errors.push(`${item.id} is pilot-approved without completed integration`);
-      if (item.correctionStatus === 'changes_required') errors.push(`${item.id} is pilot-approved while a correction is open`);
+      if (isQuarantined(item)) errors.push(`${item.id} is pilot-approved while a correction is unresolved or its replacement is not installed`);
+      // A pilot answer that depends on hearing audio needs that audio checked first. Synthesis can
+      // render an invented word or a minimal pair in a way the item did not intend, and the child
+      // would be marked wrong for the voice rather than for the reading.
+      const dependsOnAudio = Boolean(item.spokenText) || (item.choices || []).some((choice) => choice.spokenText);
+      if (dependsOnAudio && item.audioStatus === 'synthetic_preview') errors.push(`${item.id} is pilot-approved while its audio is an unchecked synthetic preview`);
     }
     if (item.releaseStatus === 'released') {
       if (item.authorStatus !== 'reviewed' || item.reviewStatus !== 'reviewed') errors.push(`${item.id} is released without completed author and educational review`);
       if (item.integrationStatus !== 'integrated') errors.push(`${item.id} is released without completed integration`);
       if (String(item.evidenceEligibility).includes('fixture') || String(item.evidenceEligibility).includes('draft')) errors.push(`${item.id} releases ineligible evidence`);
       if (item.audioStatus === 'synthetic_preview') errors.push(`${item.id} releases synthetic preview audio`);
-      if (item.correctionStatus === 'changes_required') errors.push(`${item.id} is released while a correction is open`);
+      if (isQuarantined(item)) errors.push(`${item.id} is released while a correction is unresolved or its replacement is not installed`);
     }
   }
   const lessonIds = new Set(items.map(({ id }) => id));

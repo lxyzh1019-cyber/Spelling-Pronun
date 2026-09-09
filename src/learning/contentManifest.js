@@ -1,3 +1,4 @@
+import { isQuarantined } from './contentCorrections.js';
 const REQUIRED_ROLES = { worked_example: 2, guided: 6, independent: 10, transfer: 2, delayed_review: 4 };
 
 export function buildContentManifest({ skills = [], packs = [], assessmentForms = [], episodes = [] }) {
@@ -30,8 +31,8 @@ export function buildContentManifest({ skills = [], packs = [], assessmentForms 
     challengedEpisodes: episodes.filter((episode) => ['independently_challenged', 'reviewed', 'released'].includes(episode.reviewStatus)).length,
     reviewedEpisodes: episodes.filter((episode) => ['reviewed', 'released'].includes(episode.reviewStatus)).length,
     integratedEpisodes: episodes.filter((episode) => episode.integrationStatus === 'integrated').length,
-    quarantinedObjects: packs.flatMap((pack) => pack.items).filter((item) => item.correctionStatus === 'changes_required').length,
-    quarantinedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.correctionStatus === 'changes_required').length,
+    quarantinedObjects: packs.flatMap((pack) => pack.items).filter(isQuarantined).length,
+    quarantinedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter(isQuarantined).length,
     pilotApprovedObjects: packs.flatMap((pack) => pack.items).filter((item) => item.releaseStatus === 'pilot_approved').length,
     pilotApprovedAssessmentPrompts: assessmentForms.flatMap((form) => form.items).filter((item) => item.releaseStatus === 'pilot_approved').length,
     pilotApprovedEpisodes: episodes.filter((episode) => episode.releaseStatus === 'pilot_approved').length,

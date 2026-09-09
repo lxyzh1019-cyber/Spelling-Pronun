@@ -25,7 +25,10 @@ test('an approval requires a recorded parent decision on reviewed, integrated, c
   assert.ok(unreviewed.errors.some((error) => error.includes('not reviewed and integrated')));
 
   const openCorrection = validatePilotApprovals({ approvals: [approval], packs: [{ ...pack, items: [{ ...reviewedItem, correctionStatus: 'changes_required' }] }] });
-  assert.ok(openCorrection.errors.some((error) => error.includes('open correction')));
+  assert.ok(openCorrection.errors.some((error) => error.includes('unresolved correction')));
+  // A correction marked reviewed whose replacement was never installed blocks the pilot too.
+  const notInstalled = validatePilotApprovals({ approvals: [approval], packs: [{ ...pack, items: [{ ...reviewedItem, correctionStatus: 'correction_not_installed' }] }] });
+  assert.ok(notInstalled.errors.some((error) => error.includes('uninstalled replacement')));
 
   const staleVersion = validatePilotApprovals({ approvals: [{ ...approval, scopeVersion: 0 }], packs: [pack] });
   assert.ok(staleVersion.errors.some((error) => error.includes('targets version 0')));
@@ -94,5 +97,5 @@ test('the validator gates the pilot_approved status like a release', async () =>
   assert.deepEqual(validateContent({ skills, items: [base] }).errors, []);
   assert.ok(validateContent({ skills, items: [{ ...base, integrationStatus: 'not_integrated' }] }).errors.some((error) => error.includes('pilot-approved without completed integration')));
   assert.ok(validateContent({ skills, items: [{ ...base, reviewStatus: 'independently_challenged' }] }).errors.some((error) => error.includes('pilot-approved without completed author and educational review')));
-  assert.ok(validateContent({ skills, items: [{ ...base, correctionStatus: 'changes_required' }] }).errors.some((error) => error.includes('correction is open')));
+  assert.ok(validateContent({ skills, items: [{ ...base, correctionStatus: 'changes_required' }] }).errors.some((error) => error.includes('correction is unresolved')));
 });

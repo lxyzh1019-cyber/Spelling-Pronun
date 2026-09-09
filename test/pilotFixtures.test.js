@@ -57,7 +57,9 @@ test('C0 assessment draft has two distinct 34-prompt forms with the required blu
     assert.equal(form.items.filter((item) => item.part === 'A').length, 20);
     assert.equal(form.items.filter((item) => item.part === 'B').length, 14);
     assert.equal(form.items.filter((item) => item.category === 'spelling_dictation').length, 8);
-    assert.equal(form.items.filter((item) => item.category === 'decoding').length, 4);
+    // Four decoding prompts: two syllable-break items and two receptive audio-choice items.
+    assert.equal(form.items.filter((item) => ['decoding', 'receptive_decoding'].includes(item.category)).length, 4);
+    assert.equal(form.items.filter((item) => item.category === 'receptive_decoding').length, 2);
     assert.equal(form.items.filter((item) => item.category === 'listening').length, 4);
     assert.equal(form.items.filter((item) => item.category === 'speaking').length, 4);
     assert.equal(form.items.filter((item) => item.category === 'sentence').length, 12);

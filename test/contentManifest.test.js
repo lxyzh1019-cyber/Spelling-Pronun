@@ -8,14 +8,14 @@ import { buildContentManifest } from '../src/learning/contentManifest.js';
 
 test('manifest proves exact C0 draft inventory without claiming release readiness', () => {
   const manifest = buildContentManifest({ skills: skillsData.skills, packs: c0PilotPacks, assessmentForms: c0AssessmentForms, episodes: storyDraft.episodes });
-  assert.deepEqual(manifest.counts, { skills: 42, packs: 4, contentObjects: 96, assessmentPrompts: 68, episodes: 2, mappedSkills: 4, challengedObjects: 96, reviewedObjects: 96, integratedObjects: 96, challengedAssessmentPrompts: 68, reviewedAssessmentPrompts: 28, integratedAssessmentPrompts: 28, challengedEpisodes: 2, reviewedEpisodes: 2, integratedEpisodes: 2, quarantinedObjects: 2, quarantinedAssessmentPrompts: 6, pilotApprovedObjects: 0, pilotApprovedAssessmentPrompts: 0, pilotApprovedEpisodes: 0, releasedObjects: 0, releasedAssessmentPrompts: 0, releasedEpisodes: 0 });
+  assert.deepEqual(manifest.counts, { skills: 42, packs: 4, contentObjects: 96, assessmentPrompts: 68, episodes: 2, mappedSkills: 4, challengedObjects: 96, reviewedObjects: 96, integratedObjects: 96, challengedAssessmentPrompts: 68, reviewedAssessmentPrompts: 28, integratedAssessmentPrompts: 28, challengedEpisodes: 2, reviewedEpisodes: 2, integratedEpisodes: 2, quarantinedObjects: 0, quarantinedAssessmentPrompts: 0, pilotApprovedObjects: 0, pilotApprovedAssessmentPrompts: 0, pilotApprovedEpisodes: 0, releasedObjects: 0, releasedAssessmentPrompts: 0, releasedEpisodes: 0 });
   assert.equal(manifest.r2InventoryComplete, true);
   assert.equal(manifest.r3InventoryComplete, false);
   assert.equal(manifest.releaseReady, false);
   // Nothing is pilot-approved until the parent records the decision, so the pilot loop is closed too.
   assert.equal(manifest.counts.pilotApprovedObjects, 0);
-  // Open corrections withhold content, so the manifest reports reduced coverage instead of hiding it.
-  assert.equal(manifest.correctionsOpen, true);
+  // All six audit corrections are resolved and their replacements installed, so nothing is withheld.
+  assert.equal(manifest.correctionsOpen, false);
   assert.deepEqual(manifest.errors, []);
 });
 
