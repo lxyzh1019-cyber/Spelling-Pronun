@@ -22,8 +22,18 @@ export function openLearningDb() {
   return requestResult(request);
 }
 
+// The database opener is injectable so a test can drive these functions against an in-memory store
+// instead of a browser. `openLearningDb` stays the default, so no call site changes.
+let openDb = openLearningDb;
+
+export function useDatabaseOpener(opener) {
+  const previous = openDb;
+  openDb = opener || openLearningDb;
+  return () => { openDb = previous; };
+}
+
 async function withStore(storeName, mode, operation) {
-  const db = await openLearningDb();
+  const db = await openDb();
   try {
     const transaction = db.transaction(storeName, mode);
     const result = await operation(transaction.objectStore(storeName));

@@ -6,9 +6,8 @@ import { deriveMastery } from '../learning/mastery';
 import { deriveReviewProgress, selectDueReviews } from '../learning/reviewScheduler';
 import { edmontonDayKey } from '../learning/r1Core';
 import { flushOutbox, queueAttempt } from '../persistence/indexedDb';
-import { planOutboxWrites } from '../persistence/outboxSync';
-import { mergeAttempts } from '../persistence/sync';
-import { buildImportPreview, canAutoPush, importDecisionRecord } from '../learning/importPreview';
+import { syncLearnerAttempts } from '../persistence/attemptSync';
+import { buildImportPreview, importDecisionRecord } from '../learning/importPreview';
 import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import { collection, doc, getDoc, getDocs, query, runTransaction, setDoc, where } from 'firebase/firestore';
@@ -94,57 +93,38 @@ export function LearningProvider({ children }) {
     if (!account) return false;
     if (activeLearnerRef.current === learnerId) setSaveStatus('syncing');
     try {
-      let remote = await loadRemoteAttempts(account.uid, learnerId);
-      let allowPush = push === 'force';
-      if (!allowPush) {
-        const decision = readJson(importDecisionKey(account.uid, learnerId));
-        allowPush = canAutoPush({ isAnonymous: account.isAnonymous, remoteAttemptCount: remote.length, remoteWordCount: decision ? 0 : Object.keys(await loadRemoteProgress(account.uid, learnerId)).length, importDecision: decision });
-      }
-      const local = readJson(attemptsKey(learnerId), []);
-      const remoteIds = new Set(remote.map(({ attemptId }) => attemptId));
-      const held = local.filter(({ attemptId }) => !remoteIds.has(attemptId)).length;
-      setHeldImports((current) => ({ ...current, [learnerId]: allowPush ? 0 : held }));
-      if (!allowPush) {
-        const merged = mergeAttempts(local, remote);
-        writeJson(attemptsKey(learnerId), merged);
-        if (activeLearnerRef.current === learnerId) {
-          setAttempts(merged);
-          setSaveStatus(held ? 'saved-locally' : 'saved');
-        }
-        return false;
-      }
-      const wordsToReconcile = new Map();
-      // Only this learner's queued answers are sent. Another learner may have declined the import,
-      // and their answers must stay on the device until their own sync is allowed to push.
-      await flushOutbox(async (entry) => {
-        const writes = planOutboxWrites(entry, { uid: account.uid });
-        for (const write of writes) {
-          if (write.mode === 'reconcile-progress') {
-            const pending = wordsToReconcile.get(write.learnerId) || new Set();
-            pending.add(write.wordId);
-            wordsToReconcile.set(write.learnerId, pending);
-            continue;
-          }
-          const target = doc(db, write.collection, write.id);
-          if (write.mode === 'create-if-missing') {
-            const existing = await getDoc(target);
-            if (!existing.exists()) await setDoc(target, write.data);
-          } else {
+      // The sequence lives in src/persistence/attemptSync.js so it can be run in a test. This
+      // provider supplies the real storage and Firestore calls and owns only the React state.
+      const outcome = await syncLearnerAttempts({
+        uid: account.uid,
+        learnerId,
+        isAnonymous: account.isAnonymous,
+        push,
+        io: {
+          loadRemoteAttempts,
+          loadRemoteProgress,
+          readImportDecision: (uid, learner) => readJson(importDecisionKey(uid, learner)),
+          readLocalAttempts: (learner) => readJson(attemptsKey(learner), []),
+          writeLocalAttempts: (learner, attempts) => writeJson(attemptsKey(learner), attempts),
+          flushOutbox,
+          writeDocument: async (write) => {
+            const target = doc(db, write.collection, write.id);
+            if (write.mode === 'create-if-missing') {
+              const existing = await getDoc(target);
+              if (!existing.exists()) await setDoc(target, write.data);
+              return;
+            }
             await setDoc(target, write.data, { merge: true });
-          }
-        }
-      }, { accept: (entry) => entry.payload?.learnerId === learnerId });
-      for (const [reconcileLearner, wordIds] of wordsToReconcile) {
-        await reconcileWordProgress(account, reconcileLearner, [...wordIds]);
-      }
-      remote = await loadRemoteAttempts(account.uid, learnerId);
-      const merged = mergeAttempts(readJson(attemptsKey(learnerId), []), remote);
-      writeJson(attemptsKey(learnerId), merged);
+          },
+          reconcileWords: (learner, wordIds) => reconcileWordProgress(account, learner, wordIds),
+        },
+      });
+      setHeldImports((current) => ({ ...current, [learnerId]: outcome.held }));
       if (activeLearnerRef.current === learnerId) {
-        setAttempts(merged);
-        setSaveStatus('saved');
+        setAttempts(outcome.merged);
+        setSaveStatus(outcome.held ? 'saved-locally' : 'saved');
       }
-      return true;
+      return outcome.pushed;
     } catch (error) {
       console.warn('Learning attempt sync deferred:', error);
       if (activeLearnerRef.current === learnerId) setSaveStatus('saved-locally');

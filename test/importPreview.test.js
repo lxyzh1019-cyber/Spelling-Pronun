@@ -60,6 +60,6 @@ test('source guard: the parent page reviews an existing account before writing a
   assert.match(source, /Skip for now/);
   const signInBranch = source.slice(source.indexOf("} else {\n        // Existing account"), source.indexOf('setPreview(proposed)'));
   assert.doesNotMatch(signInBranch, /confirmImport\(/, 'signing into an existing account never imports before the preview');
-  const provider = await readFile(new URL('../src/context/LearningProvider.jsx', import.meta.url), 'utf8');
-  assert.match(provider, /canAutoPush\(/, 'automatic sync respects the import decision');
+  // The rule that automatic sync respects the import decision is no longer read as text: it is
+  // executed in test/attemptSync.test.js against the real sequence.
 });
