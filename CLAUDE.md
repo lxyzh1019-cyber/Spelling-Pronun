@@ -19,7 +19,9 @@ hand-written fakes in `test/fakes` (no packages) let the storage and cloud paths
 IndexedDB opener is injectable via `useDatabaseOpener`, and `firebaseSessionStore` takes its
 Firestore operations as a parameter. A few tests named `source guard:` or `copy guard:` read a
 component as text to protect truthful learner-facing wording; they do not execute it, and their
-names say so.
+names say so. One of them, `test/componentImports.test.js`, guards a class of bug neither the build
+nor a unit test can see: a component calling a helper it never imported. A bundler treats a free
+identifier as a global, so `npm run build` stays green while the app fails to render.
 
 ## Architecture
 
@@ -55,6 +57,21 @@ Pure modules with no React or Firebase imports; every rule has a test in `test/`
 
 Content lives in `src/data/` (C0 packs, assessment forms, story, review records, integration records, pilot approvals, corrections). The lifecycle is `draft → schema-valid → independently challenged → reviewed → integrated → pilot_approved → learner_tested → released`. Only `released` content produces validated mastery evidence; `pilot_approved` content runs the same loop into a separate pilot record. Nothing is released. The parent approved the four C0 packs, both episodes, and the 28 Part B prompts for a private pilot on 2026-09-09; every prompt that depends on audio nobody has listened to is excluded.
 
+### Human checks (`/checks`)
+
+Some gates can only be closed by a person opening the app and observing something: whether a synthesised
+word is intelligible on the real iPad, whether Safari keeps a session across an interruption, whether a
+child can restate a rule afterwards. `src/data/humanChecks.js` holds those checks as data (steps, what you
+need, what counts as a pass, and what a pass does *not* unlock); `src/learning/humanChecks.js` holds the
+rules; `src/persistence/checkLog.js` keeps the results in `localStorage`, preserving the earlier result
+whenever a row is re-checked.
+
+A recorded result is one person's observation on one device. It is never mastery evidence and it never
+releases content: `gateStateAfterChecks` returns the gate's own state however many rows are ticked, and
+`summariseChecks` deliberately exposes no `ready` or `released` field. Both are enforced by test. A check
+with an unmet prerequisite — the two-device check before Firebase Email/Password exists — cannot be
+recorded at all.
+
 ### Persistence (`src/persistence/`)
 
 `indexedDb.js` stores session snapshots, attempts, an outbox, and recordings. `outboxSync.js` plans idempotent cloud writes; the outbox flushes on mount, after a submit, on `online`, and when the tab becomes visible. `durableSession.js` + `src/hooks/useDurableSession.js` give lesson/assessment/review pages resumable, learner-and-version-pinned state with per-tab leases (`sessionLease.js`) and an authenticated cloud-owner contract (`sessionSync.js`, `firebaseSessionStore.js`) that is wired but not yet verified against a live Firebase project.
@@ -84,7 +101,8 @@ Routes:
 - `/assessment`, `/assessment/:sessionId` → AssessmentPage / AssessmentRunner (Form A/B preview; comparison of the latest two completions)
 - `/review` → ReviewPage (delayed review; released content only)
 - `/progress` → ProgressPage (per-skill mastery, needs-review and pending-review counts)
-- `/parent` → ParentPage (parent account, import preview, R2 gate tracker)
+- `/parent` → ParentPage (parent account, import preview, R2 gate tracker, link to the checks)
+- `/checks` → ChecksPage (the checks that need a person: steps, pass criteria, and a local log of what was observed)
 - `/test` → SpellingTest (speech synthesis reads words aloud, user types)
 - `/flashcards` → Flashcards (self-report only; never independent evidence)
 - `/scramble` → WordScramble

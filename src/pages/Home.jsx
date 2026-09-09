@@ -189,6 +189,18 @@ export default function Home() {
         <BadgeShelf />
         <Leaderboard />
       </section>
+
+      <section className={styles.parentSection} aria-labelledby="for-the-parent">
+        <h2 id="for-the-parent">For the parent</h2>
+        <p className={styles.sectionIntro}>
+          Some things can only be checked by a person: whether a voice is clear on the iPad, whether a lesson actually
+          teaches. The testing page lists each one with the steps to follow, and keeps a record of what you saw.
+        </p>
+        <p className={styles.parentLinks}>
+          <Link to="/checks">Things I need you to test</Link>
+          <Link to="/parent">Parent account and gates</Link>
+        </p>
+      </section>
     </div>
   );
 }

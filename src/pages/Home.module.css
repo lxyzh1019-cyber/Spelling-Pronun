@@ -279,3 +279,8 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.parentSection { margin-top: 28px; padding: 18px 20px; border-top: 1px solid #d1d5db; }
+.parentSection h2 { font-size: 1.05rem; color: #4b5563; }
+.parentLinks { display: flex; flex-wrap: wrap; gap: 18px; }
+.parentLinks a { font-weight: 700; color: #2563eb; }
