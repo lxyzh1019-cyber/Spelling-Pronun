@@ -1,4 +1,119 @@
 {
-  "note": "Approved-for-private-pilot decisions. This file ships EMPTY. A record is added only after the parent records the decision in docs/IMPLEMENTATION_STATUS.md; adding one here without that decision would be a false claim that a pilot was authorized. Each record needs scopeId, scopeType, scopeVersion, decision, decidedBy: 'parent', decidedAt, and the review evidence it relies on.",
-  "approvals": []
+  "note": "Approved-for-private-pilot decisions. A record here means the parent explicitly approved that content for a private family pilot, with the decision also recorded in docs/IMPLEMENTATION_STATUS.md. Pilot content runs the full learning loop but its attempts are kept in a separate pilot evidence record and are never presented as validated mastery. An approval can name itemIds to cover only part of a scope.",
+  "approvals": [
+    {
+      "scopeId": "c0.pack.sp.patterns",
+      "scopeType": "pack",
+      "scopeVersion": 1,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "evidence": "All 24 objects are independently challenged, educationally reviewed, and integrated. No item in this pack depends on audio."
+    },
+    {
+      "scopeId": "c0.pack.se.complete",
+      "scopeType": "pack",
+      "scopeVersion": 1,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "evidence": "All 24 objects are independently challenged, educationally reviewed, and integrated. No item in this pack depends on audio."
+    },
+    {
+      "scopeId": "c0.pack.pu.capitals-endmarks",
+      "scopeType": "pack",
+      "scopeVersion": 1,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "evidence": "All 24 objects are independently challenged, educationally reviewed, and integrated. No item in this pack depends on audio."
+    },
+    {
+      "scopeId": "c0.pack.gr.subject-object-pronouns",
+      "scopeType": "pack",
+      "scopeVersion": 1,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "evidence": "All 24 objects are independently challenged, educationally reviewed, and integrated. No item in this pack depends on audio."
+    },
+    {
+      "scopeId": "c0.story.01",
+      "scopeType": "episode",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "evidence": "Both episodes completed challenge, source review, and integration. Narration is on-screen text read by synthesis and is labelled as such; no answer depends on hearing it."
+    },
+    {
+      "scopeId": "c0.story.02",
+      "scopeType": "episode",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "evidence": "Both episodes completed challenge, source review, and integration. Narration is on-screen text read by synthesis and is labelled as such; no answer depends on hearing it."
+    },
+    {
+      "scopeId": "c0.assessment.a",
+      "scopeType": "assessment_form",
+      "scopeVersion": 1,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "itemIds": [
+        "c0.assessment.a.21",
+        "c0.assessment.a.22",
+        "c0.assessment.a.23",
+        "c0.assessment.a.24",
+        "c0.assessment.a.25",
+        "c0.assessment.a.26",
+        "c0.assessment.a.27",
+        "c0.assessment.a.28",
+        "c0.assessment.a.29",
+        "c0.assessment.a.30",
+        "c0.assessment.a.31",
+        "c0.assessment.a.32",
+        "c0.assessment.a.33",
+        "c0.assessment.a.34"
+      ],
+      "evidence": "The 14 Part B prompts are reviewed and integrated and need no audio.",
+      "excluded": "All 20 Part A prompts. Spelling dictation, listening contrasts, and the receptive decoding items depend on audio that has not been listened to yet; the speaking prompts need a rater there is none of. They stay outside the pilot until the listening check is recorded."
+    },
+    {
+      "scopeId": "c0.assessment.b",
+      "scopeType": "assessment_form",
+      "scopeVersion": 1,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-09",
+      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
+      "itemIds": [
+        "c0.assessment.b.21",
+        "c0.assessment.b.22",
+        "c0.assessment.b.23",
+        "c0.assessment.b.24",
+        "c0.assessment.b.25",
+        "c0.assessment.b.26",
+        "c0.assessment.b.27",
+        "c0.assessment.b.28",
+        "c0.assessment.b.29",
+        "c0.assessment.b.30",
+        "c0.assessment.b.31",
+        "c0.assessment.b.32",
+        "c0.assessment.b.33",
+        "c0.assessment.b.34"
+      ],
+      "evidence": "The 14 Part B prompts are reviewed and integrated and need no audio.",
+      "excluded": "All 20 Part A prompts. Spelling dictation, listening contrasts, and the receptive decoding items depend on audio that has not been listened to yet; the speaking prompts need a rater there is none of. They stay outside the pilot until the listening check is recorded."
+    }
+  ]
 }

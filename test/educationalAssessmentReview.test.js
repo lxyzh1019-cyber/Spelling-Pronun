@@ -27,7 +27,7 @@ test('only the 28 source-reviewed Part B prompts advance and none are released',
   assert.ok(reviewed.every((item) => item.part === 'B' && item.authorStatus === 'reviewed'));
   assert.equal(blocked.length, 40);
   assert.ok(blocked.every((item) => item.part === 'A' && item.authorStatus === 'draft'));
-  assert.ok(c0AssessmentItems.every((item) => item.releaseStatus === 'not_released'));
+  assert.ok(c0AssessmentItems.every((item) => item.releaseStatus !== 'released'), 'nothing is released; Part B is pilot-approved only');
 });
 
 test('partial assessment validator rejects missing coverage and unexplained blocks', () => {

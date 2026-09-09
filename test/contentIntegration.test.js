@@ -16,7 +16,8 @@ test('C0 integration records cover 96 lesson objects, 28 assessment prompts, and
 test('integrated C0 content is reviewed but remains unreleased', () => {
   const lessonItems = c0PilotPacks.flatMap((pack) => pack.items);
   const assessmentItems = c0AssessmentForms.flatMap((form) => form.items).filter((item) => item.integrationStatus === 'integrated');
-  assert.ok([...lessonItems, ...assessmentItems].every((item) => item.reviewStatus === 'reviewed' && item.releaseStatus === 'not_released'));
+  // Integrated content may now be pilot-approved, but nothing is released.
+  assert.ok([...lessonItems, ...assessmentItems].every((item) => item.reviewStatus === 'reviewed' && item.releaseStatus !== 'released'));
   assert.ok(story.episodes.every((episode) => episode.reviewStatus === 'reviewed' && episode.integrationStatus === 'integrated' && episode.releaseStatus === 'not_released'));
 });
 

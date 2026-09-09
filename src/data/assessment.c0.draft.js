@@ -1,4 +1,6 @@
 import { applyCorrections } from '../learning/contentCorrections.js';
+import { applyPilotApproval } from '../learning/pilotApproval.js';
+import pilotApprovalData from './pilotApproval.c0.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
 const base = {
   version: 1,
@@ -196,5 +198,8 @@ function buildForm(form) {
 const rawC0AssessmentForms = [buildForm('A'), buildForm('B')];
 // Prompts with an open correction stay in the form for auditing but are stamped as quarantined;
 // the runner withholds them and reports the reduced coverage.
-export const c0AssessmentForms = rawC0AssessmentForms.map((form) => ({ ...form, items: applyCorrections(form.items, correctionData.corrections) }));
+export const c0AssessmentForms = rawC0AssessmentForms.map((form) => ({
+  ...form,
+  items: applyCorrections(form.items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, form.id)),
+}));
 export const c0AssessmentItems = c0AssessmentForms.flatMap((form) => form.items);

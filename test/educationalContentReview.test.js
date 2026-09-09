@@ -16,7 +16,7 @@ test('all four C0 lesson packs have full educational/source review records', () 
 });
 
 test('reviewed C0 lesson content remains unreleased and excluded from mastery review', () => {
-  assert.ok(c0PilotPacks.every((pack) => pack.items.every((item) => item.releaseStatus === 'not_released')));
+  assert.ok(c0PilotPacks.every((pack) => pack.items.every((item) => item.releaseStatus !== 'released')), 'reviewed packs are pilot-approved, never released');
   const due = c0PilotPacks.map((pack) => ({ skillId: pack.skillId, reviewStage: 0 }));
   assert.deepEqual(buildReviewQueue(due, c0PilotPacks), []);
 });

@@ -1,4 +1,6 @@
 import { applyCorrections } from '../learning/contentCorrections.js';
+import { applyPilotApproval } from '../learning/pilotApproval.js';
+import pilotApprovalData from './pilotApproval.c0.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
 const ROLE_SEQUENCE = [
   'worked_example', 'worked_example',
@@ -28,6 +30,7 @@ function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
       const role = ROLE_SEQUENCE[index];
       const displayOnly = role === 'worked_example';
       return {
+        packId: `c0.pack.${skillId.toLowerCase()}`,
         id: `c0.${skillId.toLowerCase()}.${String(index + 1).padStart(2, '0')}`,
         // A corrected item is installed as a new version in place. The correction record stays in
         // the repository so the defect and its replacement are both auditable.
@@ -251,5 +254,11 @@ const rawC0PilotPacks = [
 ];
 
 // Items with an open correction are stamped so every consumer sees the quarantine.
-export const c0PilotPacks = rawC0PilotPacks.map((pack) => ({ ...pack, items: applyCorrections(pack.items, correctionData.corrections) }));
+// Corrections resolve first, then the parent's pilot approval is applied to what remains usable.
+// An item only reaches `pilot_approved` if it is reviewed, integrated, free of open corrections,
+// and does not depend on audio nobody has listened to yet.
+export const c0PilotPacks = rawC0PilotPacks.map((pack) => ({
+  ...pack,
+  items: applyCorrections(pack.items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, pack.id)),
+}));
 export const c0PilotItems = c0PilotPacks.flatMap((pack) => pack.items);

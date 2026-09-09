@@ -1,15 +1,46 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CONTENT_LIFECYCLE, EVIDENCE_TRACKS, applyPilotApproval, approvedPilotScopeIds, attemptIsInTrack, validatePilotApprovals } from '../src/learning/pilotApproval.js';
+import { CONTENT_LIFECYCLE, EVIDENCE_TRACKS, applyPilotApproval, approvedPilotScopeIds, attemptIsInTrack, dependsOnUncheckedAudio, validatePilotApprovals } from '../src/learning/pilotApproval.js';
 import { deriveMastery } from '../src/learning/mastery.js';
 import { buildReviewQueue } from '../src/learning/reviewQueue.js';
 import { deriveReviewProgress } from '../src/learning/reviewScheduler.js';
 import pilotApprovalData from '../src/data/pilotApproval.c0.json' with { type: 'json' };
+import { c0PilotItems, c0PilotPacks } from '../src/data/packs.c0.draft.js';
+import { c0AssessmentItems } from '../src/data/assessment.c0.draft.js';
+import { c0StoryEpisodes } from '../src/data/storyEpisodes.js';
 
-test('pilot approval sits between integration and learner testing and ships with no approvals', () => {
+test('pilot approval sits between integration and learner testing and carries the parent decision', () => {
   assert.deepEqual(CONTENT_LIFECYCLE.slice(4, 7), ['integrated', 'pilot_approved', 'learner_tested']);
-  assert.deepEqual(pilotApprovalData.approvals, [], 'no pilot is authorized until the parent records the decision');
-  assert.deepEqual(approvedPilotScopeIds(pilotApprovalData.approvals), []);
+  // Every approval names a parent and a date; nothing is approved by the implementation role.
+  assert.ok(pilotApprovalData.approvals.length > 0);
+  assert.ok(pilotApprovalData.approvals.every((approval) => approval.decidedBy === 'parent' && approval.decidedAt));
+  assert.deepEqual(approvedPilotScopeIds(pilotApprovalData.approvals).sort(), [
+    'c0.assessment.a', 'c0.assessment.b',
+    'c0.pack.gr.subject-object-pronouns', 'c0.pack.pu.capitals-endmarks', 'c0.pack.se.complete', 'c0.pack.sp.patterns',
+    'c0.story.01', 'c0.story.02',
+  ]);
+  // The forms are approved for their Part B prompts only; Part A waits on the listening check.
+  for (const form of pilotApprovalData.approvals.filter((approval) => approval.scopeType === 'assessment_form')) {
+    assert.equal(form.itemIds.length, 14);
+    assert.ok(form.excluded.includes('Part A'));
+  }
+});
+
+test('the approved pilot content is the content the app actually serves', () => {
+  const approved = (items) => items.filter((item) => item.releaseStatus === 'pilot_approved');
+  assert.equal(approved(c0PilotItems).length, 96, 'all four packs run in the pilot');
+  assert.equal(approved(c0AssessmentItems).length, 28, 'the 28 Part B prompts, and nothing that needs audio');
+  assert.equal(approved(c0StoryEpisodes).length, 2);
+  // Nothing is released, so the released evidence record stays empty during the pilot.
+  assert.equal([...c0PilotItems, ...c0AssessmentItems, ...c0StoryEpisodes].filter((entry) => entry.releaseStatus === 'released').length, 0);
+  // Every prompt that depends on unchecked audio is still outside the pilot.
+  const audioPrompts = c0AssessmentItems.filter(dependsOnUncheckedAudio);
+  assert.ok(audioPrompts.length > 0);
+  assert.ok(audioPrompts.every((item) => item.releaseStatus !== 'pilot_approved'));
+  // The pilot review queue can now serve delayed review, which is what the released queue cannot.
+  const due = [{ skillId: 'SP.patterns', reviewStage: 0, reviewDue: '2026-09-01T00:00:00Z' }];
+  assert.equal(buildReviewQueue(due, c0PilotPacks).length, 0, 'released queue admits nothing');
+  assert.equal(buildReviewQueue(due, c0PilotPacks, 4, { track: EVIDENCE_TRACKS.PILOT }).length, 1);
 });
 
 test('an approval requires a recorded parent decision on reviewed, integrated, correction-free content', () => {
