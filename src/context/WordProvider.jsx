@@ -24,7 +24,7 @@ import {
 } from 'firebase/firestore';
 import { auth, db, ensureAuth } from '../firebase';
 import { achievementRecord, checkAchievements, mergeAchievements } from '../utils/achievements';
-import { queueOutboxEntry } from '../persistence/indexedDb';
+import { listOutbox, queueOutboxEntry } from '../persistence/indexedDb';
 import { applyAttempts, createAttempt, dailyChallengeComplete, edmontonDayKey, progressStats } from '../learning/r1Core';
 import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { achievementsStorageKey, progressStorageKey, readJson, writeJson } from '../utils/localStore';
@@ -551,6 +551,20 @@ export function WordProvider({ children }) {
   const importLegacyProgress = useCallback(async (learnerId, wordIds, account = user) => {
     if (!account || !wordIds?.length) return 0;
     const local = readJson(progressStorageKey(learnerId), {});
+    // Local totals already include answers still waiting in the outbox. Record which attempt IDs
+    // the imported total covers, so that when those answers finally send they are not counted a
+    // second time on top of the base they are already inside.
+    const queuedByWord = new Map();
+    try {
+      for (const entry of await listOutbox()) {
+        if (entry.kind !== 'word-attempt') continue;
+        const { learnerId: entryLearner, wordId, attemptId } = entry.payload || {};
+        if (entryLearner !== learnerId || !wordId || !attemptId) continue;
+        queuedByWord.set(wordId, [...(queuedByWord.get(wordId) || []), attemptId]);
+      }
+    } catch (error) {
+      console.warn('Could not read the outbox while importing; totals will be reconciled later:', error);
+    }
     let written = 0;
     for (let start = 0; start < wordIds.length; start += 200) {
       const batch = writeBatch(db);
@@ -561,7 +575,8 @@ export function WordProvider({ children }) {
         const ref = doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`);
         const existing = await getDoc(ref);
         if (existing.exists()) continue;
-        batch.set(ref, { userId: account.uid, profileId: learnerId, wordId, attempts: entry.attempts || 0, correct: entry.correct || 0, streak: entry.streak || 0, lastSeen: entry.lastSeen || serverTimestamp(), importedFromLocal: true });
+        const counted = queuedByWord.get(wordId) || [];
+        batch.set(ref, { userId: account.uid, profileId: learnerId, wordId, attempts: entry.attempts || 0, correct: entry.correct || 0, streak: entry.streak || 0, lastSeen: entry.lastSeen || serverTimestamp(), importedFromLocal: true, ...(counted.length ? { baseCountedAttemptIds: counted } : {}) });
         batched += 1;
       }
       if (batched) { await batch.commit(); written += batched; }

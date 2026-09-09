@@ -10,7 +10,7 @@ import { mergeAttempts } from '../persistence/sync';
 import { buildImportPreview, canAutoPush, importDecisionRecord } from '../learning/importPreview';
 import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
-import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, runTransaction, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import skillsData from '../data/skills.json';
 import pilotApprovalData from '../data/pilotApproval.c0.json';
@@ -60,17 +60,27 @@ export function LearningProvider({ children }) {
         where('learnerId', '==', learnerId),
       ));
       const attempts = attemptSnapshot.docs.map((entry) => entry.data());
-      const existingRows = {};
+      // Each row is read and rewritten inside its own transaction, so a total another device wrote
+      // between our read and our write is seen rather than overwritten. The derivation is a pure
+      // function of the row and the attempts, so a retried transaction produces the same document.
+      const heldBack = [];
+      let written = 0;
       for (const wordId of wordIds) {
-        const rowSnapshot = await getDoc(doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`));
-        if (rowSnapshot.exists()) existingRows[wordId] = rowSnapshot.data();
-      }
-      const { rows, heldBack } = deriveWordRows({ existingRows, attempts, wordIds });
-      for (const write of planProgressWrites(account.uid, learnerId, rows)) {
-        await setDoc(doc(db, write.collection, write.id), write.data, { merge: true });
+        const outcome = await runTransaction(db, async (transaction) => {
+          const ref = doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`);
+          const snapshot = await transaction.get(ref);
+          const existingRows = snapshot.exists() ? { [wordId]: snapshot.data() } : {};
+          const { rows, heldBack: blocked } = deriveWordRows({ existingRows, attempts, wordIds: [wordId] });
+          if (blocked.length) return 'held';
+          for (const write of planProgressWrites(account.uid, learnerId, rows)) {
+            transaction.set(doc(db, write.collection, write.id), write.data, { merge: true });
+          }
+          return 'written';
+        });
+        if (outcome === 'held') heldBack.push(wordId); else written += 1;
       }
       if (heldBack.length) console.warn('Word totals held back to avoid lowering a shared count:', heldBack);
-      return { written: Object.keys(rows).length, heldBack };
+      return { written, heldBack };
     } catch (error) {
       console.warn('Word total reconciliation deferred:', error);
       return { written: 0, heldBack: wordIds };
@@ -103,6 +113,8 @@ export function LearningProvider({ children }) {
         return false;
       }
       const wordsToReconcile = new Map();
+      // Only this learner's queued answers are sent. Another learner may have declined the import,
+      // and their answers must stay on the device until their own sync is allowed to push.
       await flushOutbox(async (entry) => {
         const writes = planOutboxWrites(entry, { uid: account.uid });
         for (const write of writes) {
@@ -120,7 +132,7 @@ export function LearningProvider({ children }) {
             await setDoc(target, write.data, { merge: true });
           }
         }
-      });
+      }, { accept: (entry) => entry.payload?.learnerId === learnerId });
       for (const [reconcileLearner, wordIds] of wordsToReconcile) {
         await reconcileWordProgress(account, reconcileLearner, [...wordIds]);
       }

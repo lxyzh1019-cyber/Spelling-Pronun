@@ -75,11 +75,12 @@ function keepsCapitalMidSentence(clause, scope) {
   return (scope?.properNouns || []).some((noun) => firstWord.replace(/[^\p{L}'’]/gu, '') === noun);
 }
 
-// Forms of a clause accepted at a given boundary. A new sentence (period or semicolon join) must be
-// capitalized; after a coordinating conjunction the clause continues the sentence, so it is
-// lower-cased unless its first word keeps its capital.
+// Forms of a clause accepted at a given boundary. Only a period starts a new sentence, so only a
+// period requires a capital. A semicolon joins two clauses inside one sentence, exactly like a
+// coordinating conjunction, so the clause after it stays lower case unless its first word keeps its
+// capital anywhere (the pronoun I, or a proper noun the item declares).
 function clauseVariantsAfterJoin(clause, join, scope) {
-  if (join !== 'coordinating') return [capitalizeFirst(clause)];
+  if (join === 'period') return [capitalizeFirst(clause)];
   return keepsCapitalMidSentence(clause, scope) ? [capitalizeFirst(clause)] : [lowercaseFirst(clause)];
 }
 

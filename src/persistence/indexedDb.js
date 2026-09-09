@@ -85,7 +85,7 @@ export function removeOutboxItem(id) {
   return withStore('outbox', 'readwrite', (store) => requestResult(store.delete(id)));
 }
 
-export async function flushOutbox(send) {
+export async function flushOutbox(send, { accept = null } = {}) {
   const queued = await listOutbox();
-  return deliverOutbox(queued, { send, remove: removeOutboxItem });
+  return deliverOutbox(queued, { send, remove: removeOutboxItem, accept });
 }

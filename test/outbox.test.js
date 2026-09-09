@@ -48,3 +48,26 @@ test('outbox planning refuses to write without an authenticated owner or an unkn
   assert.deepEqual(planOutboxWrites({ kind: 'attempt', payload: { attemptId: 'x', learnerId: 'jess' } }, { uid: null }), []);
   assert.deepEqual(planOutboxWrites({ kind: 'mystery', payload: { attemptId: 'x' } }, { uid: 'u1' }), []);
 });
+
+test('one learner cannot be flushed under another learner decision', async () => {
+  const queued = [
+    { id: 'a1', kind: 'attempt', payload: { attemptId: 'a1', learnerId: 'jenn' } },
+    { id: 'b1', kind: 'attempt', payload: { attemptId: 'b1', learnerId: 'jess' } },
+    { id: 'a2', kind: 'attempt', payload: { attemptId: 'a2', learnerId: 'jenn' } },
+  ];
+  const sent = [];
+  const remaining = [...queued];
+  const remove = async (id) => { remaining.splice(remaining.findIndex((entry) => entry.id === id), 1); };
+  const send = async (entry) => { sent.push(entry.id); };
+
+  // Jess declined the import, so syncing Jenn may send only Jenn's answers.
+  const results = await deliverOutbox([...remaining], { send, remove, accept: (entry) => entry.payload.learnerId === 'jenn' });
+  assert.deepEqual(sent, ['a1', 'a2']);
+  assert.deepEqual(results.find((entry) => entry.id === 'b1'), { id: 'b1', status: 'held' });
+  assert.deepEqual(remaining.map(({ id }) => id), ['b1'], "the other learner's answer is untouched and still queued");
+
+  // When Jess is allowed to push, her answer sends, exactly once.
+  await deliverOutbox([...remaining], { send, remove, accept: (entry) => entry.payload.learnerId === 'jess' });
+  assert.deepEqual(sent, ['a1', 'a2', 'b1']);
+  assert.equal(remaining.length, 0);
+});

@@ -314,3 +314,35 @@ test('the audio handoff records the withdrawn requirement instead of silently dr
   const tracker = await readFile(new URL('../src/data/r2GateTracker.js', import.meta.url), 'utf8');
   assert.doesNotMatch(tracker, /24 reviewed recordings and 16 specialist checks/);
 });
+
+test('a semicolon joins one sentence, so the clause after it is not capitalized', () => {
+  const item = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['The bell rang. Everyone entered.'],
+    repairScope: { clauses: ['The bell rang', 'everyone entered'], allowedJoins: ['period', 'semicolon', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(item, 'The bell rang; everyone entered.').status, 'correct');
+  assert.equal(evaluateItem(item, 'The bell rang; Everyone entered.').status, 'pending', 'a semicolon does not start a new sentence');
+  assert.equal(evaluateItem(item, 'The bell rang. Everyone entered.').status, 'correct', 'a period does');
+  assert.equal(evaluateItem(item, 'The bell rang. everyone entered.').status, 'pending');
+  assert.equal(evaluateItem(item, 'The bell rang, and everyone entered.').status, 'correct');
+
+  // A word that keeps its capital anywhere still keeps it after a semicolon.
+  const pronoun = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['I packed my bag. I forgot my goggles.'],
+    repairScope: { clauses: ['I packed my bag', 'I forgot my goggles'], allowedJoins: ['period', 'semicolon', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(pronoun, 'I packed my bag; I forgot my goggles.').status, 'correct');
+  assert.equal(evaluateItem(pronoun, 'I packed my bag; i forgot my goggles.').status, 'pending');
+  const proper = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['We waited. Mia arrived.'],
+    repairScope: { clauses: ['We waited', 'Mia arrived'], allowedJoins: ['semicolon'], properNouns: ['Mia'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(proper, 'We waited; Mia arrived.').status, 'correct');
+  assert.equal(evaluateItem(proper, 'We waited; mia arrived.').status, 'pending');
+});

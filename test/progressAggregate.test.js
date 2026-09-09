@@ -62,3 +62,25 @@ test('progress writes are fully derived merges, never increments', () => {
   assert.equal(writes[0].mode, 'merge');
   assert.deepEqual(writes[0].data, { userId: 'u1', profileId: 'jenn', wordId: 'w1', attempts: 3, correct: 2 });
 });
+
+test('an imported total never counts the queued answers it already contains twice', () => {
+  // The device had 5 attempts locally, 2 of which were still waiting in the outbox when the parent
+  // imported. The imported row records those two IDs as already counted.
+  const imported = { attempts: 5, correct: 4, streak: 1, importedFromLocal: true, baseCountedAttemptIds: ['q1', 'q2'] };
+  const flushed = [
+    { attemptId: 'q1', wordId: 'w1', correct: true, clientTime: '2026-09-01T10:00:00Z' },
+    { attemptId: 'q2', wordId: 'w1', correct: true, clientTime: '2026-09-01T10:01:00Z' },
+  ];
+  const afterFlush = deriveWordRow(imported, flushed, 'w1');
+  assert.equal(afterFlush.derived.attempts, 5, 'the queued answers were already inside the imported total');
+  assert.equal(afterFlush.derived.correct, 4);
+
+  // A genuinely new answer still counts.
+  const withNew = deriveWordRow(imported, [...flushed, { attemptId: 'n1', wordId: 'w1', correct: true, clientTime: '2026-09-02T10:00:00Z' }], 'w1');
+  assert.equal(withNew.derived.attempts, 6);
+  assert.equal(withNew.derived.correct, 5);
+  // Re-deriving from the row it just wrote is stable, which is what makes a retried transaction safe.
+  const again = deriveWordRow(withNew.derived, [...flushed, { attemptId: 'n1', wordId: 'w1', correct: true, clientTime: '2026-09-02T10:00:00Z' }], 'w1');
+  assert.equal(again.derived.attempts, 6);
+  assert.equal(again.derived.correct, 5);
+});
