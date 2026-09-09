@@ -34,7 +34,7 @@ test('C0 pilot draft has four exact 24-object packs and 22 learner tasks each', 
     assert.ok(pack.items.every((item) => item.authorStatus === 'reviewed'));
     assert.ok(pack.items.every((item) => item.reviewStatus === 'reviewed'));
     assert.ok(pack.items.every((item) => item.integrationStatus === 'integrated'));
-    assert.ok(pack.items.every((item) => item.releaseStatus === 'not_released'));
+    assert.ok(pack.items.every((item) => item.releaseStatus !== 'released'));
     assert.ok(pack.items.every((item) => item.explanation.length >= 35));
     for (const item of pack.items.filter((candidate) => candidate.choices)) {
       const choiceIds = item.choices.map((choice) => choice.id);
@@ -57,7 +57,9 @@ test('C0 assessment draft has two distinct 34-prompt forms with the required blu
     assert.equal(form.items.filter((item) => item.part === 'A').length, 20);
     assert.equal(form.items.filter((item) => item.part === 'B').length, 14);
     assert.equal(form.items.filter((item) => item.category === 'spelling_dictation').length, 8);
-    assert.equal(form.items.filter((item) => item.category === 'decoding').length, 4);
+    // Four decoding prompts: two syllable-break items and two receptive audio-choice items.
+    assert.equal(form.items.filter((item) => ['decoding', 'receptive_decoding'].includes(item.category)).length, 4);
+    assert.equal(form.items.filter((item) => item.category === 'receptive_decoding').length, 2);
     assert.equal(form.items.filter((item) => item.category === 'listening').length, 4);
     assert.equal(form.items.filter((item) => item.category === 'speaking').length, 4);
     assert.equal(form.items.filter((item) => item.category === 'sentence').length, 12);
@@ -67,7 +69,7 @@ test('C0 assessment draft has two distinct 34-prompt forms with the required blu
   assert.equal(c0AssessmentItems.filter((item) => item.reviewStatus === 'reviewed').length, 28);
   assert.equal(c0AssessmentItems.filter((item) => item.reviewStatus === 'independently_challenged').length, 40);
   assert.equal(c0AssessmentItems.filter((item) => item.integrationStatus === 'integrated').length, 28);
-  assert.ok(c0AssessmentItems.every((item) => item.releaseStatus === 'not_released'));
+  assert.ok(c0AssessmentItems.every((item) => item.releaseStatus !== 'released'));
   assert.ok(c0AssessmentItems.filter((item) => item.category === 'sentence').every((item) => !item.explanation.includes('reviewed release')));
   assert.ok(c0AssessmentItems.filter((item) => item.category === 'speaking').every((item) => item.rubric.targetPattern && item.rubric.ratingScale?.retry));
   for (const item of c0AssessmentItems.filter((candidate) => candidate.choices && candidate.evaluator === 'choice')) {

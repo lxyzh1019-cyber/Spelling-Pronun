@@ -46,9 +46,15 @@ export function planOutboxWrites(entry, { uid } = {}) {
 // Delivers queued entries one at a time. An entry is removed only after its writes succeed, so a
 // failure leaves it (and everything after it) queued for the next flush. `send` and `remove` are
 // injected so the loop can be tested without IndexedDB or Firestore.
-export async function deliverOutbox(queued, { send, remove }) {
+export async function deliverOutbox(queued, { send, remove, accept = null }) {
   const results = [];
   for (const entry of queued) {
+    // An entry the caller is not allowed to send stays queued and untouched. One learner's import
+    // decision must never push another learner's answers to the account.
+    if (accept && !accept(entry)) {
+      results.push({ id: entry.id, status: 'held' });
+      continue;
+    }
     try {
       await send(entry);
       await remove(entry.id);

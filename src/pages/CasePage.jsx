@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
-import storyDraft from '../data/story.c0.draft.json';
+import { c0Story as storyDraft } from '../data/storyEpisodes';
 import { lessonBySessionId } from '../data/lessonCatalog';
 import { isCurrentLessonCompletion } from '../learning/storyProgress';
 import { useCancellableSpeech } from '../hooks/useCancellableSpeech';

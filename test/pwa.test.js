@@ -1,3 +1,8 @@
+// Some tests in this file are SOURCE GUARDS or COPY GUARDS: they read a source file as text and
+// assert on its wording or structure. They do NOT execute the component, so they cannot prove it
+// behaves correctly. They exist to protect truthful learner-facing wording and to stop a known
+// defect being reintroduced. Behaviour lives in the pure modules under src/learning and is tested
+// by executing it.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { access, readFile } from 'node:fs/promises';
@@ -12,7 +17,7 @@ test('PWA manifest references real install icons and does not fake screenshots',
   await access(new URL('../public/apple-touch-icon.png', import.meta.url));
 });
 
-test('iPad standalone metadata and service-worker registration are present', async () => {
+test('source guard: iPad standalone metadata and service-worker registration are present', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const main = await readFile(new URL('../src/main.jsx', import.meta.url), 'utf8');
   assert.match(html, /apple-mobile-web-app-capable/);

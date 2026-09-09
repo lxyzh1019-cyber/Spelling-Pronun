@@ -1,7 +1,13 @@
 import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import { claimCloudSession, cloudSessionDocumentId, saveCloudSession } from './sessionSync.js';
 
-export async function claimRemoteSession(db, candidate, options = {}) {
+// The Firestore operations are injectable. Passing a fake `db` alone is not enough, because
+// `runTransaction` is imported rather than read off the database, so a test supplies both. The
+// real SDK stays the default and no call site changes.
+const firestoreOps = { doc, runTransaction, serverTimestamp };
+
+export async function claimRemoteSession(db, candidate, options = {}, ops = firestoreOps) {
+  const { doc, runTransaction, serverTimestamp } = ops;
   const reference = doc(db, 'spelling-sessions', cloudSessionDocumentId(candidate.userId, candidate.learnerId, candidate.sessionId));
   return runTransaction(db, async (transaction) => {
     const snapshot = await transaction.get(reference);
@@ -11,7 +17,8 @@ export async function claimRemoteSession(db, candidate, options = {}) {
   });
 }
 
-export async function saveRemoteSession(db, candidate) {
+export async function saveRemoteSession(db, candidate, ops = firestoreOps) {
+  const { doc, runTransaction, serverTimestamp } = ops;
   const reference = doc(db, 'spelling-sessions', cloudSessionDocumentId(candidate.userId, candidate.learnerId, candidate.sessionId));
   return runTransaction(db, async (transaction) => {
     const snapshot = await transaction.get(reference);

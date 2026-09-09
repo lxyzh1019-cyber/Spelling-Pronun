@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { claimSessionLease, ownsSessionLease, readSessionLease, renewSessionLease, sessionLeaseKey, takeOverSessionLease } from '../learning/sessionLease';
+import { claimSessionLease, ownsSessionLease, readSessionLease, renewSessionLease, sessionLeaseKey, takeOverSessionLease } from '../learning/sessionLease.js';
 
 // This value deliberately lives only in this page's JavaScript context. A duplicated
 // browser tab may inherit sessionStorage, so storing the holder ID there can make two

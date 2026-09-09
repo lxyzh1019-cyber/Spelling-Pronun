@@ -24,7 +24,7 @@ import {
 } from 'firebase/firestore';
 import { auth, db, ensureAuth } from '../firebase';
 import { achievementRecord, checkAchievements, mergeAchievements } from '../utils/achievements';
-import { queueOutboxEntry } from '../persistence/indexedDb';
+import { listOutbox, queueOutboxEntry } from '../persistence/indexedDb';
 import { applyAttempts, createAttempt, dailyChallengeComplete, edmontonDayKey, progressStats } from '../learning/r1Core';
 import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { achievementsStorageKey, progressStorageKey, readJson, writeJson } from '../utils/localStore';
@@ -39,61 +39,6 @@ const DEFAULT_PROFILES = [
   { id: 'jenn', name: 'Jenn', avatar: '🌟', color: '#f472b6' },
   { id: 'jess', name: 'Jess', avatar: '🎨', color: '#60a5fa' },
 ];
-
-function slug(s) {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-const SECTION_SIZE = 25;
-
-function shortGradeLabel(name) {
-  // "Grade 4 — Alberta Curriculum" -> "Grade 4"
-  const m = name.match(/Grade\s*\d+/i);
-  return m ? m[0] : name;
-}
-
-function withIds(categories) {
-  // Split each large category into smaller sections of SECTION_SIZE words
-  // so Flashcards / Word Scramble / Spelling Test stay focused.
-  const sections = [];
-  for (const cat of categories) {
-    const words = cat.words || [];
-    const total = words.length;
-    if (total <= SECTION_SIZE) {
-      const catId = slug(cat.name);
-      sections.push({
-        ...cat,
-        id: catId,
-        words: words.map((w) => ({
-          ...w,
-          id: `${catId}__${slug(w.word)}`,
-        })),
-      });
-      continue;
-    }
-    const sectionCount = Math.ceil(total / SECTION_SIZE);
-    for (let i = 0; i < sectionCount; i++) {
-      const start = i * SECTION_SIZE;
-      const end = Math.min(start + SECTION_SIZE, total);
-      const sectionName = `${shortGradeLabel(cat.name)} — Section ${i + 1} (words ${start + 1}-${end})`;
-      const sectionId = slug(sectionName);
-      sections.push({
-        ...cat,
-        name: sectionName,
-        id: sectionId,
-        words: words.slice(start, end).map((w) => ({
-          ...w,
-          // Keep stable global id so progress doesn't reset when sections change.
-          id: `${slug(cat.name)}__${slug(w.word)}`,
-        })),
-      });
-    }
-  }
-  return sections;
-}
 
 const FALLBACK_CATEGORIES = withIds(wordData.categories || []);
 
@@ -551,6 +496,20 @@ export function WordProvider({ children }) {
   const importLegacyProgress = useCallback(async (learnerId, wordIds, account = user) => {
     if (!account || !wordIds?.length) return 0;
     const local = readJson(progressStorageKey(learnerId), {});
+    // Local totals already include answers still waiting in the outbox. Record which attempt IDs
+    // the imported total covers, so that when those answers finally send they are not counted a
+    // second time on top of the base they are already inside.
+    const queuedByWord = new Map();
+    try {
+      for (const entry of await listOutbox()) {
+        if (entry.kind !== 'word-attempt') continue;
+        const { learnerId: entryLearner, wordId, attemptId } = entry.payload || {};
+        if (entryLearner !== learnerId || !wordId || !attemptId) continue;
+        queuedByWord.set(wordId, [...(queuedByWord.get(wordId) || []), attemptId]);
+      }
+    } catch (error) {
+      console.warn('Could not read the outbox while importing; totals will be reconciled later:', error);
+    }
     let written = 0;
     for (let start = 0; start < wordIds.length; start += 200) {
       const batch = writeBatch(db);
@@ -561,7 +520,8 @@ export function WordProvider({ children }) {
         const ref = doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`);
         const existing = await getDoc(ref);
         if (existing.exists()) continue;
-        batch.set(ref, { userId: account.uid, profileId: learnerId, wordId, attempts: entry.attempts || 0, correct: entry.correct || 0, streak: entry.streak || 0, lastSeen: entry.lastSeen || serverTimestamp(), importedFromLocal: true });
+        const counted = queuedByWord.get(wordId) || [];
+        batch.set(ref, { userId: account.uid, profileId: learnerId, wordId, attempts: entry.attempts || 0, correct: entry.correct || 0, streak: entry.streak || 0, lastSeen: entry.lastSeen || serverTimestamp(), importedFromLocal: true, ...(counted.length ? { baseCountedAttemptIds: counted } : {}) });
         batched += 1;
       }
       if (batched) { await batch.commit(); written += batched; }

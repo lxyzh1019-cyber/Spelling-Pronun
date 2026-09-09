@@ -1,5 +1,7 @@
 // Target active minutes are guidance only (master plan §1 provisional default). No transition in
 // this module reads a clock; elapsed time can never advance, fail, or expire a lesson.
+// Two unsuccessful independent attempts earn a worked solution rather than a third repair.
+export const WORKED_SOLUTION_AFTER = 2;
 export const LESSON_MINUTE_OPTIONS = [10, 15, 20];
 export const DEFAULT_LESSON_MINUTES = 20;
 
@@ -54,7 +56,7 @@ export function submitLessonResult(state, correct, metadata = {}) {
 export function continueLesson(state, practiceCount, transferCount) {
   if (state.stage !== 'feedback' || !state.lastResult) return state;
   if (state.lastResult.correct || state.lastResult.technicalFailure) return advance(state, state.lastResult.sourceStage, practiceCount, transferCount);
-  if (state.retryCount >= 2) return { ...state, stage: 'worked_solution', repairSource: state.lastResult.sourceStage };
+  if (state.retryCount >= WORKED_SOLUTION_AFTER) return { ...state, stage: 'worked_solution', repairSource: state.lastResult.sourceStage };
   return { ...state, stage: 'repair', repairSource: state.lastResult.sourceStage };
 }
 
@@ -72,4 +74,33 @@ export function completeReflection(state, reflection, note = '') {
 export function currentLessonItem(state, lesson) {
   const source = state.stage === 'repair' || state.stage === 'worked_solution' || state.stage === 'feedback' ? state.lastResult?.sourceStage || state.repairSource : state.stage;
   return source === 'transfer' ? lesson.transfer[state.transferIndex] : lesson.practice[state.practiceIndex];
+}
+
+// The evidence a lesson answer produces. A repair is assisted whether or not help was tapped,
+// because the learner has already seen the feedback for that item.
+export function evidenceTypeForLesson({ stage, repairSource, helped = false, omitted = false, technicalFailure = false } = {}) {
+  if (technicalFailure) return 'technical_failure';
+  if (omitted) return 'omission';
+  const assisted = helped || stage === 'repair';
+  if (assisted) return 'assisted_repair';
+  const sourceStage = stage === 'repair' ? repairSource : stage;
+  return sourceStage === 'transfer' ? 'independent_transfer' : 'independent_choice';
+}
+
+export function lessonAssistanceFor({ stage, helped = false }) {
+  return helped || stage === 'repair';
+}
+
+export function lessonFeedbackHeading(lastResult) {
+  if (lastResult?.technicalFailure) return 'Deferred: audio or microphone problem';
+  if (lastResult?.correct) return 'Correct';
+  if (lastResult?.omitted) return 'Not answered yet';
+  return 'Not yet';
+}
+
+// After two unsuccessful independent attempts the learner is shown a worked solution rather than
+// being asked to repair a third time.
+export function lessonContinueLabel(state) {
+  if (state?.lastResult?.correct || state?.lastResult?.technicalFailure) return 'Continue';
+  return state?.retryCount >= WORKED_SOLUTION_AFTER ? 'See worked solution' : 'Repair this answer';
 }

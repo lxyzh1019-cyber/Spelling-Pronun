@@ -4,10 +4,10 @@ import { pickRandom } from '../utils/shuffle';
 import { playCorrectSound, playIncorrectSound, playMilestoneSound } from '../utils/sounds';
 import { hapticSuccess, hapticError, hapticMilestone } from '../utils/haptics';
 import { triggerConfetti } from '../utils/confetti';
+import { MAX_WRONG, applyGuess } from '../learning/hangman';
 import styles from './Hangman.module.css';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
-const MAX_WRONG = 7;
 
 export default function Hangman() {
   const { activeWords, recordResult, useHint, hintsUsedToday } = useWords();
@@ -33,46 +33,38 @@ export default function Hangman() {
     newGame();
   }, [newGame]);
 
+  // The rule lives in src/learning/hangman.js. The component applies the result and then runs its
+  // side effects, rather than playing sounds and recording results inside a state updater.
   const handleGuess = useCallback(
     (letter) => {
-      setGuessed((prevGuessed) => {
-        if (prevGuessed.has(letter) || gameOver) return prevGuessed;
-        const newGuessed = new Set(prevGuessed);
-        newGuessed.add(letter);
+      const { state: next, outcome, changed } = applyGuess(
+        { guessed: [...guessed], wrongGuesses, gameOver, won },
+        letter,
+        word,
+      );
+      if (!changed) return;
+      setGuessed(new Set(next.guessed));
+      setWrongGuesses(next.wrongGuesses);
+      setGameOver(next.gameOver);
+      setWon(next.won);
 
-        if (!word.includes(letter)) {
-          playIncorrectSound();
-          hapticError();
-          setWrongGuesses((prevWrong) => {
-            const newWrong = prevWrong + 1;
-            if (newWrong >= MAX_WRONG) {
-              setGameOver(true);
-              setWon(false);
-              if (wordEntry) recordResult(wordEntry.id, false, { evidenceType: 'visible_letters_game' });
-            }
-            return newWrong;
-          });
-        } else {
-          playCorrectSound();
-          hapticSuccess();
-          triggerConfetti('light');
-          const allGuessed = word
-            .split('')
-            .every((l) => newGuessed.has(l));
-          if (allGuessed) {
-            setGameOver(true);
-            setWon(true);
-            playMilestoneSound();
-            hapticMilestone();
-            triggerConfetti('heavy');
-            if (wordEntry) recordResult(wordEntry.id, true, { evidenceType: 'visible_letters_game' });
-          }
-        }
-
-        return newGuessed;
-      });
+      if (outcome === 'wrong' || outcome === 'lost') {
+        playIncorrectSound();
+        hapticError();
+        if (outcome === 'lost' && wordEntry) recordResult(wordEntry.id, false, { evidenceType: 'visible_letters_game' });
+        return;
+      }
+      playCorrectSound();
+      hapticSuccess();
+      triggerConfetti('light');
+      if (outcome === 'won') {
+        playMilestoneSound();
+        hapticMilestone();
+        triggerConfetti('heavy');
+        if (wordEntry) recordResult(wordEntry.id, true, { evidenceType: 'visible_letters_game' });
+      }
     },
-    [word, gameOver, wordEntry, recordResult]
+    [guessed, wrongGuesses, gameOver, won, word, wordEntry, recordResult]
   );
 
   useEffect(() => {

@@ -1,5 +1,5 @@
-import { shouldStoreSession } from './durableSession';
-import { deliverOutbox } from './outboxSync';
+import { shouldStoreSession } from './durableSession.js';
+import { deliverOutbox } from './outboxSync.js';
 
 const DB_NAME = 'spelling-pronun-learning';
 const DB_VERSION = 2;
@@ -22,8 +22,18 @@ export function openLearningDb() {
   return requestResult(request);
 }
 
+// The database opener is injectable so a test can drive these functions against an in-memory store
+// instead of a browser. `openLearningDb` stays the default, so no call site changes.
+let openDb = openLearningDb;
+
+export function useDatabaseOpener(opener) {
+  const previous = openDb;
+  openDb = opener || openLearningDb;
+  return () => { openDb = previous; };
+}
+
 async function withStore(storeName, mode, operation) {
-  const db = await openLearningDb();
+  const db = await openDb();
   try {
     const transaction = db.transaction(storeName, mode);
     const result = await operation(transaction.objectStore(storeName));
@@ -85,7 +95,7 @@ export function removeOutboxItem(id) {
   return withStore('outbox', 'readwrite', (store) => requestResult(store.delete(id)));
 }
 
-export async function flushOutbox(send) {
+export async function flushOutbox(send, { accept = null } = {}) {
   const queued = await listOutbox();
-  return deliverOutbox(queued, { send, remove: removeOutboxItem });
+  return deliverOutbox(queued, { send, remove: removeOutboxItem, accept });
 }

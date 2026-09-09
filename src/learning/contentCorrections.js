@@ -7,10 +7,24 @@
 
 const REQUIRED_CORRECTION_FIELDS = ['id', 'itemIds', 'reason', 'proposedBy', 'reviewer', 'reviewStatus', 'raisedAt'];
 export const OPEN_CORRECTION_STATUS = 'changes_required';
+export const NOT_INSTALLED_STATUS = 'correction_not_installed';
+
+// A correction is only genuinely resolved when the replacement is actually in the content. Marking
+// the record reviewed while the item is still at its old version would restore the defective
+// version behind an approving status, so the item stays withheld until the new version is present.
+export function correctionInstalled(correction, itemsById) {
+  if (correction.reviewStatus !== 'reviewed') return false;
+  if (!correction.toVersion) return true;
+  return (correction.itemIds || []).every((itemId) => {
+    const item = itemsById?.get?.(itemId);
+    return item ? item.version === correction.toVersion : false;
+  });
+}
 
 export function validateCorrections({ corrections = [], items = [] } = {}) {
   const errors = [];
   const itemIds = new Set(items.map(({ id }) => id));
+  const itemsById = new Map(items.map((entry) => [entry.id, entry]));
   const seen = new Set();
   for (const correction of corrections) {
     const label = correction.id || 'unknown correction';
@@ -32,6 +46,9 @@ export function validateCorrections({ corrections = [], items = [] } = {}) {
     if (correction.reviewStatus === 'reviewed' && !correction.reviewedBy) {
       errors.push(`${label} is marked reviewed without recording who reviewed it`);
     }
+    if (correction.reviewStatus === 'reviewed' && items.length && !correctionInstalled(correction, itemsById)) {
+      errors.push(`${label} is marked reviewed but its version ${correction.toVersion} replacement is not installed`);
+    }
   }
   return { valid: errors.length === 0, errors };
 }
@@ -45,14 +62,23 @@ export function quarantinedItemIds(corrections = []) {
 }
 
 // Stamps `correctionStatus` onto the affected items so every consumer can see the quarantine
-// without having to know about the corrections file.
+// without having to know about the corrections file. An item stays withheld both while its
+// correction is open and while a resolved correction's replacement has not been installed.
 export function applyCorrections(items = [], corrections = []) {
-  const quarantined = quarantinedItemIds(corrections);
-  return items.map((item) => (quarantined.has(item.id) ? { ...item, correctionStatus: OPEN_CORRECTION_STATUS } : item));
+  const itemsById = new Map(items.map((entry) => [entry.id, entry]));
+  const status = new Map();
+  for (const correction of corrections) {
+    if (correction.reviewStatus === OPEN_CORRECTION_STATUS) {
+      for (const itemId of correction.itemIds || []) status.set(itemId, OPEN_CORRECTION_STATUS);
+    } else if (correction.reviewStatus === 'reviewed' && !correctionInstalled(correction, itemsById)) {
+      for (const itemId of correction.itemIds || []) if (!status.has(itemId)) status.set(itemId, NOT_INSTALLED_STATUS);
+    }
+  }
+  return items.map((item) => (status.has(item.id) ? { ...item, correctionStatus: status.get(item.id) } : item));
 }
 
 export function isQuarantined(item) {
-  return item?.correctionStatus === OPEN_CORRECTION_STATUS;
+  return item?.correctionStatus === OPEN_CORRECTION_STATUS || item?.correctionStatus === NOT_INSTALLED_STATUS;
 }
 
 export function usableItems(items = []) {

@@ -1,16 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useWords } from './WordProvider';
+import { buildAttempt } from '../learning/attemptRecord';
 import { evaluateItem } from '../learning/evaluators';
 import { deriveMastery } from '../learning/mastery';
 import { deriveReviewProgress, selectDueReviews } from '../learning/reviewScheduler';
 import { edmontonDayKey } from '../learning/r1Core';
 import { flushOutbox, queueAttempt } from '../persistence/indexedDb';
-import { planOutboxWrites } from '../persistence/outboxSync';
-import { mergeAttempts } from '../persistence/sync';
-import { buildImportPreview, canAutoPush, importDecisionRecord } from '../learning/importPreview';
+import { syncLearnerAttempts } from '../persistence/attemptSync';
+import { buildImportPreview, importDecisionRecord } from '../learning/importPreview';
 import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
-import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, runTransaction, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import skillsData from '../data/skills.json';
 import pilotApprovalData from '../data/pilotApproval.c0.json';
@@ -60,17 +60,27 @@ export function LearningProvider({ children }) {
         where('learnerId', '==', learnerId),
       ));
       const attempts = attemptSnapshot.docs.map((entry) => entry.data());
-      const existingRows = {};
+      // Each row is read and rewritten inside its own transaction, so a total another device wrote
+      // between our read and our write is seen rather than overwritten. The derivation is a pure
+      // function of the row and the attempts, so a retried transaction produces the same document.
+      const heldBack = [];
+      let written = 0;
       for (const wordId of wordIds) {
-        const rowSnapshot = await getDoc(doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`));
-        if (rowSnapshot.exists()) existingRows[wordId] = rowSnapshot.data();
-      }
-      const { rows, heldBack } = deriveWordRows({ existingRows, attempts, wordIds });
-      for (const write of planProgressWrites(account.uid, learnerId, rows)) {
-        await setDoc(doc(db, write.collection, write.id), write.data, { merge: true });
+        const outcome = await runTransaction(db, async (transaction) => {
+          const ref = doc(db, 'spelling-progress', `${account.uid}_${learnerId}_${wordId}`);
+          const snapshot = await transaction.get(ref);
+          const existingRows = snapshot.exists() ? { [wordId]: snapshot.data() } : {};
+          const { rows, heldBack: blocked } = deriveWordRows({ existingRows, attempts, wordIds: [wordId] });
+          if (blocked.length) return 'held';
+          for (const write of planProgressWrites(account.uid, learnerId, rows)) {
+            transaction.set(doc(db, write.collection, write.id), write.data, { merge: true });
+          }
+          return 'written';
+        });
+        if (outcome === 'held') heldBack.push(wordId); else written += 1;
       }
       if (heldBack.length) console.warn('Word totals held back to avoid lowering a shared count:', heldBack);
-      return { written: Object.keys(rows).length, heldBack };
+      return { written, heldBack };
     } catch (error) {
       console.warn('Word total reconciliation deferred:', error);
       return { written: 0, heldBack: wordIds };
@@ -83,55 +93,38 @@ export function LearningProvider({ children }) {
     if (!account) return false;
     if (activeLearnerRef.current === learnerId) setSaveStatus('syncing');
     try {
-      let remote = await loadRemoteAttempts(account.uid, learnerId);
-      let allowPush = push === 'force';
-      if (!allowPush) {
-        const decision = readJson(importDecisionKey(account.uid, learnerId));
-        allowPush = canAutoPush({ isAnonymous: account.isAnonymous, remoteAttemptCount: remote.length, remoteWordCount: decision ? 0 : Object.keys(await loadRemoteProgress(account.uid, learnerId)).length, importDecision: decision });
-      }
-      const local = readJson(attemptsKey(learnerId), []);
-      const remoteIds = new Set(remote.map(({ attemptId }) => attemptId));
-      const held = local.filter(({ attemptId }) => !remoteIds.has(attemptId)).length;
-      setHeldImports((current) => ({ ...current, [learnerId]: allowPush ? 0 : held }));
-      if (!allowPush) {
-        const merged = mergeAttempts(local, remote);
-        writeJson(attemptsKey(learnerId), merged);
-        if (activeLearnerRef.current === learnerId) {
-          setAttempts(merged);
-          setSaveStatus(held ? 'saved-locally' : 'saved');
-        }
-        return false;
-      }
-      const wordsToReconcile = new Map();
-      await flushOutbox(async (entry) => {
-        const writes = planOutboxWrites(entry, { uid: account.uid });
-        for (const write of writes) {
-          if (write.mode === 'reconcile-progress') {
-            const pending = wordsToReconcile.get(write.learnerId) || new Set();
-            pending.add(write.wordId);
-            wordsToReconcile.set(write.learnerId, pending);
-            continue;
-          }
-          const target = doc(db, write.collection, write.id);
-          if (write.mode === 'create-if-missing') {
-            const existing = await getDoc(target);
-            if (!existing.exists()) await setDoc(target, write.data);
-          } else {
+      // The sequence lives in src/persistence/attemptSync.js so it can be run in a test. This
+      // provider supplies the real storage and Firestore calls and owns only the React state.
+      const outcome = await syncLearnerAttempts({
+        uid: account.uid,
+        learnerId,
+        isAnonymous: account.isAnonymous,
+        push,
+        io: {
+          loadRemoteAttempts,
+          loadRemoteProgress,
+          readImportDecision: (uid, learner) => readJson(importDecisionKey(uid, learner)),
+          readLocalAttempts: (learner) => readJson(attemptsKey(learner), []),
+          writeLocalAttempts: (learner, attempts) => writeJson(attemptsKey(learner), attempts),
+          flushOutbox,
+          writeDocument: async (write) => {
+            const target = doc(db, write.collection, write.id);
+            if (write.mode === 'create-if-missing') {
+              const existing = await getDoc(target);
+              if (!existing.exists()) await setDoc(target, write.data);
+              return;
+            }
             await setDoc(target, write.data, { merge: true });
-          }
-        }
+          },
+          reconcileWords: (learner, wordIds) => reconcileWordProgress(account, learner, wordIds),
+        },
       });
-      for (const [reconcileLearner, wordIds] of wordsToReconcile) {
-        await reconcileWordProgress(account, reconcileLearner, [...wordIds]);
-      }
-      remote = await loadRemoteAttempts(account.uid, learnerId);
-      const merged = mergeAttempts(readJson(attemptsKey(learnerId), []), remote);
-      writeJson(attemptsKey(learnerId), merged);
+      setHeldImports((current) => ({ ...current, [learnerId]: outcome.held }));
       if (activeLearnerRef.current === learnerId) {
-        setAttempts(merged);
-        setSaveStatus('saved');
+        setAttempts(outcome.merged);
+        setSaveStatus(outcome.held ? 'saved-locally' : 'saved');
       }
-      return true;
+      return outcome.pushed;
     } catch (error) {
       console.warn('Learning attempt sync deferred:', error);
       if (activeLearnerRef.current === learnerId) setSaveStatus('saved-locally');
@@ -158,28 +151,16 @@ export function LearningProvider({ children }) {
     const learnerId = activeProfileId;
     const evaluation = evaluateItem(item, response);
     const priorAttempts = readJson(attemptsKey(learnerId), []);
-    const ordinal = metadata.ordinal ?? (priorAttempts.filter((entry) => entry.sessionId === metadata.sessionId && entry.itemId === item.id && !entry.technicalFailure).length + 1);
-    const attempt = Object.freeze({
-      attemptId: metadata.attemptId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
+    const attempt = buildAttempt({
+      item,
+      response,
+      evaluation,
+      metadata,
+      priorAttempts,
       learnerId,
-      sessionId: metadata.sessionId,
-      itemId: item.id,
-      itemVersion: item.version,
-      skillIds: [item.primarySkill, ...(item.secondarySkills || [])],
-      originalAnswer: response,
-      status: metadata.technicalFailure ? 'technical_failure' : metadata.omitted ? 'omitted' : evaluation.status,
-      correct: metadata.omitted ? false : evaluation.correct,
-      omitted: Boolean(metadata.omitted),
-      technicalFailure: Boolean(metadata.technicalFailure),
-      helped: Boolean(metadata.helped),
-      revealed: Boolean(metadata.revealed),
-      unseen: Boolean(metadata.unseen),
-      ordinal,
-      evidenceType: metadata.evidenceType || 'independent_choice',
+      attemptId: metadata.attemptId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
       eventTime: new Date().toISOString(),
       edmontonDate: edmontonDayKey(),
-      reviewStatus: item.reviewStatus,
-      contentStatus: item.releaseStatus || 'not_released',
     });
     if (activeLearnerRef.current === learnerId) {
       setAttempts((current) => {

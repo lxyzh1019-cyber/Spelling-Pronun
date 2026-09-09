@@ -1,3 +1,4 @@
+import { isQuarantined } from './contentCorrections.js';
 // Approved-for-private-pilot state.
 //
 // The master plan's release lifecycle had a circular dependency: content could not enter delayed
@@ -58,14 +59,24 @@ export function validatePilotApprovals({ approvals = [], packs = [], assessmentF
       errors.push(`${label} pilot approval targets version ${approval.scopeVersion}, current version is ${scope.version}`);
     }
     if (approval.decision !== 'approved') continue;
-    const items = scope.items || [];
+    // An approval may name a subset of prompts. That is how a form whose Part A still depends on
+    // unchecked audio can contribute its usable Part B prompts without the rest riding along.
+    const allItems = scope.items || [];
+    const items = approval.itemIds ? allItems.filter((entry) => approval.itemIds.includes(entry.id)) : allItems;
+    for (const itemId of approval.itemIds || []) {
+      if (!allItems.some((entry) => entry.id === itemId)) errors.push(`${label} pilot approval names ${itemId}, which is not part of it`);
+    }
     for (const item of items) {
       if (item.reviewStatus !== 'reviewed' || item.integrationStatus !== 'integrated') {
         errors.push(`${label} cannot be pilot-approved while ${item.id} is not reviewed and integrated`);
         break;
       }
-      if (item.correctionStatus === 'changes_required') {
-        errors.push(`${label} cannot be pilot-approved while ${item.id} has an open correction`);
+      if (isQuarantined(item)) {
+        errors.push(`${label} cannot be pilot-approved while ${item.id} has an unresolved correction or an uninstalled replacement`);
+        break;
+      }
+      if (dependsOnUncheckedAudio(item)) {
+        errors.push(`${label} cannot be pilot-approved while ${item.id} depends on audio that has not been listened to`);
         break;
       }
     }
@@ -80,12 +91,38 @@ export function approvedPilotScopeIds(approvals = []) {
   return approvals.filter((approval) => approval.decision === 'approved').map(({ scopeId }) => scopeId);
 }
 
-// Resolves the status an item should carry given the pilot approvals. Release status is never
-// upgraded here: released content stays released, and unapproved content keeps its own status.
-export function applyPilotApproval(item, approvedScopeIds = []) {
+// An answer the learner can only give by listening needs its audio checked by a person first.
+// Synthesis can render an invented word or a minimal pair differently from the intended reading,
+// and the learner would be marked wrong for the voice rather than for their answer.
+export function dependsOnUncheckedAudio(item) {
+  const usesAudio = Boolean(item.spokenText) || (item.choices || []).some((choice) => choice.spokenText);
+  return usesAudio && item.audioStatus === 'synthetic_preview';
+}
+
+export function pilotApprovalFor(approvals = [], scopeId) {
+  return approvals.find((approval) => approval.scopeId === scopeId && approval.decision === 'approved') || null;
+}
+
+// Resolves the status an item should carry given the pilot approval covering it. Release status is
+// never upgraded here: released content stays released, and unapproved content keeps its own
+// status. Accepts either the approval records or a plain list of approved scope ids.
+export function applyPilotApproval(item, approvals = [], scopeId = null) {
   if (item.releaseStatus === 'released') return item;
-  if (!approvedScopeIds.includes(item.packId) && !approvedScopeIds.includes(item.formId) && !approvedScopeIds.includes(item.scopeId)) return item;
+  const id = scopeId ?? item.packId ?? item.formId ?? item.scopeId;
+  const records = approvals.map((entry) => (typeof entry === 'string' ? { scopeId: entry, decision: 'approved' } : entry));
+  const approval = pilotApprovalFor(records, id);
+  if (!approval) return item;
+  if (approval.itemIds && !approval.itemIds.includes(item.id)) return item;
   if (item.reviewStatus !== 'reviewed' || item.integrationStatus !== 'integrated') return item;
-  if (item.correctionStatus === 'changes_required') return item;
+  if (isQuarantined(item)) return item;
+  if (dependsOnUncheckedAudio(item)) return item;
   return { ...item, releaseStatus: 'pilot_approved' };
+}
+
+// Episodes carry their own lifecycle rather than a list of items.
+export function applyPilotApprovalToEpisode(episode, approvals = []) {
+  if (episode.releaseStatus === 'released') return episode;
+  if (!pilotApprovalFor(approvals, episode.id)) return episode;
+  if (episode.reviewStatus !== 'reviewed' || episode.integrationStatus !== 'integrated') return episode;
+  return { ...episode, releaseStatus: 'pilot_approved' };
 }

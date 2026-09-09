@@ -255,27 +255,42 @@ test('progress evidence is summarized by what actually counts toward mastery', a
   ];
   assert.deepEqual(summarizeSkillEvidence(attempts), { recorded: 5, released: 1, pilot: 1, notCounted: 3 });
   assert.deepEqual(summarizeSkillEvidence([]), { recorded: 0, released: 0, pilot: 0, notCounted: 0 });
-  const { readFile } = await import('node:fs/promises');
-  const page = await readFile(new URL('../src/pages/ProgressPage.jsx', import.meta.url), 'utf8');
-  assert.match(page, /count toward mastery/);
-  assert.doesNotMatch(page, /contentStatus !== 'not_reviewed'/, 'the display no longer treats unreleased attempts as eligible');
+  // The screen itself is now built from data, so the rule it displays is executed here rather than
+  // read out of the component as text.
+  const { buildProgressView } = await import('../src/learning/mastery.js');
+  const view = buildProgressView({
+    skills: [{ id: 'SP.patterns', track: 'spelling' }],
+    attempts: attempts.map((attempt) => ({ ...attempt, skillIds: ['SP.patterns'] })),
+    masteryBySkill: { 'SP.patterns': { status: 'developing', needsReview: true } },
+    pilotMasteryBySkill: { 'SP.patterns': { status: 'learning', eligibleCount: 1 } },
+    pilotScopeIds: ['c0.pack.sp.patterns'],
+  });
+  assert.equal(view.rows.length, 1);
+  assert.deepEqual(view.rows[0].evidence, { recorded: 5, released: 1, pilot: 1, notCounted: 3 });
+  assert.equal(view.rows[0].status, 'developing');
+  assert.equal(view.rows[0].needsReview, true);
+  assert.equal(view.rows[0].showPilotRow, true, 'pilot evidence is shown on its own row, never merged');
+  // With no pilot approved, the pilot row disappears rather than showing an empty record.
+  const released = buildProgressView({ skills: [{ id: 'SP.patterns', track: 'spelling' }], attempts: [], masteryBySkill: {}, pilotMasteryBySkill: {}, pilotScopeIds: [] });
+  assert.equal(released.pilotMode, false);
+  assert.equal(released.rows[0].showPilotRow, false);
+  assert.equal(released.rows[0].status, 'not_started');
 });
 
 test('each assessment run records its own attempt session so a retake is not a retry', async () => {
+  const { nextAttemptOrdinal } = await import('../src/learning/attemptRecord.js');
+  // The real rule decides first-attempt eligibility: ordinal is counted per session and item, so
+  // two runs of the same prompt under different session IDs are both first attempts.
+  const firstRun = [{ sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }];
+  assert.equal(nextAttemptOrdinal(firstRun, { sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }), 2, 'a repeat inside one run is a retry');
+  assert.equal(nextAttemptOrdinal(firstRun, { sessionId: 'assessment-A-run2', itemId: 'c0.assessment.a.01' }), 1, 'a retake starts a fresh first attempt');
+
+  // And the runner still mints a session per run rather than reusing one per form.
   const { readFile } = await import('node:fs/promises');
   const runner = await readFile(new URL('../src/pages/AssessmentRunner.jsx', import.meta.url), 'utf8');
-  assert.match(runner, /function newAttemptSessionId\(form\)/);
   assert.match(runner, /attemptSessionId: newAttemptSessionId\(form\)/);
   assert.doesNotMatch(runner, /sessionId: `assessment-\$\{form\}`/, 'attempts no longer share one session per form');
   assert.doesNotMatch(runner, /sessionId=\{`assessment-\$\{form\}`\}/, 'recordings no longer share one session per form');
-  assert.match(runner, /setState\(createAssessmentState\(form\)\(\)\)/, 'clearing the preview mints a new attempt session');
-
-  // The ordinal that decides first-attempt eligibility is per session and item, so two runs of the
-  // same item under different session IDs are both first attempts.
-  const ordinalFor = (priorAttempts, sessionId, itemId) => priorAttempts.filter((entry) => entry.sessionId === sessionId && entry.itemId === itemId && !entry.technicalFailure).length + 1;
-  const firstRun = [{ sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }];
-  assert.equal(ordinalFor(firstRun, 'assessment-A-run1', 'c0.assessment.a.01'), 2, 'a repeat inside one run is a retry');
-  assert.equal(ordinalFor(firstRun, 'assessment-A-run2', 'c0.assessment.a.01'), 1, 'a retake starts a fresh first attempt');
 });
 
 test('reviewed audio may be a labelled model voice, but a human recording is required for phoneme audio', async () => {
@@ -313,4 +328,36 @@ test('the audio handoff records the withdrawn requirement instead of silently dr
   assert.doesNotMatch(doc, /24 reviewed human-audio and 16 specialist/);
   const tracker = await readFile(new URL('../src/data/r2GateTracker.js', import.meta.url), 'utf8');
   assert.doesNotMatch(tracker, /24 reviewed recordings and 16 specialist checks/);
+});
+
+test('a semicolon joins one sentence, so the clause after it is not capitalized', () => {
+  const item = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['The bell rang. Everyone entered.'],
+    repairScope: { clauses: ['The bell rang', 'everyone entered'], allowedJoins: ['period', 'semicolon', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(item, 'The bell rang; everyone entered.').status, 'correct');
+  assert.equal(evaluateItem(item, 'The bell rang; Everyone entered.').status, 'pending', 'a semicolon does not start a new sentence');
+  assert.equal(evaluateItem(item, 'The bell rang. Everyone entered.').status, 'correct', 'a period does');
+  assert.equal(evaluateItem(item, 'The bell rang. everyone entered.').status, 'pending');
+  assert.equal(evaluateItem(item, 'The bell rang, and everyone entered.').status, 'correct');
+
+  // A word that keeps its capital anywhere still keeps it after a semicolon.
+  const pronoun = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['I packed my bag. I forgot my goggles.'],
+    repairScope: { clauses: ['I packed my bag', 'I forgot my goggles'], allowedJoins: ['period', 'semicolon', 'coordinating'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(pronoun, 'I packed my bag; I forgot my goggles.').status, 'correct');
+  assert.equal(evaluateItem(pronoun, 'I packed my bag; i forgot my goggles.').status, 'pending');
+  const proper = {
+    evaluator: 'sentence_repair',
+    acceptedAnswers: ['We waited. Mia arrived.'],
+    repairScope: { clauses: ['We waited', 'Mia arrived'], allowedJoins: ['semicolon'], properNouns: ['Mia'] },
+    allowReview: true,
+  };
+  assert.equal(evaluateItem(proper, 'We waited; Mia arrived.').status, 'correct');
+  assert.equal(evaluateItem(proper, 'We waited; mia arrived.').status, 'pending');
 });

@@ -20,18 +20,22 @@ export function attemptBaseFor(existingRow = {}) {
 }
 
 // Deduplicates by attempt ID and orders by client time so a replayed or re-read attempt cannot
-// count twice and the streak reflects the real order of answers.
-export function orderedWordAttempts(attempts = [], wordId) {
+// count twice and the streak reflects the real order of answers. Attempts whose IDs the base
+// already counted are skipped: an imported total was taken from a device whose queue still held
+// those answers, and folding them in again when they finally send would count them twice.
+export function orderedWordAttempts(attempts = [], wordId, alreadyCounted = null) {
   const byId = new Map();
   for (const attempt of attempts) {
     if (!attempt?.attemptId || attempt.wordId !== wordId) continue;
+    if (alreadyCounted?.has(attempt.attemptId)) continue;
     if (!byId.has(attempt.attemptId)) byId.set(attempt.attemptId, attempt);
   }
   return [...byId.values()].sort((a, b) => String(a.clientTime || '').localeCompare(String(b.clientTime || '')));
 }
 
 export function deriveWordRow(existingRow = {}, attempts = [], wordId) {
-  const ordered = orderedWordAttempts(attempts, wordId);
+  const alreadyCounted = new Set(existingRow.baseCountedAttemptIds || []);
+  const ordered = orderedWordAttempts(attempts, wordId, alreadyCounted);
   const base = attemptBaseFor(existingRow);
   let streak = 0;
   let derivedBest = 0;
@@ -54,6 +58,7 @@ export function deriveWordRow(existingRow = {}, attempts = [], wordId) {
     baseCorrect: base.correct,
     derivedFromAttempts: ordered.length,
     derivationVersion: PROGRESS_DERIVATION_VERSION,
+    ...(alreadyCounted.size ? { baseCountedAttemptIds: [...alreadyCounted] } : {}),
     ...(existingRow.importedFromLocal ? { importedFromLocal: true } : {}),
     ...(ordered.length ? { lastEvidenceType: ordered[ordered.length - 1].evidenceType } : {}),
   };

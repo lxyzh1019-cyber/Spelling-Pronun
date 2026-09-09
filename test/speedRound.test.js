@@ -1,3 +1,8 @@
+// Some tests in this file are SOURCE GUARDS or COPY GUARDS: they read a source file as text and
+// assert on its wording or structure. They do NOT execute the component, so they cannot prove it
+// behaves correctly. They exist to protect truthful learner-facing wording and to stop a known
+// defect being reintroduced. Behaviour lives in the pure modules under src/learning and is tested
+// by executing it.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { SPEED_MODES, buildSpeedRoundList, evidenceTypeForMode, recordSpeedOutcome } from '../src/learning/speedRound.js';
@@ -28,7 +33,7 @@ test('misses and passes are kept with what was typed so the round can be reviewe
   ]);
 });
 
-test('the speed round page guards double submission and lists misses on the finish screen', async () => {
+test('source guard: the speed round page guards double submission and lists misses on the finish screen', async () => {
   const source = await readFile(new URL('../src/pages/SpeedRound.jsx', import.meta.url), 'utf8');
   assert.match(source, /advancingRef\.current\) return;/);
   assert.match(source, /Words to review/);

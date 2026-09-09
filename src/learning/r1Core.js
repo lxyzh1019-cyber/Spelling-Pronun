@@ -108,3 +108,9 @@ export function restoreSessionSnapshot(snapshot, { learnerId, mode, category, wo
   if (!restoredWords.length || restoredWords.length !== snapshot.wordIds.length) return null;
   return { ...snapshot, words: restoredWords };
 }
+
+// A daily challenge is completed once. The award depends on the transition, not on the state, so
+// re-recording an answer after completion must not award the badge again.
+export function dailyChallengeNewlyCompleted(wordIds, attemptsByWord, wasComplete) {
+  return dailyChallengeComplete(wordIds, attemptsByWord) && !wasComplete;
+}

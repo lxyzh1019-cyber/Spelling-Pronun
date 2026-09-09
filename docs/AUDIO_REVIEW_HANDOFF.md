@@ -33,15 +33,30 @@ A qualified reviewer in the project's own review role (Codex, per the plan's own
 | Form | Decoding prompts | Speaking prompts |
 |---|---|---|
 | A | splendid; astonish; Narpish; Vemicate | photograph; invitation; sentence-reading prompts 19–20 |
-| B | frantic; remember; Tembish; Lopudent | information; community; sentence-reading prompts 19–20 |
+| B | frantic; remember; Tembish; Lopadent | information; community; sentence-reading prompts 19–20 |
 
 The review must confirm that each invented-word item has exactly one supportable answer **from the spelling alone**, that stress and phrasing targets are observable, and that recordings stay pending rather than receiving an automatic score.
 
-The four invented-word prompts are currently quarantined by corrections `corr.c0.003` and `corr.c0.004`: their earlier form supplied the pronunciation, which measured matching rather than decoding. The proposed replacement is a print-only segmentation item plus a recorded reading the learner compares with the model audio. Because no rater is available, that recording is never scored and the report must state that independent decoding is not measured.
+## Receptive decoding recordings — 12 to check
+
+The four invented-word prompts were rebuilt on 2026-09-09 (corrections `corr.c0.003` and `corr.c0.004`, resolved by the parent). The learner now sees the printed word and chooses which of three recordings matches how the spelling would normally be read. The choice is machine-scored, so **each recording must be listened to before the pilot uses these items**: synthesis can render an invented word differently from the intended reading, and the learner would then be marked wrong for the voice rather than for their answer. The validator refuses pilot approval for any item whose audio is still an unchecked synthetic preview.
+
+Each item names its expected reading in `targetPronunciation`, and each choice carries a `checkerNote` describing the misreading it represents.
+
+| Form | Word | Expected reading | The three recordings |
+|---|---|---|---|
+| A | Narpish | NAR-pish | long-a misreading; the expected reading; long-e misreading of the i |
+| A | Vemicate | VEM-ih-kayt | the expected reading; long-e misreading of the first e; short-a misreading of the final syllable |
+| B | Tembish | TEM-bish | long-e misreading of the e; long-e misreading of the i; the expected reading |
+| B | Lopadent | LOH-puh-dent | the expected reading; closed first syllable; long-a misreading of the middle a |
+
+For each of the twelve, confirm that the recording is intelligible, that it renders the reading its note describes, and that the expected reading is the one a Grade 5 reader would produce from the spelling. If a distractor is indistinguishable from the expected reading, the item is not usable and must go back for correction rather than into the pilot.
+
+The read-aloud step offered after each of these items is optional practice. It stays on the device, is never scored, and produces no attempt record, because no qualified rater is available.
 
 ## Import and promotion order
 
-1. Complete the listening check and import the reviewed assets with truthful `kind` and locale.
-2. Complete the educational review and resolve every discrepancy, including the open corrections.
+1. Complete the listening check for the dictation and contrast prompts and for the twelve receptive decoding recordings, then import the reviewed assets with truthful `kind` and locale.
+2. Complete the educational review and resolve every discrepancy.
 3. Promote only the verified Part-A items from challenge-only to reviewed, then integrated.
 4. Keep the assessment unreleased. A private pilot needs a recorded parent pilot approval; release additionally needs learner testing and the device checks. Assisted, pending, and technical-failure answers stay excluded from mastery throughout.

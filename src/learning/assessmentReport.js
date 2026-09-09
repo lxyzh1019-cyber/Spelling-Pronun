@@ -3,6 +3,17 @@ const TRACK_NAMES = {
   SE: 'sentences', PU: 'punctuation', ED: 'editing',
 };
 
+// What a track's numbers may be read as saying. A disclosure is attached to every reported track
+// whose result is narrower than its name suggests, so a count is never read as more than it is.
+export const TRACK_DISCLOSURES = {
+  decoding: 'These items ask the learner to choose a syllable break, or to pick the recording that matches a printed word. They report recognizing a plausible pronunciation from spelling. Reading an unfamiliar word aloud unaided is not measured, because no qualified rater is available to judge a recording.',
+  pronunciation: 'Speaking prompts are recorded and kept for a person to listen to. They are never scored automatically and count as pending review, not as right or wrong.',
+};
+
+export function trackDisclosure(track) {
+  return TRACK_DISCLOSURES[track] || null;
+}
+
 export function trackForSkill(skillId = '') {
   return TRACK_NAMES[skillId.split('.')[0]] || 'other';
 }
@@ -22,7 +33,11 @@ export function buildAssessmentReport({ form, version = 1, results = [], complet
       if (result.correct) bucket.firstTryCorrect += 1;
     }
   }
-  for (const bucket of Object.values(tracks)) bucket.coverage = bucket.independentScored < 5 ? 'needs_more_evidence' : 'screening_evidence';
+  for (const [name, bucket] of Object.entries(tracks)) {
+    bucket.coverage = bucket.independentScored < 5 ? 'needs_more_evidence' : 'screening_evidence';
+    const disclosure = trackDisclosure(name);
+    if (disclosure) bucket.disclosure = disclosure;
+  }
   const ranked = Object.entries(tracks)
     .filter(([, bucket]) => bucket.independentScored > 0 || bucket.assisted > 0 || bucket.omissions > 0)
     .sort((a, b) => {
