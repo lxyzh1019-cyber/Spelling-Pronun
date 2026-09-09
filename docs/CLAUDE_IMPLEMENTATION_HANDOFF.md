@@ -228,7 +228,7 @@ Codex will:
 
 - `docs/MASTER_PLAN.md` — authoritative requirements and gates.
 - `docs/IMPLEMENTATION_STATUS.md` — current evidence ledger.
-- `docs/AUDIO_REVIEW_HANDOFF.md` — exact 24 audio and 16 specialist-review dependencies.
+- `docs/AUDIO_REVIEW_HANDOFF.md` — the parent listening check (24 dictation and contrast prompts, plus the 12 receptive decoding recordings) and the educational review of the 16 decoding and speaking prompts.
 - `src/data/integration.c0.json` — current C0 integration records.
 - `src/data/curriculum.c1-c2.preparation.json` — future pack/episode mapping only.
 - `src/data/story.research.c1-c2.json` — future story research boundaries only.

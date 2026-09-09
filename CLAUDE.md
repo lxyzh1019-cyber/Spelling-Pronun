@@ -42,10 +42,10 @@ Pure modules with no React or Firebase imports; every rule has a test in `test/`
 - `assessmentReport.js`, `reviewQueue.js`, `sessionEngine.js` (tested, not yet wired to a page), `contentValidator.js`, `contentReview.js`, `contentManifest.js`, `importPreview.js`, `crossword.js`, `speedRound.js`, `r1Core.js`.
 
 - `pilotApproval.js` — the `pilot_approved` lifecycle state and the two evidence tracks. `deriveMastery`, `deriveReviewProgress`, and `buildReviewQueue` all take a `track`; released and pilot evidence are derived separately and never mix.
-- `contentCorrections.js` — quarantine. An item with an open correction is withheld from lessons and assessments; the correction's proposer may never resolve it.
+- `contentCorrections.js` — quarantine. An item with an open correction is withheld from lessons and assessments; the correction's proposer may never resolve it, and marking a correction reviewed does not release the item until the replacement is installed at the recorded version.
 - `progressAggregate.js` — word totals derived from the immutable attempt record, with legacy imports kept as a recorded base and a guard against lowering another device's count.
 
-Content lives in `src/data/` (C0 packs, assessment forms, story, review records, integration records, pilot approvals, corrections). The lifecycle is `draft → schema-valid → independently challenged → reviewed → integrated → pilot_approved → learner_tested → released`. Only `released` content produces validated mastery evidence; `pilot_approved` content runs the same loop into a separate pilot record. Nothing is released or pilot-approved yet.
+Content lives in `src/data/` (C0 packs, assessment forms, story, review records, integration records, pilot approvals, corrections). The lifecycle is `draft → schema-valid → independently challenged → reviewed → integrated → pilot_approved → learner_tested → released`. Only `released` content produces validated mastery evidence; `pilot_approved` content runs the same loop into a separate pilot record. Nothing is released. The parent approved the four C0 packs, both episodes, and the 28 Part B prompts for a private pilot on 2026-09-09; every prompt that depends on audio nobody has listened to is excluded.
 
 ### Persistence (`src/persistence/`)
 
