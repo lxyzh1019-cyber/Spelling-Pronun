@@ -13,6 +13,14 @@ npm test         # node --test over test/*.test.js (pure engine, persistence, co
 
 There is no lint script. Tests use Node's built-in runner; they do not start a browser or Firebase.
 
+Tests execute real code. Rules live in pure modules under `src/learning` and `src/persistence`, and
+components render them rather than owning them, so a rule can be run in a test without a DOM. Two
+hand-written fakes in `test/fakes` (no packages) let the storage and cloud paths run headlessly: the
+IndexedDB opener is injectable via `useDatabaseOpener`, and `firebaseSessionStore` takes its
+Firestore operations as a parameter. A few tests named `source guard:` or `copy guard:` read a
+component as text to protect truthful learner-facing wording; they do not execute it, and their
+names say so.
+
 ## Architecture
 
 This is a React 18 + Vite SPA — originally a spelling/pronunciation tutor for Alberta curriculum grade words, now extended with a Grade 5 English learning engine (lessons, assessment, review, story) described in `docs/MASTER_PLAN.md`. Evidence and open release gates live in `docs/IMPLEMENTATION_STATUS.md`; read both before changing learning behaviour. It deploys to GitHub Pages at the base path `/Spelling-Pronun/` (set in `vite.config.js`).
