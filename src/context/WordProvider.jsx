@@ -40,61 +40,6 @@ const DEFAULT_PROFILES = [
   { id: 'jess', name: 'Jess', avatar: '🎨', color: '#60a5fa' },
 ];
 
-function slug(s) {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-const SECTION_SIZE = 25;
-
-function shortGradeLabel(name) {
-  // "Grade 4 — Alberta Curriculum" -> "Grade 4"
-  const m = name.match(/Grade\s*\d+/i);
-  return m ? m[0] : name;
-}
-
-function withIds(categories) {
-  // Split each large category into smaller sections of SECTION_SIZE words
-  // so Flashcards / Word Scramble / Spelling Test stay focused.
-  const sections = [];
-  for (const cat of categories) {
-    const words = cat.words || [];
-    const total = words.length;
-    if (total <= SECTION_SIZE) {
-      const catId = slug(cat.name);
-      sections.push({
-        ...cat,
-        id: catId,
-        words: words.map((w) => ({
-          ...w,
-          id: `${catId}__${slug(w.word)}`,
-        })),
-      });
-      continue;
-    }
-    const sectionCount = Math.ceil(total / SECTION_SIZE);
-    for (let i = 0; i < sectionCount; i++) {
-      const start = i * SECTION_SIZE;
-      const end = Math.min(start + SECTION_SIZE, total);
-      const sectionName = `${shortGradeLabel(cat.name)} — Section ${i + 1} (words ${start + 1}-${end})`;
-      const sectionId = slug(sectionName);
-      sections.push({
-        ...cat,
-        name: sectionName,
-        id: sectionId,
-        words: words.slice(start, end).map((w) => ({
-          ...w,
-          // Keep stable global id so progress doesn't reset when sections change.
-          id: `${slug(cat.name)}__${slug(w.word)}`,
-        })),
-      });
-    }
-  }
-  return sections;
-}
-
 const FALLBACK_CATEGORIES = withIds(wordData.categories || []);
 
 export function WordProvider({ children }) {

@@ -255,27 +255,42 @@ test('progress evidence is summarized by what actually counts toward mastery', a
   ];
   assert.deepEqual(summarizeSkillEvidence(attempts), { recorded: 5, released: 1, pilot: 1, notCounted: 3 });
   assert.deepEqual(summarizeSkillEvidence([]), { recorded: 0, released: 0, pilot: 0, notCounted: 0 });
-  const { readFile } = await import('node:fs/promises');
-  const page = await readFile(new URL('../src/pages/ProgressPage.jsx', import.meta.url), 'utf8');
-  assert.match(page, /count toward mastery/);
-  assert.doesNotMatch(page, /contentStatus !== 'not_reviewed'/, 'the display no longer treats unreleased attempts as eligible');
+  // The screen itself is now built from data, so the rule it displays is executed here rather than
+  // read out of the component as text.
+  const { buildProgressView } = await import('../src/learning/mastery.js');
+  const view = buildProgressView({
+    skills: [{ id: 'SP.patterns', track: 'spelling' }],
+    attempts: attempts.map((attempt) => ({ ...attempt, skillIds: ['SP.patterns'] })),
+    masteryBySkill: { 'SP.patterns': { status: 'developing', needsReview: true } },
+    pilotMasteryBySkill: { 'SP.patterns': { status: 'learning', eligibleCount: 1 } },
+    pilotScopeIds: ['c0.pack.sp.patterns'],
+  });
+  assert.equal(view.rows.length, 1);
+  assert.deepEqual(view.rows[0].evidence, { recorded: 5, released: 1, pilot: 1, notCounted: 3 });
+  assert.equal(view.rows[0].status, 'developing');
+  assert.equal(view.rows[0].needsReview, true);
+  assert.equal(view.rows[0].showPilotRow, true, 'pilot evidence is shown on its own row, never merged');
+  // With no pilot approved, the pilot row disappears rather than showing an empty record.
+  const released = buildProgressView({ skills: [{ id: 'SP.patterns', track: 'spelling' }], attempts: [], masteryBySkill: {}, pilotMasteryBySkill: {}, pilotScopeIds: [] });
+  assert.equal(released.pilotMode, false);
+  assert.equal(released.rows[0].showPilotRow, false);
+  assert.equal(released.rows[0].status, 'not_started');
 });
 
 test('each assessment run records its own attempt session so a retake is not a retry', async () => {
+  const { nextAttemptOrdinal } = await import('../src/learning/attemptRecord.js');
+  // The real rule decides first-attempt eligibility: ordinal is counted per session and item, so
+  // two runs of the same prompt under different session IDs are both first attempts.
+  const firstRun = [{ sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }];
+  assert.equal(nextAttemptOrdinal(firstRun, { sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }), 2, 'a repeat inside one run is a retry');
+  assert.equal(nextAttemptOrdinal(firstRun, { sessionId: 'assessment-A-run2', itemId: 'c0.assessment.a.01' }), 1, 'a retake starts a fresh first attempt');
+
+  // And the runner still mints a session per run rather than reusing one per form.
   const { readFile } = await import('node:fs/promises');
   const runner = await readFile(new URL('../src/pages/AssessmentRunner.jsx', import.meta.url), 'utf8');
-  assert.match(runner, /function newAttemptSessionId\(form\)/);
   assert.match(runner, /attemptSessionId: newAttemptSessionId\(form\)/);
   assert.doesNotMatch(runner, /sessionId: `assessment-\$\{form\}`/, 'attempts no longer share one session per form');
   assert.doesNotMatch(runner, /sessionId=\{`assessment-\$\{form\}`\}/, 'recordings no longer share one session per form');
-  assert.match(runner, /setState\(createAssessmentState\(form\)\(\)\)/, 'clearing the preview mints a new attempt session');
-
-  // The ordinal that decides first-attempt eligibility is per session and item, so two runs of the
-  // same item under different session IDs are both first attempts.
-  const ordinalFor = (priorAttempts, sessionId, itemId) => priorAttempts.filter((entry) => entry.sessionId === sessionId && entry.itemId === itemId && !entry.technicalFailure).length + 1;
-  const firstRun = [{ sessionId: 'assessment-A-run1', itemId: 'c0.assessment.a.01' }];
-  assert.equal(ordinalFor(firstRun, 'assessment-A-run1', 'c0.assessment.a.01'), 2, 'a repeat inside one run is a retry');
-  assert.equal(ordinalFor(firstRun, 'assessment-A-run2', 'c0.assessment.a.01'), 1, 'a retake starts a fresh first attempt');
 });
 
 test('reviewed audio may be a labelled model voice, but a human recording is required for phoneme audio', async () => {

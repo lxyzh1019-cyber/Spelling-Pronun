@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { speak, stopSpeech } from '../utils/speech';
-import { playRecordedAudio } from '../utils/audioPlayback';
+import { speak, stopSpeech } from '../utils/speech.js';
+import { playRecordedAudio } from '../utils/audioPlayback.js';
 
 export function useCancellableSpeech(scopeKey) {
   const controllerRef = useRef(null);

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useWords } from './WordProvider';
+import { buildAttempt } from '../learning/attemptRecord';
 import { evaluateItem } from '../learning/evaluators';
 import { deriveMastery } from '../learning/mastery';
 import { deriveReviewProgress, selectDueReviews } from '../learning/reviewScheduler';
@@ -170,28 +171,16 @@ export function LearningProvider({ children }) {
     const learnerId = activeProfileId;
     const evaluation = evaluateItem(item, response);
     const priorAttempts = readJson(attemptsKey(learnerId), []);
-    const ordinal = metadata.ordinal ?? (priorAttempts.filter((entry) => entry.sessionId === metadata.sessionId && entry.itemId === item.id && !entry.technicalFailure).length + 1);
-    const attempt = Object.freeze({
-      attemptId: metadata.attemptId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
+    const attempt = buildAttempt({
+      item,
+      response,
+      evaluation,
+      metadata,
+      priorAttempts,
       learnerId,
-      sessionId: metadata.sessionId,
-      itemId: item.id,
-      itemVersion: item.version,
-      skillIds: [item.primarySkill, ...(item.secondarySkills || [])],
-      originalAnswer: response,
-      status: metadata.technicalFailure ? 'technical_failure' : metadata.omitted ? 'omitted' : evaluation.status,
-      correct: metadata.omitted ? false : evaluation.correct,
-      omitted: Boolean(metadata.omitted),
-      technicalFailure: Boolean(metadata.technicalFailure),
-      helped: Boolean(metadata.helped),
-      revealed: Boolean(metadata.revealed),
-      unseen: Boolean(metadata.unseen),
-      ordinal,
-      evidenceType: metadata.evidenceType || 'independent_choice',
+      attemptId: metadata.attemptId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
       eventTime: new Date().toISOString(),
       edmontonDate: edmontonDayKey(),
-      reviewStatus: item.reviewStatus,
-      contentStatus: item.releaseStatus || 'not_released',
     });
     if (activeLearnerRef.current === learnerId) {
       setAttempts((current) => {

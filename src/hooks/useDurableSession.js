@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { db } from '../firebase';
-import { createLocalSessionMirror, createSessionSnapshot, selectSessionState } from '../persistence/durableSession';
-import { getOrCreateDeviceId } from '../persistence/deviceIdentity';
-import { claimRemoteSession, saveRemoteSession } from '../persistence/firebaseSessionStore';
-import { loadSession, saveSession } from '../persistence/indexedDb';
-import { useSessionLease } from './useSessionLease';
+import { db } from '../firebase.js';
+import { createLocalSessionMirror, createSessionSnapshot, selectSessionState } from '../persistence/durableSession.js';
+import { getOrCreateDeviceId } from '../persistence/deviceIdentity.js';
+import { claimRemoteSession, saveRemoteSession } from '../persistence/firebaseSessionStore.js';
+import { loadSession, saveSession } from '../persistence/indexedDb.js';
+import { useSessionLease } from './useSessionLease.js';
 
 function readLocalRaw(storageKey) {
   try { return localStorage.getItem(storageKey); } catch { return null; }

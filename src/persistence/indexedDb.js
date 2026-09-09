@@ -1,5 +1,5 @@
-import { shouldStoreSession } from './durableSession';
-import { deliverOutbox } from './outboxSync';
+import { shouldStoreSession } from './durableSession.js';
+import { deliverOutbox } from './outboxSync.js';
 
 const DB_NAME = 'spelling-pronun-learning';
 const DB_VERSION = 2;

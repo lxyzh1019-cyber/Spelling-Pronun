@@ -40,3 +40,28 @@ export function summarizeSkillEvidence(attempts = []) {
   const pilot = attempts.filter((attempt) => attempt.contentStatus === 'pilot_approved' && evidenceEligible(attempt)).length;
   return { recorded, released, pilot, notCounted: recorded - released - pilot };
 }
+
+// The whole progress screen as data. Keeping it here means the rules about what a learner is told
+// they have achieved are testable without rendering anything.
+export function buildProgressView({ skills = [], attempts = [], masteryBySkill = {}, pilotMasteryBySkill = {}, pilotScopeIds = [] } = {}) {
+  const pilotMode = pilotScopeIds.length > 0;
+  // A pending answer is waiting for a person to read it. It is neither right nor wrong, so it is
+  // reported on its own rather than folded into either count.
+  const pendingCount = attempts.filter((attempt) => attempt.status === 'pending' && !attempt.omitted && !attempt.technicalFailure).length;
+  const rows = skills.map((skill) => {
+    const skillAttempts = attempts.filter((attempt) => attempt.skillIds?.includes(skill.id));
+    const mastery = masteryBySkill[skill.id];
+    const pilotMastery = pilotMasteryBySkill[skill.id];
+    const showPilotRow = pilotMode && (pilotMastery?.eligibleCount || 0) > 0;
+    return {
+      skillId: skill.id,
+      track: skill.track,
+      status: mastery?.status || 'not_started',
+      needsReview: Boolean(mastery?.needsReview),
+      evidence: summarizeSkillEvidence(skillAttempts),
+      showPilotRow,
+      pilotStatus: showPilotRow ? pilotMastery.status : null,
+    };
+  });
+  return { pilotMode, pendingCount, rows };
+}

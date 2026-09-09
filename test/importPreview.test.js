@@ -1,3 +1,8 @@
+// Some tests in this file are SOURCE GUARDS or COPY GUARDS: they read a source file as text and
+// assert on its wording or structure. They do NOT execute the component, so they cannot prove it
+// behaves correctly. They exist to protect truthful learner-facing wording and to stop a known
+// defect being reintroduced. Behaviour lives in the pure modules under src/learning and is tested
+// by executing it.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildImportPreview, buildLearnerImportPreview, canAutoPush, importDecisionRecord } from '../src/learning/importPreview.js';
@@ -47,7 +52,7 @@ test('local history is pushed automatically only for guests, empty accounts, or 
   assert.deepEqual(record, { decision: 'imported', decidedAt: '2026-09-08T12:00:00.000Z', attempts: 2, words: 1 });
 });
 
-test('the parent page reviews an existing account before writing and keeps the create path additive', async () => {
+test('source guard: the parent page reviews an existing account before writing and keeps the create path additive', async () => {
   const { readFile } = await import('node:fs/promises');
   const source = await readFile(new URL('../src/pages/ParentPage.jsx', import.meta.url), 'utf8');
   assert.match(source, /previewImport\(credential\.user\)/);

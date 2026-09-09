@@ -1,3 +1,8 @@
+// Some tests in this file are SOURCE GUARDS or COPY GUARDS: they read a source file as text and
+// assert on its wording or structure. They do NOT execute the component, so they cannot prove it
+// behaves correctly. They exist to protect truthful learner-facing wording and to stop a known
+// defect being reintroduced. Behaviour lives in the pure modules under src/learning and is tested
+// by executing it.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -77,7 +82,7 @@ test('reviewed recording playback is cancellable and reports browser limitations
   }
 });
 
-test('recording controls use a large, touch-friendly visual treatment', async () => {
+test('copy guard: recording controls use a large, touch-friendly visual treatment', async () => {
   const component = await readFile(new URL('../src/components/RecordingAnswer.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/components/RecordingAnswer.module.css', import.meta.url), 'utf8');
   assert.match(component, /styles\.recordButton/);
@@ -86,7 +91,7 @@ test('recording controls use a large, touch-friendly visual treatment', async ()
   assert.match(css, /font-size: 1\.125rem/);
 });
 
-test('recordings can be deleted from the device and the copy never implies upload or session-only storage', async () => {
+test('copy guard: recordings can be deleted from the device and the copy never implies upload or session-only storage', async () => {
   const { readFile } = await import('node:fs/promises');
   const component = await readFile(new URL('../src/components/RecordingAnswer.jsx', import.meta.url), 'utf8');
   const store = await readFile(new URL('../src/persistence/indexedDb.js', import.meta.url), 'utf8');

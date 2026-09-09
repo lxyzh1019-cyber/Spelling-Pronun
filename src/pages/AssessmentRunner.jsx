@@ -7,6 +7,7 @@ import { C0_ASSESSMENT_NOTICE, c0AssessmentForms } from '../data/assessment.c0.d
 import { isQuarantined, usableItems } from '../learning/contentCorrections';
 import { c0AssessmentAudioAssets } from '../data/audio.c0';
 import { previewLessonForTrack } from '../data/lessonCatalog';
+import { advanceAssessment, evidenceTypeForAssessment, panelFor, recordAssessmentResult } from '../learning/assessmentFlow';
 import { REASSESSMENT_SUGGESTION, appendAssessmentHistory, assessmentHistoryKey, buildAssessmentReport } from '../learning/assessmentReport';
 import { readJson, writeJson } from '../utils/localStore';
 import { useCancellableSpeech } from '../hooks/useCancellableSpeech';
@@ -91,17 +92,7 @@ export default function AssessmentRunner() {
     if (!result.ok) return setAudioMessage('Audio playback failed. Continue as a technical issue, not a wrong answer.');
     setAudioMessage(`${choice.text} played with synthetic preview audio; it has not been checked yet. You can replay it.`);
   };
-  const advanceFrom = (fromState) => {
-    const nextIndex = fromState.index + 1;
-    return { ...fromState, index: nextIndex, pendingPanel: null, completedAt: nextIndex === items.length ? new Date().toISOString() : fromState.completedAt || null };
-  };
-  // Which follow-up panel an answered item earns. Neither panel scores anything.
-  const panelFor = (answered, response, metadata) => {
-    if (metadata.omitted || metadata.technicalFailure) return null;
-    if (answered.evaluator === 'human_rubric' && answered.responseType === 'text') return { kind: 'self_check', itemId: answered.id, response };
-    if (answered.optionalPractice) return { kind: 'practice', itemId: answered.id };
-    return null;
-  };
+  const advanceFrom = (fromState) => advanceAssessment(fromState, items.length, new Date().toISOString());
   const saveResult = async (response, metadata = {}) => {
     if (submittingRef.current || !canWrite()) return;
     const submissionOwnerKey = storageKey;
@@ -109,8 +100,8 @@ export default function AssessmentRunner() {
     submittingRef.current = true;
     setSubmitting(true);
     try {
-      const { attempt } = await submitAttempt(item, response, { sessionId: attemptSessionId, evidenceType: metadata.technicalFailure ? 'technical_failure' : metadata.omitted ? 'omission' : helped ? 'assisted_assessment' : item.responseType === 'recording' ? 'reviewed_pronunciation_pending' : item.evaluator === 'spelling' ? 'independent_spelling' : item.evaluator === 'punctuation' ? 'independent_punctuation' : 'independent_choice', helped, ...metadata });
-      const answered = { ...submissionState, results: [...submissionState.results, { itemId: item.id, skillId: item.primarySkill, status: attempt.status, correct: attempt.correct, helped: attempt.helped, omitted: attempt.omitted, technicalFailure: attempt.technicalFailure }] };
+      const { attempt } = await submitAttempt(item, response, { sessionId: attemptSessionId, evidenceType: evidenceTypeForAssessment(item, { helped, ...metadata }), helped, ...metadata });
+      const answered = recordAssessmentResult(submissionState, item, attempt);
       // Open writing and editing answers stay pending human review. With no rater available the
       // learner gets a self-check against the stated rubric; it is never scored or counted as
       // independent evidence. A receptive decoding item offers optional read-aloud practice.

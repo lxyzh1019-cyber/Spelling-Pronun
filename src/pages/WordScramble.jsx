@@ -1,16 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWords } from '../context/WordProvider';
 import { shuffle, pickRandom } from '../utils/shuffle';
+import { scrambleWord } from '../learning/wordScramble';
+
+const scrambleWordWith = (word) => scrambleWord(word, shuffle);
 import MultiplayerWrapper from '../components/MultiplayerWrapper';
 import styles from './WordScramble.module.css';
-
-function scrambleWord(word) {
-  const letters = shuffle(word.split(''));
-  if (letters.join('') === word && letters.length > 2) {
-    [letters[0], letters[1]] = [letters[1], letters[0]];
-  }
-  return letters;
-}
 
 export default function WordScramble() {
   return (
@@ -33,7 +28,7 @@ function WordScrambleInner({ sessionLearnerId }) {
   const newWord = useCallback(() => {
     if (!activeWords.length) return;
     const word = pickRandom(activeWords);
-    const scr = scrambleWord(word.word);
+    const scr = scrambleWordWith(word.word);
     setCurrentWord(word);
     setScrambled(scr);
     setBuilt([]);
