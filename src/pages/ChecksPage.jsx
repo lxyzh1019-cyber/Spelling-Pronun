@@ -131,17 +131,27 @@ function PracticeRun({ storage }) {
         <form onSubmit={submit}>
           <p>{item.prompt}</p>
           <label>Your answer<input className={styles.input} value={answer} onChange={(event) => setAnswer(event.target.value)} /></label>
-          <div className={styles.actions}>
-            <button className={styles.primary} disabled={!answer}>Submit</button>
-            <button className={styles.secondary} type="button" onClick={() => { setOnline(!online); setMessage(online ? 'Pretending to be offline. Answers will be held.' : 'Back online.'); }}>
-              {online ? 'Go offline' : 'Go back online'}
-            </button>
-            <button className={styles.secondary} type="button" onClick={() => { save(deliverTestQueue(state)); setMessage('Queue flushed. Each answer is delivered once, however many times you flush.'); }}>
-              Send what is waiting
-            </button>
-          </div>
+          <div className={styles.actions}><button className={styles.primary} disabled={!answer}>Submit</button></div>
         </form>
       ) : <p className={styles.success}>Practice run finished. Reload the page to check that it stays finished.</p>}
+      {/* Outside the form: a queued answer must still be sendable after the last
+          question, which is exactly when an offline answer is most likely waiting. */}
+      <div className={styles.actions}>
+        <button className={styles.secondary} type="button" onClick={() => {
+          const goingOnline = !online;
+          setOnline(goingOnline);
+          if (goingOnline) {
+            // The real app flushes on the browser's `online` event, so this does too.
+            save(deliverTestQueue(state));
+            setMessage('Back online. Anything that was waiting has been sent.');
+          } else setMessage('Pretending to be offline. Answers will be held on this device.');
+        }}>
+          {online ? 'Go offline' : 'Go back online'}
+        </button>
+        <button className={styles.secondary} type="button" onClick={() => { save(deliverTestQueue(state)); setMessage('Queue flushed. Each answer is delivered once, however many times you flush.'); }}>
+          Send what is waiting
+        </button>
+      </div>
       <div className={styles.actions}>
         <button className={styles.secondary} type="button" onClick={() => { clearTestRun(storage, TEST_RUN_ID); setState(resumeTestRun(storage, TEST_RUN_ID).state); setMessage('This test run was cleared. Nothing else was touched.'); }}>
           Reset this test run
