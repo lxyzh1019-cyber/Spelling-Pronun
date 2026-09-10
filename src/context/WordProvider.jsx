@@ -28,6 +28,7 @@ import { listOutbox, queueOutboxEntry } from '../persistence/indexedDb';
 import { applyAttempts, createAttempt, dailyChallengeComplete, edmontonDayKey, progressStats } from '../learning/r1Core';
 import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
 import { achievementsStorageKey, progressStorageKey, readJson, writeJson } from '../utils/localStore';
+import { slug, withIds } from '../learning/wordCatalogue';
 import wordData from '../data/words.json';
 
 const WordContext = createContext(null);
