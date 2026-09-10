@@ -7,3 +7,15 @@ test('R2 gate tracker exposes every remaining external dependency without a fals
   assert.ok(r2GateTracker.every((gate) => gate.state !== 'ready'));
   assert.equal(gateStateLabel('requires_device_test'), 'Needs real-device test');
 });
+
+test('the tracker states the pilot approval that was actually recorded', () => {
+  const gate = r2GateTracker.find((entry) => entry.id === 'pilot-approval');
+  // It said no content was pilot-approved long after the parent approved some.
+  assert.doesNotMatch(gate.detail, /no content is pilot-approved/);
+  assert.match(gate.detail, /2026-09-09/);
+  assert.match(gate.detail, /Part A prompts stay excluded/);
+  // Approved in part is still not released, and the label must not imply otherwise.
+  assert.notEqual(gate.state, 'ready');
+  assert.equal(gateStateLabel(gate.state), 'Granted for part of the content');
+  assert.match(gate.detail, /never validated progress/);
+});

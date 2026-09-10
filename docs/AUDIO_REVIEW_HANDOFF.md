@@ -10,11 +10,19 @@ The stricter requirement was an implementation choice, not an approved obligatio
 
 ## Where to run this
 
-Open the app and go to **For the parent → Things I need you to test** (`/checks`). The listening check, the
-contrast pairs and the twelve receptive decoding recordings are each a walk-through there, with the prompts
-listed one at a time and a place to record what you heard. The page keeps your place, preserves an earlier
-result if you re-check a row, and exports the findings as markdown for the ledger. Recording a pass there is
-an observation only; it imports no audio asset and releases nothing.
+Open the app and go to **For the parent → Things I need you to test** (`/checks`), in the **Technical Test
+Lab** half. All three listening checks play there: the sixteen dictation words, both sides of all eight
+contrast pairs, and the twelve receptive decoding recordings. You do not take the assessment to hear them,
+and nothing you do there touches Jenn's or Jess's progress.
+
+Each row is derived from the assessment item itself and shows the item id and version it came from, so a
+row cannot drift from what the app will really play. One row is not something the app plays: a contrast
+item speaks only its target, so the Test Lab speaks the other side too, labelled as a comparison. That
+comparison is the only way to answer whether the pair is distinguishable.
+
+The page keeps your place, preserves an earlier result if you re-check a row, and exports the findings as
+markdown for the ledger. Recording a pass there is an observation only; it imports no audio asset and
+releases nothing.
 
 ## A. Listening check — 24 spoken prompts
 

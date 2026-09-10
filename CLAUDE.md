@@ -59,18 +59,36 @@ Content lives in `src/data/` (C0 packs, assessment forms, story, review records,
 
 ### Human checks (`/checks`)
 
-Some gates can only be closed by a person opening the app and observing something: whether a synthesised
-word is intelligible on the real iPad, whether Safari keeps a session across an interruption, whether a
-child can restate a rule afterwards. `src/data/humanChecks.js` holds those checks as data (steps, what you
-need, what counts as a pass, and what a pass does *not* unlock); `src/learning/humanChecks.js` holds the
-rules; `src/persistence/checkLog.js` keeps the results in `localStorage`, preserving the earlier result
-whenever a row is re-checked.
+Some gates can only be closed by a person opening the app and observing something. The page is in two
+halves, and the difference between them is the point.
+
+**Technical Test Lab** checks the machine. Its audio rows are derived from the version-pinned assessment
+items by `src/learning/testLabAudio.js` — never a hand-written list — and play in place using the same
+selection rule and rates as `AssessmentRunner`. A contrast item speaks only its target, so the Test Lab
+also speaks the distractor from the item's own choice text, labelled as a comparison and never as
+assessment audio. Its interruption, offline and double-submit scenarios run through
+`src/learning/testLabRun.js` against `src/persistence/testLabStore.js`, which reuses the pure rules
+(`evaluateItem`, the durable-session comparison, idempotent delivery by attempt id) with invented practice
+questions, the learner id `__testlab__`, and keys prefixed `spelling-testlab-`. It never goes through
+`LearningProvider`, so `submitAttempt` and the learner write path are untouched. No check in this half
+links to a learner route, and a test enforces that.
+
+**Family Pilot Observation** checks the child, which means a real lesson and real records. It refuses to
+open anything until the parent names the observed learner and acknowledges that answers will be saved to
+them (`pilotEntryAllowed`).
+
+The two-device check is gated by a real preflight (`src/learning/testLabPreflight.js`): a non-anonymous
+parent account, a reachable Firebase, and a record in `spelling-testlab-sessions` that writes and reads
+back as its owner. There is deliberately no hand-set override, and a passing preflight makes the check
+runnable, never done.
+
+`src/persistence/checkLog.js` keeps results in `localStorage`, records the tester rather than whichever
+child happens to be selected, preserves the earlier result whenever a row is re-checked, and still reads
+entries written by the first version.
 
 A recorded result is one person's observation on one device. It is never mastery evidence and it never
 releases content: `gateStateAfterChecks` returns the gate's own state however many rows are ticked, and
-`summariseChecks` deliberately exposes no `ready` or `released` field. Both are enforced by test. A check
-with an unmet prerequisite — the two-device check before Firebase Email/Password exists — cannot be
-recorded at all.
+`summariseChecks` deliberately exposes no `ready` or `released` field. Both are enforced by test.
 
 ### Persistence (`src/persistence/`)
 
@@ -87,8 +105,9 @@ recorded at all.
 | `spelling-daily-challenges` | `{userId}_{profileId}` | Daily 5-word challenge + completion flag |
 | `spelling-attempts` | `{userId}_{profileId}_{attemptId}` | Immutable learning and word-game attempt events (create-only) |
 | `spelling-sessions` | `{userId}__{sessionId}` | Cloud-owned resumable sessions with owner epoch and monotonic revision |
+| `spelling-testlab-sessions` | `{userId}__{testRunId}` | The parent's own two-device preflight records; never learner data, ignored by every production query |
 
-Firestore security rules (`firestore.rules`) restrict every collection to its owner; attempts cannot be updated or deleted. The rules are checked by text assertions in `test/firestoreRules.test.js`, not by an emulator, and the `spelling-sessions` rules are not yet deployed.
+Firestore security rules (`firestore.rules`) restrict every collection to its owner; attempts cannot be updated or deleted. The rules are checked by text assertions in `test/firestoreRules.test.js`, not by an emulator, and neither the `spelling-sessions` nor the `spelling-testlab-sessions` rules are deployed yet, which is why the two-device preflight reports a dependency rather than passing.
 
 ### Routing and Pages
 
@@ -102,7 +121,7 @@ Routes:
 - `/review` → ReviewPage (delayed review; released content only)
 - `/progress` → ProgressPage (per-skill mastery, needs-review and pending-review counts)
 - `/parent` → ParentPage (parent account, import preview, R2 gate tracker, link to the checks)
-- `/checks` → ChecksPage (the checks that need a person: steps, pass criteria, and a local log of what was observed)
+- `/checks` → ChecksPage (Technical Test Lab and Family Pilot Observation; see Human checks below)
 - `/test` → SpellingTest (speech synthesis reads words aloud, user types)
 - `/flashcards` → Flashcards (self-report only; never independent evidence)
 - `/scramble` → WordScramble

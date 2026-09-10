@@ -65,3 +65,12 @@ export function buildProgressView({ skills = [], attempts = [], masteryBySkill =
   });
   return { pilotMode, pendingCount, rows };
 }
+
+// Not every attempt names a skill. A word-game attempt from `createAttempt` has
+// none at all, and neither does anything written before the field existed; both
+// reach the app once cloud attempts are merged. Such an attempt is evidence for
+// no skill, which is correct — but reading through the missing field threw, and
+// a throw inside a provider-level memo blanked the whole app (DEF-31).
+export function attemptsForSkill(attempts = [], skillId) {
+  return attempts.filter((attempt) => (attempt?.skillIds || []).includes(skillId));
+}

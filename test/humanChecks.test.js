@@ -12,7 +12,7 @@ import {
   nextPrompt,
   summariseChecks,
 } from '../src/learning/humanChecks.js';
-import { CHECK_LOG_KEY, clearCheckResult, readCheckLog, recordCheckResult } from '../src/persistence/checkLog.js';
+import { CHECK_LOG_KEY, DEFAULT_TESTER, clearCheckResult, readCheckLog, recordCheckResult } from '../src/persistence/checkLog.js';
 import { r2GateTracker } from '../src/data/r2GateTracker.js';
 import { createStorageFake } from './fakes/storageFake.js';
 import { deriveMastery } from '../src/learning/mastery.js';
@@ -36,35 +36,43 @@ test('every check names a real gate, the steps to follow, and what it does not u
     // The honesty rule: every check states its own limit, so a pass is never read as more than it is.
     assert.ok(check.doesNotUnlock, `${check.id} does not say what it fails to unlock`);
     assert.ok(check.prompts.length > 0);
+    // Every check belongs to exactly one area, and the areas mean different things.
+    assert.ok(['testlab', 'pilot'].includes(check.area), `${check.id} has no area`);
   });
 });
 
-test('the listening check covers exactly the prompts the audio handoff lists', () => {
+test('the audio checks are derived from the assessment, not typed out here', () => {
   const dictation = findCheck('check.listening.dictation');
   const contrast = findCheck('check.listening.contrast');
   const decoding = findCheck('check.decoding.recordings');
+  // Each names the group it derives from, so a row cannot drift from the real item.
+  assert.deepEqual(
+    [dictation, contrast, decoding].map((check) => check.promptSource.group),
+    ['dictation', 'contrast', 'decoding']
+  );
   assert.equal(dictation.prompts.length, 16);
-  assert.equal(contrast.prompts.length, 8);
+  assert.equal(contrast.prompts.length, 16, 'both sides of eight pairs');
   assert.equal(decoding.prompts.length, 12);
-  // Each decoding word contributes three recordings, and exactly one of them is the expected reading.
-  ['Narpish', 'Vemicate', 'Tembish', 'Lopadent'].forEach((word) => {
-    const rows = decoding.prompts.filter((prompt) => prompt.label.startsWith(word));
-    assert.equal(rows.length, 3, `${word} needs three recordings`);
-    assert.equal(rows.filter((row) => row.detail.includes('the expected reading')).length, 1);
+  // Every derived prompt carries the item it came from.
+  [dictation, contrast, decoding].forEach((check) => {
+    check.prompts.forEach((prompt) => {
+      assert.ok(prompt.audio?.itemId, `${prompt.id} lost its item`);
+      assert.ok(prompt.audio.itemVersion, `${prompt.id} lost its version pin`);
+    });
   });
 });
 
 test('progress reports what is left, and one problem outranks any number of passes', () => {
-  const check = findCheck('check.assessment-resume');
+  const check = findCheck('check.resume');
   assert.equal(checkProgress(check, {}).status, 'not_started');
   const partial = { [check.prompts[0].id]: { result: 'pass' } };
   assert.deepEqual(
     (({ done, total, status }) => ({ done, total, status }))(checkProgress(check, partial)),
-    { done: 1, total: 3, status: 'in_progress' }
+    { done: 1, total: 5, status: 'in_progress' }
   );
   const all = passEverything([check]);
   assert.equal(checkProgress(check, all).status, 'complete');
-  all[check.prompts[2].id] = { result: 'problem' };
+  all[check.prompts[4].id] = { result: 'problem' };
   assert.equal(checkProgress(check, all).status, 'problem_found');
   // An unsure row is not a pass; the check stays open.
   const unsure = { ...passEverything([check]), [check.prompts[1].id]: { result: 'unclear' } };
@@ -82,12 +90,11 @@ test('the next row is the first unrecorded one, then anything left unsure', () =
   assert.equal(nextPrompt(check, passEverything([check])), null);
 });
 
-test('a check whose prerequisite is missing cannot be recorded', () => {
+test('a check whose prerequisite is unproven cannot be recorded', () => {
   const twoDevice = findCheck('check.two-device');
-  assert.ok(twoDevice.blockedBy, 'the two-device check depends on Firebase setup');
+  assert.equal(twoDevice.requiresPreflight, 'twoDevice');
   assert.equal(checkAvailability(twoDevice, {}).runnable, false);
-  assert.match(checkAvailability(twoDevice, {}).reason, /Email\/Password/);
-  assert.equal(checkAvailability(twoDevice, { setupComplete: true }).runnable, true);
+  assert.equal(checkAvailability(twoDevice, { preflight: { twoDevice: { ok: true } } }).runnable, true);
   // Checks with no prerequisite are always runnable.
   assert.equal(checkAvailability(findCheck('check.ipad'), {}).runnable, true);
 });
@@ -112,28 +119,33 @@ test('a recorded observation is never mastery evidence', () => {
   assert.equal(isResultValue('mastered'), false);
   // The log is a separate store with a separate shape; mastery derives from attempts alone.
   const storage = createStorageFake();
-  const check = findCheck('check.lesson-journey');
+  const check = findCheck('check.resume');
   check.prompts.forEach((prompt) => recordCheckResult(storage, { promptId: prompt.id, result: 'pass', recordedAt: '2026-09-09T12:00:00.000Z' }));
-  assert.equal(deriveMastery([]).status, 'unassessed', 'six recorded passes produced no mastery for anyone');
+  assert.equal(deriveMastery([]).status, 'unassessed', 'a full sheet of passes produced no mastery for anyone');
   assert.deepEqual([...storage.entries.keys()], [CHECK_LOG_KEY], 'the log writes to its own key only');
   const stored = JSON.parse(storage.entries.get(CHECK_LOG_KEY));
   Object.values(stored).forEach((entry) => {
-    assert.deepEqual(Object.keys(entry).sort(), ['history', 'note', 'promptId', 'recordedAt', 'recordedBy', 'result']);
+    assert.deepEqual(Object.keys(entry).sort(), [
+      'appVersion', 'contentVersion', 'deviceLabel', 'history', 'note',
+      'observedLearner', 'promptId', 'recordedAt', 'result', 'testedBy',
+    ]);
+    // A Test Lab row observed no child, so it names none.
+    assert.equal(entry.observedLearner, '');
   });
 });
 
 test('re-checking a row keeps the earlier result visible', () => {
   const storage = createStorageFake();
-  recordCheckResult(storage, { promptId: 'ipad.offline', result: 'problem', note: 'second answer never arrived', recordedAt: '2026-09-09T10:00:00.000Z' });
-  const after = recordCheckResult(storage, { promptId: 'ipad.offline', result: 'pass', recordedAt: '2026-09-10T10:00:00.000Z' });
-  assert.equal(after['ipad.offline'].result, 'pass');
-  assert.equal(after['ipad.offline'].history.length, 1);
-  assert.equal(after['ipad.offline'].history[0].result, 'problem');
-  assert.match(after['ipad.offline'].history[0].note, /never arrived/);
+  recordCheckResult(storage, { promptId: 'ipad.microphone', result: 'problem', note: 'permission prompt never appeared', recordedAt: '2026-09-09T10:00:00.000Z' });
+  const after = recordCheckResult(storage, { promptId: 'ipad.microphone', result: 'pass', recordedAt: '2026-09-10T10:00:00.000Z' });
+  assert.equal(after['ipad.microphone'].result, 'pass');
+  assert.equal(after['ipad.microphone'].history.length, 1);
+  assert.equal(after['ipad.microphone'].history[0].result, 'problem');
+  assert.match(after['ipad.microphone'].history[0].note, /never appeared/);
   // Clearing the current answer leaves the history behind rather than erasing the finding.
-  const cleared = clearCheckResult(storage, 'ipad.offline');
-  assert.equal(cleared['ipad.offline'].result, undefined);
-  assert.equal(cleared['ipad.offline'].history.length, 2);
+  const cleared = clearCheckResult(storage, 'ipad.microphone');
+  assert.equal(cleared['ipad.microphone'].result, undefined);
+  assert.equal(cleared['ipad.microphone'].history.length, 2);
   assert.equal(checkProgress(findCheck('check.ipad'), cleared).done, 0);
 });
 
@@ -152,16 +164,63 @@ test('the log survives a reload, ignores nonsense, and never throws when storage
 });
 
 test('the exported log reports the findings and states its own limits', () => {
+  const contrast = findCheck('check.listening.contrast');
   const results = {
-    'pair.a.1': { result: 'problem', note: 'ship and sheep sound identical', recordedAt: '2026-09-09T10:00:00.000Z' },
-    'pair.a.2': { result: 'pass', recordedAt: '2026-09-09T10:01:00.000Z' },
+    [contrast.prompts[0].id]: { result: 'problem', note: 'ship and sheep sound identical', testedBy: 'Parent', recordedAt: '2026-09-09T10:00:00.000Z' },
+    [contrast.prompts[1].id]: { result: 'pass', testedBy: 'Parent', recordedAt: '2026-09-09T10:01:00.000Z' },
   };
   const report = checkReportMarkdown(humanChecks, results, { today: '2026-09-09' });
   assert.match(report, /not mastery evidence and they do not release content/);
-  assert.match(report, /\| ship \/ sheep \| Problem found \| ship and sheep sound identical \|/);
-  assert.match(report, /Status: Problem found \(2 of 8 recorded\)/);
+  assert.match(report, /\| .*ship \/ sheep.* \| Problem found \| Parent \| — \| ship and sheep sound identical \|/);
+  assert.match(report, /Technical Test Lab · Status: Problem found \(2 of 16 recorded\)/);
+  // The report has to say which half of the page a row came from.
+  assert.match(report, /Test Lab rows ran against an isolated test record and changed no learning progress/);
+  assert.match(report, /Family Pilot rows were real learner sessions/);
   assert.match(report, /Nothing recorded yet\./, 'untouched checks are reported as untouched');
   // A note containing a table separator cannot break the table it is written into.
-  const escaped = checkReportMarkdown([findCheck('check.listening.contrast')], { 'pair.a.1': { result: 'pass', note: 'a | b' } });
+  const escaped = checkReportMarkdown([contrast], { [contrast.prompts[0].id]: { result: 'pass', note: 'a | b' } });
   assert.match(escaped, /\| a \/ b \|/);
+});
+
+test('an observation is attributed to the tester, never to whichever child is selected', () => {
+  const storage = createStorageFake();
+  const ipad = findCheck('check.ipad');
+  // A Test Lab row: no child was involved, so none is named.
+  let log = recordCheckResult(storage, { promptId: ipad.prompts[0].id, result: 'pass', deviceLabel: 'ipad-9' });
+  assert.equal(log[ipad.prompts[0].id].testedBy, DEFAULT_TESTER);
+  assert.equal(log[ipad.prompts[0].id].observedLearner, '');
+  assert.equal(log[ipad.prompts[0].id].deviceLabel, 'ipad-9');
+  // A Family Pilot row: a named child really used the app, and the log says so.
+  const pilot = findCheck('check.lesson-journey');
+  log = recordCheckResult(storage, { promptId: pilot.prompts[0].id, result: 'pass', observedLearner: 'jenn', deviceLabel: 'ipad-9' });
+  assert.equal(log[pilot.prompts[0].id].testedBy, DEFAULT_TESTER, 'the parent ran the check');
+  assert.equal(log[pilot.prompts[0].id].observedLearner, 'jenn', 'the child was observed, not the tester');
+});
+
+test('observations written by the earlier version still load and still count', () => {
+  const storage = createStorageFake();
+  const ipad = findCheck('check.ipad');
+  // The shape the first release wrote: no tester, no device, and a learner id in recordedBy.
+  const legacy = {
+    [ipad.prompts[0].id]: { promptId: ipad.prompts[0].id, result: 'problem', note: 'silent', recordedAt: '2026-09-09T10:00:00.000Z', recordedBy: 'jenn' },
+    [ipad.prompts[1].id]: { promptId: ipad.prompts[1].id, result: 'pass', recordedAt: '2026-09-09T10:05:00.000Z', recordedBy: 'jenn' },
+  };
+  storage.setItem(CHECK_LOG_KEY, JSON.stringify(legacy));
+
+  const loaded = readCheckLog(storage);
+  assert.deepEqual(loaded, legacy, 'nothing is rewritten on read');
+  assert.equal(checkProgress(ipad, loaded).done, 2, 'old results still count toward the check');
+  assert.equal(checkProgress(ipad, loaded).status, 'problem_found');
+  // The export tolerates the missing fields rather than printing undefined.
+  const report = checkReportMarkdown([ipad], loaded, { today: '2026-09-10' });
+  assert.match(report, /\| Parent \| — \| silent \|/);
+  assert.doesNotMatch(report, /undefined/);
+
+  // Re-checking an old row keeps it as history and adds the new fields alongside.
+  const updated = recordCheckResult(storage, { promptId: ipad.prompts[0].id, result: 'pass', deviceLabel: 'ipad-9', recordedAt: '2026-09-10T09:00:00.000Z' });
+  assert.equal(updated[ipad.prompts[0].id].result, 'pass');
+  assert.equal(updated[ipad.prompts[0].id].history[0].result, 'problem');
+  assert.match(updated[ipad.prompts[0].id].history[0].note, /silent/);
+  assert.equal(updated[ipad.prompts[1].id].result, 'pass', 'the other old row is untouched');
+  assert.equal(updated[ipad.prompts[1].id].recordedBy, 'jenn', 'and is not silently rewritten');
 });

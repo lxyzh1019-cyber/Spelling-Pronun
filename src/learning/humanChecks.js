@@ -65,10 +65,30 @@ export function nextPrompt(check, results = {}) {
 }
 
 // A check whose prerequisite is missing cannot be run, so it cannot be recorded.
+//
+// The prerequisite is a real preflight result, not a checkbox: there is
+// deliberately no way to declare setup complete by hand, because a result
+// recorded without the setup would mean nothing. A passing preflight makes the
+// check runnable; it never means the check has been done.
 export function checkAvailability(check, context = {}) {
-  if (!check?.blockedBy) return { runnable: true, reason: '' };
-  if (context.setupComplete) return { runnable: true, reason: '' };
-  return { runnable: false, reason: check.blockedBy };
+  if (!check?.requiresPreflight) return { runnable: true, reason: '' };
+  const preflight = context.preflight?.[check.requiresPreflight];
+  if (preflight?.ok) return { runnable: true, reason: '' };
+  if (preflight?.reason) return { runnable: false, reason: preflight.reason };
+  return { runnable: false, reason: 'This check has not been able to confirm its setup yet.' };
+}
+
+export function checksInArea(checks = [], area) {
+  return checks.filter((check) => check.area === area);
+}
+
+// A Family Pilot check writes to a real child's record, so it cannot open until
+// the parent has said which child and acknowledged that.
+export function pilotEntryAllowed(check, { observedLearner = '', confirmed = false } = {}) {
+  if (check?.area !== 'pilot') return { allowed: true, reason: '' };
+  if (!observedLearner) return { allowed: false, reason: 'Choose which child is being observed.' };
+  if (!confirmed) return { allowed: false, reason: 'Confirm that answers will be saved to that child.' };
+  return { allowed: true, reason: '' };
 }
 
 export function summariseChecks(checks = [], results = {}, context = {}) {
@@ -98,21 +118,24 @@ export function checkReportMarkdown(checks = [], results = {}, { today = '' } = 
   if (today) lines.push(`Exported ${today}.`, '');
   lines.push(
     'These are recorded observations from one person on one device. They are not mastery evidence and they do not release content.',
+    '',
+    'Test Lab rows ran against an isolated test record and changed no learning progress. Family Pilot rows were real learner sessions and did create ordinary records for the named child.',
     ''
   );
   checks.forEach((check) => {
     const progress = checkProgress(check, results);
-    lines.push(`## ${check.title}`, '', `Status: ${statusLabel(progress.status)} (${progress.done} of ${progress.total} recorded)`, '');
+    const areaLabel = check.area === 'pilot' ? 'Family Pilot Observation' : 'Technical Test Lab';
+    lines.push(`## ${check.title}`, '', `${areaLabel} · Status: ${statusLabel(progress.status)} (${progress.done} of ${progress.total} recorded)`, '');
     if (progress.done === 0) {
       lines.push('Nothing recorded yet.', '');
       return;
     }
-    lines.push('| Row | Result | Note |', '|---|---|---|');
+    lines.push('| Row | Result | Tester | Device | Note |', '|---|---|---|---|---|');
     check.prompts.forEach((prompt) => {
       const entry = results?.[prompt.id];
       if (!entry || !isResultValue(entry.result)) return;
-      const note = (entry.note || '').replace(/\|/g, '/').replace(/\n/g, ' ').trim();
-      lines.push(`| ${prompt.label} | ${resultLabel(entry.result)} | ${note || '—'} |`);
+      const clean = (value) => String(value || '').replace(/\|/g, '/').replace(/\n/g, ' ').trim();
+      lines.push(`| ${clean(prompt.label)} | ${resultLabel(entry.result)} | ${clean(entry.testedBy) || 'Parent'} | ${clean(entry.deviceLabel) || '—'} | ${clean(entry.note) || '—'} |`);
     });
     lines.push('');
   });

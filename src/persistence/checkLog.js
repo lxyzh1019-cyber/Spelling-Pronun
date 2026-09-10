@@ -33,17 +33,44 @@ export function readCheckLog(storage = globalThis.localStorage) {
   return read(storage);
 }
 
+export const DEFAULT_TESTER = 'Parent';
+
+// Who observed this, on what, and when. The tester is the person running the
+// check — never the learner profile that happens to be selected, which is what
+// an earlier version recorded. `observedLearner` is set only by a Family Pilot
+// row, where a named child really was using the app.
 export function recordCheckResult(storage = globalThis.localStorage, entry = {}) {
-  const { promptId, result, note = '', recordedAt = new Date().toISOString(), recordedBy = '' } = entry;
+  const {
+    promptId,
+    result,
+    note = '',
+    recordedAt = new Date().toISOString(),
+    testedBy = DEFAULT_TESTER,
+    observedLearner = '',
+    deviceLabel = '',
+    appVersion = '',
+    contentVersion = '',
+  } = entry;
   if (!promptId || !isResultValue(result)) return read(storage);
   const current = read(storage);
   const previous = current[promptId];
   const history = previous
-    ? [{ result: previous.result, note: previous.note || '', recordedAt: previous.recordedAt }, ...(previous.history || [])].slice(0, MAX_HISTORY)
+    ? [{ result: previous.result, note: previous.note || '', recordedAt: previous.recordedAt, testedBy: previous.testedBy }, ...(previous.history || [])].slice(0, MAX_HISTORY)
     : [];
   const next = {
     ...current,
-    [promptId]: { promptId, result, note: String(note || '').slice(0, 600), recordedAt, recordedBy, history },
+    [promptId]: {
+      promptId,
+      result,
+      note: String(note || '').slice(0, 600),
+      recordedAt,
+      testedBy: String(testedBy || DEFAULT_TESTER).slice(0, 80),
+      observedLearner: String(observedLearner || '').slice(0, 80),
+      deviceLabel: String(deviceLabel || '').slice(0, 120),
+      appVersion,
+      contentVersion,
+      history,
+    },
   };
   write(storage, next);
   return next;
@@ -54,7 +81,7 @@ export function clearCheckResult(storage = globalThis.localStorage, promptId) {
   const current = read(storage);
   const existing = current[promptId];
   if (!existing) return current;
-  const history = [{ result: existing.result, note: existing.note || '', recordedAt: existing.recordedAt }, ...(existing.history || [])].slice(0, MAX_HISTORY);
+  const history = [{ result: existing.result, note: existing.note || '', recordedAt: existing.recordedAt, testedBy: existing.testedBy }, ...(existing.history || [])].slice(0, MAX_HISTORY);
   const next = { ...current };
   if (history.length) next[promptId] = { promptId, cleared: true, history };
   else delete next[promptId];

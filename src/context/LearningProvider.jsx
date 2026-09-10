@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useWords } from './WordProvider';
 import { buildAttempt } from '../learning/attemptRecord';
 import { evaluateItem } from '../learning/evaluators';
-import { deriveMastery } from '../learning/mastery';
+import { attemptsForSkill, deriveMastery } from '../learning/mastery';
 import { deriveReviewProgress, selectDueReviews } from '../learning/reviewScheduler';
 import { edmontonDayKey } from '../learning/r1Core';
 import { flushOutbox, queueAttempt } from '../persistence/indexedDb';
@@ -232,11 +232,11 @@ export function LearningProvider({ children }) {
   // without being presented as validated.
   const masteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
     skill.id,
-    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id)), { track: EVIDENCE_TRACKS.RELEASED }),
+    deriveMastery(attemptsForSkill(attempts, skill.id), { track: EVIDENCE_TRACKS.RELEASED }),
   ])), [attempts]);
   const pilotMasteryBySkill = useMemo(() => Object.fromEntries(skillsData.skills.map((skill) => [
     skill.id,
-    deriveMastery(attempts.filter((attempt) => attempt.skillIds.includes(skill.id)), { track: EVIDENCE_TRACKS.PILOT }),
+    deriveMastery(attemptsForSkill(attempts, skill.id), { track: EVIDENCE_TRACKS.PILOT }),
   ])), [attempts]);
   const reviewProgress = useMemo(() => deriveReviewProgress(attempts), [attempts]);
   const dueReviews = useMemo(() => selectDueReviews(reviewProgress), [reviewProgress]);
