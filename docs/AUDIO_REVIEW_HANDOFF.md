@@ -8,6 +8,22 @@ An earlier version of this file required 24 independently recorded human audio a
 
 The stricter requirement was an implementation choice, not an approved obligation, and no external specialist or native-speaker rater is available to this family. It is withdrawn and replaced by the standard below (decision CHG-07 in `docs/IMPLEMENTATION_STATUS.md`).
 
+## Where to run this
+
+Open the app and go to **For the parent → Things I need you to test** (`/checks`), in the **Technical Test
+Lab** half. All three listening checks play there: the sixteen dictation words, both sides of all eight
+contrast pairs, and the twelve receptive decoding recordings. You do not take the assessment to hear them,
+and nothing you do there touches Jenn's or Jess's progress.
+
+Each row is derived from the assessment item itself and shows the item id and version it came from, so a
+row cannot drift from what the app will really play. One row is not something the app plays: a contrast
+item speaks only its target, so the Test Lab speaks the other side too, labelled as a comparison. That
+comparison is the only way to answer whether the pair is distinguishable.
+
+The page keeps your place, preserves an earlier result if you re-check a row, and exports the findings as
+markdown for the ledger. Recording a pass there is an observation only; it imports no audio asset and
+releases nothing.
+
 ## A. Listening check — 24 spoken prompts
 
 Play each prompt in the app and record the result. Model or synthetic audio is acceptable; a human recording is required only where the item sets `requiresHumanAudio` (isolated phoneme audio). Nothing here is a language judgement: the check is that the audio says the intended word, clearly, on the device the children will use.

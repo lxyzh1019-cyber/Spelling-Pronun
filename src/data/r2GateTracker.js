@@ -20,8 +20,8 @@ export const r2GateTracker = [
   {
     id: 'pilot-approval',
     label: 'Approved-for-private-pilot decision',
-    state: 'requires_parent_setup',
-    detail: 'Reviewed and integrated C0 content can run the complete loop once the parent records a pilot approval. Until then no content is pilot-approved, and pilot answers are kept in a separate record that is never validated progress.',
+    state: 'granted_in_part',
+    detail: 'The parent approved the four C0 packs, both chapter-one episodes, and the 28 Part B assessment prompts for a private pilot on 2026-09-09. All 40 Part A prompts stay excluded: they depend on audio nobody has listened to, or on a rater we do not have. Pilot answers are kept in a separate record that is never validated progress.',
   },
   {
     id: 'family-pilot',
@@ -43,5 +43,6 @@ export function gateStateLabel(state) {
     requires_parent_setup: 'Needs parent setup',
     requires_device_test: 'Needs real-device test',
     prepared_not_authored: 'Prepared, not authored',
+    granted_in_part: 'Granted for part of the content',
   }[state] || 'Unknown';
 }

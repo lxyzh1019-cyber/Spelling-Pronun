@@ -70,6 +70,25 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Test Lab sessions — the parent's own two-device check, never learner data.
+    // Separate from spelling-sessions so no production query or mastery
+    // derivation can ever reach it, and deletable because a test record is
+    // meant to be thrown away.
+    match /spelling-testlab-sessions/{document} {
+      allow read: if request.auth.uid != null &&
+        document.matches(request.auth.uid + '__.*') &&
+        request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid != null &&
+        request.auth.uid == request.resource.data.userId &&
+        document.matches(request.auth.uid + '__.*') &&
+        request.resource.data.purpose == 'human_check';
+      allow update: if request.auth.uid != null &&
+        request.auth.uid == resource.data.userId &&
+        request.auth.uid == request.resource.data.userId &&
+        request.resource.data.purpose == 'human_check';
+      allow delete: if request.auth.uid != null && request.auth.uid == resource.data.userId;
+    }
+
     // Achievements — per-user/profile
     match /spelling-achievements/{document} {
       allow read, write: if

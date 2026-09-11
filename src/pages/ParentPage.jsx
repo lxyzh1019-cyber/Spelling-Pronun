@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import { registerParent, signInParent, signOutParent } from '../firebase';
@@ -114,6 +115,7 @@ export default function ParentPage() {
         <div className={styles.actions}><button className={styles.primary} type="button" disabled={busy || preview.nothingToImport} onClick={runImport}>{preview.nothingToImport ? 'Nothing to import' : `Import ${preview.totals.newAttempts + preview.totals.newWords} item${preview.totals.newAttempts + preview.totals.newWords === 1 ? '' : 's'}`}</button><button className={styles.secondary} type="button" disabled={busy} onClick={declineImport}>Skip for now</button></div>
       </section>}
       {message && <p role="status">{message}</p>}
+      <h2>Things I need you to test</h2><p>Some of these gates only move when a person checks something the app cannot check itself. The testing page walks through each one, step by step, and records what you saw.</p><p><Link className={styles.primary} to="/checks">Open the testing checks</Link></p>
       <h2>R2 pilot gate tracker</h2><p>This is a truthful readiness list, not a release claim. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p><div className={styles.gateList}>{r2GateTracker.map((gate) => <article className={styles.gate} key={gate.id}><p><strong>{gate.label}</strong> <span className={styles.meta}>— {gateStateLabel(gate.state)}</span></p><p>{gate.detail}</p></article>)}</div>
     </section>
   </div>;

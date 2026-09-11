@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { deriveWordRow, deriveWordRows, orderedWordAttempts, planProgressWrites } from '../src/learning/progressAggregate.js';
+import { createAttempt } from '../src/learning/r1Core.js';
+import { attemptsForSkill, deriveMastery } from '../src/learning/mastery.js';
 
 const attempt = (id, correct, clientTime, wordId = 'w1') => ({ attemptId: id, wordId, correct, clientTime, learnerId: 'jenn', evidenceType: 'independent_spelling' });
 
@@ -83,4 +85,22 @@ test('an imported total never counts the queued answers it already contains twic
   const again = deriveWordRow(withNew.derived, [...flushed, { attemptId: 'n1', wordId: 'w1', correct: true, clientTime: '2026-09-02T10:00:00Z' }], 'w1');
   assert.equal(again.derived.attempts, 6);
   assert.equal(again.derived.correct, 5);
+});
+
+test('an attempt with no skill matches no skill instead of throwing', () => {
+  // A word-game attempt from `createAttempt` carries no skillIds, and neither
+  // does anything written before that field existed. Both reach the provider
+  // once cloud attempts are merged. Reading through the missing field threw
+  // inside a provider-level memo, which blanked the entire app (DEF-31).
+  const wordGame = createAttempt({ attemptId: 'w1', wordId: 'grade-5-accident', learnerId: 'jenn', correct: true });
+  assert.equal(wordGame.skillIds, undefined, 'word-game attempts genuinely have no skill');
+
+  const learning = { attemptId: 'l1', learnerId: 'jenn', skillIds: ['SP.patterns'], status: 'correct', ordinal: 1, independent: true, contentStatus: 'released' };
+  assert.doesNotThrow(() => attemptsForSkill([wordGame, learning], 'SP.patterns'));
+  assert.deepEqual(attemptsForSkill([wordGame, learning], 'SP.patterns'), [learning], 'only the attempt that names the skill counts');
+  assert.deepEqual(attemptsForSkill([wordGame], 'SP.patterns'), [], 'and a skill-less attempt is simply not evidence');
+  assert.equal(deriveMastery(attemptsForSkill([wordGame], 'SP.patterns')).status, 'unassessed');
+  // A malformed row is skipped rather than taking the derivation down with it.
+  assert.doesNotThrow(() => attemptsForSkill([null, undefined, {}, learning], 'SP.patterns'));
+  assert.deepEqual(attemptsForSkill([null, {}, learning], 'SP.patterns'), [learning]);
 });
