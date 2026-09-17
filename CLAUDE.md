@@ -25,7 +25,7 @@ identifier as a global, so `npm run build` stays green while the app fails to re
 
 ## Architecture
 
-This is a React 18 + Vite SPA — originally a spelling/pronunciation tutor for Alberta curriculum grade words, now extended with a Grade 5 English learning engine (lessons, assessment, review, story) described in `docs/MASTER_PLAN.md`. Evidence and open release gates live in `docs/IMPLEMENTATION_STATUS.md`; read both before changing learning behaviour. It deploys to GitHub Pages at the base path `/Spelling-Pronun/` (set in `vite.config.js`).
+This is a React 18 + Vite SPA — originally a spelling/pronunciation tutor for Alberta curriculum grade words, now extended with a Grade 5 English learning engine (lessons, assessment, review, story) described in `docs/MASTER_PLAN.md`. Evidence and open release gates live in `docs/IMPLEMENTATION_STATUS.md`; read both before changing learning behaviour. `docs/HANDOFF.md` is the short orientation: current state, what the parent should test next, and the rules a fresh session will not know. It deploys to GitHub Pages at the base path `/Spelling-Pronun/` (set in `vite.config.js`).
 
 ### State providers
 
