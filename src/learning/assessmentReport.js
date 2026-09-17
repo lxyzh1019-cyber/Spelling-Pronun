@@ -6,7 +6,7 @@ const TRACK_NAMES = {
 // What a track's numbers may be read as saying. A disclosure is attached to every reported track
 // whose result is narrower than its name suggests, so a count is never read as more than it is.
 export const TRACK_DISCLOSURES = {
-  decoding: 'These items ask the learner to choose a syllable break, or to pick the recording that matches a printed word. They report recognizing a plausible pronunciation from spelling. Reading an unfamiliar word aloud unaided is not measured, because no qualified rater is available to judge a recording.',
+  decoding: 'These items ask the learner to choose a syllable break, or to pick the recording that matches a printed word. They report recognizing a plausible pronunciation from spelling. The recording-choice half is under review and currently withheld, so a decoding result here rests on the syllable-break items alone and covers less than the track name suggests. Reading an unfamiliar word aloud unaided is not measured at all, because no qualified rater is available to judge a recording.',
   pronunciation: 'Speaking prompts are recorded and kept for a person to listen to. They are never scored automatically and count as pending review, not as right or wrong.',
 };
 

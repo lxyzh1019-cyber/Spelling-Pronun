@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { applyCorrections, isQuarantined, openCorrections, quarantinedItemIds, usableItems, validateCorrections } from '../src/learning/contentCorrections.js';
 import correctionData from '../src/data/corrections.c0.json' with { type: 'json' };
 import { c0PilotItems, c0PilotPacks } from '../src/data/packs.c0.draft.js';
+import { TRACK_DISCLOSURES } from '../src/learning/assessmentReport.js';
 import { c0AssessmentItems } from '../src/data/assessment.c0.draft.js';
 import { c0LessonCatalog } from '../src/data/lessonCatalog.js';
 
@@ -10,14 +11,24 @@ test('every recorded correction targets a real item and its replacement is insta
   const items = [...c0PilotItems, ...c0AssessmentItems];
   const validation = validateCorrections({ corrections: correctionData.corrections, items });
   assert.deepEqual(validation.errors, []);
-  assert.equal(openCorrections(correctionData.corrections).length, 0, 'the parent resolved all six on 2026-09-09');
-  assert.ok(correctionData.corrections.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
+
+  // Six corrections were resolved by the parent on 2026-09-09. One is deliberately open:
+  // corr.c0.007 parks the receptive decoding items rather than replacing them, because the
+  // iPad reads their syllable lists letter by letter and no replacement has been tried yet.
+  const open = openCorrections(correctionData.corrections);
+  assert.deepEqual(open.map((correction) => correction.id), ['corr.c0.007']);
+  assert.equal(open[0].toVersion, undefined, 'a park installs nothing, so it names no replacement version');
+  assert.ok(open[0].parentDecision, 'a park has to record whose decision it was');
+
+  const resolved = correctionData.corrections.filter((correction) => correction.reviewStatus === 'reviewed');
+  assert.equal(resolved.length, 6);
+  assert.ok(resolved.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
   // Every resolved correction actually moved its items to the recorded replacement version.
   const byId = new Map(items.map((item) => [item.id, item]));
-  for (const correction of correctionData.corrections) {
+  for (const correction of resolved) {
     for (const itemId of correction.itemIds) assert.equal(byId.get(itemId).version, correction.toVersion, `${itemId} carries the replacement version`);
   }
-  assert.deepEqual([...new Set(correctionData.corrections.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
+  assert.deepEqual([...new Set(resolved.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
 });
 
 test('resolving a correction never restores the defective version on its own', () => {
@@ -48,9 +59,16 @@ test('a correction can never be marked reviewed by the role that proposed it', (
 });
 
 test('the corrected versions are the ones served, and inventory is unchanged', () => {
-  assert.equal(quarantinedItemIds(correctionData.corrections).size, 0);
+  // Exactly the four receptive decoding prompts are parked; nothing else is withheld.
+  assert.deepEqual(
+    [...quarantinedItemIds(correctionData.corrections)].sort(),
+    ['c0.assessment.a.11', 'c0.assessment.a.12', 'c0.assessment.b.11', 'c0.assessment.b.12']
+  );
+  assert.ok(c0AssessmentItems.filter(isQuarantined).every((item) => item.category === 'receptive_decoding'));
+  // The inventory itself is unchanged — parked prompts are withheld from use, never deleted.
   for (const pack of c0PilotPacks) assert.equal(pack.items.length, 24);
   assert.equal(c0AssessmentItems.length, 68);
+  // Lessons are untouched: the park is confined to the assessment.
   const servedLessonItems = Object.values(c0LessonCatalog).flatMap((lesson) => [...lesson.examples, ...lesson.practice, ...lesson.transfer]);
   assert.ok(servedLessonItems.every((item) => !isQuarantined(item)));
   // The two corrected teaching items are served again, at version 2, with the corrected wording.
@@ -120,4 +138,18 @@ test('helpers withhold quarantined items and leave everything else untouched', (
   assert.deepEqual(usableItems(stamped).map(({ id }) => id), ['a']);
   const resolved = applyCorrections(items, [{ ...corrections[0], reviewStatus: 'reviewed', reviewedBy: 'codex' }]);
   assert.ok(resolved.every((item) => !isQuarantined(item)), 'a resolved correction with no version change releases the item again');
+});
+
+test('the decoding track says its recording half is parked, so a halved result is not read whole', () => {
+  // Four syllable-break items remain; only the four recording-choice items are withheld.
+  // The track therefore keeps reporting, on half its evidence — which must be stated.
+  const stillServed = c0AssessmentItems.filter((item) => item.category === 'decoding' && !isQuarantined(item));
+  const parked = c0AssessmentItems.filter((item) => item.category === 'receptive_decoding' && isQuarantined(item));
+  assert.equal(stillServed.length, 4, 'the syllable-break items are unaffected');
+  assert.equal(parked.length, 4, 'the recording-choice items are parked');
+
+  assert.match(TRACK_DISCLOSURES.decoding, /recording-choice half is under review/);
+  assert.match(TRACK_DISCLOSURES.decoding, /covers less than the track name suggests/);
+  // And the rule that predates this stays: reading aloud unaided is measured by nothing.
+  assert.match(TRACK_DISCLOSURES.decoding, /aloud unaided is not measured/);
 });

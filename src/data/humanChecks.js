@@ -18,6 +18,8 @@
 // gate's own state no matter what has been recorded here.
 
 import { buildAudioRows, rowsInGroup } from '../learning/testLabAudio.js';
+import { isQuarantined } from '../learning/contentCorrections.js';
+import correctionData from './corrections.c0.json' with { type: 'json' };
 import { c0AssessmentItems } from './assessment.c0.draft.js';
 import { c0AssessmentAudioAssets } from './audio.c0.js';
 
@@ -26,6 +28,16 @@ export const PILOT_WARNING = 'This opens the normal learning app. Answers and pr
 
 export const audioRows = buildAudioRows(c0AssessmentItems, c0AssessmentAudioAssets);
 
+// An item withheld by an open correction is under review, and so is every row built from it.
+// Derived, never hand-set: the day the correction is resolved and the replacement installed,
+// the rows stop being withheld and the check returns to the Test Lab on its own.
+const withheldItemIds = new Set(c0AssessmentItems.filter(isQuarantined).map((item) => item.id));
+
+export function openCorrectionFor(itemId, corrections = correctionData.corrections) {
+  return corrections.find((correction) => correction.reviewStatus === 'changes_required'
+    && (correction.itemIds || []).includes(itemId)) || null;
+}
+
 // Audio prompts are derived from the version-pinned assessment items, never typed out here.
 function audioPrompts(group) {
   return rowsInGroup(audioRows, group).map((row) => ({
@@ -33,6 +45,7 @@ function audioPrompts(group) {
     label: row.label,
     detail: row.detail,
     audio: row,
+    withheld: withheldItemIds.has(row.itemId),
   }));
 }
 
@@ -108,6 +121,11 @@ export const humanChecks = [
     ],
     doesNotUnlock:
       'Until all twelve pass, the validator refuses pilot approval for these items. Recording a pass here does not import a reviewed audio asset; that is a separate step.',
+    withheldLabel: 'receptive decoding',
+    withheldReason:
+      'Found on the target iPad on 2026-09-17: the voice reads the syllable lists letter by letter — “narpish” came out as N, A, R, Pish. Eleven of the twelve recordings contain a token of three letters or fewer, and every one of the four expected readings is affected, so a learner would be marked wrong for the voice rather than for their answer.',
+    withheldNext:
+      'Nothing to do here. The proposal is to hand the voice one long token per recording instead of a list of syllables, which has not been tried on this iPad yet. These items return to the Test Lab by themselves once a replacement is installed, and you will be asked to check the twelve recordings once more.',
     promptSource: { kind: 'audio', group: 'decoding' },
     prompts: audioPrompts('decoding'),
   },

@@ -78,8 +78,20 @@ export function checkAvailability(check, context = {}) {
   return { runnable: false, reason: 'This check has not been able to confirm its setup yet.' };
 }
 
+// A check is under review when every row it would ask about has been withheld by an open
+// correction. Derived, never hand-set: it parks itself when the correction opens and comes
+// back on its own when the replacement is installed, so there is nothing to remember to undo.
+export function checkUnderReview(check) {
+  const prompts = check?.prompts || [];
+  if (!prompts.length || !prompts.every((prompt) => prompt.withheld)) return null;
+  return { rows: prompts.length, reason: check.withheldReason || '' };
+}
+
+// Area membership honours that: a parked check leaves its own half of the page and appears
+// under review instead, where it is visible and labelled rather than quietly missing.
 export function checksInArea(checks = [], area) {
-  return checks.filter((check) => check.area === area);
+  if (area === 'under_review') return checks.filter((check) => checkUnderReview(check));
+  return checks.filter((check) => check.area === area && !checkUnderReview(check));
 }
 
 // A Family Pilot check writes to a real child's record, so it cannot open until

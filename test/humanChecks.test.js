@@ -4,6 +4,8 @@ import { humanChecks, findCheck } from '../src/data/humanChecks.js';
 import {
   RESULT_VALUES,
   checkAvailability,
+  checkUnderReview,
+  checksInArea,
   checkProgress,
   checkReportMarkdown,
   evidenceContributionOf,
@@ -223,4 +225,37 @@ test('observations written by the earlier version still load and still count', (
   assert.match(updated[ipad.prompts[0].id].history[0].note, /silent/);
   assert.equal(updated[ipad.prompts[1].id].result, 'pass', 'the other old row is untouched');
   assert.equal(updated[ipad.prompts[1].id].recordedBy, 'jenn', 'and is not silently rewritten');
+});
+
+test('a check whose rows are all withheld parks itself in the under-review area', () => {
+  const decoding = findCheck('check.decoding.recordings');
+  // Every one of its twelve rows is withheld by the open correction corr.c0.007.
+  assert.equal(decoding.prompts.length, 12);
+  assert.ok(decoding.prompts.every((prompt) => prompt.withheld));
+  const parked = checkUnderReview(decoding);
+  assert.equal(parked.rows, 12);
+  assert.match(parked.reason, /N, A, R, Pish/, 'the tile states what was actually heard on the iPad');
+  assert.match(decoding.withheldNext, /nothing to do here/i);
+
+  // It leaves the Test Lab and appears under review — visible and labelled, not missing.
+  assert.equal(checksInArea(humanChecks, 'under_review').map((check) => check.id).join(), 'check.decoding.recordings');
+  assert.ok(!checksInArea(humanChecks, 'testlab').some((check) => check.id === 'check.decoding.recordings'));
+  // The checks the parent already passed are untouched and still recordable.
+  const stillWorking = checksInArea(humanChecks, 'testlab').map((check) => check.id);
+  assert.ok(stillWorking.includes('check.listening.dictation') && stillWorking.includes('check.listening.contrast'));
+  assert.ok([findCheck('check.listening.dictation'), findCheck('check.listening.contrast')]
+    .every((check) => check.prompts.every((prompt) => !prompt.withheld)));
+});
+
+test('the park undoes itself: nothing withheld means nothing under review', () => {
+  // The rule is derived from the rows, so installing a replacement is all it takes for the
+  // check to return to the Test Lab. Modelled here by rows that are no longer withheld.
+  const released = { ...findCheck('check.decoding.recordings'), prompts: findCheck('check.decoding.recordings').prompts.map((prompt) => ({ ...prompt, withheld: false })) };
+  assert.equal(checkUnderReview(released), null);
+  assert.deepEqual(checksInArea([released], 'under_review'), []);
+  assert.equal(checksInArea([released], 'testlab').length, 1, 'it goes back where it came from');
+  // A partly-withheld check is not parked: parking is all-or-nothing, so a half-usable
+  // check keeps asking rather than silently dropping the rows that still work.
+  const half = { ...released, prompts: released.prompts.map((prompt, index) => ({ ...prompt, withheld: index < 6 })) };
+  assert.equal(checkUnderReview(half), null);
 });

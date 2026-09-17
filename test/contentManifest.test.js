@@ -8,15 +8,17 @@ import { buildContentManifest } from '../src/learning/contentManifest.js';
 
 test('manifest proves exact C0 draft inventory without claiming release readiness', () => {
   const manifest = buildContentManifest({ skills: skillsData.skills, packs: c0PilotPacks, assessmentForms: c0AssessmentForms, episodes: c0StoryEpisodes });
-  assert.deepEqual(manifest.counts, { skills: 42, packs: 4, contentObjects: 96, assessmentPrompts: 68, episodes: 2, mappedSkills: 4, challengedObjects: 96, reviewedObjects: 96, integratedObjects: 96, challengedAssessmentPrompts: 68, reviewedAssessmentPrompts: 28, integratedAssessmentPrompts: 28, challengedEpisodes: 2, reviewedEpisodes: 2, integratedEpisodes: 2, quarantinedObjects: 0, quarantinedAssessmentPrompts: 0, pilotApprovedObjects: 96, pilotApprovedAssessmentPrompts: 28, pilotApprovedEpisodes: 2, releasedObjects: 0, releasedAssessmentPrompts: 0, releasedEpisodes: 0 });
+  assert.deepEqual(manifest.counts, { skills: 42, packs: 4, contentObjects: 96, assessmentPrompts: 68, episodes: 2, mappedSkills: 4, challengedObjects: 96, reviewedObjects: 96, integratedObjects: 96, challengedAssessmentPrompts: 68, reviewedAssessmentPrompts: 28, integratedAssessmentPrompts: 28, challengedEpisodes: 2, reviewedEpisodes: 2, integratedEpisodes: 2, quarantinedObjects: 0, quarantinedAssessmentPrompts: 4, pilotApprovedObjects: 96, pilotApprovedAssessmentPrompts: 28, pilotApprovedEpisodes: 2, releasedObjects: 0, releasedAssessmentPrompts: 0, releasedEpisodes: 0 });
   assert.equal(manifest.r2InventoryComplete, true);
   assert.equal(manifest.r3InventoryComplete, false);
   assert.equal(manifest.releaseReady, false);
   // The parent approved the four packs, both episodes, and the 28 audio-free Part B prompts.
   // The 40 Part A prompts stay out, so the pilot never depends on audio nobody has heard.
   assert.equal(manifest.counts.pilotApprovedAssessmentPrompts, 28);
-  // All six audit corrections are resolved and their replacements installed, so nothing is withheld.
-  assert.equal(manifest.correctionsOpen, false);
+  // The six audit corrections are resolved and installed. corr.c0.007 is deliberately open:
+  // it parks the four receptive decoding prompts, which is why four are quarantined above.
+  // The manifest reporting an open correction is the manifest doing its job, not a failure.
+  assert.equal(manifest.correctionsOpen, true);
   assert.deepEqual(manifest.errors, []);
 });
 

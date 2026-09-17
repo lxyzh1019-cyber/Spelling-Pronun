@@ -9,6 +9,7 @@ import { r2GateTracker } from '../data/r2GateTracker';
 import {
   RESULT_VALUES,
   checkAvailability,
+  checkUnderReview,
   checkProgress,
   checkReportMarkdown,
   checksInArea,
@@ -371,6 +372,36 @@ export default function ChecksPage() {
           </CheckCard>
         ))}
       </section>
+
+      {checksInArea(humanChecks, 'under_review').map((check) => {
+        const parked = checkUnderReview(check);
+        return (
+          <section className={styles.card} aria-labelledby={`under-review-${check.id}`} key={check.id}>
+            <h2 id={`under-review-${check.id}`}>Under review — {check.withheldLabel || check.title}</h2>
+            <p className={styles.notice} role="note">
+              <strong>Withheld while a correction is open.</strong> {parked.rows} recordings across{' '}
+              {new Set(check.prompts.map((prompt) => prompt.audio?.itemId)).size} items are not in use, and the
+              assessment is shorter by that much until they come back.
+            </p>
+            <p>{parked.reason}</p>
+            <p className={styles.meta}>{check.withheldNext}</p>
+            <h3>What is parked</h3>
+            <ul>
+              {[...new Map(check.prompts.map((prompt) => [prompt.audio?.printedWord, prompt.audio])).values()]
+                .filter(Boolean)
+                .map((audio) => (
+                  <li key={audio.printedWord}>
+                    <strong>{audio.printedWord}</strong> — meant to be read {audio.targetPronunciation}
+                  </li>
+                ))}
+            </ul>
+            <p className={styles.meta}>
+              There is nothing to record here. These rows are shown so you can see what is set aside and why,
+              not so they quietly disappear.
+            </p>
+          </section>
+        );
+      })}
 
       <section className={styles.card} aria-labelledby="family-pilot">
         <h2 id="family-pilot">Family Pilot Observation</h2>

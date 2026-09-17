@@ -53,7 +53,17 @@ A qualified reviewer in the project's own review role (Codex, per the plan's own
 
 The review must confirm that each invented-word item has exactly one supportable answer **from the spelling alone**, that stress and phrasing targets are observable, and that recordings stay pending rather than receiving an automatic score.
 
-## Receptive decoding recordings — 12 to check
+## Receptive decoding recordings — parked 2026-09-17, not a task
+
+**These twelve are withheld and there is nothing to check.** On the target iPad the voice reads the syllable
+lists letter by letter — *"narpish sounds like N, A, R, Pish."* Eleven of the twelve contain a token of three
+letters or fewer, and every one of the four expected readings is affected. The items are quarantined under
+the open correction `corr.c0.007` and appear at `/checks` in an under-review tile.
+
+The section below is kept as the record of what each recording was meant to be, for whoever installs a
+replacement. Until then, skip it.
+
+## What the twelve recordings were meant to be
 
 The four invented-word prompts were rebuilt on 2026-09-09 (corrections `corr.c0.003` and `corr.c0.004`, resolved by the parent). The learner now sees the printed word and chooses which of three recordings matches how the spelling would normally be read. The choice is machine-scored, so **each recording must be listened to before the pilot uses these items**: synthesis can render an invented word differently from the intended reading, and the learner would then be marked wrong for the voice rather than for their answer. The validator refuses pilot approval for any item whose audio is still an unchecked synthetic preview.
 

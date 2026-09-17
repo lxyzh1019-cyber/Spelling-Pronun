@@ -57,13 +57,31 @@ and **Family Pilot Observation** uses the real app and saves answers to a named 
    test record. Confirms a session survives a reload and an offline answer arrives exactly once.
 3. **Listening check — dictation** (~15 min, 16 rows) and **contrast pairs** (~10 min, 16 rows). The pairs
    matter most: if you cannot hear the difference between the two sides, the item tests nothing.
-4. **Receptive decoding** (~20 min, 12 rows). Each row states the reading it is supposed to produce. If a
-   distractor sounds the same as the expected reading, that item is not usable.
+4. ~~Receptive decoding~~ — **parked, nothing to do.** See below.
 5. **The pilot itself** — one watched lesson and story episode one, in the Family Pilot half. This is the
    check everything else exists to make possible.
 
-Items 3 and 4 are what unblock the 40 Part A assessment prompts. Items 1, 2 and 5 do not depend on them, so
+Item 3 is what unblocks the dictation and contrast half of Part A. Items 1, 2 and 5 do not depend on it, so
 the pilot can start before the audio is checked.
+
+### Receptive decoding is parked (2026-09-17)
+
+The four invented-word items are withheld under an open correction, `corr.c0.007`, and shown at `/checks`
+in an **Under review — receptive decoding** tile. Nothing to test there.
+
+Why: on the iPad the voice reads the syllable lists letter by letter — *"narpish sounds like N, A, R,
+Pish."* Eleven of the twelve recordings contain a token of three letters or fewer, and every one of the four
+expected readings is affected, so a learner would be marked wrong for the voice rather than for their
+answer.
+
+The pilot is unaffected — these are Part A prompts, which the pilot approval already excludes. Both forms
+serve 32 of 34 and say so on screen. The decoding track still reports on its four syllable-break items, and
+its disclosure now says the recording half is under review so a halved result is not read whole.
+
+To bring it back, someone resolves the correction and installs a replacement; the tile and the withholding
+then undo themselves, and you will be asked to check the twelve recordings once more. The untested proposal
+is recorded in the correction: hand the voice one long token per recording instead of a list of syllables.
+If that is also spelled out, the item type is not viable with synthetic speech and should be withdrawn.
 
 ## How to feed findings back
 
@@ -79,6 +97,8 @@ second tap when it is showing play again."* That was enough to find and fix it.
 - **Firestore rules are not deployed.** Neither `spelling-sessions` nor `spelling-testlab-sessions`. Until
   they are, the two-device check reports that dependency instead of running, which is correct behaviour.
 - **16 decoding and speaking prompts** await an educational review (`docs/AUDIO_REVIEW_HANDOFF.md`, §B).
+- **`corr.c0.007` is open**, parking the four receptive-decoding items. That is deliberate, not a backlog
+  item to clear quickly — an open correction is how "under review" is expressed.
 - **`sessionEngine.js`** is tested but not wired to any page.
 - **Reading an unfamiliar word aloud unaided is not measured**, and must not be described as if it were.
   No qualified rater is available, so read-aloud recordings are optional practice that produce no evidence.
