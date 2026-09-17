@@ -142,6 +142,24 @@
       "reviewedBy": "parent",
       "reviewedAt": "2026-09-09",
       "resolution": "Parent approved the explicit key for Form B on 2026-09-09. Installed as version 2 of c0.assessment.b.33: the prompt now states the intended meaning, and the rubric carries the model answer, the four named targets, and what is not accepted."
+    },
+    {
+      "id": "corr.c0.007",
+      "fromVersion": 2,
+      "reason": "The twelve receptive-decoding recordings are rendered by text-to-speech from lists of invented syllables, and iOS reads the short ones out letter by letter. Found by the parent on the target iPad on 2026-09-17, at the first attempt: “narpish sounds like N, A, R, Pish.” Measuring every recording afterwards, 11 of the 12 contain a token of three letters or fewer, and the only one that does not (“teem bish”) is a distractor rather than a correct answer. Every one of the four expected readings is affected: “nar pish”, “vem ih kayt”, “tem bish”, “loh puh dent”. A learner would be marked wrong for the voice rather than for their answer, so the items cannot be used as they stand.",
+      "proposedDirection": "Hand the voice one long token per recording instead of a list of syllables — for example “narpish” rather than “nar pish” — since a longer letter string is what a speech engine is built to pronounce and leaves no short fragment to spell out. This has NOT been tried on the target iPad and is a proposal, not a finding. If a respelling is also read letter by letter, the item type is not viable with synthetic speech and should be withdrawn rather than worked around.",
+      "proposedBy": "claude",
+      "reviewer": "parent",
+      "reviewStatus": "changes_required",
+      "raisedAt": "2026-09-17",
+      "foundBy": "parent on the target iPad",
+      "itemIds": [
+        "c0.assessment.a.11",
+        "c0.assessment.a.12",
+        "c0.assessment.b.11",
+        "c0.assessment.b.12"
+      ],
+      "parentDecision": "Park these four items as their own slice, shown as under review and released later. The rest of the app must not wait for them. Recorded 2026-09-17."
     }
   ]
 }
