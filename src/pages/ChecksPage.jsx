@@ -244,7 +244,14 @@ export default function ChecksPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [copied, setCopied] = useState('');
   const deviceLabel = useMemo(() => getOrCreateDeviceId(storage).slice(0, 8), [storage]);
-  const { play, playRecorded } = useCancellableSpeech(playState?.rowId || 'idle');
+  // Scoped to the page, deliberately not to the row being played. The hook cancels
+  // whenever its scope key changes, so keying it on the playing row made the first
+  // tap abort its own audio: setPlayState changed the key, React ran the cleanup for
+  // the old key, and cancel() killed the utterance that had just started. Only the
+  // second tap survived, because by then the key no longer changed (DEF-37).
+  // Starting another row still stops the previous one — play() cancels first — and
+  // leaving the route unmounts the page, whose cleanup cancels.
+  const { play, playRecorded } = useCancellableSpeech('checks');
 
   const record = useCallback((promptId, result, note) => {
     const check = humanChecks.find((entry) => entry.prompts.some((prompt) => prompt.id === promptId));

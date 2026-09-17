@@ -303,15 +303,22 @@ test('progress and recording still work on a derived audio check', () => {
   assert.equal(checkProgress(check, results).status, 'problem_found');
 });
 
-test('source guard: playback is scoped so leaving a row or the page stops it', async () => {
+test('source guard: playback is scoped to the page, never to the row being played', async () => {
   // This one reads the files as text and does not execute them: cancellation is a
-  // browser behaviour, and the wiring that triggers it is what can regress. The
-  // page keys useCancellableSpeech on the row being played, and the hook aborts
-  // the previous utterance whenever that key changes or the page unmounts.
-  const source = await import('node:fs/promises').then((fs) => fs.readFile(new URL('../src/hooks/useCancellableSpeech.js', import.meta.url), 'utf8'));
-  assert.match(source, /useEffect\(\(\) => cancel, \[cancel, scopeKey\]\)/, 'the hook must cancel on scope change and unmount');
+  // browser behaviour. It is written the way it is because the earlier version of
+  // this guard pinned the buggy line verbatim and so locked DEF-37 in — the first
+  // tap on Play aborted its own audio, and only the second tap worked.
+  const read = async (path) => (await import('node:fs/promises')).readFile(new URL(path, import.meta.url), 'utf8');
+  const hook = await read('../src/hooks/useCancellableSpeech.js');
+  const page = await read('../src/pages/ChecksPage.jsx');
 
-  const page = await import('node:fs/promises').then((fs) => fs.readFile(new URL('../src/pages/ChecksPage.jsx', import.meta.url), 'utf8'));
-  assert.match(page, /useCancellableSpeech\(playState\?\.rowId \|\| 'idle'\)/, 'the scope key must be the row being played');
-  assert.match(page, /if \(result\.reason === 'cancelled'\) return;/, 'a cancelled playback must not overwrite the newer row’s message');
+  // The hook cancels whenever its scope key changes, and on unmount. That is correct.
+  assert.match(hook, /useEffect\(\(\) => cancel, \[cancel, scopeKey\]\)/);
+  // Therefore a scope key that changes *because* playback started cancels that playback.
+  const scope = page.match(/useCancellableSpeech\(([^)]*)\)/)?.[1] ?? '';
+  assert.ok(scope, 'the checks page must use the cancellable speech hook');
+  assert.doesNotMatch(scope, /playState|playing|row/i, `the scope key must not depend on the row being played, but is ${scope}`);
+  // Starting another row still stops the previous one, because play() cancels first.
+  assert.match(hook, /const play = useCallback\(async \(text, options = \{\}\) => \{\s*cancel\(\);/);
+  assert.match(page, /if \(result\.reason === 'cancelled'\) return;/, 'a cancelled playback must not overwrite a newer row’s message');
 });
