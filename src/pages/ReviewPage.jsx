@@ -5,16 +5,19 @@ import { useLearning } from '../context/LearningProvider';
 import { c0PilotPacks } from '../data/packs.c0.draft';
 import { advanceReviewSession, buildReviewQueue, createReviewSession, recordReviewResult, resolveReviewItem } from '../learning/reviewQueue';
 import { EVIDENCE_TRACKS } from '../learning/pilotApproval';
+import { orderChoices } from '../learning/choiceOrder';
 import { useDurableSession } from '../hooks/useDurableSession';
 import styles from './Learning.module.css';
 
 const REVIEW_CONTENT_VERSION = c0PilotPacks.map((pack) => `${pack.id}@${pack.version}`).sort().join('|');
 const REVIEW_ITEM_IDS = c0PilotPacks.flatMap((pack) => pack.items.map((item) => item.id));
 
-function ReviewQuestion({ item, answer, setAnswer, disabled }) {
+function ReviewQuestion({ item, answer, setAnswer, disabled, orderSeed }) {
+  // Seed-derived option order, as in the lesson: position never carries the answer.
+  const choices = useMemo(() => orderChoices(item, orderSeed), [item, orderSeed]);
   return <>
     <p>{item.prompt}</p>
-    {item.choices?.map((choice) => <label className={styles.choice} key={choice.id}><input type="radio" name={item.id} checked={answer === choice.id} disabled={disabled} onChange={() => setAnswer(choice.id)} /> {choice.text}</label>)}
+    {choices.map((choice) => <label className={styles.choice} key={choice.id}><input type="radio" name={item.id} checked={answer === choice.id} disabled={disabled} onChange={() => setAnswer(choice.id)} /> {choice.text}</label>)}
     {!item.choices && <textarea className={styles.input} aria-label="Your review answer" value={answer} disabled={disabled} onChange={(event) => setAnswer(event.target.value)} />}
   </>;
 }
@@ -135,7 +138,7 @@ export default function ReviewPage() {
     {session.stage === 'attempt' && item && <>
       <p className={styles.meta}>Review {session.index + 1} of {session.entries.length} · {entry.skillId} · {displayedSaveStatus}</p>
       <h2>Try this without looking back</h2>
-      <ReviewQuestion item={item} answer={answer} setAnswer={setAnswer} disabled={submitting || !writable} />
+      <ReviewQuestion item={item} answer={answer} setAnswer={setAnswer} disabled={submitting || !writable} orderSeed={session.orderSeed || `review-${activeProfileId}`} />
       {helped && <div className={styles.feedback}><strong>Help used</strong>{item.helpSteps.map((step) => <p key={step}>{step}</p>)}<p>This attempt will not advance independent review.</p></div>}
       <div className={styles.actions}><button className={styles.primary} disabled={!answer || submitting || !writable} onClick={() => submit()}>{submitting ? 'Saving…' : 'Save review answer'}</button><button className={styles.secondary} disabled={submitting || helped || !writable} onClick={() => { if (canWrite()) setHelped(true); }}>Show help</button><button className={styles.secondary} disabled={submitting || !writable} onClick={() => submit({ omitted: true })}>I don’t know yet</button><Link className={styles.secondary} to="/">Pause review</Link></div>
     </>}
