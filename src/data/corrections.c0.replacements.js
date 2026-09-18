@@ -1,4 +1,18 @@
-// Drafted replacements from the 2026-09-17 content audit, awaiting the parent's review.
+// Replacement text for the corrections raised by the 2026-09-17 content audit.
+//
+// INSTALLED, 2026-09-18. The parent reviewed these and resolved `corr.c0.007` to `corr.c0.012`, so
+// the item-level replacements below are what a child now sees: `installReplacements` applies them to
+// the authored rows and moves each corrected item to version 2. The pack and form versions do not
+// move, so the educational review records and the 2026-09-09 pilot approval stay valid, which is how
+// the 2026-09-08 corrections were installed. The original rows stay in `packs.c0.draft.js` and
+// `assessment.c0.draft.js` and the records stay in `corrections.c0.json`, so the defect and its
+// replacement are both still readable.
+//
+// `storyReplacements` is NOT installed. The parent approved its text on 2026-09-18, but an episode
+// carries its own version and the 2026-09-09 pilot approval pins version 2. Installing it makes the
+// episodes version 3, and `validatePilotApprovals` rejects an approval naming a version the content
+// no longer has. Recording a version 3 approval is the parent's decision and nobody else's, so
+// `corr.c0.013` stays open until they make it.
 //
 // These are `improvement` corrections, not defects: every affected item teaches and grades correctly
 // today. What is wrong is how well it measures. A fragment that is the only option without an end mark
@@ -8,7 +22,7 @@
 // parent's approval does.
 //
 // Each entry names the audit finding it closes and carries the exact replacement text, so the parent
-// reads what the child would see rather than a description of it. `test/correctionDrafts.test.js`
+// reads what the child would see rather than a description of it. `test/correctionReplacements.test.js`
 // proves every draft actually satisfies the rule its finding names.
 //
 // What the tests cannot prove is that a new distractor is genuinely wrong, which is why these need a
@@ -188,14 +202,14 @@ export const assessmentDecodingReplacements = {
 // contrast one. The correction record carries `requiresTestLabChange` so this cannot be installed by
 // accident, and a test asserts that any correction touching spoken content declares it.
 export const assessmentListeningReplacements = {
-  'c0.assessment.a.13': { answer: 'a', spokenText: 'Their bikes are outside.', prompt: 'Listen to the sentence, then choose the word that belongs in it.', choices: [['a', 'their'], ['b', 'there'], ['c', 'they’re']] },
-  'c0.assessment.a.14': { answer: 'b', spokenText: 'We will be there by six.', prompt: 'Listen to the sentence, then choose the word that belongs in it.', choices: [['a', 'their'], ['b', 'there'], ['c', 'they’re']] },
-  'c0.assessment.a.15': { answer: 'a', spokenText: 'wanted', prompt: 'Listen to the word, then choose how its -ed ending sounds.', choices: [['a', 'It adds a syllable: want-ed.'], ['b', 'It sounds like a d.'], ['c', 'It sounds like a t.']] },
-  'c0.assessment.a.16': { answer: 'c', spokenText: 'The girls’ coats were wet.', prompt: 'Listen to the sentence. More than one girl owns the coats. Choose the correct spelling.', choices: [['a', 'girls'], ['b', 'girl’s'], ['c', 'girls’']] },
-  'c0.assessment.b.13': { answer: 'b', spokenText: 'You’re late again.', prompt: 'Listen to the sentence, then choose the word that belongs in it.', choices: [['a', 'your'], ['b', 'you’re'], ['c', 'yours']] },
-  'c0.assessment.b.14': { answer: 'a', spokenText: 'Your coat is here.', prompt: 'Listen to the sentence, then choose the word that belongs in it.', choices: [['a', 'your'], ['b', 'you’re'], ['c', 'yours']] },
-  'c0.assessment.b.15': { answer: 'c', spokenText: 'jumped', prompt: 'Listen to the word, then choose how its -ed ending sounds.', choices: [['a', 'It adds a syllable: jump-ed.'], ['b', 'It sounds like a d.'], ['c', 'It sounds like a t.']] },
-  'c0.assessment.b.16': { answer: 'b', spokenText: 'The dog’s bowl is empty.', prompt: 'Listen to the sentence. One dog owns the bowl. Choose the correct spelling.', choices: [['a', 'dogs'], ['b', 'dog’s'], ['c', 'dogs’']] },
+  'c0.assessment.a.13': { answer: 'a', spokenText: 'Their bikes are outside.', prompt: 'Listen to sentence A1, then choose the word that belongs in it.', choices: [['a', 'their'], ['b', 'there'], ['c', 'they’re']] },
+  'c0.assessment.a.14': { answer: 'b', spokenText: 'We will be there by six.', prompt: 'Listen to sentence A2, then choose the word that belongs in it.', choices: [['a', 'their'], ['b', 'there'], ['c', 'they’re']] },
+  'c0.assessment.a.15': { answer: 'a', spokenText: 'wanted', prompt: 'Listen to word A3, then choose how its -ed ending sounds.', choices: [['a', 'It adds a syllable: want-ed.'], ['b', 'It sounds like a d.'], ['c', 'It sounds like a t.']] },
+  'c0.assessment.a.16': { answer: 'c', spokenText: 'The girls’ coats were wet.', prompt: 'Listen to sentence A4. More than one girl owns the coats. Choose the correct spelling.', choices: [['a', 'girls'], ['b', 'girl’s'], ['c', 'girls’']] },
+  'c0.assessment.b.13': { answer: 'b', spokenText: 'You’re late again.', prompt: 'Listen to sentence B1, then choose the word that belongs in it.', choices: [['a', 'your'], ['b', 'you’re'], ['c', 'yours']] },
+  'c0.assessment.b.14': { answer: 'a', spokenText: 'Your coat is here.', prompt: 'Listen to sentence B2, then choose the word that belongs in it.', choices: [['a', 'your'], ['b', 'you’re'], ['c', 'yours']] },
+  'c0.assessment.b.15': { answer: 'c', spokenText: 'jumped', prompt: 'Listen to word B3, then choose how its -ed ending sounds.', choices: [['a', 'It adds a syllable: jump-ed.'], ['b', 'It sounds like a d.'], ['c', 'It sounds like a t.']] },
+  'c0.assessment.b.16': { answer: 'b', spokenText: 'The dog’s bowl is empty.', prompt: 'Listen to sentence B4. One dog owns the bowl. Choose the correct spelling.', choices: [['a', 'dogs'], ['b', 'dog’s'], ['c', 'dogs’']] },
 };
 
 // --- Finding B1, story prose -------------------------------------------------------------------
@@ -245,4 +259,18 @@ export const explanationReplacements = {
   'c0.pu.capitals-endmarks.18': 'Capitalize the first word. Aunt Rosa takes a capital too, because Aunt is part of her name here. End the request with a period.',
   'c0.pu.capitals-endmarks.20': 'Capitalize Who at the start. The exhibit asks a question, so it ends with a question mark.',
   'c0.pu.capitals-endmarks.24': 'This line shows strong feeling. It starts with a capital and ends with an exclamation mark.',
+};
+
+// The six resolved records' replacements, in the shape `installReplacements` takes. An explanation
+// rewrite becomes a field update; every other entry replaces the options and the key together.
+// `storyReplacements` is deliberately absent: an episode is not an item, and its record is still open.
+export const INSTALLED_ITEM_REPLACEMENTS = {
+  ...sentenceReplacements,
+  ...punctuationReplacements,
+  ...pronounReplacements,
+  ...spellingReplacements,
+  ...assessmentSentenceReplacements,
+  ...assessmentDecodingReplacements,
+  ...assessmentListeningReplacements,
+  ...Object.fromEntries(Object.entries(explanationReplacements).map(([id, explanation]) => [id, { explanation }])),
 };

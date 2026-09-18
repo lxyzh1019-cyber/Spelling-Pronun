@@ -34,10 +34,14 @@ export function withholdsWhileOpen(correction) {
 export function correctionInstalled(correction, itemsById) {
   if (correction.reviewStatus !== 'reviewed') return false;
   if (!correction.toVersion) return true;
-  return (correction.itemIds || []).every((itemId) => {
-    const item = itemsById?.get?.(itemId);
-    return item ? item.version === correction.toVersion : false;
-  });
+  // Judge only the items this content actually contains. A correction can span two packs — the
+  // 2026-09-17 audit's option-count record covers the punctuation pack and the pronoun pack together
+  // — and a pack is applied to its own items, so it can see only half of one. Treating the half it
+  // cannot see as "not installed" would withhold the half it can, at full version, for no reason.
+  // An unknown item id is not excused by this: `validateCorrections` rejects one outright.
+  const visible = (correction.itemIds || []).map((itemId) => itemsById?.get?.(itemId)).filter(Boolean);
+  if (!visible.length) return false;
+  return visible.every((item) => item.version === correction.toVersion);
 }
 
 export function validateCorrections({ corrections = [], items = [] } = {}) {
@@ -99,6 +103,36 @@ export function applyCorrections(items = [], corrections = []) {
     }
   }
   return items.map((item) => (status.has(item.id) ? { ...item, correctionStatus: status.get(item.id) } : item));
+}
+
+// Installing a resolved correction's replacement text.
+//
+// Marking a correction `reviewed` is not enough: `correctionInstalled` requires the item to be at
+// the correction's `toVersion`, so a record whose replacement never landed keeps its items withheld
+// rather than restoring the defective version behind an approving status. This is the function that
+// makes the replacement land. It is deliberately narrow — it replaces the parts a correction may
+// rewrite and bumps the version, and it cannot invent an item that does not exist, because a
+// replacement keyed to a typo would otherwise vanish silently instead of failing.
+//
+// The version bump is the point. An item edited in place at the same version would let a reviewer's
+// approval appear to fix content that never changed.
+export function installReplacements(items = [], replacements = {}, { toVersion = 2 } = {}) {
+  const known = new Set(items.map((item) => item.id));
+  for (const id of Object.keys(replacements)) {
+    if (!known.has(id)) throw new Error(`installReplacements: ${id} is not an item in this content`);
+  }
+  return items.map((item) => {
+    const replacement = replacements[item.id];
+    if (!replacement) return item;
+    const { answer, choices, ...rest } = replacement;
+    return {
+      ...item,
+      ...rest,
+      ...(choices ? { choices: choices.map(([id, text]) => ({ id, text })) } : {}),
+      ...(answer ? { acceptedAnswers: [answer] } : {}),
+      version: toVersion,
+    };
+  });
 }
 
 export function isQuarantined(item) {

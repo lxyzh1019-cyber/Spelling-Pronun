@@ -146,13 +146,12 @@
     {
       "proposedBy": "claude",
       "reviewer": "parent",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "severity": "improvement",
       "raisedAt": "2026-09-18",
       "auditFinding": "2026-09-17 content audit",
       "fromVersion": 1,
       "toVersion": 2,
-      "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
       "id": "corr.c0.007",
       "reason": "In sixteen of the twenty-two complete-sentence questions the correct option was the only one ending in a full stop, so the item could be answered by looking for the end mark instead of reading the words. The assessment forms already avoid this, so the lesson taught a shortcut the check does not reward.",
       "itemIds": [
@@ -179,20 +178,22 @@
         "c0.se.complete.23",
         "c0.se.complete.24"
       ],
-      "draftedIn": "src/data/corrections.c0.draft.js#sentenceReplacements",
+      "draftedIn": "src/data/corrections.c0.replacements.js#sentenceReplacements",
       "change": "Every fragment gains an end mark, and every two-option question gains a third option that is a fragment of a different kind from the second.",
-      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review.",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-18",
+      "resolution": "The parent read the full before-and-after of every replacement on 2026-09-18 and accepted this group. The replacement is installed: each named item is at version 2, while the pack and form versions are unchanged, so the educational review records and the 2026-09-09 pilot approval stay valid."
     },
     {
       "proposedBy": "claude",
       "reviewer": "parent",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "severity": "improvement",
       "raisedAt": "2026-09-18",
       "auditFinding": "2026-09-17 content audit",
       "fromVersion": 1,
       "toVersion": 2,
-      "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
       "id": "corr.c0.008",
       "reason": "Forty-six of the eighty-two choice questions in the packs offered only two options. A two-option question is a coin toss, and deriveMastery reaches developing after three correct answers without modelling chance, so three lucky guesses read as progress.",
       "itemIds": [
@@ -226,20 +227,22 @@
         "c0.gr.subject-object-pronouns.23",
         "c0.gr.subject-object-pronouns.24"
       ],
-      "draftedIn": "src/data/corrections.c0.draft.js#punctuationReplacements, #pronounReplacements",
+      "draftedIn": "src/data/corrections.c0.replacements.js#punctuationReplacements, #pronounReplacements",
       "change": "Each item now offers four options. In the punctuation pack each wrong option carries a different error, so the capital and the end mark are tested separately; in the pronoun pack the wrong options are the forms a child actually reaches for, including the reflexive and the possessive. The parent asked on 2026-09-18 for four options rather than three wherever the content supports it: a third option takes a blind guess from 50 percent to 33, a fourth takes it to 25. Every item here carries four except the ones listed in THREE_OPTION_ITEMS, where the answer set is closed and the only available fourth option would be either defensible or obvious nonsense.",
-      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review.",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-18",
+      "resolution": "The parent read the full before-and-after of every replacement on 2026-09-18 and accepted this group. The replacement is installed: each named item is at version 2, while the pack and form versions are unchanged, so the educational review records and the 2026-09-09 pilot approval stay valid."
     },
     {
       "proposedBy": "claude",
       "reviewer": "parent",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "severity": "improvement",
       "raisedAt": "2026-09-18",
       "auditFinding": "2026-09-17 content audit",
       "fromVersion": 1,
       "toVersion": 2,
-      "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
       "id": "corr.c0.009",
       "reason": "Thirty-six of the forty choice prompts in the assessment forms offered only two options, including every Part B sentence prompt and both decoding prompts per form.",
       "itemIds": [
@@ -272,39 +275,43 @@
         "c0.assessment.b.09",
         "c0.assessment.b.10"
       ],
-      "draftedIn": "src/data/corrections.c0.draft.js#assessmentSentenceReplacements, #assessmentDecodingReplacements",
+      "draftedIn": "src/data/corrections.c0.replacements.js#assessmentSentenceReplacements, #assessmentDecodingReplacements",
       "change": "Each prompt now offers four options, each wrong one carrying a different error. Two kinds of fourth option were deliberately not used, because an option that can be argued for makes a question unfair: a consistently past-tense sentence where the item tests tense consistency, and a list without the final comma, which is correct under most Canadian style. The parent asked on 2026-09-18 for four options rather than three wherever the content supports it: a third option takes a blind guess from 50 percent to 33, a fourth takes it to 25. Every item here carries four except the ones listed in THREE_OPTION_ITEMS, where the answer set is closed and the only available fourth option would be either defensible or obvious nonsense.",
-      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review.",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-18",
+      "resolution": "The parent read the full before-and-after of every replacement on 2026-09-18 and accepted this group. The replacement is installed: each named item is at version 2, while the pack and form versions are unchanged, so the educational review records and the 2026-09-09 pilot approval stay valid."
     },
     {
       "proposedBy": "claude",
       "reviewer": "parent",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "severity": "improvement",
       "raisedAt": "2026-09-18",
       "auditFinding": "2026-09-17 content audit",
       "fromVersion": 1,
       "toVersion": 2,
-      "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
       "id": "corr.c0.010",
       "reason": "The distractor runnning has three n letters. No child would choose it, so the item was a two-option question wearing three options.",
       "itemIds": [
         "c0.sp.patterns.03"
       ],
-      "draftedIn": "src/data/corrections.c0.draft.js#spellingReplacements",
+      "draftedIn": "src/data/corrections.c0.replacements.js#spellingReplacements",
       "change": "runeing replaces it: the mistake the rule is actually about, applying the silent-e pattern from hoping to a word that needs the doubled consonant. This item keeps three options rather than four. run plus -ing has exactly three error patterns worth offering, and padding it with a fourth nobody would pick would recreate the fault this record exists to fix.",
-      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review.",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-18",
+      "resolution": "The parent read the full before-and-after of every replacement on 2026-09-18 and accepted this group. The replacement is installed: each named item is at version 2, while the pack and form versions are unchanged, so the educational review records and the 2026-09-09 pilot approval stay valid."
     },
     {
       "proposedBy": "claude",
       "reviewer": "parent",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "severity": "improvement",
       "raisedAt": "2026-09-18",
       "auditFinding": "2026-09-17 content audit",
       "fromVersion": 1,
       "toVersion": 2,
-      "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
       "id": "corr.c0.011",
       "reason": "The four listening contrasts per form are EAL minimal pairs from the ESL benchmarks (ship/sheep, bit/beat, live/leave, pull/pool). The parent confirmed on 2026-09-17 that both children are native English speakers, for whom those pairs measure nothing.",
       "itemIds": [
@@ -317,21 +324,23 @@
         "c0.assessment.b.15",
         "c0.assessment.b.16"
       ],
-      "draftedIn": "src/data/corrections.c0.draft.js#assessmentListeningReplacements",
+      "draftedIn": "src/data/corrections.c0.replacements.js#assessmentListeningReplacements",
       "change": "Homophones in a spoken sentence, the three sounds of the -ed ending, and the spoken possessive apostrophe. All eight are Part A and already blocked on the listening check, so no evidence changes hands and the parent check will cover the new audio.",
       "requiresTestLabChange": "testLabAudio.js#contrastRows pairs a listening item with one distractor so the parent can hear the difference. These options are homophones and are meant to sound identical, so they need a single row asking whether the spoken sentence is clear, not a comparison.",
-      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review. These eight are Part A, which is already excluded from the pilot approval, so no approval changes."
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review. These eight are Part A, which is already excluded from the pilot approval, so no approval changes.",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-18",
+      "resolution": "The parent read the full before-and-after of every replacement on 2026-09-18 and accepted this group. The replacement is installed: each named item is at version 2, while the pack and form versions are unchanged, so the educational review records and the 2026-09-09 pilot approval stay valid. The Test Lab now emits a single \"is the spoken sentence clear?\" row for these items instead of a contrast pair, because their two sides are homophones and are supposed to sound alike. These eight prompts are Part A and remain excluded from evidence until the parent completes the listening check against the new audio."
     },
     {
       "proposedBy": "claude",
       "reviewer": "parent",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "severity": "improvement",
       "raisedAt": "2026-09-18",
       "auditFinding": "2026-09-17 content audit",
       "fromVersion": 1,
       "toVersion": 2,
-      "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
       "id": "corr.c0.012",
       "reason": "A learner reads the explanation unaided, but the spelling pack averaged grade 8.2 and the punctuation pack grade 7.2, carried there by long noun phrases such as the last syllable is stressed and ends vowel-consonant.",
       "itemIds": [
@@ -348,9 +357,12 @@
         "c0.pu.capitals-endmarks.20",
         "c0.pu.capitals-endmarks.24"
       ],
-      "draftedIn": "src/data/corrections.c0.draft.js#explanationReplacements",
+      "draftedIn": "src/data/corrections.c0.replacements.js#explanationReplacements",
       "change": "Each rewrite keeps the rule and the example and says it in shorter sentences. The drafts bring every pack to grade 7 or below.",
-      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review.",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-18",
+      "resolution": "The parent read the full before-and-after of every replacement on 2026-09-18 and accepted this group. The replacement is installed: each named item is at version 2, while the pack and form versions are unchanged, so the educational review records and the 2026-09-09 pilot approval stay valid."
     },
     {
       "proposedBy": "claude",
@@ -361,7 +373,7 @@
       "auditFinding": "2026-09-17 content audit",
       "fromVersion": 1,
       "toVersion": 2,
-      "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
+      "awaiting": "The parent approved this text on 2026-09-18 (\"the updated reading complexity works well to me\"). What is still missing is a separate decision only they can make: installing moves both episodes to version 3, and the 2026-09-09 pilot approval names version 2, so a version 3 pilot approval has to be recorded before the episodes are pilot-eligible again. Claude must never write that record on the parent’s behalf, so this stays open until they say the episodes may be used at version 3.",
       "id": "corr.c0.013",
       "reason": "Both story episodes are written for a Grade 5/6 reader but read at grade 9.9 and 10.1, with the History behind the mystery box at 12.4 and 14.4. Episode one also spoke about the child in the third person while its own recap said you.",
       "itemIds": [],
@@ -369,7 +381,7 @@
         "c0.story.01",
         "c0.story.02"
       ],
-      "draftedIn": "src/data/corrections.c0.draft.js#storyReplacements",
+      "draftedIn": "src/data/corrections.c0.replacements.js#storyReplacements",
       "change": "Shorter sentences and a few unpacked noun phrases, aimed at grade 7 to 8 rather than at the children's own grade. A first draft on 2026-09-18 took the episodes to grade 5 and the parent rejected it as too easy: a Grade 5/6 reader given grade 5 prose has nothing to stretch for. The episodes now read at 7.6 and 7.5, and the fact box at 8.4 and 8.7, held below the prose because it is the part that says what is real and what is invented. Every documented claim, invented-element disclosure and the fiction label are kept, the reveal now addresses the child directly, and the intros stay inside the plan's 60 to 100 word range. The readability rule is now a band with a floor as well as a ceiling, so a later simplifying edit cannot drift the prose back below the children.",
       "requiresOnInstall": "An episode is not an item: it carries its own version, and both its story review record and your 2026-09-09 pilot approval pin that version. Installing means moving each episode to version 3, updating the story review records to version 3, and recording a new pilot approval at version 3. Until the new approval exists the episodes stop being pilot_approved, which is the mechanism working: you approved version 2, not version 3."
     }

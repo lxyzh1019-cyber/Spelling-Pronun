@@ -12,7 +12,7 @@ import storyData from '../src/data/story.c0.draft.json' with { type: 'json' };
 import { validateContent } from '../src/learning/contentValidator.js';
 import skillData from '../src/data/skills.json' with { type: 'json' };
 import { readingGrade } from '../src/learning/readability.js';
-import { THREE_OPTION_ITEMS } from '../src/data/corrections.c0.draft.js';
+import { THREE_OPTION_ITEMS, INSTALLED_ITEM_REPLACEMENTS } from '../src/data/corrections.c0.replacements.js';
 
 const packItems = c0PilotPacks.flatMap((pack) => pack.items);
 const formItems = c0AssessmentForms.flatMap((form) => form.items);
@@ -60,13 +60,16 @@ test('no explanation points at an answer by its position', () => {
   assert.deepEqual(offenders, [], 'options are shuffled, so a position is not a stable way to name the answer');
 });
 
-// --- rules the content does not yet satisfy ----------------------------------------------------
+// --- rules the content satisfies since the 2026-09-18 corrections were installed ----------------
+//
+// These three were `todo` until `corr.c0.007`, `corr.c0.010` and `corr.c0.012` were resolved and
+// installed. The rule was never edited to make them pass; the content changed.
 
 // The fragments in the sentence pack carry no end mark while the complete sentences do, so sixteen of
 // the twenty-two questions can be answered by looking for the full stop without reading the words. The
 // assessment forms already avoid this, which is why the lesson teaches a shortcut the check does not
 // reward. Correcting it means giving each fragment an end mark.
-test('a complete-sentence question cannot be answered from the end mark alone', { todo: 'audit 2026-09-17 finding A2: 16 of 22 items in c0.pack.se.complete; drafted in corr.c0.007' }, () => {
+test('a complete-sentence question cannot be answered from the end mark alone', () => {
   const ends = (text) => /[.!?]$/.test(String(text).trim());
   const cued = [];
   for (const item of choiceItems.filter((entry) => entry.primarySkill === 'SE.complete')) {
@@ -78,11 +81,33 @@ test('a complete-sentence question cannot be answered from the end mark alone', 
 });
 
 // A two-option question is a coin flip, and `deriveMastery` reaches `developing` after three correct
-// answers without modelling chance, so three lucky guesses read as progress. Four options put a blind
-// guess at 25%; the parent asked for four on 2026-09-18. An item may offer three only where the answer
-// set is genuinely closed (three homophones, three -ed endings), which `THREE_OPTION_ITEMS` records
-// with a reason per item, so "no fourth exists" cannot become "no fourth was attempted".
-test('a choice question offers four options, or three with a recorded reason', { todo: 'audit 2026-09-17 finding A3: 46 of 82 pack items and 36 of 40 form items; drafted in corr.c0.008 and corr.c0.009' }, () => {
+// answers without modelling chance, so three lucky guesses read as progress. This is the rule the
+// 2026-09-17 audit raised, and `corr.c0.008` to `corr.c0.010` closed it: no question is a coin flip.
+test('no choice question is a coin flip', () => {
+  const thin = choiceItems.filter((item) => item.choices.length < 3).map((item) => item.id);
+  assert.deepEqual(thin, [], 'these questions can be answered by a coin toss');
+});
+
+// Four options put a blind guess at 25% instead of 33%, and the parent asked for four on 2026-09-18.
+// Every item a correction rewrote carries four, except where the answer set is genuinely closed —
+// three homophone spellings, the three sounds of -ed — which `THREE_OPTION_ITEMS` records with a
+// reason per item, so "no fourth exists" cannot become "no fourth was attempted".
+test('every corrected question offers four options, or three with a recorded reason', () => {
+  // Only the replacements that rewrote the options. `corr.c0.012` rewrote explanations and left the
+  // options exactly as they were, so those items are covered by the open finding below, not by this.
+  const thin = Object.entries(INSTALLED_ITEM_REPLACEMENTS)
+    .filter(([, replacement]) => replacement.choices)
+    .map(([id]) => choiceItems.find((item) => item.id === id))
+    .filter((item) => item?.choices && item.choices.length < (THREE_OPTION_ITEMS[item.id] ? 3 : 4))
+    .map((item) => item.id);
+  assert.deepEqual(thin, [], 'these questions give a blind guess better odds than they should');
+});
+
+// The spelling pack's questions always offered three options, so they were never part of the
+// two-option finding and no correction record covers them. Raising them to four is new authoring the
+// parent has not reviewed, and content nobody has read must not reach a child, so this stays an open
+// finding rather than a quiet edit. It is listed here so the gap is visible in code, not in a document.
+test('a choice question offers four options', { todo: 'open finding 2026-09-18: 44 spelling and dictation items still offer three; never drafted, because raising them is authoring the parent has not reviewed' }, () => {
   const thin = choiceItems
     .filter((item) => item.choices.length < (THREE_OPTION_ITEMS[item.id] ? 3 : 4))
     .map((item) => item.id);
@@ -90,7 +115,7 @@ test('a choice question offers four options, or three with a recorded reason', {
 });
 
 // A distractor nobody would choose does not test anything; it turns a three-option item back into two.
-test('no distractor is obvious nonsense', { todo: 'audit 2026-09-17 finding A3: c0.sp.patterns.03 offers runnning; drafted in corr.c0.010' }, () => {
+test('no distractor is obvious nonsense', () => {
   const silly = [];
   for (const item of choiceItems) {
     for (const choice of item.choices) {
@@ -126,7 +151,7 @@ test('story prose reads a little above its audience, and not below it', { todo: 
 
 // The learner reads every prompt and explanation unaided, so they must sit at or below the level the
 // lesson teaches.
-test('lesson prompts and explanations are written at the reading level of their audience', { todo: 'audit 2026-09-17 finding B1: spelling pack reads at grade 8.2, punctuation at 7.2; drafted in corr.c0.012' }, () => {
+test('lesson prompts and explanations are written at the reading level of their audience', () => {
   const tooHard = [];
   for (const pack of c0PilotPacks) {
     const explanations = readingGrade(pack.items.map((item) => item.explanation).filter(Boolean).join(' '));

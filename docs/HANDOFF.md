@@ -9,7 +9,7 @@ decisions, and `docs/MASTER_PLAN.md` is the product authority.
 The app is **live**. GitHub Pages has deployed from `main` since 2026-09-11 (`e162dad`, workflow run 76).
 Every push to `main` redeploys.
 
-- 264 automated tests: 259 pass, 5 are `todo` and name the content findings nobody has fixed yet. The
+- 296 automated tests: 294 pass, 2 are `todo` and name the content findings nobody has fixed yet. The
   production build is green.
 - **Nothing is `released`.** 0 released objects, prompts or episodes.
 - 96 lesson objects, both chapter-one episodes and 28 Part B assessment prompts are **`pilot_approved`**
@@ -56,8 +56,10 @@ and **Family Pilot Observation** uses the real app and saves answers to a named 
    touch targets, and whether tapping a text box leaves the page zoomed.
 2. **Practice run — resume, offline, double submit** (~15 min, 5 rows). Invented questions in an isolated
    test record. Confirms a session survives a reload and an offline answer arrives exactly once.
-3. **Listening check — dictation** (~15 min, 16 rows) and **contrast pairs** (~10 min, 16 rows). The pairs
-   matter most: if you cannot hear the difference between the two sides, the item tests nothing.
+3. **Listening check — dictation** (~15 min, 16 rows) and **the spoken sentences** (~8 min, 8 rows).
+   These are no longer minimal pairs: after `corr.c0.011` each row plays one sentence and asks whether
+   it is clear and says the right words. There is deliberately nothing to compare, because the options
+   are homophones.
 4. **Receptive decoding** (~20 min, 12 rows). Each row states the reading it is supposed to produce. If a
    distractor sounds the same as the expected reading, that item is not usable.
 5. **The pilot itself** — one watched lesson and story episode one, in the Family Pilot half. This is the
@@ -82,66 +84,79 @@ options in the same positions every time and the answer keys were patterned, ten
 twenty-four objects could never be reached, a reasonable typed answer was shown to the child as wrong,
 and the Grade 6 word list was a mix of Grade 3 words and spelling-bee words.
 
-**The corrections are drafted and waiting for you** (asked for on 2026-09-18, before the pilot).
-Seven records, `corr.c0.007` to `corr.c0.013` in `src/data/corrections.c0.json`, covering 88 items and
-both episodes. The replacement text is in `src/data/corrections.c0.draft.js`, which is the file to read:
-it is the actual words a child would see, grouped by finding, with a note on each group saying why.
+**The content corrections are installed.** The parent read the full before-and-after of every
+replacement and resolved `corr.c0.007` to `corr.c0.012` on 2026-09-18, covering 86 items across the
+four packs and both assessment forms. The replacement text is in
+`src/data/corrections.c0.replacements.js`; `installReplacements` applies it and moves each corrected
+item to version 2, and the records in `src/data/corrections.c0.json` say what each one changed.
 
-| Finding | What changes | Record |
+| Finding | What changed | Record |
 |---|---|---|
-| The answer was the only option ending in a full stop | every fragment gains an end mark | `corr.c0.007` |
+| The answer was the only option ending in a full stop | every fragment gained an end mark | `corr.c0.007` |
 | 46 pack questions offered two options | four options, each wrong one a different error | `corr.c0.008` |
 | 36 assessment prompts offered two options | the same, plus the decoding breaks | `corr.c0.009` |
 | `runnning` has three n's, so nobody picks it | `runeing`, the mistake the rule is about | `corr.c0.010` |
-| Listening pairs are EAL, the children are not | homophones, -ed endings, the possessive | `corr.c0.011` |
+| Listening pairs were EAL, the children are not | homophones, -ed endings, the possessive | `corr.c0.011` |
 | Explanations read above the grade they teach | shorter sentences, same rule and example | `corr.c0.012` |
-| The story reads at grade 9 to 14 | grade 7 to 8, every disclosure kept | `corr.c0.013` |
+| The story reads at grade 9 to 10 | grade 7 to 8, every disclosure kept | `corr.c0.013` — **still open** |
 
-**Two things changed on 2026-09-18, after you read the first draft.**
+Installing them cost nothing elsewhere, which is the point of the item-level route: the pack and form
+versions did not move, so the educational review records and the 2026-09-09 pilot approval stayed
+valid. Each challenge review's per-item result was moved to version 2 and marked re-checked by the
+parent on 2026-09-18, exactly as the 2026-09-08 corrections were recorded.
 
-*Four options, not three.* You asked for four wherever the content supports it. A blind guess is 50/50 on
-two options, one in three on three, one in four on four. Ten items keep three, and each one says why in
-`THREE_OPTION_ITEMS` at the top of the draft file: their answer set is closed. There are exactly three
-spellings of *their/there/they're*, exactly three sounds the *-ed* ending makes. A fourth option there
-would have to be either arguable, which makes the question unfair, or silly, which is the coin flip
-wearing a disguise — the very fault these corrections exist to remove. A test now requires four options
-unless that list gives a reason, so a later edit cannot quietly slip back to three.
+### Four options, not three
 
-*The story aims at grade 7 to 8, not grade 5.* The first rewrite took it to grade 5 and you were right
-that it was too easy: a child in grade 5 or 6 reading grade 5 prose has nothing to stretch for. It now
-reads at 7.6 and 7.5, about where a good novel for this age sits. The "history behind the mystery" box
-sits a little lower, at 8.4 and 8.7, because that is the part that tells them what is real and what was
-invented, and that has to be understood rather than admired. The rule in the tests is now a **band** with
-a floor as well as a ceiling — every simplifying edit passes a ceiling, which is exactly how prose drifts
-down over time.
+The parent asked for four wherever the content supports it. A blind guess is 50/50 on two options, one
+in three on three, one in four on four. Ten items keep three, and each says why in
+`THREE_OPTION_ITEMS`: their answer set is closed. There are exactly three spellings of
+*their/there/they're*, exactly three sounds the *-ed* ending makes. A fourth there would have to be
+either arguable, which makes the question unfair, or silly, which is a coin flip wearing a disguise —
+the very fault these corrections removed. A test requires four options unless that list gives a reason.
 
-Nothing is installed, so **the app is unchanged and the lessons are whole**. These are recorded as
-`improvement` rather than `defect` severity: the items teach and grade correctly today, so withholding
-them would empty the lessons and protect nobody. `test/correctionDrafts.test.js` proves every draft
-really closes its finding, keeps the same correct answer, and does not drop a single historical
-disclosure from the story.
+Two classes of fourth option were written and then rejected as **defensible rather than wrong**: a
+consistently past-tense sentence inside an item about keeping tense consistent, and a list without the
+final comma, which is correct under most Canadian style.
 
-To accept a record, set its `reviewStatus` to `reviewed`, add `reviewedBy` and `reviewedAt`, and the
-replacement gets installed at `toVersion`. Tell me and I will do that part.
+### The listening check changed shape
 
-Every record says what installing it costs, in `requiresOnInstall`. Six are item-level: the item moves
-to version 2, the pack and form versions do not move, so the review records and your pilot approval stay
-valid. That is exactly how the 2026-09-08 corrections were installed, and your resolution of the record
-is the review.
+`corr.c0.011` retargeted the eight listening prompts, and the Test Lab had to follow. It used to speak
+one distractor so the parent could hear the difference between two sides. `their` against `there` has no
+difference to hear, by design, so those items now get **one row** asking whether the audio says the
+sentence clearly and says the right one. `testLabAudio.js` decides this from the item — the spoken text
+is one of the options for a minimal pair, and is a whole sentence for these — never from a list of ids,
+so a future listening item is classified by what it does. The contrast check is now 8 rows, not 16.
 
-**The story is different.** An episode carries its own version, and both its story review record and
-your 2026-09-09 pilot approval pin it. Installing `corr.c0.013` moves each episode to version 3,
-which needs the story review records updating and a new pilot approval recorded at version 3. Until
-that approval exists the episodes stop being `pilot_approved`. That is the mechanism working, not a
-fault: you approved version 2, and version 3 is different text.
+### The story is the one thing still open
 
-`corr.c0.011` also needs a change to the Test Lab before it is installed. The listening check speaks one
-distractor so you can hear the difference between the two sides, and `their` against `there` has no
-difference to hear. Those items need a single row asking whether the spoken sentence is clear.
+`corr.c0.013` is written and the parent approved its text on 2026-09-18, but it is **not installed**.
+An episode carries its own version, and the 2026-09-09 pilot approval names version 2. Installing makes
+the episodes version 3, and `validatePilotApprovals` rejects an approval naming a version the content no
+longer has — so installing requires a version 3 pilot approval, which is a parent decision Claude must
+never write on their behalf.
 
-One change was installed rather than drafted, because leaving it would have shipped something false:
-twelve explanations named the answer by its position ("the second choice"), which stopped being true
-the moment the options were shuffled. They now name the answer by its words. See DEF-43.
+The rewrite aims at grade 7 to 8, not grade 5. A first attempt took the episodes to grade 5 and the
+parent rejected it as too easy: a child in grade 5 or 6 reading grade 5 prose has nothing to stretch
+for. It now reads at 7.6 and 7.5, about where a novel for this age sits, with the fact box a little
+lower at 8.4 and 8.7 because that is the part saying what is real and what was invented. The rule in
+the tests is a **band with a floor as well as a ceiling** — every simplifying edit passes a ceiling,
+which is exactly how prose drifts down over time.
+
+**To install it:** say the episodes may be used at version 3. That records the pilot approval, moves
+both episodes, and updates the story review records the same way the item ones were updated.
+
+### One finding nobody has decided yet
+
+44 spelling and dictation questions still offer three options. They were never part of the two-option
+finding — they always had three — so no correction record covers them, and raising them to four means
+writing a fourth distractor for each, which is new content the parent has not reviewed. It is recorded
+as a `todo` in `test/contentLint.test.js` rather than fixed quietly, because content nobody has read
+must not reach a child.
+
+One change was installed rather than drafted, back on 2026-09-18, because leaving it would have shipped
+something false: twelve explanations named the answer by its position ("the second choice"), which
+stopped being true the moment the options were shuffled. They now name the answer by its words. See
+DEF-43.
 
 ## Known open items
 

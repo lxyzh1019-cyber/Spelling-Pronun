@@ -1,5 +1,6 @@
-import { applyCorrections } from '../learning/contentCorrections.js';
+import { applyCorrections, installReplacements } from '../learning/contentCorrections.js';
 import { applyPilotApproval } from '../learning/pilotApproval.js';
+import { INSTALLED_ITEM_REPLACEMENTS } from './corrections.c0.replacements.js';
 import pilotApprovalData from './pilotApproval.c0.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
 const base = {
@@ -198,8 +199,15 @@ function buildForm(form) {
 const rawC0AssessmentForms = [buildForm('A'), buildForm('B')];
 // Prompts with an open correction stay in the form for auditing but are stamped as quarantined;
 // the runner withholds them and reports the reduced coverage.
-export const c0AssessmentForms = rawC0AssessmentForms.map((form) => ({
-  ...form,
-  items: applyCorrections(form.items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, form.id)),
-}));
+// Resolved corrections install before the quarantine pass, for the reason given in `packs.c0.draft.js`.
+export const c0AssessmentForms = rawC0AssessmentForms.map((form) => {
+  const owned = Object.fromEntries(
+    Object.entries(INSTALLED_ITEM_REPLACEMENTS).filter(([id]) => form.items.some((item) => item.id === id)),
+  );
+  const items = installReplacements(form.items, owned, { toVersion: 2 });
+  return {
+    ...form,
+    items: applyCorrections(items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, form.id)),
+  };
+});
 export const c0AssessmentItems = c0AssessmentForms.flatMap((form) => form.items);

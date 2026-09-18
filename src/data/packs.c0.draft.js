@@ -1,5 +1,6 @@
-import { applyCorrections } from '../learning/contentCorrections.js';
+import { applyCorrections, installReplacements } from '../learning/contentCorrections.js';
 import { applyPilotApproval } from '../learning/pilotApproval.js';
+import { INSTALLED_ITEM_REPLACEMENTS } from './corrections.c0.replacements.js';
 import pilotApprovalData from './pilotApproval.c0.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
 const ROLE_SEQUENCE = [
@@ -257,8 +258,20 @@ const rawC0PilotPacks = [
 // Corrections resolve first, then the parent's pilot approval is applied to what remains usable.
 // An item only reaches `pilot_approved` if it is reviewed, integrated, free of open corrections,
 // and does not depend on audio nobody has listened to yet.
-export const c0PilotPacks = rawC0PilotPacks.map((pack) => ({
-  ...pack,
-  items: applyCorrections(pack.items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, pack.id)),
-}));
+// The resolved corrections install first, because `applyCorrections` decides whether an item is still
+// withheld by comparing its version against the correction's `toVersion`. Installing afterwards would
+// stamp every corrected item `correction_not_installed` on the way past.
+const packReplacements = Object.fromEntries(
+  Object.entries(INSTALLED_ITEM_REPLACEMENTS).filter(([id]) => id.startsWith('c0.') && !id.startsWith('c0.assessment.')),
+);
+export const c0PilotPacks = rawC0PilotPacks.map((pack) => {
+  const owned = Object.fromEntries(
+    Object.entries(packReplacements).filter(([id]) => pack.items.some((item) => item.id === id)),
+  );
+  const items = installReplacements(pack.items, owned, { toVersion: 2 });
+  return {
+    ...pack,
+    items: applyCorrections(items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, pack.id)),
+  };
+});
 export const c0PilotItems = c0PilotPacks.flatMap((pack) => pack.items);

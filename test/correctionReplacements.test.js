@@ -1,10 +1,13 @@
-// The drafted replacements from the 2026-09-17 audit are content the parent has not approved yet, so
-// nothing here is installed. What these tests prove is that each draft actually closes the finding it
-// claims to close, and changes nothing it should not: the parent is reading a proposal that has
-// already been checked, not a promise.
+// The replacement text for the 2026-09-17 audit's corrections.
+//
+// Six records are resolved and installed; the story record is still open. These tests hold either way,
+// because they check the text itself rather than its status: each replacement closes the finding it
+// claims to close, keeps the same correct answer, and changes nothing it should not. They are what
+// made the proposal worth reading before the parent approved it, and they are what stops an edit from
+// quietly undoing it now that it is live.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import * as drafts from '../src/data/corrections.c0.draft.js';
+import * as drafts from '../src/data/corrections.c0.replacements.js';
 import { c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c0AssessmentForms } from '../src/data/assessment.c0.draft.js';
 import storyData from '../src/data/story.c0.draft.json' with { type: 'json' };

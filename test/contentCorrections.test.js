@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCorrections, isQuarantined, openCorrections, quarantinedItemIds, usableItems, validateCorrections } from '../src/learning/contentCorrections.js';
+import { applyCorrections, installReplacements, isQuarantined, openCorrections, quarantinedItemIds, usableItems, validateCorrections } from '../src/learning/contentCorrections.js';
 import correctionData from '../src/data/corrections.c0.json' with { type: 'json' };
 import { c0PilotItems, c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c0AssessmentItems } from '../src/data/assessment.c0.draft.js';
 import { c0LessonCatalog } from '../src/data/lessonCatalog.js';
+import { INSTALLED_ITEM_REPLACEMENTS } from '../src/data/corrections.c0.replacements.js';
 
 const resolvedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'reviewed');
 const draftedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'changes_required');
@@ -13,35 +14,61 @@ test('every recorded correction targets a real item and its replacement is insta
   const items = [...c0PilotItems, ...c0AssessmentItems];
   const validation = validateCorrections({ corrections: correctionData.corrections, items });
   assert.deepEqual(validation.errors, []);
-  // The six defects the 2026-09-08 audit found are resolved: the parent reviewed each one on
-  // 2026-09-09 and the replacement is really in the content.
-  assert.equal(resolvedCorrections.length, 6);
+  // Two batches are resolved: the six defects the 2026-09-08 audit found, reviewed on 2026-09-09, and
+  // the six item-level improvements the 2026-09-17 audit found, reviewed on 2026-09-18. In both the
+  // parent is the reviewer and Claude the proposer, and in both the replacement is really in the
+  // content — `correctionInstalled` is what makes "reviewed" mean more than a status change.
+  assert.equal(resolvedCorrections.length, 12);
   assert.ok(resolvedCorrections.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
   const byId = new Map(items.map((item) => [item.id, item]));
   for (const correction of resolvedCorrections) {
     for (const itemId of correction.itemIds) assert.equal(byId.get(itemId).version, correction.toVersion, `${itemId} carries the replacement version`);
   }
-  assert.deepEqual([...new Set(resolvedCorrections.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
+  const firstBatch = resolvedCorrections.filter((correction) => correction.reviewedAt === '2026-09-09');
+  const auditBatch = resolvedCorrections.filter((correction) => correction.reviewedAt === '2026-09-18');
+  assert.equal(firstBatch.length, 6);
+  assert.equal(auditBatch.length, 6);
+  assert.deepEqual([...new Set(firstBatch.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
+  assert.ok(auditBatch.every((correction) => correction.severity === 'improvement'), 'an audit improvement was recorded as a defect');
 });
 
-// The 2026-09-17 audit's corrections are drafted and waiting. They are `improvement` severity, which
-// is the whole reason the app still works: the items they touch teach and grade correctly, so
-// withholding them would empty the lessons and protect nobody.
-test('the drafted corrections are open, uninstalled, and withhold nothing', () => {
+// The installed replacements are the ones a child now meets, not just text sitting in a module. This
+// is the check that would fail if the wiring in `packs.c0.draft.js` were removed while the correction
+// records still said `reviewed`.
+test('the resolved audit replacements are the content the app serves', () => {
+  const byId = new Map([...c0PilotItems, ...c0AssessmentItems].map((item) => [item.id, item]));
+  for (const [id, replacement] of Object.entries(INSTALLED_ITEM_REPLACEMENTS)) {
+    const item = byId.get(id);
+    assert.ok(item, `${id} is named by an installed replacement but is not in the content`);
+    assert.equal(item.version, 2, `${id} did not move to the replacement version`);
+    if (replacement.choices) {
+      assert.deepEqual(item.choices.map((choice) => choice.text), replacement.choices.map(([, text]) => text), `${id} still serves the old options`);
+      assert.deepEqual(item.acceptedAnswers, [replacement.answer], `${id} still serves the old key`);
+    }
+    if (replacement.explanation) assert.equal(item.explanation, replacement.explanation, `${id} still serves the old explanation`);
+    if (replacement.spokenText) assert.equal(item.spokenText, replacement.spokenText, `${id} still speaks the old text`);
+  }
+});
+
+// One correction is still open: `corr.c0.013`, the story rewrite. The parent approved its text on
+// 2026-09-18, but installing it moves both episodes to version 3 while their pilot approval names
+// version 2, and only the parent can record the version 3 approval. It is `improvement` severity, so
+// the episodes keep running at version 2 in the meantime.
+test('the open correction withholds nothing and claims no review', () => {
   const items = [...c0PilotItems, ...c0AssessmentItems];
-  assert.ok(draftedCorrections.length > 0, 'the drafted corrections are missing');
+  assert.ok(draftedCorrections.length > 0, 'the open correction is missing');
   for (const correction of draftedCorrections) {
     assert.equal(correction.severity, 'improvement', `${correction.id} would withhold its items`);
     assert.equal(correction.reviewedBy, undefined, `${correction.id} claims a review that has not happened`);
     assert.equal(correction.proposedBy, 'claude');
     assert.equal(correction.reviewer, 'parent');
     assert.ok(correction.draftedIn, `${correction.id} does not say where its replacement text is`);
+    assert.ok(correction.awaiting, `${correction.id} does not say what it is waiting for`);
   }
-  // Nothing they name is withheld, and the packs still serve full lessons.
+  // Nothing it names is withheld, and the packs still serve full lessons.
   const draftedIds = new Set(draftedCorrections.flatMap((correction) => correction.itemIds));
-  assert.ok(draftedIds.size > 50, 'the drafts cover far fewer items than the audit found');
   const quarantined = quarantinedItemIds(correctionData.corrections);
-  for (const id of draftedIds) assert.ok(!quarantined.has(id), `${id} was withheld by a drafted improvement`);
+  for (const id of draftedIds) assert.ok(!quarantined.has(id), `${id} was withheld by an open improvement`);
   const stamped = applyCorrections(items, correctionData.corrections);
   assert.equal(stamped.filter(isQuarantined).length, 0);
   for (const lesson of Object.values(c0LessonCatalog)) {
@@ -167,4 +194,21 @@ test('helpers withhold quarantined items and leave everything else untouched', (
   assert.deepEqual(usableItems(stamped).map(({ id }) => id), ['a']);
   const resolved = applyCorrections(items, [{ ...corrections[0], reviewStatus: 'reviewed', reviewedBy: 'codex' }]);
   assert.ok(resolved.every((item) => !isQuarantined(item)), 'a resolved correction with no version change releases the item again');
+});
+
+// A replacement keyed to an id that does not exist must fail loudly. Silently skipping it would let a
+// typo in a correction record look like a successful install: the record would say `reviewed`, the
+// item would still be the old one, and nothing would say so.
+test('a replacement for an item that does not exist is refused', () => {
+  assert.throws(
+    () => installReplacements([{ id: 'a', version: 1 }], { 'c0.se.complete.03': { explanation: 'x' } }),
+    /is not an item in this content/,
+  );
+  // And the honest case still works, bumping the version because that is what makes the install real.
+  const [item] = installReplacements([{ id: 'a', version: 1, choices: [{ id: 'x', text: 'old' }], acceptedAnswers: ['x'] }], {
+    a: { answer: 'y', choices: [['y', 'new'], ['z', 'other']] },
+  });
+  assert.equal(item.version, 2);
+  assert.deepEqual(item.choices, [{ id: 'y', text: 'new' }, { id: 'z', text: 'other' }]);
+  assert.deepEqual(item.acceptedAnswers, ['y']);
 });

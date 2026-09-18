@@ -42,9 +42,45 @@ function dictationRow(item, audioById) {
   };
 }
 
+// Is this item a minimal pair, where the two sides are meant to sound different?
+//
+// A contrast item speaks the word the learner has to pick: `ship` against `sheep`, the spoken text IS
+// the correct choice. For those, the comparison row is the whole point of the check.
+//
+// The 2026-09-17 audit retargeted these items (corr.c0.011): the children are native speakers, so the
+// EAL pairs measured nothing about them, and the replacements ask about `their` against `there`, the
+// three sounds of `-ed`, and the spoken possessive. There the app speaks a whole SENTENCE and the
+// options are spellings or descriptions, and the two sides are supposed to sound identical. Asking a
+// parent "can you hear the difference?" about two homophones invites a truthful answer that reads as a
+// defect, so those items get one row asking the question that can actually be answered: does the audio
+// say the sentence clearly, and is it the right sentence?
+//
+// This is derived from the item, never from a list of ids, so a new listening item is classified by
+// what it does rather than by someone remembering to add it.
+function isMinimalPair(item) {
+  const target = item.choices.find((choice) => item.acceptedAnswers.includes(choice.id));
+  const spoken = String(item.spokenText || '').trim().toLowerCase();
+  return Boolean(spoken) && String(target?.text || '').trim().toLowerCase() === spoken;
+}
+
 // Both sides of a pair: the target the app speaks, and the distractor it does not.
 function contrastRows(item, audioById) {
   const targetChoice = item.choices.find((choice) => item.acceptedAnswers.includes(choice.id));
+  if (!isMinimalPair(item)) {
+    const options = item.choices.map((choice) => choice.text).join(' / ');
+    return [{
+      rowId: `${item.id}:target`,
+      group: 'contrast',
+      itemId: item.id,
+      itemVersion: item.version,
+      form: item.form,
+      label: `“${item.spokenText}” — the sentence the app speaks (options: ${options})`,
+      detail: `This is the assessment audio itself. The options sound alike on purpose, so there is no difference to listen for. Record a problem if the audio is unclear, or if it does not say exactly “${item.spokenText}”. The answer is ${targetChoice?.text ?? 'not keyed'}.`,
+      text: item.spokenText,
+      playback: playbackFor(item, { text: item.spokenText, rate: ITEM_RATE, audioById }),
+      comparisonOnly: false,
+    }];
+  }
   const otherChoice = item.choices.find((choice) => choice.id !== targetChoice?.id);
   const pair = item.choices.map((choice) => choice.text).join(' / ');
   const rows = [{
