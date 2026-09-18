@@ -231,3 +231,50 @@ test('installing every draft would leave the content structurally valid', () => 
   assert.deepEqual(errors, [], 'installing the drafts would produce invalid content');
   assert.equal(valid, true);
 });
+
+// OPEN-05: the questions that always offered three options. Drafted as corr.c0.014 and corr.c0.015
+// and not installed, because a correction's proposer may never resolve it. The tests are the same
+// ones the earlier drafts had to pass before the parent read them.
+test('the drafted fourth options are four, keep the key, and are not installed', () => {
+  const drafted = drafts.fourthOptionReplacements;
+  assert.equal(Object.keys(drafted).length, 30);
+  for (const [id, draft] of Object.entries(drafted)) {
+    const live = liveItems.get(id);
+    assert.ok(live, `${id} is not an item`);
+    assert.equal(draft.choices.length, 4, `${id} still offers ${draft.choices.length} options`);
+    const ids = draft.choices.map(([choiceId]) => choiceId);
+    assert.equal(new Set(ids).size, 4, `${id} repeats a choice id`);
+    const texts = draft.choices.map(([, text]) => text.trim());
+    assert.equal(new Set(texts).size, 4, `${id} offers the same option twice`);
+    assert.ok(texts.every(Boolean), `${id} has an empty option`);
+    assert.ok(ids.includes(draft.answer), `${id} keys an option it does not offer`);
+    // The key must not move, and the three options already there must all survive.
+    const liveAnswer = live.choices.find((choice) => choice.id === live.acceptedAnswers[0]).text;
+    assert.equal(textOf(draft.choices, draft.answer), liveAnswer, `${id} moved the correct answer`);
+    for (const choice of live.choices) {
+      assert.ok(texts.includes(choice.text.trim()), `${id} dropped the existing option "${choice.text}"`);
+    }
+    // The one new option is the only difference, and it must not be nonsense on sight.
+    const added = texts.filter((text) => !live.choices.some((choice) => choice.text.trim() === text));
+    assert.equal(added.length, 1, `${id} changed more than the one added option`);
+    assert.ok(!/([a-z])\1\1/i.test(added[0]), `${id} adds ${added[0]}, which a triple letter rules out on sight`);
+    // Not installed: the live item is untouched, and the draft is absent from the installed table.
+    assert.equal(live.choices.length, 3, `${id} was installed without the parent resolving its record`);
+    assert.equal(drafts.INSTALLED_ITEM_REPLACEMENTS[id]?.choices, undefined, `${id} leaked into the installed replacements`);
+  }
+});
+
+// The 14 that keep three options have to be exactly the ones no record covers, so "we could not find
+// a fourth" cannot be a place to quietly drop a question nobody wanted to write.
+test('every three-option question is either drafted a fourth or given a reason', () => {
+  const stillThree = [...liveItems.values()].filter((item) => item.choices && item.evaluator === 'choice' && item.choices.length === 3);
+  for (const item of stillThree) {
+    const drafted = Boolean(drafts.fourthOptionReplacements[item.id]);
+    const excused = drafts.THREE_OPTION_ITEMS[item.id];
+    assert.ok(drafted || excused, `${item.id} offers three options with no draft and no reason`);
+    assert.ok(!(drafted && excused), `${item.id} is both excused and drafted a fourth`);
+    if (excused) assert.ok(excused.trim().length >= 40, `${item.id} is excused without a real reason`);
+  }
+  assert.equal(stillThree.length, 44);
+  assert.equal(stillThree.filter((item) => drafts.THREE_OPTION_ITEMS[item.id]).length, 14);
+});

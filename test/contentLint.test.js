@@ -107,7 +107,7 @@ test('every corrected question offers four options, or three with a recorded rea
 // two-option finding and no correction record covers them. Raising them to four is new authoring the
 // parent has not reviewed, and content nobody has read must not reach a child, so this stays an open
 // finding rather than a quiet edit. It is listed here so the gap is visible in code, not in a document.
-test('a choice question offers four options', { todo: 'open finding 2026-09-18: 44 spelling and dictation items still offer three; never drafted, because raising them is authoring the parent has not reviewed' }, () => {
+test('a choice question offers four options', { todo: 'OPEN-05: 30 of the 44 three-option items are drafted in corr.c0.014 and corr.c0.015 and await the parent; the other 14 keep three options and THREE_OPTION_ITEMS says why for each' }, () => {
   const thin = choiceItems
     .filter((item) => item.choices.length < (THREE_OPTION_ITEMS[item.id] ? 3 : 4))
     .map((item) => item.id);

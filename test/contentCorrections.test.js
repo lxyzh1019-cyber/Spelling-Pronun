@@ -56,15 +56,29 @@ test('the resolved audit replacements are the content the app serves', () => {
   }
 });
 
-// Every 2026-09-17 record is now resolved and installed, and nothing is withheld: these were
-// `improvement` corrections, so the content kept running the whole time it waited. The lesson
-// assertions are the ones that matter — DEF-48 withheld 46 fully corrected items and left three of the
-// four lessons unable to serve six questions, and this is what caught it.
-test('no correction is left open, and nothing is withheld', () => {
+// An open correction is a proposal the parent has not answered yet. Whatever is open, these hold: it
+// is Claude's proposal, it claims no review, it says what it waits for and where its text is, and
+// because it is an `improvement` the content it names keeps running. The lesson assertions are the
+// ones that matter — DEF-48 withheld 46 fully corrected items and left three of the four lessons
+// unable to serve six questions, and this is what caught it.
+test('an open correction claims no review and withholds nothing', () => {
   const items = [...c0PilotItems, ...c0AssessmentItems];
-  assert.deepEqual(draftedCorrections.map((correction) => correction.id), [], 'a correction is still open');
-  assert.deepEqual(openCorrections(correctionData.corrections), []);
-  assert.equal(quarantinedItemIds(correctionData.corrections).size, 0);
+  for (const correction of draftedCorrections) {
+    assert.equal(correction.severity, 'improvement', `${correction.id} would withhold its items`);
+    assert.equal(correction.reviewedBy, undefined, `${correction.id} claims a review that has not happened`);
+    assert.equal(correction.proposedBy, 'claude');
+    assert.equal(correction.reviewer, 'parent');
+    assert.ok(correction.draftedIn, `${correction.id} does not say where its replacement text is`);
+    assert.ok(correction.awaiting, `${correction.id} does not say what it is waiting for`);
+    assert.ok(correction.requiresOnInstall, `${correction.id} does not say what installing it costs`);
+    // A record moves every item it names to one version, so they must all start from the same one.
+    const versions = new Set(correction.itemIds.map((id) => items.find((item) => item.id === id)?.version));
+    assert.equal(versions.size <= 1, true, `${correction.id} names items at versions ${[...versions].join(', ')}, which cannot all reach one toVersion`);
+    if (correction.fromVersion) assert.deepEqual([...versions], correction.itemIds.length ? [correction.fromVersion] : [], `${correction.id} says it starts from version ${correction.fromVersion}`);
+  }
+  // Nothing open is withheld, and the packs still serve full lessons.
+  const quarantined = quarantinedItemIds(correctionData.corrections);
+  assert.equal(quarantined.size, 0, 'an open improvement withheld its items');
   const stamped = applyCorrections(items, correctionData.corrections);
   assert.equal(stamped.filter(isQuarantined).length, 0);
   for (const lesson of Object.values(c0LessonCatalog)) {

@@ -44,6 +44,10 @@
 export const THREE_OPTION_ITEMS = {
   'c0.sp.patterns.03': 'run + -ing has exactly three error patterns worth offering: no doubling (runing), the silent-e rule misapplied (runeing), and the correct form. A fourth would have to be a typo nobody reasons about.',
   'c0.gr.subject-object-pronouns.12': 'The slot "The teacher paired Sam with ___" accepts any object pronoun grammatically, so every remaining fourth option is either another wrong-case form that repeats what "she" already tests, or defensible (herself, them, him all read as real sentences).',
+  'c0.assessment.a.11': 'The options are three spoken recordings. A fourth means recording a fourth pronunciation of an invented word, which is new spoken content needing a human listening check — and this prompt is already blocked on exactly that check.',
+  'c0.assessment.a.12': 'The options are three spoken recordings; see c0.assessment.a.11.',
+  'c0.assessment.b.11': 'The options are three spoken recordings; see c0.assessment.a.11.',
+  'c0.assessment.b.12': 'The options are three spoken recordings; see c0.assessment.a.11.',
   'c0.assessment.a.13': 'their / there / they’re is the complete homophone set.',
   'c0.assessment.a.14': 'their / there / they’re is the complete homophone set.',
   'c0.assessment.a.15': 'English -ed has exactly three endings: an added syllable, a d sound, a t sound.',
@@ -273,4 +277,56 @@ export const INSTALLED_ITEM_REPLACEMENTS = {
   ...assessmentDecodingReplacements,
   ...assessmentListeningReplacements,
   ...Object.fromEntries(Object.entries(explanationReplacements).map(([id, explanation]) => [id, { explanation }])),
+};
+
+// --- OPEN-05, the questions that always had three options ------------------------------------------
+//
+// DRAFTED 2026-09-18, NOT INSTALLED. These are `corr.c0.014`, proposed by Claude and waiting for the
+// parent, exactly as `corr.c0.007` to `corr.c0.013` waited: a correction's proposer may never resolve
+// it, so this text sits here until the parent reads it and says yes. It is deliberately absent from
+// `INSTALLED_ITEM_REPLACEMENTS`.
+//
+// The 2026-09-17 audit found questions with TWO options. These 44 always had three, so no record
+// covered them, and a blind guess on three is still one in three. 30 of them can carry an honest
+// fourth. The other 14 cannot, and `THREE_OPTION_ITEMS` says why for each: padding a closed answer set
+// recreates the `runnning` fault rather than fixing anything.
+//
+// Every fourth option here is a misspelling a child actually writes, not a letter jumble. Two kinds
+// were considered and refused: a form that is correct under another reading (`color` for `colour`,
+// "On Monday we begin." without the optional comma), and a visually absurd one that nobody would pick.
+export const fourthOptionReplacements = {
+  // Spelling. Each fourth is a real error of a different kind from the other two: a missing double,
+  // an extra silent e, a vowel a child hears rather than sees, or two rules applied at once.
+  'c0.sp.patterns.04': { answer: 'a', choices: [['a', 'making'], ['b', 'makeing'], ['c', 'makking'], ['d', 'makeking']] },
+  'c0.sp.patterns.05': { answer: 'c', choices: [['a', 'richh'], ['b', 'riche'], ['c', 'rich'], ['d', 'ritch']] },
+  'c0.sp.patterns.06': { answer: 'b', choices: [['a', 'wach'], ['b', 'watch'], ['c', 'wotch'], ['d', 'watche']] },
+  'c0.sp.patterns.07': { answer: 'a', choices: [['a', 'impossible'], ['b', 'inpossible'], ['c', 'impossable'], ['d', 'imposible']] },
+  'c0.sp.patterns.08': { answer: 'c', choices: [['a', 'seet'], ['b', 'sete'], ['c', 'seat'], ['d', 'seate']] },
+  'c0.sp.patterns.09': { answer: 'b', choices: [['a', 'chaseing'], ['b', 'chasing'], ['c', 'chassing'], ['d', 'chaising']] },
+  'c0.sp.patterns.10': { answer: 'a', choices: [['a', 'careless'], ['b', 'carless'], ['c', 'careles'], ['d', 'carelless']] },
+  'c0.sp.patterns.11': { answer: 'c', choices: [['a', 'begining'], ['b', 'begginning'], ['c', 'beginning'], ['d', 'beggining']] },
+  'c0.sp.patterns.12': { answer: 'b', choices: [['a', 'neccessary'], ['b', 'necessary'], ['c', 'necesary'], ['d', 'nessecary']] },
+  'c0.sp.patterns.13': { answer: 'a', choices: [['a', 'happiness'], ['b', 'happyness'], ['c', 'hapiness'], ['d', 'happieness']] },
+  'c0.sp.patterns.14': { answer: 'c', choices: [['a', 'noticable'], ['b', 'noticeible'], ['c', 'noticeable'], ['d', 'noticible']] },
+  'c0.sp.patterns.15': { answer: 'a', choices: [['a', 'musician'], ['b', 'musicain'], ['c', 'musitian'], ['d', 'muscian']] },
+  'c0.sp.patterns.16': { answer: 'b', choices: [['a', 'prefered'], ['b', 'preferred'], ['c', 'preffered'], ['d', 'prefferred']] },
+  'c0.sp.patterns.17': { answer: 'c', choices: [['a', 'analized'], ['b', 'annalysed'], ['c', 'analyzed'], ['d', 'analised']] },
+  'c0.sp.patterns.18': { answer: 'a', choices: [['a', 'occasion'], ['b', 'ocassion'], ['c', 'occassion'], ['d', 'ocasion']] },
+  'c0.sp.patterns.19': { answer: 'b', choices: [['a', 'inviteing'], ['b', 'inviting'], ['c', 'invitting'], ['d', 'enviting']] },
+  'c0.sp.patterns.20': { answer: 'c', choices: [['a', 'electrican'], ['b', 'electritian'], ['c', 'electrician'], ['d', 'electricion']] },
+  'c0.sp.patterns.21': { answer: 'a', choices: [['a', 'silent'], ['b', 'silant'], ['c', 'sillent'], ['d', 'cilent']] },
+  'c0.sp.patterns.22': { answer: 'c', choices: [['a', 'admited'], ['b', 'addmitted'], ['c', 'admitted'], ['d', 'addmited']] },
+  'c0.sp.patterns.23': { answer: 'b', choices: [['a', 'relyable'], ['b', 'reliable'], ['c', 'reliible'], ['d', 'relible']] },
+  'c0.sp.patterns.24': { answer: 'a', choices: [['a', 'colour'], ['b', 'collour'], ['c', 'colur'], ['d', 'coulour']] },
+  // Punctuation. The fourth gets the end mark right and the capital wrong, so the two are tested apart.
+  'c0.pu.capitals-endmarks.05': { answer: 'c', choices: [['a', 'look out.'], ['b', 'Look out?'], ['c', 'Look out!'], ['d', 'look out!']] },
+  'c0.pu.capitals-endmarks.11': { answer: 'c', choices: [['a', 'What a remarkable view?'], ['b', 'What a remarkable view.'], ['c', 'What a remarkable view!'], ['d', 'what a remarkable view!']] },
+  'c0.pu.capitals-endmarks.16': { answer: 'c', choices: [['a', 'On monday, we begin.'], ['b', 'on Monday, we begin?'], ['c', 'On Monday, we begin.'], ['d', 'on monday, we begin.']] },
+  'c0.pu.capitals-endmarks.24': { answer: 'c', choices: [['a', 'that was close?'], ['b', 'That was close.'], ['c', 'That was close!'], ['d', 'that was close!']] },
+  // Pronouns. The fourth is the reflexive or the possessive, which is the error children actually make.
+  'c0.gr.subject-object-pronouns.07': { answer: 'c', choices: [['a', 'Them'], ['b', 'Us'], ['c', 'They'], ['d', 'Themselves']] },
+  'c0.gr.subject-object-pronouns.11': { answer: 'c', choices: [['a', 'me'], ['b', 'him'], ['c', 'I'], ['d', 'myself']] },
+  'c0.gr.subject-object-pronouns.14': { answer: 'c', choices: [['a', 'we'], ['b', 'they'], ['c', 'us'], ['d', 'our']] },
+  'c0.gr.subject-object-pronouns.17': { answer: 'c', choices: [['a', 'Us thanked they.'], ['b', 'Them thanked we.'], ['c', 'We thanked them.'], ['d', 'We thanked they.']] },
+  'c0.gr.subject-object-pronouns.21': { answer: 'c', choices: [['a', 'I'], ['b', 'we'], ['c', 'me'], ['d', 'myself']] },
 };
