@@ -1145,7 +1145,10 @@
               "skillIds": [
                 "RC.literal"
               ],
-              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own.",
+              "draftedIn": [
+                "c1.pack.rc.literal"
+              ]
             },
             {
               "id": "comprehension.grade5.06",
@@ -1154,7 +1157,10 @@
               "skillIds": [
                 "RC.inference"
               ],
-              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own.",
+              "draftedIn": [
+                "c1.pack.rc.inference"
+              ]
             },
             {
               "id": "comprehension.grade5.07",
@@ -1340,7 +1346,10 @@
               "skillIds": [
                 "RC.inference"
               ],
-              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own.",
+              "draftedIn": [
+                "c1.pack.rc.inference"
+              ]
             },
             {
               "id": "comprehension.grade6.10",
@@ -1356,7 +1365,10 @@
               "skillIds": [
                 "RC.literal"
               ],
-              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own.",
+              "draftedIn": [
+                "c1.pack.rc.literal"
+              ]
             },
             {
               "id": "comprehension.grade6.12",
