@@ -9,7 +9,7 @@ decisions, and `docs/MASTER_PLAN.md` is the product authority.
 The app is **live**. GitHub Pages has deployed from `main` since 2026-09-11 (`e162dad`, workflow run 76).
 Every push to `main` redeploys.
 
-- 305 automated tests: 304 pass, 1 is `todo` and names the one content finding nobody has decided yet.
+- 332 automated tests: 331 pass, 1 is `todo` and names the one content finding nobody has decided yet.
   The production build is green.
 - **Nothing is `released`.** 0 released objects, prompts or episodes.
 - 96 lesson objects, both chapter-one episodes and 28 Part B assessment prompts are **`pilot_approved`**
@@ -222,6 +222,40 @@ never as Alberta Grade 5/6 curriculum. `organizingIdeasNotInGrade56` records thi
 The same finding retires the `PR.*` pronunciation skills: ELAL has **no pronunciation organizing idea at
 any grade**. Those skills came from the EAL benchmarks, and both children are native English speakers —
 the same reason the listening prompts were retargeted in `corr.c0.011`.
+
+## What is written and waiting for you, 2026-09-18
+
+All of it is visible at `/parent` under **Written and waiting for you**, assembled from the data
+rather than from a hand-written list, so nothing can be added without appearing there. None of it is
+in front of a child: new content cannot reach a learner until it has been challenged, reviewed,
+integrated and approved, and a test holds every new pack at `draft`.
+
+| Waiting | What it is |
+|---|---|
+| `corr.c0.014`, `corr.c0.015` | A fourth option for 30 of the 44 questions that offered three. The other 14 keep three, with a reason each. |
+| 2 vocabulary lessons, 48 questions | Word parts (prefixes and suffixes), and working out a word from its sentence. |
+| 2 comprehension lessons, 48 questions | What the text says versus what you worked out, and drawing an inference. |
+| 2 phonics lessons, 48 questions | Vowel sounds and what changes them; breaking long words into beats, including which syllable is stressed. |
+
+The vocabulary and comprehension packs are written against named Alberta outcomes; every item carries
+`curriculumOutcomeIds` and a test resolves each against the mapping.
+
+The phonics packs deliberately claim **no** Alberta Grade 5/6 outcome, because there is none to claim:
+Alberta ends Phonics after Grade 4. They carry an `albertaPlacement` saying so instead. They exist
+because the parent asked for them on 2026-09-18 knowing that, on the ground that their children are
+behind on exactly this. Every question in them is answered by looking rather than listening, and a
+test enforces it — audio would put them behind the same human-listening gate that has held the
+assessment's Part A prompts since 2026-09-08.
+
+### What the coverage report now says
+
+`/parent` reports, per organizing idea, how many outcomes are checked, measured without enough
+evidence, not built, and **yours to mark**. That last state is the parent's own decision on
+2026-09-18: speaking, discussion and composition are theirs to judge, not a gap for the app to close.
+There is no percentage anywhere and a test forbids one — 10 of 214 rendered as 5% reads as a small
+shortfall rather than as what it is, and a single number invites being read as a grade for the child.
+
+The report refuses to read as an alignment claim while `mappingReviewedBy` is null, which it still is.
 
 ## Known open items
 

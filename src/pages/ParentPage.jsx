@@ -7,6 +7,12 @@ import { gateStateLabel, r2GateTracker } from '../data/r2GateTracker';
 import { c0PilotItems } from '../data/packs.c0.draft';
 import { c0AssessmentItems } from '../data/assessment.c0.draft';
 import { PENDING_DECISIONS, buildPendingQueue, recordPendingDecision, summarisePendingReview } from '../learning/pendingReview';
+import { draftPacksFor, openCorrectionsFor, summariseDraftInventory } from '../learning/draftInventory';
+import { buildCoverageReport, coverageHeadline } from '../learning/curriculumCoverage';
+import correctionData from '../data/corrections.c0.json';
+import curriculumMapping from '../data/curriculum.alberta.elal.json';
+import { c1Packs } from '../data/packs.c1.draft';
+import { foundationPacks } from '../data/packs.foundation.draft';
 import { pendingDecisionsKey, readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
@@ -110,6 +116,15 @@ export default function ParentPage() {
     finally { setBusy(false); }
   };
 
+  const openCorrections = useMemo(() => openCorrectionsFor(correctionData.corrections), []);
+  const draftPacks = useMemo(() => draftPacksFor([
+    { batch: 'C1', packs: c1Packs },
+    { batch: 'F1', packs: foundationPacks },
+  ]), []);
+  const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
+  const coverageReport = useMemo(() => buildCoverageReport(curriculumMapping), []);
+  const coverage = useMemo(() => coverageHeadline(coverageReport), [coverageReport]);
+
   return <div className={styles.page}>
     <section className={styles.card}>
       <h1>Parent view</h1>
@@ -156,6 +171,37 @@ export default function ParentPage() {
             </div>
           </article>)}
         </>}
+      <h2>Written and waiting for you</h2>
+      <p>{draftSummary.summary}</p>
+      {openCorrections.length > 0 && <>
+        <h3>Changes proposed to lessons that already exist</h3>
+        {openCorrections.map((correction) => <article className={styles.gate} key={correction.id}>
+          <p><strong>{correction.id}</strong> <span className={styles.meta}>— {correction.itemCount} questions</span></p>
+          <p>{correction.reason}</p>
+          <p className={styles.meta}>Proposed: {correction.change}</p>
+          <p className={styles.meta}>The replacement wording is in <code>{correction.draftedIn}</code>. Installing it: {correction.requiresOnInstall}</p>
+        </article>)}
+      </>}
+      {draftPacks.length > 0 && <>
+        <h3>New lessons nobody has approved yet</h3>
+        <p>These are written but not checked, not reviewed and not approved, so no child can open them. That is the lifecycle working, not a fault.</p>
+        {draftPacks.map((pack) => <article className={styles.gate} key={pack.id}>
+          <p><strong>{pack.title}</strong> <span className={styles.meta}>— {pack.questionCount} questions, {pack.skillId}</span></p>
+          <p>{pack.rule}</p>
+          <p className={styles.meta}>{pack.albertaPlacement
+            ? `Alberta places this at ${pack.albertaPlacement.albertaGrades}, so it is practice rather than a Grade 5/6 check. ${pack.albertaPlacement.note}`
+            : `Written for Alberta Grade 5/6 outcomes: ${pack.curriculumOutcomeIds.join(', ')}.`}</p>
+        </article>)}
+      </>}
+      <h2>What Alberta asks for, and what this app checks</h2>
+      <p>{coverage.summary}</p>
+      {!coverageReport.verified && <p className={styles.meta}>{coverageReport.verificationNote}</p>}
+      <div className={styles.gateList}>{coverageReport.ideas.map((idea) => <article className={styles.gate} key={idea.id}>
+        <p><strong>{idea.name}</strong> <span className={styles.meta}>— {idea.total} outcomes</span></p>
+        <p className={styles.meta}>
+          {idea.tally.checked} checked · {idea.tally.needs_more_evidence} measured, not enough evidence yet · {idea.tally.not_built} not built · {idea.tally.needs_parent} for you to mark
+        </p>
+      </article>)}</div>
       <h2>Things I need you to test</h2><p>Some of these gates only move when a person checks something the app cannot check itself. The testing page walks through each one, step by step, and records what you saw.</p><p><Link className={styles.primary} to="/checks">Open the testing checks</Link></p>
       <h2>R2 pilot gate tracker</h2><p>This is a truthful readiness list, not a release claim. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p><div className={styles.gateList}>{r2GateTracker.map((gate) => <article className={styles.gate} key={gate.id}><p><strong>{gate.label}</strong> <span className={styles.meta}>— {gateStateLabel(gate.state)}</span></p><p>{gate.detail}</p></article>)}</div>
     </section>
