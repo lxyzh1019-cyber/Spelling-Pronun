@@ -10,6 +10,12 @@
 // Each entry names the audit finding it closes and carries the exact replacement text, so the parent
 // reads what the child would see rather than a description of it. `test/correctionDrafts.test.js`
 // proves every draft actually satisfies the rule its finding names.
+//
+// What the tests cannot prove is that a new distractor is genuinely wrong, which is why these need a
+// person. An adversarial read of the first draft caught three that were defensible answers: "A Wrinkle
+// In Time" is correct under any style that capitalises every word, and "paired Sam with hers" and
+// "showed theirs the display" both read as "with her one" and "their one". All three were replaced.
+// Read the rest the same way: an option that can be argued for makes the question unfair.
 
 // --- Finding A2 + A3, sentence pack ------------------------------------------------------------
 // Every fragment gains an end mark, so the full stop stops marking the answer out, and every
@@ -50,7 +56,7 @@ export const punctuationReplacements = {
   'c0.pu.capitals-endmarks.06': { answer: 'a', choices: [['a', 'I asked Mateo for help.'], ['b', 'I asked mateo for help.'], ['c', 'i asked Mateo for help.']] },
   'c0.pu.capitals-endmarks.07': { answer: 'b', choices: [['a', 'We travelled to red deer.'], ['b', 'We travelled to Red Deer.'], ['c', 'We travelled to Red deer.']] },
   'c0.pu.capitals-endmarks.08': { answer: 'a', choices: [['a', 'Please pass the ruler.'], ['b', 'please pass the ruler?'], ['c', 'Please pass the ruler?']] },
-  'c0.pu.capitals-endmarks.12': { answer: 'b', choices: [['a', 'a Wrinkle in Time'], ['b', 'A Wrinkle in Time'], ['c', 'A Wrinkle In Time']] },
+  'c0.pu.capitals-endmarks.12': { answer: 'b', choices: [['a', 'a Wrinkle in Time'], ['b', 'A Wrinkle in Time'], ['c', 'a wrinkle in time']] },
   'c0.pu.capitals-endmarks.13': { answer: 'a', choices: [['a', 'We visit Grandma Lee on Sunday.'], ['b', 'We visit grandma Lee on sunday.'], ['c', 'We visit Grandma Lee on sunday.']] },
   'c0.pu.capitals-endmarks.14': { answer: 'b', choices: [['a', 'Where should we meet.'], ['b', 'Where should we meet?'], ['c', 'where should we meet?']] },
   'c0.pu.capitals-endmarks.17': { answer: 'a', choices: [['a', 'Have you seen the keys?'], ['b', 'Have you seen the keys!'], ['c', 'Have you seen the keys.']] },
@@ -72,7 +78,7 @@ export const pronounReplacements = {
   'c0.gr.subject-object-pronouns.08': { answer: 'a', choices: [['a', 'him'], ['b', 'he'], ['c', 'his']] },
   'c0.gr.subject-object-pronouns.09': { answer: 'b', choices: [['a', 'Her and I checked the list.'], ['b', 'She and I checked the list.'], ['c', 'Her and me checked the list.']] },
   'c0.gr.subject-object-pronouns.10': { answer: 'a', choices: [['a', 'The message surprised them.'], ['b', 'The message surprised they.'], ['c', 'The message surprised their.']] },
-  'c0.gr.subject-object-pronouns.12': { answer: 'b', choices: [['a', 'she'], ['b', 'her'], ['c', 'hers']] },
+  'c0.gr.subject-object-pronouns.12': { answer: 'b', choices: [['a', 'she'], ['b', 'her'], ['c', 'they']] },
   'c0.gr.subject-object-pronouns.13': { answer: 'a', choices: [['a', 'They'], ['b', 'Them'], ['c', 'Their']] },
   'c0.gr.subject-object-pronouns.15': { answer: 'b', choices: [['a', 'Someone left their bottle; them can claim it at the desk.'], ['b', 'Someone left their bottle; they can claim it at the desk.'], ['c', 'Someone left their bottle; their can claim it at the desk.']] },
   'c0.gr.subject-object-pronouns.16': { answer: 'a', choices: [['a', 'me'], ['b', 'I'], ['c', 'myself']] },
@@ -109,7 +115,7 @@ export const assessmentSentenceReplacements = {
   'c0.assessment.a.30': { answer: 'a', choices: [['a', 'Where did the folder go?'], ['b', 'Where did the folder go.'], ['c', 'Where did the folder go!']] },
   'c0.assessment.a.31': { answer: 'b', choices: [['a', 'We packed paper ink and string.'], ['b', 'We packed paper, ink, and string.'], ['c', 'We packed, paper ink and string.']] },
   'c0.assessment.a.32': { answer: 'a', choices: [['a', 'Maya, please check this line.'], ['b', 'Maya please, check this line.'], ['c', 'Maya please check this line.']] },
-  'c0.assessment.b.21': { answer: 'a', choices: [['a', 'them'], ['b', 'they'], ['c', 'theirs']] },
+  'c0.assessment.b.21': { answer: 'a', choices: [['a', 'them'], ['b', 'they'], ['c', 'their']] },
   'c0.assessment.b.22': { answer: 'b', choices: [['a', 'him'], ['b', 'he'], ['c', 'himself']] },
   'c0.assessment.b.23': { answer: 'a', choices: [['a', 'Sofia put the book away after she read it.'], ['b', 'After Sofia spoke with Lina, she put the book away.'], ['c', 'After Sofia spoke with Lina, she read it.']] },
   'c0.assessment.b.24': { answer: 'b', choices: [['a', 'Neither of the pages have a date.'], ['b', 'Neither of the pages has a date.'], ['c', 'Neither of the pages have dates.']] },
