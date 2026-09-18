@@ -145,6 +145,16 @@ export const assessmentDecodingReplacements = {
 // homophones in a spoken sentence, the three sounds of the -ed ending, and where the apostrophe goes
 // in a spoken possessive. All eight are Part A and already blocked on the listening check, so no
 // evidence changes hands; the parent's check will cover the new audio when it is recorded.
+// INSTALL DEPENDENCY, found while drafting. `testLabAudio.js#contrastRows` builds two rows for every
+// listening item: the word the app speaks, and one distractor spoken as a comparison, so the parent can
+// answer "can you hear the difference between the two sides?". For a minimal pair that is the right
+// question. For these replacements it is not: `their`, `there` and `they're` sound identical on purpose,
+// and so do `your` and `you're`. A comparison row would ask the parent to hear a difference that is not
+// supposed to exist, and a fair answer would read as a defect. The -ed and possessive items have the same
+// shape. Installing this correction therefore means giving these items a single audio row that asks
+// whether the spoken sentence is clear and says what it should, which is the dictation question, not the
+// contrast one. The correction record carries `requiresTestLabChange` so this cannot be installed by
+// accident, and a test asserts that any correction touching spoken content declares it.
 export const assessmentListeningReplacements = {
   'c0.assessment.a.13': { answer: 'a', spokenText: 'Their bikes are outside.', prompt: 'Listen to the sentence, then choose the word that belongs in it.', choices: [['a', 'their'], ['b', 'there'], ['c', 'they’re']] },
   'c0.assessment.a.14': { answer: 'b', spokenText: 'We will be there by six.', prompt: 'Listen to the sentence, then choose the word that belongs in it.', choices: [['a', 'their'], ['b', 'there'], ['c', 'they’re']] },

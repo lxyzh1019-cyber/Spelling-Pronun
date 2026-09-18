@@ -125,6 +125,20 @@ test('a rewritten explanation still explains itself', () => {
   }
 });
 
+// A correction that changes what an item speaks, or what its spoken options are, can break the parent's
+// listening check even when the item itself is fine. The homophone replacements are exactly that case:
+// the Test Lab pairs a listening item with one distractor so the parent can hear the difference, and
+// `their` against `there` has no difference to hear. Such a correction has to say so out loud.
+test('a correction that changes spoken content declares what it needs from the Test Lab', async () => {
+  const { default: correctionData } = await import('../src/data/corrections.c0.json', { with: { type: 'json' } });
+  const spokenIds = new Set(Object.keys(drafts.assessmentListeningReplacements));
+  const touching = correctionData.corrections.filter((correction) => (correction.itemIds || []).some((id) => spokenIds.has(id)));
+  assert.ok(touching.length > 0, 'no correction covers the retargeted listening items');
+  for (const correction of touching) {
+    assert.ok(correction.requiresTestLabChange?.trim(), `${correction.id} changes spoken content without saying what the Test Lab needs`);
+  }
+});
+
 // The retargeted listening items exist because both children are native English speakers, for whom
 // ship/sheep measures nothing. Each replacement still needs audio, so it must carry the text to speak.
 test('each retargeted listening item says what should be spoken', () => {

@@ -314,7 +314,8 @@
         "c0.assessment.b.16"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#assessmentListeningReplacements",
-      "change": "Homophones in a spoken sentence, the three sounds of the -ed ending, and the spoken possessive apostrophe. All eight are Part A and already blocked on the listening check, so no evidence changes hands and the parent check will cover the new audio."
+      "change": "Homophones in a spoken sentence, the three sounds of the -ed ending, and the spoken possessive apostrophe. All eight are Part A and already blocked on the listening check, so no evidence changes hands and the parent check will cover the new audio.",
+      "requiresTestLabChange": "testLabAudio.js#contrastRows pairs a listening item with one distractor so the parent can hear the difference. These options are homophones and are meant to sound identical, so they need a single row asking whether the spoken sentence is clear, not a comparison."
     },
     {
       "proposedBy": "claude",
