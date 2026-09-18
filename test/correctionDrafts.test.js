@@ -125,6 +125,21 @@ test('a rewritten explanation still explains itself', () => {
   }
 });
 
+// Installing a correction is never only an edit: every review record and the pilot approval pin a
+// version, so a change can invalidate them. The story correction is the sharp case, because an episode
+// carries its own version rather than an item version. A draft has to say what installing it costs, so
+// the parent is agreeing to the whole consequence rather than to the words alone.
+test('every drafted correction says what installing it requires', async () => {
+  const { default: correctionData } = await import('../src/data/corrections.c0.json', { with: { type: 'json' } });
+  const drafted = correctionData.corrections.filter((correction) => correction.reviewStatus === 'changes_required');
+  assert.ok(drafted.length > 0);
+  for (const correction of drafted) {
+    assert.ok(correction.requiresOnInstall?.trim(), `${correction.id} does not say what installing it requires`);
+  }
+  const story = drafted.find((correction) => correction.id === 'corr.c0.013');
+  assert.match(story.requiresOnInstall, /pilot approval/i, 'the story draft does not mention that its approval goes stale');
+});
+
 // A correction that changes what an item speaks, or what its spoken options are, can break the parent's
 // listening check even when the item itself is fine. The homophone replacements are exactly that case:
 // the Test Lab pairs a listening item with one distractor so the parent can hear the difference, and

@@ -180,7 +180,8 @@
         "c0.se.complete.24"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#sentenceReplacements",
-      "change": "Every fragment gains an end mark, and every two-option question gains a third option that is a fragment of a different kind from the second."
+      "change": "Every fragment gains an end mark, and every two-option question gains a third option that is a fragment of a different kind from the second.",
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
       "proposedBy": "claude",
@@ -226,7 +227,8 @@
         "c0.gr.subject-object-pronouns.24"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#punctuationReplacements, #pronounReplacements",
-      "change": "Each question gains a third option carrying a different error from the second, so a learner cannot pass by eliminating the one option that looks wrong."
+      "change": "Each question gains a third option carrying a different error from the second, so a learner cannot pass by eliminating the one option that looks wrong.",
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
       "proposedBy": "claude",
@@ -271,7 +273,8 @@
         "c0.assessment.b.10"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#assessmentSentenceReplacements, #assessmentDecodingReplacements",
-      "change": "A third option per prompt, carrying a different error from the second."
+      "change": "A third option per prompt, carrying a different error from the second.",
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
       "proposedBy": "claude",
@@ -289,7 +292,8 @@
         "c0.sp.patterns.03"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#spellingReplacements",
-      "change": "runeing replaces it: the mistake the rule is actually about, applying the silent-e pattern from hoping to a word that needs the doubled consonant."
+      "change": "runeing replaces it: the mistake the rule is actually about, applying the silent-e pattern from hoping to a word that needs the doubled consonant.",
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
       "proposedBy": "claude",
@@ -315,7 +319,8 @@
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#assessmentListeningReplacements",
       "change": "Homophones in a spoken sentence, the three sounds of the -ed ending, and the spoken possessive apostrophe. All eight are Part A and already blocked on the listening check, so no evidence changes hands and the parent check will cover the new audio.",
-      "requiresTestLabChange": "testLabAudio.js#contrastRows pairs a listening item with one distractor so the parent can hear the difference. These options are homophones and are meant to sound identical, so they need a single row asking whether the spoken sentence is clear, not a comparison."
+      "requiresTestLabChange": "testLabAudio.js#contrastRows pairs a listening item with one distractor so the parent can hear the difference. These options are homophones and are meant to sound identical, so they need a single row asking whether the spoken sentence is clear, not a comparison.",
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review. These eight are Part A, which is already excluded from the pilot approval, so no approval changes."
     },
     {
       "proposedBy": "claude",
@@ -344,7 +349,8 @@
         "c0.pu.capitals-endmarks.24"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#explanationReplacements",
-      "change": "Each rewrite keeps the rule and the example and says it in shorter sentences. The drafts bring every pack to grade 7 or below."
+      "change": "Each rewrite keeps the rule and the example and says it in shorter sentences. The drafts bring every pack to grade 7 or below.",
+      "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
       "proposedBy": "claude",
@@ -364,7 +370,8 @@
         "c0.story.02"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#storyReplacements",
-      "change": "Shorter sentences and plainer words, every documented claim, invented-element disclosure and fiction label kept, and the reveal now addresses the child directly. Intros stay inside the plan 60 to 100 word range."
+      "change": "Shorter sentences and plainer words, every documented claim, invented-element disclosure and fiction label kept, and the reveal now addresses the child directly. Intros stay inside the plan 60 to 100 word range.",
+      "requiresOnInstall": "An episode is not an item: it carries its own version, and both its story review record and your 2026-09-09 pilot approval pin that version. Installing means moving each episode to version 3, updating the story review records to version 3, and recording a new pilot approval at version 3. Until the new approval exists the episodes stop being pilot_approved, which is the mechanism working: you approved version 2, not version 3."
     }
   ]
 }

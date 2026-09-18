@@ -106,6 +106,21 @@ disclosure from the story.
 To accept a record, set its `reviewStatus` to `reviewed`, add `reviewedBy` and `reviewedAt`, and the
 replacement gets installed at `toVersion`. Tell me and I will do that part.
 
+Every record says what installing it costs, in `requiresOnInstall`. Six are item-level: the item moves
+to version 2, the pack and form versions do not move, so the review records and your pilot approval stay
+valid. That is exactly how the 2026-09-08 corrections were installed, and your resolution of the record
+is the review.
+
+**The story is different.** An episode carries its own version, and both its story review record and
+your 2026-09-09 pilot approval pin it. Installing `corr.c0.013` moves each episode to version 3,
+which needs the story review records updating and a new pilot approval recorded at version 3. Until
+that approval exists the episodes stop being `pilot_approved`. That is the mechanism working, not a
+fault: you approved version 2, and version 3 is different text.
+
+`corr.c0.011` also needs a change to the Test Lab before it is installed. The listening check speaks one
+distractor so you can hear the difference between the two sides, and `their` against `there` has no
+difference to hear. Those items need a single row asking whether the spoken sentence is clear.
+
 One change was installed rather than drafted, because leaving it would have shipped something false:
 twelve explanations named the answer by its position ("the second choice"), which stopped being true
 the moment the options were shuffled. They now name the answer by its words. See DEF-43.
