@@ -9,7 +9,7 @@ decisions, and `docs/MASTER_PLAN.md` is the product authority.
 The app is **live**. GitHub Pages has deployed from `main` since 2026-09-11 (`e162dad`, workflow run 76).
 Every push to `main` redeploys.
 
-- 332 automated tests: 331 pass, 1 is `todo` and names the one content finding nobody has decided yet.
+- 337 automated tests: 336 pass, 1 is `todo` and names the one content finding nobody has decided yet.
   The production build is green.
 - **Nothing is `released`.** 0 released objects, prompts or episodes.
 - 96 lesson objects, both chapter-one episodes and 28 Part B assessment prompts are **`pilot_approved`**
@@ -256,6 +256,36 @@ There is no percentage anywhere and a test forbids one — 10 of 214 rendered as
 shortfall rather than as what it is, and a single number invites being read as a grade for the child.
 
 The report refuses to read as an alignment claim while `mappingReviewedBy` is null, which it still is.
+
+## The story: 7 episodes of the 12 the plan commits to
+
+`docs/MASTER_PLAN.md` commits Season 1 to **six chapters of two episodes each**, and the R3-G1 gate
+requires all twelve. `src/data/story.ledger.json` counts what exists against that, and is generated
+from the story files by `tools/build_story_ledger.mjs` rather than kept by hand — on 2026-09-18 six
+new lessons were built with no episode at all, against the standing decision to keep the story for
+everything, and nobody noticed because nothing counted.
+
+| Chapter | Setting | Episodes | State |
+|---|---|---|---|
+| 1 | British printing workshop | 2 of 2 | Pilot-approved at version 3 |
+| 2 | British port | 1 of 2 | Blocked: the second needs punctuation content that does not exist |
+| 3 | Community in Canada | 2 of 2 | Draft |
+| 4 | Canadian newspaper office | 0 of 2 | Blocked: needs commas, quotations, fragments and run-ons |
+| 5 | Railway journey west | 2 of 2 | Draft |
+| 6 | Alberta archive | 0 of 2 | Blocked: needs editing content, and resolves chapters not yet written |
+
+Each new episode is placed in the chapter the plan assigns it **by language focus**, not by when it
+was written: word parts and multisyllable vocabulary belong to chapter 5's railway journey, and
+"two accounts describe the same incident differently" is chapter 3, which is exactly what the
+stated-versus-inferred lesson teaches.
+
+Chapter 2's first episode covers `GR.subject-object-pronouns` — a C0 pack that has been
+pilot-approved since 2026-09-09 **with no episode at all**, which the ledger exposed. Chapter 2's
+case in the plan is "a letter's intended recipient is unclear", which is a pronoun problem.
+
+Every episode outside chapter 1 is draft: not challenged, not reviewed, not integrated, not
+pilot-approved. A test holds the prose inside the grade band, the fact box below it, the recap at
+two sentences, and every linked task to a lesson object that really exists.
 
 ## Known open items
 

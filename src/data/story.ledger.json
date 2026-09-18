@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "source": "docs/MASTER_PLAN.md, \"Season 1: six chapters, two episodes each\" and the R3-G1 gate, which requires all 12 episodes.",
+  "note": "The total the plan commits to, against what exists. This file is generated from the story files themselves, so an episode cannot be written or lost without the count moving. It records episodes, not approval: everything outside chapter 1 is draft.",
+  "plannedChapters": 6,
+  "episodesPerChapter": 2,
+  "plannedEpisodes": 12,
+  "writtenEpisodes": 7,
+  "remainingEpisodes": 5,
+  "releasedEpisodes": 0,
+  "pilotApprovedEpisodes": 2,
+  "pilotApprovedNote": "Only chapter 1’s two episodes are pilot-approved, at version 3. Every episode written since is draft and cannot reach a child.",
+  "chapters": [
+    {
+      "chapter": 1,
+      "setting": "British printing workshop",
+      "caseProgression": "A manuscript and its printed copy disagree",
+      "languageFocus": "Spelling, capitals, complete sentences",
+      "plannedEpisodes": 2,
+      "writtenEpisodes": 2,
+      "episodes": [
+        {
+          "id": "c0.story.01",
+          "sequence": 1,
+          "title": "The First Proof",
+          "version": 3,
+          "reviewStatus": "reviewed",
+          "releaseStatus": "not_released",
+          "taskCount": 16,
+          "file": "story.c0.draft.json"
+        },
+        {
+          "id": "c0.story.02",
+          "sequence": 2,
+          "title": "Marks in the Margin",
+          "version": 3,
+          "reviewStatus": "reviewed",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c0.draft.json"
+        }
+      ]
+    },
+    {
+      "chapter": 2,
+      "setting": "British port; departure across Atlantic",
+      "caseProgression": "A letter's intended recipient is unclear",
+      "languageFocus": "Pronouns, antecedents, end punctuation",
+      "plannedEpisodes": 2,
+      "writtenEpisodes": 1,
+      "episodes": [
+        {
+          "id": "c1.story.ch2.01",
+          "sequence": 1,
+          "title": "The Letter’s Recipient",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
+        }
+      ],
+      "blockedBy": "The second episode needs the punctuation content chapter 2 names (end punctuation beyond capitals and end marks). PU.list-commas, PU.direct-address, PU.clause-commas, PU.apostrophes and PU.dialogue are declared in skills.json with no content."
+    },
+    {
+      "chapter": 3,
+      "setting": "Community in what is now Canada, historically verified locale",
+      "caseProgression": "Two accounts describe the same incident differently",
+      "languageFocus": "Agreement, tense, vocabulary and clear reference",
+      "plannedEpisodes": 2,
+      "writtenEpisodes": 2,
+      "episodes": [
+        {
+          "id": "c1.story.ch3.01",
+          "sequence": 1,
+          "title": "Two Accounts",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
+        },
+        {
+          "id": "c1.story.ch3.02",
+          "sequence": 2,
+          "title": "What the Words Were Worth",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 16,
+          "file": "story.c1.draft.json"
+        }
+      ]
+    },
+    {
+      "chapter": 4,
+      "setting": "Canadian newspaper office",
+      "caseProgression": "A report changes meaning in transcription",
+      "languageFocus": "Commas, quotations, fragments/run-ons",
+      "plannedEpisodes": 2,
+      "writtenEpisodes": 0,
+      "episodes": [],
+      "blockedBy": "Both episodes need commas, quotations and fragments/run-ons. PU.* and SE.fragments/SE.runons are declared with no content."
+    },
+    {
+      "chapter": 5,
+      "setting": "Railway journey west",
+      "caseProgression": "Dates, messages and diary entries must be reconciled",
+      "languageFocus": "Conjunctions, sequence, word parts and multisyllable vocabulary",
+      "plannedEpisodes": 2,
+      "writtenEpisodes": 2,
+      "episodes": [
+        {
+          "id": "c1.story.ch5.01",
+          "sequence": 1,
+          "title": "The Words on the Manifest",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
+        },
+        {
+          "id": "c1.story.ch5.02",
+          "sequence": 2,
+          "title": "Names Nobody Can Say",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 16,
+          "file": "story.c1.draft.json"
+        }
+      ]
+    },
+    {
+      "chapter": 6,
+      "setting": "Alberta archive",
+      "caseProgression": "Evidence supports the corrected attribution",
+      "languageFocus": "Integrated editing, sentence writing and final evidence explanation",
+      "plannedEpisodes": 2,
+      "writtenEpisodes": 0,
+      "episodes": [],
+      "blockedBy": "Both episodes need integrated editing and sentence writing. ED.locate, ED.repair, ED.explain and ED.transfer are declared with no content, and the chapter is the case’s resolution, so it cannot be written before the chapters it resolves."
+    }
+  ]
+}
