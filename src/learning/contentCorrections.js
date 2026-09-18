@@ -9,6 +9,25 @@ const REQUIRED_CORRECTION_FIELDS = ['id', 'itemIds', 'reason', 'proposedBy', 're
 export const OPEN_CORRECTION_STATUS = 'changes_required';
 export const NOT_INSTALLED_STATUS = 'correction_not_installed';
 
+// How bad the finding is, which decides whether the item is withheld while the fix waits.
+//
+// `defect` is the default, so every record written before this field existed keeps exactly the
+// behaviour it had. It means the item teaches or grades something wrong — "Falling rocks." called a
+// complete sentence, `watch` described with the vowel of `cat`, a prompt that supplied the
+// pronunciation it was testing. A child must not meet it while the fix is pending.
+//
+// `improvement` means the item is correct but weak: a fragment that happens to be the only option
+// without an end mark, a question with two options where three would measure better, a distractor no
+// one would pick. Nothing it teaches is false. Withholding it would empty the lessons and protect
+// nobody, so the item keeps running and the drafted replacement waits for the reviewer.
+//
+// This never softens a defect. A correction that does not say which it is counts as a defect.
+export const CORRECTION_SEVERITY = { DEFECT: 'defect', IMPROVEMENT: 'improvement' };
+
+export function withholdsWhileOpen(correction) {
+  return (correction?.severity || CORRECTION_SEVERITY.DEFECT) !== CORRECTION_SEVERITY.IMPROVEMENT;
+}
+
 // A correction is only genuinely resolved when the replacement is actually in the content. Marking
 // the record reviewed while the item is still at its old version would restore the defective
 // version behind an approving status, so the item stays withheld until the new version is present.
@@ -38,6 +57,9 @@ export function validateCorrections({ corrections = [], items = [] } = {}) {
     if (!['changes_required', 'reviewed', 'withdrawn'].includes(correction.reviewStatus)) {
       errors.push(`${label} has an unsupported correction status`);
     }
+    if (correction.severity !== undefined && !Object.values(CORRECTION_SEVERITY).includes(correction.severity)) {
+      errors.push(`${label} has an unsupported severity`);
+    }
     // The author of a correction can never be its reviewer: proposing and checking are separate
     // passes, exactly as the content governance protocol requires.
     if (correction.reviewStatus === 'reviewed' && correction.reviewedBy === correction.proposedBy) {
@@ -58,7 +80,7 @@ export function openCorrections(corrections = []) {
 }
 
 export function quarantinedItemIds(corrections = []) {
-  return new Set(openCorrections(corrections).flatMap((correction) => correction.itemIds || []));
+  return new Set(openCorrections(corrections).filter(withholdsWhileOpen).flatMap((correction) => correction.itemIds || []));
 }
 
 // Stamps `correctionStatus` onto the affected items so every consumer can see the quarantine
@@ -69,6 +91,8 @@ export function applyCorrections(items = [], corrections = []) {
   const status = new Map();
   for (const correction of corrections) {
     if (correction.reviewStatus === OPEN_CORRECTION_STATUS) {
+      // An improvement leaves the item running: see CORRECTION_SEVERITY.
+      if (!withholdsWhileOpen(correction)) continue;
       for (const itemId of correction.itemIds || []) status.set(itemId, OPEN_CORRECTION_STATUS);
     } else if (correction.reviewStatus === 'reviewed' && !correctionInstalled(correction, itemsById)) {
       for (const itemId of correction.itemIds || []) if (!status.has(itemId)) status.set(itemId, NOT_INSTALLED_STATUS);

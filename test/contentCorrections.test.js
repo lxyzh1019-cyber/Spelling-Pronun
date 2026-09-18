@@ -6,18 +6,65 @@ import { c0PilotItems, c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c0AssessmentItems } from '../src/data/assessment.c0.draft.js';
 import { c0LessonCatalog } from '../src/data/lessonCatalog.js';
 
+const resolvedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'reviewed');
+const draftedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'changes_required');
+
 test('every recorded correction targets a real item and its replacement is installed', () => {
   const items = [...c0PilotItems, ...c0AssessmentItems];
   const validation = validateCorrections({ corrections: correctionData.corrections, items });
   assert.deepEqual(validation.errors, []);
-  assert.equal(openCorrections(correctionData.corrections).length, 0, 'the parent resolved all six on 2026-09-09');
-  assert.ok(correctionData.corrections.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
-  // Every resolved correction actually moved its items to the recorded replacement version.
+  // The six defects the 2026-09-08 audit found are resolved: the parent reviewed each one on
+  // 2026-09-09 and the replacement is really in the content.
+  assert.equal(resolvedCorrections.length, 6);
+  assert.ok(resolvedCorrections.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
   const byId = new Map(items.map((item) => [item.id, item]));
-  for (const correction of correctionData.corrections) {
+  for (const correction of resolvedCorrections) {
     for (const itemId of correction.itemIds) assert.equal(byId.get(itemId).version, correction.toVersion, `${itemId} carries the replacement version`);
   }
-  assert.deepEqual([...new Set(correctionData.corrections.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
+  assert.deepEqual([...new Set(resolvedCorrections.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
+});
+
+// The 2026-09-17 audit's corrections are drafted and waiting. They are `improvement` severity, which
+// is the whole reason the app still works: the items they touch teach and grade correctly, so
+// withholding them would empty the lessons and protect nobody.
+test('the drafted corrections are open, uninstalled, and withhold nothing', () => {
+  const items = [...c0PilotItems, ...c0AssessmentItems];
+  assert.ok(draftedCorrections.length > 0, 'the drafted corrections are missing');
+  for (const correction of draftedCorrections) {
+    assert.equal(correction.severity, 'improvement', `${correction.id} would withhold its items`);
+    assert.equal(correction.reviewedBy, undefined, `${correction.id} claims a review that has not happened`);
+    assert.equal(correction.proposedBy, 'claude');
+    assert.equal(correction.reviewer, 'parent');
+    assert.ok(correction.draftedIn, `${correction.id} does not say where its replacement text is`);
+  }
+  // Nothing they name is withheld, and the packs still serve full lessons.
+  const draftedIds = new Set(draftedCorrections.flatMap((correction) => correction.itemIds));
+  assert.ok(draftedIds.size > 50, 'the drafts cover far fewer items than the audit found');
+  const quarantined = quarantinedItemIds(correctionData.corrections);
+  for (const id of draftedIds) assert.ok(!quarantined.has(id), `${id} was withheld by a drafted improvement`);
+  const stamped = applyCorrections(items, correctionData.corrections);
+  assert.equal(stamped.filter(isQuarantined).length, 0);
+  for (const lesson of Object.values(c0LessonCatalog)) {
+    assert.equal(lesson.practicePool.length, 10, `${lesson.sessionId} lost independent questions to a drafted improvement`);
+    assert.equal(lesson.transfer.length, 2, `${lesson.sessionId} lost a transfer task to a drafted improvement`);
+  }
+});
+
+// A real defect must still withhold its item. The severity field exists to spare correct content,
+// never to let a wrong answer or a false explanation keep running.
+test('a defect still withholds its item while it waits', () => {
+  const open = { id: 'c9', itemIds: ['x'], reason: 'teaches something false', proposedBy: 'claude', reviewer: 'parent', raisedAt: '2026-09-18', reviewStatus: 'changes_required' };
+  for (const correction of [open, { ...open, severity: 'defect' }]) {
+    assert.ok(quarantinedItemIds([correction]).has('x'), 'a defect did not withhold its item');
+    assert.ok(isQuarantined(applyCorrections([{ id: 'x', version: 1 }], [correction])[0]));
+  }
+  // Only an explicit improvement is spared.
+  const improvement = { ...open, severity: 'improvement' };
+  assert.ok(!quarantinedItemIds([improvement]).has('x'));
+  assert.ok(!isQuarantined(applyCorrections([{ id: 'x', version: 1 }], [improvement])[0]));
+  // And an unknown severity is rejected outright rather than treated as harmless.
+  const bogus = validateCorrections({ corrections: [{ ...open, severity: 'cosmetic' }], items: [{ id: 'x', version: 1 }] });
+  assert.ok(bogus.errors.some((error) => error.includes('unsupported severity')));
 });
 
 test('resolving a correction never restores the defective version on its own', () => {

@@ -82,18 +82,33 @@ options in the same positions every time and the answer keys were patterned, ten
 twenty-four objects could never be reached, a reasonable typed answer was shown to the child as wrong,
 and the Grade 6 word list was a mix of Grade 3 words and spelling-bee words.
 
-**Five findings are not fixed, and they need you.** They are written as `todo` tests in
-`test/contentLint.test.js`, so `npm test` lists them every run:
+**The corrections are drafted and waiting for you** (asked for on 2026-09-18, before the pilot).
+Seven records, `corr.c0.007` to `corr.c0.013` in `src/data/corrections.c0.json`, covering 88 items and
+both episodes. The replacement text is in `src/data/corrections.c0.draft.js`, which is the file to read:
+it is the actual words a child would see, grouped by finding, with a note on each group saying why.
 
-1. 16 of 22 complete-sentence questions can be answered by picking the option that ends with a period.
-2. 82 questions offer only two options, which is a coin toss; mastery reaches `developing` after three.
-3. Four distractors are nonsense on sight (`runnning`, `richh`), so those items are really two-option.
-4. The story reads at grade 9 to 10 and its history notes at grade 12 to 14, for a Grade 5/6 reader.
-5. Pack explanations read above the grade the lesson teaches.
+| Finding | What changes | Record |
+|---|---|---|
+| The answer was the only option ending in a full stop | every fragment gains an end mark | `corr.c0.007` |
+| 46 pack questions offered two options | a third option carrying a different error | `corr.c0.008` |
+| 36 assessment prompts offered two options | the same, plus the decoding breaks | `corr.c0.009` |
+| `runnning` has three n's, so nobody picks it | `runeing`, the mistake the rule is about | `corr.c0.010` |
+| Listening pairs are EAL, the children are not | homophones, -ed endings, the possessive | `corr.c0.011` |
+| Explanations read above the grade they teach | shorter sentences, same rule and example | `corr.c0.012` |
+| The story reads at grade 9 to 14 | plainer words, every disclosure kept | `corr.c0.013` |
 
-Each needs a new item version and a correction record you resolve. An open correction withholds its
-item, so installing all of them at once would withhold most of the content the pilot is about to use.
-Say when you want them drafted, and whether before or after the pilot runs.
+Nothing is installed, so **the app is unchanged and the lessons are whole**. These are recorded as
+`improvement` rather than `defect` severity: the items teach and grade correctly today, so withholding
+them would empty the lessons and protect nobody. `test/correctionDrafts.test.js` proves every draft
+really closes its finding, keeps the same correct answer, and does not drop a single historical
+disclosure from the story.
+
+To accept a record, set its `reviewStatus` to `reviewed`, add `reviewedBy` and `reviewedAt`, and the
+replacement gets installed at `toVersion`. Tell me and I will do that part.
+
+One change was installed rather than drafted, because leaving it would have shipped something false:
+twelve explanations named the answer by its position ("the second choice"), which stopped being true
+the moment the options were shuffled. They now name the answer by its words. See DEF-43.
 
 ## Known open items
 
