@@ -9,7 +9,8 @@ decisions, and `docs/MASTER_PLAN.md` is the product authority.
 The app is **live**. GitHub Pages has deployed from `main` since 2026-09-11 (`e162dad`, workflow run 76).
 Every push to `main` redeploys.
 
-- 224 automated tests pass; the production build emits 153 modules.
+- 264 automated tests: 259 pass, 5 are `todo` and name the content findings nobody has fixed yet. The
+  production build is green.
 - **Nothing is `released`.** 0 released objects, prompts or episodes.
 - 96 lesson objects, both chapter-one episodes and 28 Part B assessment prompts are **`pilot_approved`**
   (parent decision, 2026-09-09). All 40 Part A prompts are excluded: they depend on audio nobody has
@@ -74,12 +75,36 @@ which rows were Test Lab and which were real learner sessions.
 A plain sentence works too. The report that produced DEF-37 was: *"the play function only works on the
 second tap when it is showing play again."* That was enough to find and fix it.
 
+## What the 2026-09-17 content audit changed
+
+The engine defects it found are fixed (DEF-38 to DEF-42). Before them, a repeated assessment showed the
+options in the same positions every time and the answer keys were patterned, ten of every pack's
+twenty-four objects could never be reached, a reasonable typed answer was shown to the child as wrong,
+and the Grade 6 word list was a mix of Grade 3 words and spelling-bee words.
+
+**Five findings are not fixed, and they need you.** They are written as `todo` tests in
+`test/contentLint.test.js`, so `npm test` lists them every run:
+
+1. 16 of 22 complete-sentence questions can be answered by picking the option that ends with a period.
+2. 82 questions offer only two options, which is a coin toss; mastery reaches `developing` after three.
+3. Four distractors are nonsense on sight (`runnning`, `richh`), so those items are really two-option.
+4. The story reads at grade 9 to 10 and its history notes at grade 12 to 14, for a Grade 5/6 reader.
+5. Pack explanations read above the grade the lesson teaches.
+
+Each needs a new item version and a correction record you resolve. An open correction withholds its
+item, so installing all of them at once would withhold most of the content the pilot is about to use.
+Say when you want them drafted, and whether before or after the pilot runs.
+
 ## Known open items
 
 - **Firestore rules are not deployed.** Neither `spelling-sessions` nor `spelling-testlab-sessions`. Until
   they are, the two-device check reports that dependency instead of running, which is correct behaviour.
 - **16 decoding and speaking prompts** await an educational review (`docs/AUDIO_REVIEW_HANDOFF.md`, §B).
 - **`sessionEngine.js`** is tested but not wired to any page.
+- **Nothing shows you a pending answer.** A typed answer the key did not list is kept and marked
+  `Sent for review`, but no screen lists them for you to read and decide. Until that exists, the
+  learner's alternative is recorded and never adjudicated.
+- **Grade 6 holds 91 words, not 200**, after the misfiled words were moved to their real levels.
 - **Reading an unfamiliar word aloud unaided is not measured**, and must not be described as if it were.
   No qualified rater is available, so read-aloud recordings are optional practice that produce no evidence.
 
