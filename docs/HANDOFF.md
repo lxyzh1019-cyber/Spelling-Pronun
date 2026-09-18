@@ -101,9 +101,11 @@ Say when you want them drafted, and whether before or after the pilot runs.
   they are, the two-device check reports that dependency instead of running, which is correct behaviour.
 - **16 decoding and speaking prompts** await an educational review (`docs/AUDIO_REVIEW_HANDOFF.md`, §B).
 - **`sessionEngine.js`** is tested but not wired to any page.
-- **Nothing shows you a pending answer.** A typed answer the key did not list is kept and marked
-  `Sent for review`, but no screen lists them for you to read and decide. Until that exists, the
-  learner's alternative is recorded and never adjudicated.
+- **Pending answers now reach you** at `/parent`, under *Answers waiting for you*. It lists answers the
+  app would not mark, shows what the child wrote against what the key expected, and records your
+  judgement. Two things to know: it shows the learner **currently selected**, so switch profiles to see
+  the other child's, and your judgement is never mastery evidence. The decisions are kept on that device
+  only, because no Firestore rule exists for them.
 - **Grade 6 holds 91 words, not 200**, after the misfiled words were moved to their real levels.
 - **Reading an unfamiliar word aloud unaided is not measured**, and must not be described as if it were.
   No qualified rater is available, so read-aloud recordings are optional practice that produce no evidence.

@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import { registerParent, signInParent, signOutParent } from '../firebase';
 import { gateStateLabel, r2GateTracker } from '../data/r2GateTracker';
+import { c0PilotItems } from '../data/packs.c0.draft';
+import { c0AssessmentItems } from '../data/assessment.c0.draft';
+import { PENDING_DECISIONS, buildPendingQueue, recordPendingDecision, summarisePendingReview } from '../learning/pendingReview';
+import { pendingDecisionsKey, readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
 function friendlyAuthError(code) {
@@ -26,6 +30,20 @@ export default function ParentPage() {
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const parentConnected = Boolean(user && !user.isAnonymous);
+
+  // Answers the evaluator could not decide, waiting for a person. Before this existed they were
+  // recorded and never shown to anybody. A judgement here is one person's reading: it is kept and
+  // reported, and it never becomes mastery evidence.
+  const [decisions, setDecisions] = useState(() => readJson(pendingDecisionsKey(activeProfileId), []) || []);
+  const [notes, setNotes] = useState({});
+  const reviewableItems = useMemo(() => [...c0PilotItems, ...c0AssessmentItems], []);
+  const pendingQueue = useMemo(() => buildPendingQueue(attempts, reviewableItems, decisions), [attempts, reviewableItems, decisions]);
+  const pendingSummary = useMemo(() => summarisePendingReview(attempts, decisions), [attempts, decisions]);
+  const decide = (attemptId, decision) => {
+    const next = recordPendingDecision(decisions, { attemptId, decision, decidedBy: 'Parent', note: notes[attemptId] || '' });
+    setDecisions(next);
+    writeJson(pendingDecisionsKey(activeProfileId), next);
+  };
 
   const submit = async (event) => {
     event.preventDefault(); setBusy(true); setMessage('');
@@ -115,6 +133,29 @@ export default function ParentPage() {
         <div className={styles.actions}><button className={styles.primary} type="button" disabled={busy || preview.nothingToImport} onClick={runImport}>{preview.nothingToImport ? 'Nothing to import' : `Import ${preview.totals.newAttempts + preview.totals.newWords} item${preview.totals.newAttempts + preview.totals.newWords === 1 ? '' : 's'}`}</button><button className={styles.secondary} type="button" disabled={busy} onClick={declineImport}>Skip for now</button></div>
       </section>}
       {message && <p role="status">{message}</p>}
+      <h2>Answers waiting for you</h2>
+      <p>The app does not mark a typed sentence right or wrong. When an answer is not the exact wording in the key, it is kept for you to read. These are for <strong>{activeProfileId}</strong>, the learner currently selected; switch profiles to see another child's.</p>
+      <p className={styles.meta}>Your judgement is recorded and shown here. It is never counted as mastery evidence: one person reading an answer is not the reviewed, independent evidence a release needs.</p>
+      {pendingQueue.length === 0
+        ? <p role="status">Nothing is waiting. {pendingSummary.reviewed > 0 ? `You have read ${pendingSummary.reviewed} answer${pendingSummary.reviewed === 1 ? '' : 's'}, and marked ${pendingSummary.acceptable} acceptable.` : ''}</p>
+        : <>
+          <p role="status"><strong>{pendingQueue.length} answer{pendingQueue.length === 1 ? '' : 's'} waiting.</strong></p>
+          {pendingQueue.map((row) => <article className={styles.feedback} key={row.attemptId}>
+            {row.itemMissing
+              ? <p><strong>This question is no longer in the app,</strong> so it cannot be shown. The answer is kept below.</p>
+              : <p><strong>{row.prompt}</strong></p>}
+            <p><strong>{activeProfileId} wrote:</strong> {String(row.submitted ?? '')}</p>
+            {row.expected.length > 0 && <p><strong>The key expected:</strong> {row.expected.join(' / ')}</p>}
+            {row.rubric?.modelAnswer && <p><strong>One answer that fits:</strong> {row.rubric.modelAnswer}</p>}
+            {row.rubric?.answerKey && <ul>{row.rubric.answerKey.map((target) => <li key={target}>{target}</li>)}</ul>}
+            {row.helped && <p className={styles.meta}>Help was used on this answer.</p>}
+            <label>Note (optional)<input className={styles.input} type="text" value={notes[row.attemptId] || ''} onChange={(event) => setNotes((current) => ({ ...current, [row.attemptId]: event.target.value }))} /></label>
+            <div className={styles.actions}>
+              <button className={styles.primary} type="button" onClick={() => decide(row.attemptId, PENDING_DECISIONS.ACCEPTED)}>This is an acceptable answer</button>
+              <button className={styles.secondary} type="button" onClick={() => decide(row.attemptId, PENDING_DECISIONS.REJECTED)}>This one needs more teaching</button>
+            </div>
+          </article>)}
+        </>}
       <h2>Things I need you to test</h2><p>Some of these gates only move when a person checks something the app cannot check itself. The testing page walks through each one, step by step, and records what you saw.</p><p><Link className={styles.primary} to="/checks">Open the testing checks</Link></p>
       <h2>R2 pilot gate tracker</h2><p>This is a truthful readiness list, not a release claim. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p><div className={styles.gateList}>{r2GateTracker.map((gate) => <article className={styles.gate} key={gate.id}><p><strong>{gate.label}</strong> <span className={styles.meta}>— {gateStateLabel(gate.state)}</span></p><p>{gate.detail}</p></article>)}</div>
     </section>
