@@ -124,3 +124,26 @@ test('guided items are teaching only and never enter the independent question se
     lesson.guided.forEach((item) => assert.ok(!practiceIds.has(item.id), `${item.id} was served as an independent question`));
   }
 });
+
+// The rotation changes which items a lesson serves, and `useDurableSession` treats a different
+// `orderedItemIds` as an incompatible snapshot. That interaction decides whether a half-finished lesson
+// resumes or is silently thrown away, so it is tested rather than reasoned about.
+test('rotating the practice window resumes a sitting in progress and starts the next one fresh', async () => {
+  const { selectSessionState } = await import('../src/persistence/durableSession.js');
+  const lesson = c0LessonCatalog['pilot-sp-patterns'];
+  const configFor = (sitting) => {
+    const served = lessonForSitting(lesson, sitting);
+    return { id: 'key', learnerId: 'jenn', mode: 'lesson', contentVersion: lesson.version, orderedItemIds: [...served.practice, ...served.transfer].map((item) => item.id) };
+  };
+  const midLesson = { stage: 'attempt', practiceIndex: 3, transferIndex: 0, retryCount: 0, lastResult: null, orderSeed: 'seed-1' };
+  const snapshot = { ...configFor(0), mirrorVersion: 1, state: midLesson, revision: 4 };
+  const fallback = () => ({ stage: 'teach' });
+
+  const resumed = selectSessionState({ localRaw: JSON.stringify(snapshot), durableSnapshot: snapshot, expected: configFor(0), fallback });
+  assert.equal(resumed.state.practiceIndex, 3, 'a reload during the same sitting lost the learner\'s place');
+  assert.equal(resumed.state.orderSeed, 'seed-1', 'the option order was not restored with the session');
+
+  const nextSitting = selectSessionState({ localRaw: JSON.stringify(snapshot), durableSnapshot: snapshot, expected: configFor(1), fallback });
+  assert.equal(nextSitting.source, 'new', 'the next sitting reused the previous sitting\'s saved state');
+  assert.equal(nextSitting.state.stage, 'teach');
+});
