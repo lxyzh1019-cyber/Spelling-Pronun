@@ -227,7 +227,7 @@
         "c0.gr.subject-object-pronouns.24"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#punctuationReplacements, #pronounReplacements",
-      "change": "Each question gains a third option carrying a different error from the second, so a learner cannot pass by eliminating the one option that looks wrong.",
+      "change": "Each item now offers four options. In the punctuation pack each wrong option carries a different error, so the capital and the end mark are tested separately; in the pronoun pack the wrong options are the forms a child actually reaches for, including the reflexive and the possessive. The parent asked on 2026-09-18 for four options rather than three wherever the content supports it: a third option takes a blind guess from 50 percent to 33, a fourth takes it to 25. Every item here carries four except the ones listed in THREE_OPTION_ITEMS, where the answer set is closed and the only available fourth option would be either defensible or obvious nonsense.",
       "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
@@ -273,7 +273,7 @@
         "c0.assessment.b.10"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#assessmentSentenceReplacements, #assessmentDecodingReplacements",
-      "change": "A third option per prompt, carrying a different error from the second.",
+      "change": "Each prompt now offers four options, each wrong one carrying a different error. Two kinds of fourth option were deliberately not used, because an option that can be argued for makes a question unfair: a consistently past-tense sentence where the item tests tense consistency, and a list without the final comma, which is correct under most Canadian style. The parent asked on 2026-09-18 for four options rather than three wherever the content supports it: a third option takes a blind guess from 50 percent to 33, a fourth takes it to 25. Every item here carries four except the ones listed in THREE_OPTION_ITEMS, where the answer set is closed and the only available fourth option would be either defensible or obvious nonsense.",
       "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
@@ -292,7 +292,7 @@
         "c0.sp.patterns.03"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#spellingReplacements",
-      "change": "runeing replaces it: the mistake the rule is actually about, applying the silent-e pattern from hoping to a word that needs the doubled consonant.",
+      "change": "runeing replaces it: the mistake the rule is actually about, applying the silent-e pattern from hoping to a word that needs the doubled consonant. This item keeps three options rather than four. run plus -ing has exactly three error patterns worth offering, and padding it with a fourth nobody would pick would recreate the fault this record exists to fix.",
       "requiresOnInstall": "Installing moves each named item to version 2. The pack and form versions do not change, so the educational review records and the pilot approval stay valid, which is how the 2026-09-08 corrections were installed. Your resolution of this record is the review."
     },
     {
@@ -363,14 +363,14 @@
       "toVersion": 2,
       "awaiting": "The parent reviews the drafted replacement and records the decision. These are improvements, not defects: the items teach and grade correctly today, so they keep running while the draft waits.",
       "id": "corr.c0.013",
-      "reason": "Both story episodes are written for a Grade 5/6 reader but read at grade 8.7 to 10.0, with the History behind the mystery box at 12.4 to 14.1. Episode one also spoke about the child in the third person while its own recap said you.",
+      "reason": "Both story episodes are written for a Grade 5/6 reader but read at grade 9.9 and 10.1, with the History behind the mystery box at 12.4 and 14.4. Episode one also spoke about the child in the third person while its own recap said you.",
       "itemIds": [],
       "episodeIds": [
         "c0.story.01",
         "c0.story.02"
       ],
       "draftedIn": "src/data/corrections.c0.draft.js#storyReplacements",
-      "change": "Shorter sentences and plainer words, every documented claim, invented-element disclosure and fiction label kept, and the reveal now addresses the child directly. Intros stay inside the plan 60 to 100 word range.",
+      "change": "Shorter sentences and a few unpacked noun phrases, aimed at grade 7 to 8 rather than at the children's own grade. A first draft on 2026-09-18 took the episodes to grade 5 and the parent rejected it as too easy: a Grade 5/6 reader given grade 5 prose has nothing to stretch for. The episodes now read at 7.6 and 7.5, and the fact box at 8.4 and 8.7, held below the prose because it is the part that says what is real and what is invented. Every documented claim, invented-element disclosure and the fiction label are kept, the reveal now addresses the child directly, and the intros stay inside the plan's 60 to 100 word range. The readability rule is now a band with a floor as well as a ceiling, so a later simplifying edit cannot drift the prose back below the children.",
       "requiresOnInstall": "An episode is not an item: it carries its own version, and both its story review record and your 2026-09-09 pilot approval pin that version. Installing means moving each episode to version 3, updating the story review records to version 3, and recording a new pilot approval at version 3. Until the new approval exists the episodes stop being pilot_approved, which is the mechanism working: you approved version 2, not version 3."
     }
   ]

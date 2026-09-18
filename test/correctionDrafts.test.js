@@ -9,6 +9,8 @@ import { c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c0AssessmentForms } from '../src/data/assessment.c0.draft.js';
 import storyData from '../src/data/story.c0.draft.json' with { type: 'json' };
 import { readingGrade } from '../src/learning/readability.js';
+import { validateContent } from '../src/learning/contentValidator.js';
+import skillData from '../src/data/skills.json' with { type: 'json' };
 
 const liveItems = new Map([...c0PilotPacks.flatMap((pack) => pack.items), ...c0AssessmentForms.flatMap((form) => form.items)].map((item) => [item.id, item]));
 const choiceDrafts = {
@@ -31,10 +33,19 @@ test('every draft replaces an item that really exists', () => {
   }
 });
 
-// Finding A3. This is the rule the live content fails; the drafts must pass it.
-test('every drafted question offers at least three usable options', () => {
+// Finding A3. This is the rule the live content fails; the drafts must pass it. The parent asked on
+// 2026-09-18 for four options rather than three wherever the content supports it, so four is the
+// contract and three is the documented exception: an item may offer three only if THREE_OPTION_ITEMS
+// says why, which keeps "we could not find a fourth" from quietly becoming "we did not try".
+test('every drafted question offers four usable options, or says why it cannot', () => {
   for (const [id, draft] of Object.entries(choiceDrafts)) {
-    assert.ok(draft.choices.length >= 3, `${id} still offers ${draft.choices.length} options`);
+    const excused = drafts.THREE_OPTION_ITEMS[id];
+    if (excused) {
+      assert.equal(draft.choices.length, 3, `${id} is excused from four options but offers ${draft.choices.length}`);
+      assert.ok(excused.trim().length >= 40, `${id} is excused from four options without a real reason`);
+    } else {
+      assert.equal(draft.choices.length, 4, `${id} offers ${draft.choices.length} options and is not in THREE_OPTION_ITEMS`);
+    }
     const ids = draft.choices.map(([choiceId]) => choiceId);
     assert.equal(new Set(ids).size, ids.length, `${id} repeats a choice id`);
     const texts = draft.choices.map(([, text]) => text.trim());
@@ -79,13 +90,35 @@ test('no drafted distractor is nonsense on sight', () => {
   }
 });
 
-// Finding B1, story. The ceilings are the ones `test/contentLint.test.js` applies to the live text.
-test('the drafted story reads at the level of its audience', () => {
+// Finding B1, story. A first rewrite took the episodes to grade 5 and the parent rejected it on
+// 2026-09-18: a Grade 5/6 reader given grade 5 prose has nothing to stretch for. So this is a band,
+// not a ceiling. The floor is the half of the contract that is easy to lose, because every later
+// edit that simplifies a sentence passes a ceiling. Whole-episode prose is measured together: a
+// readability score over one nine-word sentence is noise, and `problem` is one sentence.
+const STORY_GRADE_FLOOR = 6.5;
+const STORY_GRADE_CEILING = 8.5;
+const FACT_BOX_CEILING = 9;
+const STORY_PROSE_FIELDS = ['intro', 'recap', 'reveal', 'problem'];
+
+test('the drafted story reads a little above its audience, and not below it', () => {
   for (const [id, draft] of Object.entries(drafts.storyReplacements)) {
-    for (const [field, ceiling] of [['intro', 7.5], ['recap', 7.5], ['reveal', 7.5], ['problem', 7.5], ['historyBehindMystery', 9]]) {
-      const { grade } = readingGrade(draft[field]);
-      assert.ok(grade <= ceiling, `${id}.${field} reads at grade ${grade.toFixed(1)}, ceiling ${ceiling}`);
-    }
+    const prose = STORY_PROSE_FIELDS.map((field) => draft[field]).join(' ');
+    const { grade } = readingGrade(prose);
+    assert.ok(
+      grade >= STORY_GRADE_FLOOR,
+      `${id} reads at grade ${grade.toFixed(1)}, below the floor of ${STORY_GRADE_FLOOR}: too easy to be worth reading`,
+    );
+    assert.ok(
+      grade <= STORY_GRADE_CEILING,
+      `${id} reads at grade ${grade.toFixed(1)}, above the ceiling of ${STORY_GRADE_CEILING}`,
+    );
+    // The fact box says what is real and what is invented, so it has to be understood rather than
+    // admired. It is held below the prose on purpose.
+    const factBox = readingGrade(draft.historyBehindMystery).grade;
+    assert.ok(
+      factBox <= FACT_BOX_CEILING,
+      `${id}.historyBehindMystery reads at grade ${factBox.toFixed(1)}, ceiling ${FACT_BOX_CEILING}`,
+    );
     const introWords = draft.intro.trim().split(/\s+/).length;
     assert.ok(introWords >= 60 && introWords <= 100, `${id} intro is ${introWords} words, outside the plan's 60 to 100`);
   }
@@ -162,4 +195,24 @@ test('each retargeted listening item says what should be spoken', () => {
     assert.ok(draft.prompt?.trim(), `${id} has no prompt`);
     assert.ok(liveItems.get(id).part === 'A', `${id} is not a Part A prompt, so replacing its audio is not free`);
   }
+});
+
+// Installing a draft is a content edit, and a content edit that does not validate breaks the app for a
+// child rather than for a test. This builds the items as they would exist after every draft is
+// installed and runs the real validator over them, so a fourth option that repeats an id, an answer key
+// that names an option nobody offers, or an empty choice is caught while the draft is still a proposal.
+test('installing every draft would leave the content structurally valid', () => {
+  const corrected = [...liveItems.values()].map((item) => {
+    const draft = choiceDrafts[item.id];
+    if (!draft) return item;
+    return {
+      ...item,
+      choices: draft.choices.map(([id, text]) => ({ id, text })),
+      acceptedAnswers: [draft.answer],
+      ...(draft.prompt ? { prompt: draft.prompt } : {}),
+    };
+  });
+  const { valid, errors } = validateContent({ skills: skillData.skills, items: corrected });
+  assert.deepEqual(errors, [], 'installing the drafts would produce invalid content');
+  assert.equal(valid, true);
 });

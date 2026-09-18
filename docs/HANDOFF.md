@@ -90,12 +90,30 @@ it is the actual words a child would see, grouped by finding, with a note on eac
 | Finding | What changes | Record |
 |---|---|---|
 | The answer was the only option ending in a full stop | every fragment gains an end mark | `corr.c0.007` |
-| 46 pack questions offered two options | a third option carrying a different error | `corr.c0.008` |
+| 46 pack questions offered two options | four options, each wrong one a different error | `corr.c0.008` |
 | 36 assessment prompts offered two options | the same, plus the decoding breaks | `corr.c0.009` |
 | `runnning` has three n's, so nobody picks it | `runeing`, the mistake the rule is about | `corr.c0.010` |
 | Listening pairs are EAL, the children are not | homophones, -ed endings, the possessive | `corr.c0.011` |
 | Explanations read above the grade they teach | shorter sentences, same rule and example | `corr.c0.012` |
-| The story reads at grade 9 to 14 | plainer words, every disclosure kept | `corr.c0.013` |
+| The story reads at grade 9 to 14 | grade 7 to 8, every disclosure kept | `corr.c0.013` |
+
+**Two things changed on 2026-09-18, after you read the first draft.**
+
+*Four options, not three.* You asked for four wherever the content supports it. A blind guess is 50/50 on
+two options, one in three on three, one in four on four. Ten items keep three, and each one says why in
+`THREE_OPTION_ITEMS` at the top of the draft file: their answer set is closed. There are exactly three
+spellings of *their/there/they're*, exactly three sounds the *-ed* ending makes. A fourth option there
+would have to be either arguable, which makes the question unfair, or silly, which is the coin flip
+wearing a disguise — the very fault these corrections exist to remove. A test now requires four options
+unless that list gives a reason, so a later edit cannot quietly slip back to three.
+
+*The story aims at grade 7 to 8, not grade 5.* The first rewrite took it to grade 5 and you were right
+that it was too easy: a child in grade 5 or 6 reading grade 5 prose has nothing to stretch for. It now
+reads at 7.6 and 7.5, about where a good novel for this age sits. The "history behind the mystery" box
+sits a little lower, at 8.4 and 8.7, because that is the part that tells them what is real and what was
+invented, and that has to be understood rather than admired. The rule in the tests is now a **band** with
+a floor as well as a ceiling — every simplifying edit passes a ceiling, which is exactly how prose drifts
+down over time.
 
 Nothing is installed, so **the app is unchanged and the lessons are whole**. These are recorded as
 `improvement` rather than `defect` severity: the items teach and grade correctly today, so withholding

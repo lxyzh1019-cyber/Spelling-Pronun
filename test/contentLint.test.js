@@ -12,6 +12,7 @@ import storyData from '../src/data/story.c0.draft.json' with { type: 'json' };
 import { validateContent } from '../src/learning/contentValidator.js';
 import skillData from '../src/data/skills.json' with { type: 'json' };
 import { readingGrade } from '../src/learning/readability.js';
+import { THREE_OPTION_ITEMS } from '../src/data/corrections.c0.draft.js';
 
 const packItems = c0PilotPacks.flatMap((pack) => pack.items);
 const formItems = c0AssessmentForms.flatMap((form) => form.items);
@@ -77,10 +78,15 @@ test('a complete-sentence question cannot be answered from the end mark alone', 
 });
 
 // A two-option question is a coin flip, and `deriveMastery` reaches `developing` after three correct
-// answers without modelling chance, so three lucky guesses read as progress.
-test('a choice question offers at least three options', { todo: 'audit 2026-09-17 finding A3: 46 of 82 pack items and 36 of 40 form items; drafted in corr.c0.008 and corr.c0.009' }, () => {
-  const thin = choiceItems.filter((item) => item.choices.length < 3).map((item) => item.id);
-  assert.deepEqual(thin, [], 'these questions can be answered by a coin toss');
+// answers without modelling chance, so three lucky guesses read as progress. Four options put a blind
+// guess at 25%; the parent asked for four on 2026-09-18. An item may offer three only where the answer
+// set is genuinely closed (three homophones, three -ed endings), which `THREE_OPTION_ITEMS` records
+// with a reason per item, so "no fourth exists" cannot become "no fourth was attempted".
+test('a choice question offers four options, or three with a recorded reason', { todo: 'audit 2026-09-17 finding A3: 46 of 82 pack items and 36 of 40 form items; drafted in corr.c0.008 and corr.c0.009' }, () => {
+  const thin = choiceItems
+    .filter((item) => item.choices.length < (THREE_OPTION_ITEMS[item.id] ? 3 : 4))
+    .map((item) => item.id);
+  assert.deepEqual(thin, [], 'these questions give a blind guess better odds than they should');
 });
 
 // A distractor nobody would choose does not test anything; it turns a three-option item back into two.
@@ -95,17 +101,27 @@ test('no distractor is obvious nonsense', { todo: 'audit 2026-09-17 finding A3: 
   assert.deepEqual(silly, [], 'a triple letter marks an option out as wrong on sight');
 });
 
-// The episodes are written for a Grade 5/6 reader. `intro`, `recap` and `reveal` are read by the child;
-// `historyBehindMystery` is the fact box and may be denser, but not by this much.
-test('story prose is written at the reading level of its audience', { todo: 'audit 2026-09-17 finding B1: intros and reveals score 8.7-10.0, history notes 12.4-14.1; drafted in corr.c0.013' }, () => {
-  const tooHard = [];
+// The episodes are written for a Grade 5/6 reader, which means a little ABOVE them, not at them: the
+// parent rejected a grade 5 rewrite on 2026-09-18 because it left nothing to stretch for. So this is a
+// band with a floor as well as a ceiling; a simplifying edit passes any ceiling, which is how prose
+// drifts down. `intro`, `recap`, `reveal` and `problem` are the child's prose and are measured together,
+// because a score taken over one short sentence is noise. `historyBehindMystery` is the fact box: it
+// says what is real and what is invented, so it is held BELOW the prose rather than allowed above it.
+const STORY_GRADE_FLOOR = 6.5;
+const STORY_GRADE_CEILING = 8.5;
+const FACT_BOX_CEILING = 9;
+
+test('story prose reads a little above its audience, and not below it', { todo: 'audit 2026-09-17 finding B1: episodes read at grade 9.9 and 10.1, fact boxes at 12.4 and 14.4; drafted in corr.c0.013' }, () => {
+  const offBand = [];
   for (const episode of storyData.episodes) {
-    for (const [field, ceiling] of [['intro', 7.5], ['recap', 7.5], ['reveal', 7.5], ['problem', 7.5], ['historyBehindMystery', 9]]) {
-      const { grade } = readingGrade(episode[field] || '');
-      if (grade > ceiling) tooHard.push(`${episode.id}.${field} reads at grade ${grade.toFixed(1)}, ceiling ${ceiling}`);
-    }
+    const prose = ['intro', 'recap', 'reveal', 'problem'].map((field) => episode[field] || '').join(' ');
+    const { grade } = readingGrade(prose);
+    if (grade > STORY_GRADE_CEILING) offBand.push(`${episode.id} reads at grade ${grade.toFixed(1)}, ceiling ${STORY_GRADE_CEILING}`);
+    if (grade < STORY_GRADE_FLOOR) offBand.push(`${episode.id} reads at grade ${grade.toFixed(1)}, floor ${STORY_GRADE_FLOOR}`);
+    const factBox = readingGrade(episode.historyBehindMystery || '').grade;
+    if (factBox > FACT_BOX_CEILING) offBand.push(`${episode.id}.historyBehindMystery reads at grade ${factBox.toFixed(1)}, ceiling ${FACT_BOX_CEILING}`);
   }
-  assert.deepEqual(tooHard, []);
+  assert.deepEqual(offBand, []);
 });
 
 // The learner reads every prompt and explanation unaided, so they must sit at or below the level the
