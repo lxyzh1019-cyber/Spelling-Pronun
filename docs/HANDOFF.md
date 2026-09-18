@@ -9,7 +9,7 @@ decisions, and `docs/MASTER_PLAN.md` is the product authority.
 The app is **live**. GitHub Pages has deployed from `main` since 2026-09-11 (`e162dad`, workflow run 76).
 Every push to `main` redeploys.
 
-- 298 automated tests: 297 pass, 1 is `todo` and names the one content finding nobody has decided yet.
+- 305 automated tests: 304 pass, 1 is `todo` and names the one content finding nobody has decided yet.
   The production build is green.
 - **Nothing is `released`.** 0 released objects, prompts or episodes.
 - 96 lesson objects, both chapter-one episodes and 28 Part B assessment prompts are **`pilot_approved`**
@@ -160,6 +160,68 @@ One change was installed rather than drafted, back on 2026-09-18, because leavin
 something false: twelve explanations named the answer by its position ("the second choice"), which
 stopped being true the moment the options were shuffled. They now name the answer by its words. See
 DEF-43.
+
+## What the curriculum mapping says, 2026-09-18
+
+The parent supplied the Alberta ELAL (K–6) PDF on 2026-09-18, which unblocked the gate this whole plan
+was waiting on: this container cannot reach `curriculum.learnalberta.ca`, `alberta.ca` or
+`open.alberta.ca`, and `MASTER_PLAN.md` forbids calling anything curriculum-aligned without the source.
+
+`src/data/curriculum.alberta.elal.json` now holds **all 214 Grade 5 and Grade 6 Skills & Procedures
+outcomes**, lifted from the PDF's own text layer. Grade 5 and Grade 6 share a page in two columns, so
+the extraction keeps the column positions and attributes each statement to the grade whose column it
+physically sits in; read as flat text the two grades interleave. A test proves the separation held —
+the two grades ask a different guiding question on every organizing idea, which no column mix-up
+survives.
+
+**The statements are the curriculum's words. The coverage decision beside each one is Claude's and the
+parent has not checked it.** Until `mappingReviewedBy` is set, nothing may describe this app as
+covering the Alberta curriculum, and a test enforces that the file keeps saying so.
+
+### What the app measures today
+
+| Organizing idea | Gr 5 | Gr 6 | Covered | Machine-scorable, not built | Needs a person |
+|---|---|---|---|---|---|
+| Text Forms and Structures | 20 | 21 | 0 | 30 | 11 |
+| Oral Language | 12 | 13 | 0 | 0 | 25 |
+| Vocabulary | 15 | 15 | 0 | 26 | 4 |
+| Comprehension | 18 | 23 | 0 | 39 | 2 |
+| Writing | 27 | 27 | 0 | 2 | 52 |
+| Conventions | 14 | 9 | 9 + 1 partial | 11 | 2 |
+
+Nine outcomes of 214, all in Conventions. That is the honest answer to "what does this tell me about
+what they know": at the moment, their pronoun case and their spelling patterns, and nothing else.
+
+The 96 "needs a person" outcomes are not a failing to fix. Speaking, discussion, presentation and
+composition cannot be marked by an answer key, and the app already routes open writing to the parent
+review queue. The 108 machine-scorable-but-unbuilt outcomes are the real gap: comprehension of a
+passage, genre and text structure, word study, figurative language.
+
+### Two packs teach below Grade 5
+
+Recorded in `appContentPlacement`, each against the statement it was judged by:
+
+- **Complete sentences** is a **Grade 3** outcome. Alberta states "A sentence has two main parts, a
+  subject and a predicate" and "Identify the subject of a variety of sentences" at Grade 3. The nearest
+  Grade 5/6 outcome is Grade 6's independent and dependent clauses, which is a level above this pack.
+- **Capitals and end marks** is a **Grade 3 to 4** outcome. Grade 5/6 states it only in the general
+  form, and adds parentheses at Grade 5 and the colon at Grade 6, neither of which the pack teaches.
+- **Subject and object pronouns** is at grade level (Grade 5, word for word).
+- **Spelling patterns** is at grade level (Grade 5).
+
+Below-grade content is not useless — a child who needs it needs it — but two of the four lessons cannot
+be reported as a Grade 5/6 check, and the app must not imply otherwise.
+
+### Phonics is not a Grade 5/6 outcome in Alberta
+
+Alberta ends **Phonological Awareness after Grade 2**, and **Phonics and Fluency after Grade 4**. There
+is no phonics outcome at Grade 5 or Grade 6. The 自然拼读 tile the parent asked for is still worth
+having if the children need it, but it is Grade 1–4 foundation support and must be labelled as that,
+never as Alberta Grade 5/6 curriculum. `organizingIdeasNotInGrade56` records this and a test holds it.
+
+The same finding retires the `PR.*` pronunciation skills: ELAL has **no pronunciation organizing idea at
+any grade**. Those skills came from the EAL benchmarks, and both children are native English speakers —
+the same reason the listening prompts were retargeted in `corr.c0.011`.
 
 ## Known open items
 
