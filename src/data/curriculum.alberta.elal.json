@@ -790,8 +790,10 @@
               "id": "vocabulary.grade5.01",
               "text": "Examine words to determine their origins.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Word study is machine-scorable; none of it is built beyond the spelling pack."
+              "skillIds": [
+                "VO.roots"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "vocabulary.grade5.02",
@@ -812,9 +814,13 @@
               "text": "Investigate the meaning of bases and affixes in words.",
               "coverage": "not_built",
               "skillIds": [
-                "SP.wordparts"
+                "SP.wordparts",
+                "VO.affixes"
               ],
-              "note": "Bases and affixes: declared, no content."
+              "note": "Content is written for this outcome and is still draft — see draftedIn. Coverage stays not_built until the parent approves the pack, because no child can meet draft content.",
+              "draftedIn": [
+                "c1.pack.vo.affixes"
+              ]
             },
             {
               "id": "vocabulary.grade5.05",
@@ -869,22 +875,31 @@
               "id": "vocabulary.grade5.12",
               "text": "Discuss how context can influence the meaning of words and phrases.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "No app skill covers context clues."
+              "skillIds": [
+                "VO.context"
+              ],
+              "note": "Content is written for this outcome and is still draft — see draftedIn. Coverage stays not_built until the parent approves the pack, because no child can meet draft content.",
+              "draftedIn": [
+                "c1.pack.vo.context"
+              ]
             },
             {
               "id": "vocabulary.grade5.13",
               "text": "Examine word meanings in similes, metaphors, and analogies.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "No app skill covers similes, metaphors or analogies."
+              "skillIds": [
+                "VO.figurative"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "vocabulary.grade5.14",
               "text": "Analyze the meanings of words or phrases expressed figuratively.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "No app skill covers figurative meaning."
+              "skillIds": [
+                "VO.figurative"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "vocabulary.grade5.15",
@@ -921,8 +936,10 @@
               "id": "vocabulary.grade6.01",
               "text": "Examine the historical origins of words in the English language.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Word study is machine-scorable; none of it is built beyond the spelling pack."
+              "skillIds": [
+                "VO.roots"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "vocabulary.grade6.02",
@@ -936,9 +953,10 @@
               "text": "Research the meaning of words with Greek or Latin roots that are still in use today.",
               "coverage": "not_built",
               "skillIds": [
-                "SP.wordparts"
+                "SP.wordparts",
+                "VO.roots"
               ],
-              "note": "Greek and Latin roots: declared, no content."
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "vocabulary.grade6.04",
@@ -966,18 +984,26 @@
               "text": "Analyze how adding affixes changes the meaning of words.",
               "coverage": "not_built",
               "skillIds": [
-                "SP.wordparts"
+                "SP.wordparts",
+                "VO.affixes"
               ],
-              "note": "Declared, no content."
+              "note": "Content is written for this outcome and is still draft — see draftedIn. Coverage stays not_built until the parent approves the pack, because no child can meet draft content.",
+              "draftedIn": [
+                "c1.pack.vo.affixes"
+              ]
             },
             {
               "id": "vocabulary.grade6.08",
               "text": "Add affixes to bases to build new words.",
               "coverage": "not_built",
               "skillIds": [
-                "SP.wordparts"
+                "SP.wordparts",
+                "VO.affixes"
               ],
-              "note": "Declared, no content."
+              "note": "Content is written for this outcome and is still draft — see draftedIn. Coverage stays not_built until the parent approves the pack, because no child can meet draft content.",
+              "draftedIn": [
+                "c1.pack.vo.affixes"
+              ]
             },
             {
               "id": "vocabulary.grade6.09",
@@ -990,8 +1016,14 @@
               "id": "vocabulary.grade6.10",
               "text": "Analyze word parts and cross-check with context clues to determine the meaning of unknown words.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "No app skill covers context clues."
+              "skillIds": [
+                "VO.context",
+                "VO.affixes"
+              ],
+              "note": "Content is written for this outcome and is still draft — see draftedIn. Coverage stays not_built until the parent approves the pack, because no child can meet draft content.",
+              "draftedIn": [
+                "c1.pack.vo.context"
+              ]
             },
             {
               "id": "vocabulary.grade6.11",
@@ -1011,8 +1043,10 @@
               "id": "vocabulary.grade6.13",
               "text": "Analyze the meanings of words or phrases expressed figuratively.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "No app skill covers figurative meaning."
+              "skillIds": [
+                "VO.figurative"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "vocabulary.grade6.14",
@@ -1099,22 +1133,28 @@
               "id": "comprehension.grade5.04",
               "text": "Respond to texts by summarizing main ideas and providing supporting evidence from self, other texts, or the world.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.main-idea"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade5.05",
               "text": "Examine ideas and information within texts that are explicit and implicit.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.literal"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade5.06",
               "text": "Make inferences based on content that is implicit in texts.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.inference"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade5.07",
@@ -1155,8 +1195,10 @@
               "id": "comprehension.grade5.12",
               "text": "Compare and contrast the varied perspectives of main and supporting characters.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.perspective"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade5.13",
@@ -1258,8 +1300,10 @@
               "id": "comprehension.grade6.04",
               "text": "Respond to texts by summarizing main ideas and providing supporting evidence from the texts.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.main-idea"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade6.05",
@@ -1293,8 +1337,10 @@
               "id": "comprehension.grade6.09",
               "text": "Infer meanings from texts based on context clues.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.inference"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade6.10",
@@ -1307,8 +1353,10 @@
               "id": "comprehension.grade6.11",
               "text": "Distinguish between information that is stated and inferred.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.literal"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade6.12",
@@ -1328,8 +1376,10 @@
               "id": "comprehension.grade6.14",
               "text": "Analyze factors that cause characters in texts to change their perspectives.",
               "coverage": "not_built",
-              "skillIds": [],
-              "note": "Reading a passage and answering about it is machine-scorable; no passages exist."
+              "skillIds": [
+                "RC.perspective"
+              ],
+              "note": "A skill is declared for this outcome. Coverage stays not_built until content exists and the parent has approved it: a declared skill measures nothing on its own."
             },
             {
               "id": "comprehension.grade6.15",
@@ -2137,5 +2187,6 @@
         }
       }
     }
-  ]
+  ],
+  "draftedContentNote": "An outcome with `draftedIn` has content written for it that is still `draft`: not challenged, not reviewed, not integrated, not pilot-approved. Its coverage stays `not_built` because no child can meet draft content, and it would be false to report an outcome as measured before the parent has approved the pack that measures it."
 }

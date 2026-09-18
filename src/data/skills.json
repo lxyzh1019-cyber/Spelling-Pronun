@@ -42,6 +42,14 @@
     {"id":"ED.locate","track":"editing","prerequisites":["SE.complete","PU.capitals-endmarks"],"ruleVersion":1},
     {"id":"ED.repair","track":"editing","prerequisites":["ED.locate"],"ruleVersion":1},
     {"id":"ED.explain","track":"editing","prerequisites":["ED.repair"],"ruleVersion":1},
-    {"id":"ED.transfer","track":"editing","prerequisites":["ED.explain"],"ruleVersion":1}
+    {"id":"ED.transfer","track":"editing","prerequisites":["ED.explain"],"ruleVersion":1},
+    {"id":"VO.affixes","track":"vocabulary","prerequisites":[],"ruleVersion":1},
+    {"id":"VO.roots","track":"vocabulary","prerequisites":["VO.affixes"],"ruleVersion":1},
+    {"id":"VO.context","track":"vocabulary","prerequisites":[],"ruleVersion":1},
+    {"id":"VO.figurative","track":"vocabulary","prerequisites":["VO.context"],"ruleVersion":1},
+    {"id":"RC.literal","track":"reading","prerequisites":[],"ruleVersion":1},
+    {"id":"RC.inference","track":"reading","prerequisites":["RC.literal"],"ruleVersion":1},
+    {"id":"RC.main-idea","track":"reading","prerequisites":["RC.literal"],"ruleVersion":1},
+    {"id":"RC.perspective","track":"reading","prerequisites":["RC.inference"],"ruleVersion":1}
   ]
 }
