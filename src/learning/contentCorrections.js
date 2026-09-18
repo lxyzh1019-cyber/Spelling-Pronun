@@ -31,6 +31,14 @@ export function withholdsWhileOpen(correction) {
 // A correction is only genuinely resolved when the replacement is actually in the content. Marking
 // the record reviewed while the item is still at its old version would restore the defective
 // version behind an approving status, so the item stays withheld until the new version is present.
+// A correction may name items, episodes, or both. An episode is not an item — it carries its own
+// version and lives in the story file — but the rule is identical: the record is not installed until
+// the thing it names is at the replacement version. `corr.c0.013` names only episodes, and judging it
+// against items alone would have made it unverifiable in exactly the direction that matters.
+export function correctionScopeIds(correction) {
+  return [...(correction?.itemIds || []), ...(correction?.episodeIds || [])];
+}
+
 export function correctionInstalled(correction, itemsById) {
   if (correction.reviewStatus !== 'reviewed') return false;
   if (!correction.toVersion) return true;
@@ -39,15 +47,16 @@ export function correctionInstalled(correction, itemsById) {
   // — and a pack is applied to its own items, so it can see only half of one. Treating the half it
   // cannot see as "not installed" would withhold the half it can, at full version, for no reason.
   // An unknown item id is not excused by this: `validateCorrections` rejects one outright.
-  const visible = (correction.itemIds || []).map((itemId) => itemsById?.get?.(itemId)).filter(Boolean);
+  const visible = correctionScopeIds(correction).map((scopeId) => itemsById?.get?.(scopeId)).filter(Boolean);
   if (!visible.length) return false;
-  return visible.every((item) => item.version === correction.toVersion);
+  return visible.every((entry) => entry.version === correction.toVersion);
 }
 
-export function validateCorrections({ corrections = [], items = [] } = {}) {
+export function validateCorrections({ corrections = [], items = [], episodes = [] } = {}) {
   const errors = [];
-  const itemIds = new Set(items.map(({ id }) => id));
-  const itemsById = new Map(items.map((entry) => [entry.id, entry]));
+  const scopes = [...items, ...episodes];
+  const itemIds = new Set(scopes.map(({ id }) => id));
+  const itemsById = new Map(scopes.map((entry) => [entry.id, entry]));
   const seen = new Set();
   for (const correction of corrections) {
     const label = correction.id || 'unknown correction';
@@ -55,8 +64,8 @@ export function validateCorrections({ corrections = [], items = [] } = {}) {
     if (missing.length) errors.push(`${label} is missing ${missing.join(', ')}`);
     if (seen.has(correction.id)) errors.push(`${label} is recorded more than once`);
     seen.add(correction.id);
-    for (const itemId of correction.itemIds || []) {
-      if (items.length && !itemIds.has(itemId)) errors.push(`${label} targets unknown item ${itemId}`);
+    for (const scopeId of correctionScopeIds(correction)) {
+      if (scopes.length && !itemIds.has(scopeId)) errors.push(`${label} targets unknown item ${scopeId}`);
     }
     if (!['changes_required', 'reviewed', 'withdrawn'].includes(correction.reviewStatus)) {
       errors.push(`${label} has an unsupported correction status`);

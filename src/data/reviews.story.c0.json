@@ -8,9 +8,13 @@
       "status": "complete",
       "reviewedAt": "2026-09-07",
       "reviewerRole": "separate_content_challenge_pass",
-      "storyVersion": 2,
+      "storyVersion": 3,
       "chapter": 1,
-      "sourceIds": ["tna-william-caxton", "bl-printer-guide", "bl-ames-printing-collections"],
+      "sourceIds": [
+        "tna-william-caxton",
+        "bl-printer-guide",
+        "bl-ames-printing-collections"
+      ],
       "dimensions": [
         "historical_claims",
         "source_mapping",
@@ -24,15 +28,19 @@
       "results": [
         {
           "episodeId": "c0.story.01",
-          "episodeVersion": 2,
+          "episodeVersion": 3,
           "outcome": "pass",
-          "note": "All historical statements map to the National Archives or British Library records; the archive box, reproduction, label, proof and pencilled clue are visibly covered by the fictional-reconstruction label and the history note. All sixteen task IDs exist and exactly match the six practice plus two transfer items from each linked spelling and capitals lesson. The setup and new two-sentence recap name skill types but expose no assessment or lesson answer. The recap accurately condenses the episode consequence, and the reveal follows only after both linked lessons complete and leaves a concrete question for Episode 2."
+          "note": "All historical statements map to the National Archives or British Library records; the archive box, reproduction, label, proof and pencilled clue are visibly covered by the fictional-reconstruction label and the history note. All sixteen task IDs exist and exactly match the six practice plus two transfer items from each linked spelling and capitals lesson. The setup and new two-sentence recap name skill types but expose no assessment or lesson answer. The recap accurately condenses the episode consequence, and the reveal follows only after both linked lessons complete and leaves a concrete question for Episode 2. Version 3 replaces the prose of this episode: the sentences are shorter and a few noun phrases are unpacked, aiming at grade 7 to 8 rather than at the readers’ own grade. Every documented claim, every invented-element disclosure and the fiction label are unchanged, and no task id moved. Re-checked by the parent on 2026-09-18, who read the full before-and-after and approved version 3 for the pilot.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "episodeId": "c0.story.02",
-          "episodeVersion": 2,
+          "episodeVersion": 3,
           "outcome": "pass",
-          "note": "The British Library collection description supports the general list of papers, letters, memoranda, drafts, amendments and handwritten material, while the margin note, port file and recipient puzzle are explicitly invented. All eight task IDs exist and exactly match the complete-sentence lesson's six practice plus two transfer items. The prose and new two-sentence recap explain the target concept without repeating any answer; the recap accurately condenses the episode consequence, and the reveal preserves fragments as clues rather than claiming they are meaningless."
+          "note": "The British Library collection description supports the general list of papers, letters, memoranda, drafts, amendments and handwritten material, while the margin note, port file and recipient puzzle are explicitly invented. All eight task IDs exist and exactly match the complete-sentence lesson's six practice plus two transfer items. The prose and new two-sentence recap explain the target concept without repeating any answer; the recap accurately condenses the episode consequence, and the reveal preserves fragments as clues rather than claiming they are meaningless. Version 3 replaces the prose of this episode: the sentences are shorter and a few noun phrases are unpacked, aiming at grade 7 to 8 rather than at the readers’ own grade. Every documented claim, every invented-element disclosure and the fiction label are unchanged, and no task id moved. Re-checked by the parent on 2026-09-18, who read the full before-and-after and approved version 3 for the pilot.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         }
       ],
       "discrepancies": [
@@ -43,7 +51,10 @@
           "resolution": "Added a pinned episode version and explicit author/review lifecycle fields; applied the same lifecycle repair to Episode 2."
         }
       ],
-      "promotion": "independently_challenged"
+      "promotion": "independently_challenged",
+      "recheckedAt": "2026-09-18",
+      "recheckedBy": "parent",
+      "recheckNote": "The review id keeps its .v2 suffix because it names the review pass, not the story version, exactly as the pack challenge records kept .v1 while their items moved to version 2. The findings below were re-checked against version 3 rather than re-run: corr.c0.013 changed sentence length and word choice only, and a test asserts the documented claims, the invented-element disclosures and the fiction label all survived it."
     }
   ]
 }

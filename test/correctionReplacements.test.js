@@ -165,15 +165,27 @@ test('a rewritten explanation still explains itself', () => {
 // version, so a change can invalidate them. The story correction is the sharp case, because an episode
 // carries its own version rather than an item version. A draft has to say what installing it costs, so
 // the parent is agreeing to the whole consequence rather than to the words alone.
-test('every drafted correction says what installing it requires', async () => {
+// The rule holds after installation too, not only before it. A record that drops its `requiresOnInstall`
+// once resolved would leave nobody able to answer "what did accepting this actually change?" — and the
+// story's answer, that it cost a fresh pilot approval, is the one worth still being able to read.
+test('every 2026-09-17 correction says what installing it required', async () => {
   const { default: correctionData } = await import('../src/data/corrections.c0.json', { with: { type: 'json' } });
-  const drafted = correctionData.corrections.filter((correction) => correction.reviewStatus === 'changes_required');
-  assert.ok(drafted.length > 0);
-  for (const correction of drafted) {
+  const audit = correctionData.corrections.filter((correction) => correction.auditFinding === '2026-09-17 content audit');
+  assert.equal(audit.length, 7);
+  for (const correction of audit) {
     assert.ok(correction.requiresOnInstall?.trim(), `${correction.id} does not say what installing it requires`);
   }
-  const story = drafted.find((correction) => correction.id === 'corr.c0.013');
-  assert.match(story.requiresOnInstall, /pilot approval/i, 'the story draft does not mention that its approval goes stale');
+  const story = audit.find((correction) => correction.id === 'corr.c0.013');
+  assert.match(story.requiresOnInstall, /pilot approval/i, 'the story record does not say its approval went stale');
+  // And it really did cost one: the approval names the version the episodes are actually at.
+  const { default: approvalData } = await import('../src/data/pilotApproval.c0.json', { with: { type: 'json' } });
+  const { default: storyFile } = await import('../src/data/story.c0.draft.json', { with: { type: 'json' } });
+  for (const episode of storyFile.episodes) {
+    const approval = approvalData.approvals.find((entry) => entry.scopeId === episode.id);
+    assert.equal(approval.scopeVersion, episode.version, `${episode.id} is running a version nobody approved`);
+    // The earlier decision is kept rather than overwritten; an approval history is not a scratch field.
+    assert.ok(approval.previousDecisions?.some((entry) => entry.scopeVersion === 2), `${episode.id} lost its version 2 approval record`);
+  }
 });
 
 // A correction that changes what an item speaks, or what its spoken options are, can break the parent's

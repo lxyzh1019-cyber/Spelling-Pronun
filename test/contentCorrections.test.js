@@ -1,33 +1,39 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCorrections, installReplacements, isQuarantined, openCorrections, quarantinedItemIds, usableItems, validateCorrections } from '../src/learning/contentCorrections.js';
+import { applyCorrections, correctionScopeIds, installReplacements, isQuarantined, openCorrections, quarantinedItemIds, usableItems, validateCorrections } from '../src/learning/contentCorrections.js';
 import correctionData from '../src/data/corrections.c0.json' with { type: 'json' };
 import { c0PilotItems, c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c0AssessmentItems } from '../src/data/assessment.c0.draft.js';
 import { c0LessonCatalog } from '../src/data/lessonCatalog.js';
 import { INSTALLED_ITEM_REPLACEMENTS } from '../src/data/corrections.c0.replacements.js';
+import storyData from '../src/data/story.c0.draft.json' with { type: 'json' };
 
 const resolvedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'reviewed');
 const draftedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'changes_required');
 
 test('every recorded correction targets a real item and its replacement is installed', () => {
   const items = [...c0PilotItems, ...c0AssessmentItems];
-  const validation = validateCorrections({ corrections: correctionData.corrections, items });
+  // Episodes go in too. `corr.c0.013` names only episodes, and validating against items alone would
+  // have reported its scope as unknown and its replacement as never installed.
+  const validation = validateCorrections({ corrections: correctionData.corrections, items, episodes: storyData.episodes });
   assert.deepEqual(validation.errors, []);
   // Two batches are resolved: the six defects the 2026-09-08 audit found, reviewed on 2026-09-09, and
   // the six item-level improvements the 2026-09-17 audit found, reviewed on 2026-09-18. In both the
   // parent is the reviewer and Claude the proposer, and in both the replacement is really in the
   // content — `correctionInstalled` is what makes "reviewed" mean more than a status change.
-  assert.equal(resolvedCorrections.length, 12);
+  assert.equal(resolvedCorrections.length, 13);
   assert.ok(resolvedCorrections.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
   const byId = new Map(items.map((item) => [item.id, item]));
+  const scopeById = new Map([...items, ...storyData.episodes].map((entry) => [entry.id, entry]));
   for (const correction of resolvedCorrections) {
-    for (const itemId of correction.itemIds) assert.equal(byId.get(itemId).version, correction.toVersion, `${itemId} carries the replacement version`);
+    for (const scopeId of correctionScopeIds(correction)) {
+      assert.equal(scopeById.get(scopeId).version, correction.toVersion, `${scopeId} carries the replacement version`);
+    }
   }
   const firstBatch = resolvedCorrections.filter((correction) => correction.reviewedAt === '2026-09-09');
   const auditBatch = resolvedCorrections.filter((correction) => correction.reviewedAt === '2026-09-18');
   assert.equal(firstBatch.length, 6);
-  assert.equal(auditBatch.length, 6);
+  assert.equal(auditBatch.length, 7);
   assert.deepEqual([...new Set(firstBatch.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
   assert.ok(auditBatch.every((correction) => correction.severity === 'improvement'), 'an audit improvement was recorded as a defect');
 });
@@ -50,30 +56,20 @@ test('the resolved audit replacements are the content the app serves', () => {
   }
 });
 
-// One correction is still open: `corr.c0.013`, the story rewrite. The parent approved its text on
-// 2026-09-18, but installing it moves both episodes to version 3 while their pilot approval names
-// version 2, and only the parent can record the version 3 approval. It is `improvement` severity, so
-// the episodes keep running at version 2 in the meantime.
-test('the open correction withholds nothing and claims no review', () => {
+// Every 2026-09-17 record is now resolved and installed, and nothing is withheld: these were
+// `improvement` corrections, so the content kept running the whole time it waited. The lesson
+// assertions are the ones that matter — DEF-48 withheld 46 fully corrected items and left three of the
+// four lessons unable to serve six questions, and this is what caught it.
+test('no correction is left open, and nothing is withheld', () => {
   const items = [...c0PilotItems, ...c0AssessmentItems];
-  assert.ok(draftedCorrections.length > 0, 'the open correction is missing');
-  for (const correction of draftedCorrections) {
-    assert.equal(correction.severity, 'improvement', `${correction.id} would withhold its items`);
-    assert.equal(correction.reviewedBy, undefined, `${correction.id} claims a review that has not happened`);
-    assert.equal(correction.proposedBy, 'claude');
-    assert.equal(correction.reviewer, 'parent');
-    assert.ok(correction.draftedIn, `${correction.id} does not say where its replacement text is`);
-    assert.ok(correction.awaiting, `${correction.id} does not say what it is waiting for`);
-  }
-  // Nothing it names is withheld, and the packs still serve full lessons.
-  const draftedIds = new Set(draftedCorrections.flatMap((correction) => correction.itemIds));
-  const quarantined = quarantinedItemIds(correctionData.corrections);
-  for (const id of draftedIds) assert.ok(!quarantined.has(id), `${id} was withheld by an open improvement`);
+  assert.deepEqual(draftedCorrections.map((correction) => correction.id), [], 'a correction is still open');
+  assert.deepEqual(openCorrections(correctionData.corrections), []);
+  assert.equal(quarantinedItemIds(correctionData.corrections).size, 0);
   const stamped = applyCorrections(items, correctionData.corrections);
   assert.equal(stamped.filter(isQuarantined).length, 0);
   for (const lesson of Object.values(c0LessonCatalog)) {
-    assert.equal(lesson.practicePool.length, 10, `${lesson.sessionId} lost independent questions to a drafted improvement`);
-    assert.equal(lesson.transfer.length, 2, `${lesson.sessionId} lost a transfer task to a drafted improvement`);
+    assert.equal(lesson.practicePool.length, 10, `${lesson.sessionId} lost independent questions`);
+    assert.equal(lesson.transfer.length, 2, `${lesson.sessionId} lost a transfer task`);
   }
 });
 

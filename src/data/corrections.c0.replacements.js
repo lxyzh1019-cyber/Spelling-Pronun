@@ -227,7 +227,7 @@ export const assessmentListeningReplacements = {
 export const storyReplacements = {
   'c0.story.01': {
     intro: 'In the Alberta archive, a catalogue box holds a copy of a page from William Caxton’s workshop. The archivist explains that Caxton brought the printing press to England in the 1470s, though printing had been used in Asia long before that. In the box, a modern exhibit label and the copied proof disagree. Which words belong to the old record, and which ones were added later?',
-    recap: 'The label and the proof did not agree, so you used spelling and capitals to tell them apart. Your corrections pointed to a second sheet. Someone had marked that sheet in pencil, but nobody has named the checker.',
+    recap: 'The label and the proof did not agree, so you used spelling and capitals to tell them apart. Your corrections pointed to a second sheet, marked in pencil by a checker nobody has named.',
     problem: 'A copied exhibit label has a changed spelling and a missing capital. Nobody can tell where its words came from.',
     reveal: 'Your corrections show that the doubtful line came from the modern exhibit label, not from the old printed page. The archive can now keep the two layers apart. A pencilled mark on the second sheet shows that someone else checked the copy, but that person never signed a name.',
     historyBehindMystery: 'Documented: The National Archives links William Caxton to England’s first printing press. It also holds a printed item from 1476. The British Library records that printing was used in China long before it reached Europe. Invented: this archive box, the exhibit label, the proof and the pencilled clue. Uncertain: historians are careful about who first brought in a new tool, and about when.',

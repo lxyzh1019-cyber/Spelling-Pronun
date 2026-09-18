@@ -9,11 +9,11 @@ decisions, and `docs/MASTER_PLAN.md` is the product authority.
 The app is **live**. GitHub Pages has deployed from `main` since 2026-09-11 (`e162dad`, workflow run 76).
 Every push to `main` redeploys.
 
-- 296 automated tests: 294 pass, 2 are `todo` and name the content findings nobody has fixed yet. The
-  production build is green.
+- 298 automated tests: 297 pass, 1 is `todo` and names the one content finding nobody has decided yet.
+  The production build is green.
 - **Nothing is `released`.** 0 released objects, prompts or episodes.
 - 96 lesson objects, both chapter-one episodes and 28 Part B assessment prompts are **`pilot_approved`**
-  (parent decision, 2026-09-09). All 40 Part A prompts are excluded: they depend on audio nobody has
+  (parent decision 2026-09-09; the episodes re-approved at version 3 on 2026-09-18 after the rewrite). All 40 Part A prompts are excluded: they depend on audio nobody has
   listened to, or on a rater the family does not have.
 - **No child has used any of it yet.**
 
@@ -84,9 +84,9 @@ options in the same positions every time and the answer keys were patterned, ten
 twenty-four objects could never be reached, a reasonable typed answer was shown to the child as wrong,
 and the Grade 6 word list was a mix of Grade 3 words and spelling-bee words.
 
-**The content corrections are installed.** The parent read the full before-and-after of every
-replacement and resolved `corr.c0.007` to `corr.c0.012` on 2026-09-18, covering 86 items across the
-four packs and both assessment forms. The replacement text is in
+**All seven content corrections are installed.** The parent read the full before-and-after of every
+replacement and resolved `corr.c0.007` to `corr.c0.013` on 2026-09-18: 86 items across the four packs
+and both assessment forms, plus both story episodes. The replacement text is in
 `src/data/corrections.c0.replacements.js`; `installReplacements` applies it and moves each corrected
 item to version 2, and the records in `src/data/corrections.c0.json` say what each one changed.
 
@@ -98,7 +98,7 @@ item to version 2, and the records in `src/data/corrections.c0.json` say what ea
 | `runnning` has three n's, so nobody picks it | `runeing`, the mistake the rule is about | `corr.c0.010` |
 | Listening pairs were EAL, the children are not | homophones, -ed endings, the possessive | `corr.c0.011` |
 | Explanations read above the grade they teach | shorter sentences, same rule and example | `corr.c0.012` |
-| The story reads at grade 9 to 10 | grade 7 to 8, every disclosure kept | `corr.c0.013` — **still open** |
+| The story reads at grade 9 to 10 | grade 7 to 8, every disclosure kept | `corr.c0.013` |
 
 Installing them cost nothing elsewhere, which is the point of the item-level route: the pack and form
 versions did not move, so the educational review records and the 2026-09-09 pilot approval stayed
@@ -127,23 +127,26 @@ sentence clearly and says the right one. `testLabAudio.js` decides this from the
 is one of the options for a minimal pair, and is a whole sentence for these — never from a list of ids,
 so a future listening item is classified by what it does. The contrast check is now 8 rows, not 16.
 
-### The story is the one thing still open
+### The story, and what installing it cost
 
-`corr.c0.013` is written and the parent approved its text on 2026-09-18, but it is **not installed**.
-An episode carries its own version, and the 2026-09-09 pilot approval names version 2. Installing makes
-the episodes version 3, and `validatePilotApprovals` rejects an approval naming a version the content no
-longer has — so installing requires a version 3 pilot approval, which is a parent decision Claude must
-never write on their behalf.
+`corr.c0.013` is installed. Both episodes are at version 3, reading at 7.7 and 7.0 with the fact box a
+little lower at 8.4 and 8.7 — a year or two above the children, about where a novel for this age sits.
+A first attempt took them to grade 5 and the parent rejected it as too easy: a child in grade 5 or 6
+reading grade 5 prose has nothing to stretch for. The rule in the tests is a **band with a floor as
+well as a ceiling**, because every simplifying edit passes a ceiling, which is exactly how prose drifts
+down over time.
 
-The rewrite aims at grade 7 to 8, not grade 5. A first attempt took the episodes to grade 5 and the
-parent rejected it as too easy: a child in grade 5 or 6 reading grade 5 prose has nothing to stretch
-for. It now reads at 7.6 and 7.5, about where a novel for this age sits, with the fact box a little
-lower at 8.4 and 8.7 because that is the part saying what is real and what was invented. The rule in
-the tests is a **band with a floor as well as a ceiling** — every simplifying edit passes a ceiling,
-which is exactly how prose drifts down over time.
+This one could not be installed on Claude's say-so. An episode carries its own version, the 2026-09-09
+pilot approval named version 2, and `validatePilotApprovals` rejects an approval naming a version the
+content no longer has. So installing required a **new parent decision**, given on 2026-09-18: *approve
+version 3 for the reading material*. The version 2 approval is kept in `previousDecisions` rather than
+overwritten — an approval history is not a scratch field — and a test asserts both that each episode
+runs at the version someone actually approved and that the older decision survived.
 
-**To install it:** say the episodes may be used at version 3. That records the pilot approval, moves
-both episodes, and updates the story review records the same way the item ones were updated.
+The story review, educational review and integration records are re-pinned to story version 3, with the
+parent recorded as the re-checker. Their ids keep the `.v2` suffix, which names the review pass rather
+than the story version, exactly as the pack challenge records kept `.v1` while their items moved to
+version 2.
 
 ### One finding nobody has decided yet
 

@@ -1,12 +1,12 @@
 {
-  "version": 2,
+  "version": 3,
   "status": "integrated",
   "chapter": 1,
   "title": "The Printed Difference",
   "episodes": [
     {
       "id": "c0.story.01",
-      "version": 2,
+      "version": 3,
       "authorStatus": "reviewed",
       "reviewStatus": "reviewed",
       "integrationStatus": "integrated",
@@ -16,23 +16,40 @@
       "title": "The First Proof",
       "historical": true,
       "fictionLabel": "Fictional reconstruction",
-      "sourceIds": ["tna-william-caxton", "bl-printer-guide"],
-      "taskIds": [
-        "c0.sp.patterns.09", "c0.sp.patterns.10", "c0.sp.patterns.11", "c0.sp.patterns.12", "c0.sp.patterns.13", "c0.sp.patterns.14", "c0.sp.patterns.19", "c0.sp.patterns.20",
-        "c0.pu.capitals-endmarks.09", "c0.pu.capitals-endmarks.10", "c0.pu.capitals-endmarks.11", "c0.pu.capitals-endmarks.12", "c0.pu.capitals-endmarks.13", "c0.pu.capitals-endmarks.14", "c0.pu.capitals-endmarks.19", "c0.pu.capitals-endmarks.20"
+      "sourceIds": [
+        "tna-william-caxton",
+        "bl-printer-guide"
       ],
-      "intro": "In the Alberta archive, a catalogue box holds a reproduction linked to William Caxton’s workshop. The archivist explains that Caxton is associated with bringing the press to England in the 1470s, although printing began much earlier in Asia. A modern exhibit label and a copied proof disagree. Which words belong to the old record, and which were added later?",
-      "recap": "A copied proof and a modern label disagreed, so you checked spelling and capitals to separate them. Your corrections pointed to a second sheet with an unidentified checker’s mark.",
-      "problem": "A copied exhibit label contains a spelling change and a missing capital that make its source unclear.",
+      "taskIds": [
+        "c0.sp.patterns.09",
+        "c0.sp.patterns.10",
+        "c0.sp.patterns.11",
+        "c0.sp.patterns.12",
+        "c0.sp.patterns.13",
+        "c0.sp.patterns.14",
+        "c0.sp.patterns.19",
+        "c0.sp.patterns.20",
+        "c0.pu.capitals-endmarks.09",
+        "c0.pu.capitals-endmarks.10",
+        "c0.pu.capitals-endmarks.11",
+        "c0.pu.capitals-endmarks.12",
+        "c0.pu.capitals-endmarks.13",
+        "c0.pu.capitals-endmarks.14",
+        "c0.pu.capitals-endmarks.19",
+        "c0.pu.capitals-endmarks.20"
+      ],
+      "intro": "In the Alberta archive, a catalogue box holds a copy of a page from William Caxton’s workshop. The archivist explains that Caxton brought the printing press to England in the 1470s, though printing had been used in Asia long before that. In the box, a modern exhibit label and the copied proof disagree. Which words belong to the old record, and which ones were added later?",
+      "recap": "The label and the proof did not agree, so you used spelling and capitals to tell them apart. Your corrections pointed to a second sheet, marked in pencil by a checker nobody has named.",
+      "problem": "A copied exhibit label has a changed spelling and a missing capital. Nobody can tell where its words came from.",
       "decision": "Use language evidence to choose which transcription should remain attached to the reproduction.",
       "consequence": "The corrected label points to a second sheet filed under the wrong heading.",
       "unresolvedQuestion": "Who copied the second sheet, and why did they change the heading?",
-      "reveal": "The learner’s corrections show that the questionable line came from the modern exhibit label, not from the reproduced document. The archive record can now keep the two layers separate. A pencilled mark on the second sheet suggests that another person checked the copy, but the checker’s name is still missing.",
-      "historyBehindMystery": "Documented: The National Archives associates William Caxton with England’s printing press and a 1476 printed item. The British Library notes that printing existed in China centuries before Europe. Invented: this archive box, exhibit label, proof, and pencilled clue. Uncertain: historians qualify some claims about who introduced a technology and when."
+      "reveal": "Your corrections show that the doubtful line came from the modern exhibit label, not from the old printed page. The archive can now keep the two layers apart. A pencilled mark on the second sheet shows that someone else checked the copy, but that person never signed a name.",
+      "historyBehindMystery": "Documented: The National Archives links William Caxton to England’s first printing press. It also holds a printed item from 1476. The British Library records that printing was used in China long before it reached Europe. Invented: this archive box, the exhibit label, the proof and the pencilled clue. Uncertain: historians are careful about who first brought in a new tool, and about when."
     },
     {
       "id": "c0.story.02",
-      "version": 2,
+      "version": 3,
       "authorStatus": "reviewed",
       "reviewStatus": "reviewed",
       "integrationStatus": "integrated",
@@ -42,16 +59,28 @@
       "title": "Marks in the Margin",
       "historical": true,
       "fictionLabel": "Fictional reconstruction",
-      "sourceIds": ["bl-ames-printing-collections", "tna-william-caxton"],
-      "taskIds": ["c0.se.complete.09", "c0.se.complete.10", "c0.se.complete.11", "c0.se.complete.12", "c0.se.complete.13", "c0.se.complete.14", "c0.se.complete.19", "c0.se.complete.20"],
-      "intro": "The second sheet resembles a printer’s working copy, but it is a fictional clue rather than a real archival item. Real collections about British printing preserve papers, letters, notes, drafts, and handwritten alterations. On this sheet, one margin note is only a fragment. Another is a complete direction. Identifying the complete thought will reveal where the copy travelled next.",
-      "recap": "The second sheet mixed sentence fragments with one complete direction. Finding the complete thought sent the investigation toward a port register and a letter with a different recipient name.",
-      "problem": "Fragments and complete directions have been mixed together in the margin.",
+      "sourceIds": [
+        "bl-ames-printing-collections",
+        "tna-william-caxton"
+      ],
+      "taskIds": [
+        "c0.se.complete.09",
+        "c0.se.complete.10",
+        "c0.se.complete.11",
+        "c0.se.complete.12",
+        "c0.se.complete.13",
+        "c0.se.complete.14",
+        "c0.se.complete.19",
+        "c0.se.complete.20"
+      ],
+      "intro": "The second sheet looks like a printer’s working copy, but it was invented for this story and is not a real archive item. Real collections of printing papers do hold letters, notes, drafts and changes made by hand. On this sheet, one margin note is only a fragment. Another is a complete direction. Finding the complete thought will show you where the copy travelled next.",
+      "recap": "The margin notes mixed fragments with one complete direction. Finding the complete thought sent you to a port register and to a letter with a different name on the cover.",
+      "problem": "The margin mixes sentence fragments with complete directions.",
       "decision": "Identify the complete direction without pretending that the invented sheet is a historical source.",
       "consequence": "The direction names a port file, setting up the next chapter’s search.",
       "unresolvedQuestion": "Was the letter in the port file sent to the person named on its cover?",
-      "reveal": "Only the complete sentence gives an action that an archive worker could follow. It directs the investigator to compare the port register with a letter cover. The fragments remain useful as clues, but they cannot carry the full instruction alone. A different recipient name on the cover opens the next part of the case.",
-      "historyBehindMystery": "Documented: British Library catalogue records about printing history include letters, memoranda, drafts, amendments, and handwritten copying. The National Archives preserves an item connected with Caxton’s early English printing. Invented: the margin directions, port file, and recipient puzzle. No sentence in this episode is presented as a quotation from a historical document."
+      "reveal": "Only the complete sentence gives an instruction that an archive worker could follow. It tells you to compare the port register with the cover of a letter. The fragments are still useful clues, but they cannot carry the whole instruction. The name on the cover is not the one you expected, and that opens the next part of the case.",
+      "historyBehindMystery": "Documented: British Library records about printing history include letters, notes and drafts. Some were copied by hand, and some were corrected by hand. The National Archives keeps an item connected with Caxton’s early printing in England. Invented: the margin directions, the port file and the puzzle about the name on the cover. No sentence in this episode is shown as a quote from a real document."
     }
   ]
 }

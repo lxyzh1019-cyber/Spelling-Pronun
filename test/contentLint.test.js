@@ -136,7 +136,7 @@ const STORY_GRADE_FLOOR = 6.5;
 const STORY_GRADE_CEILING = 8.5;
 const FACT_BOX_CEILING = 9;
 
-test('story prose reads a little above its audience, and not below it', { todo: 'audit 2026-09-17 finding B1: episodes read at grade 9.9 and 10.1, fact boxes at 12.4 and 14.4; drafted in corr.c0.013' }, () => {
+test('story prose reads a little above its audience, and not below it', () => {
   const offBand = [];
   for (const episode of storyData.episodes) {
     const prose = ['intro', 'recap', 'reveal', 'problem'].map((field) => episode[field] || '').join(' ');
@@ -158,4 +158,19 @@ test('lesson prompts and explanations are written at the reading level of their 
     if (explanations.grade > 7) tooHard.push(`${pack.id} explanations read at grade ${explanations.grade.toFixed(1)}`);
   }
   assert.deepEqual(tooHard, []);
+});
+
+// The rewrite that brought the prose into the band must not have cost the episodes their honesty.
+// Before installation this was checked against the replacement text; now it is checked against what a
+// child actually reads, which is the only version that matters.
+test('every episode still says what is documented and what is invented', () => {
+  for (const episode of storyData.episodes) {
+    assert.match(episode.historyBehindMystery, /Documented:/, `${episode.id} dropped its documented claims`);
+    assert.match(episode.historyBehindMystery, /Invented:/, `${episode.id} dropped its invented-element disclosure`);
+    assert.ok(episode.fictionLabel?.trim(), `${episode.id} lost its fiction label`);
+    assert.ok((episode.sourceIds || []).length > 0, `${episode.id} lost its sources`);
+    // The recap is two sentences by design: it is read before the episode, not instead of it.
+    const sentences = episode.recap.split(/[.!?]+\s/).filter(Boolean).length;
+    assert.equal(sentences, 2, `${episode.id} recap is ${sentences} sentences`);
+  }
 });

@@ -367,13 +367,12 @@
     {
       "proposedBy": "claude",
       "reviewer": "parent",
-      "reviewStatus": "changes_required",
+      "reviewStatus": "reviewed",
       "severity": "improvement",
       "raisedAt": "2026-09-18",
       "auditFinding": "2026-09-17 content audit",
-      "fromVersion": 1,
-      "toVersion": 2,
-      "awaiting": "The parent approved this text on 2026-09-18 (\"the updated reading complexity works well to me\"). What is still missing is a separate decision only they can make: installing moves both episodes to version 3, and the 2026-09-09 pilot approval names version 2, so a version 3 pilot approval has to be recorded before the episodes are pilot-eligible again. Claude must never write that record on the parent’s behalf, so this stays open until they say the episodes may be used at version 3.",
+      "fromVersion": 2,
+      "toVersion": 3,
       "id": "corr.c0.013",
       "reason": "Both story episodes are written for a Grade 5/6 reader but read at grade 9.9 and 10.1, with the History behind the mystery box at 12.4 and 14.4. Episode one also spoke about the child in the third person while its own recap said you.",
       "itemIds": [],
@@ -383,7 +382,10 @@
       ],
       "draftedIn": "src/data/corrections.c0.replacements.js#storyReplacements",
       "change": "Shorter sentences and a few unpacked noun phrases, aimed at grade 7 to 8 rather than at the children's own grade. A first draft on 2026-09-18 took the episodes to grade 5 and the parent rejected it as too easy: a Grade 5/6 reader given grade 5 prose has nothing to stretch for. The episodes now read at 7.6 and 7.5, and the fact box at 8.4 and 8.7, held below the prose because it is the part that says what is real and what is invented. Every documented claim, invented-element disclosure and the fiction label are kept, the reveal now addresses the child directly, and the intros stay inside the plan's 60 to 100 word range. The readability rule is now a band with a floor as well as a ceiling, so a later simplifying edit cannot drift the prose back below the children.",
-      "requiresOnInstall": "An episode is not an item: it carries its own version, and both its story review record and your 2026-09-09 pilot approval pin that version. Installing means moving each episode to version 3, updating the story review records to version 3, and recording a new pilot approval at version 3. Until the new approval exists the episodes stop being pilot_approved, which is the mechanism working: you approved version 2, not version 3."
+      "requiresOnInstall": "An episode is not an item: it carries its own version, and both its story review record and your 2026-09-09 pilot approval pin that version. Installing means moving each episode to version 3, updating the story review records to version 3, and recording a new pilot approval at version 3. Until the new approval exists the episodes stop being pilot_approved, which is the mechanism working: you approved version 2, not version 3.",
+      "reviewedBy": "parent",
+      "reviewedAt": "2026-09-18",
+      "resolution": "The parent approved the rewritten text on 2026-09-18 and then approved version 3 for the pilot, which is the separate decision installing it required. Both episodes are at version 3, the story review, educational review and integration records are re-pinned to story version 3 with the parent recorded as the re-checker, and the pilot approval carries scopeVersion 3 while keeping the 2026-09-09 version 2 decision in previousDecisions. The record originally said fromVersion 1 and toVersion 2, which was wrong: the episodes were already at version 2."
     }
   ]
 }
