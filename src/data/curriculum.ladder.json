@@ -964,6 +964,47 @@
       }
     },
     {
+      "skillId": "PU.direct-address",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.02",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Apply punctuation to support effective written communication."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.02",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Apply punctuation appropriately in written communication."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade5.03",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Experiment with capitalization and punctuation to achieve a desired effect."
+          },
+          {
+            "id": "conventions.grade6.03",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Experiment with capitalization and punctuation to create a variety of effects and improve readability."
+          }
+        ]
+      },
+      "note": "No K–4 outcome names this comma. Alberta covers it only under \"Apply punctuation to support effective written communication\", so it is at grade for a Grade 5 or Grade 6 child rather than catch-up."
+    },
+    {
       "skillId": "PU.introductory",
       "introducedAt": "Grade 4",
       "consolidatedAt": "Grade 4",
@@ -1782,11 +1823,16 @@
     "PR.endings": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
     "PR.word-stress": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
     "PR.sentence-reading": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
-    "PU.direct-address": "Alberta names list commas, clause commas and the comma after a transition word, but never the comma before or after a name being addressed.",
     "ED.explain": "Saying why an error is an error is a way of asking a question. Alberta names editing, not explaining.",
     "ED.transfer": "Applying a repaired rule to a fresh sentence is a property of how this app asks, not an outcome."
   },
   "disputedByLadder": [
+    {
+      "claimIn": "src/data/curriculum.ladder.rungs.js → noCurriculumBasis, until 2026-09-19",
+      "claim": "PU.direct-address has no place on the ladder, because Alberta never names the comma before or after a name being addressed.",
+      "ladderFinds": "Alberta names no K–4 outcome for it, which is true, but Grade 5 and Grade 6 both state \"Apply punctuation to support effective written communication\" (conventions.grade5.02, conventions.grade6.02). That covers it, so the skill has a place — at grade, not below it.",
+      "effect": "Moved from \"no curriculum basis\" to a Grade 5 rung. The distinction matters to a child: no specific K–4 outcome is not the same as no outcome at all."
+    },
     {
       "claimIn": "src/data/curriculum.alberta.elal.json → skillsWithNoGrade56Outcome",
       "claim": "PH.blend-segment, PH.vowels, PH.digraphs-clusters, PH.syllables and PH.multisyllable have no Grade 5/6 outcome because \"Alberta ends the Phonics organizing idea after Grade 4\".",

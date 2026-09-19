@@ -17,6 +17,7 @@ import curriculumMapping from '../data/curriculum.alberta.elal.json';
 import { c1Packs } from '../data/packs.c1.draft';
 import { foundationPacks } from '../data/packs.foundation.draft';
 import { punctuationPacks } from '../data/packs.punctuation.draft';
+import { sentencePacks } from '../data/packs.sentences.draft';
 import { pendingDecisionsKey, readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
@@ -125,6 +126,7 @@ export default function ParentPage() {
     { batch: 'C1', packs: c1Packs },
     { batch: 'F1', packs: foundationPacks },
     { batch: 'P1', packs: punctuationPacks },
+    { batch: 'S1', packs: sentencePacks },
   ]), []);
   const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
   const coverageReport = useMemo(() => buildCoverageReport(curriculumMapping), []);

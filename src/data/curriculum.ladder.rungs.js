@@ -156,6 +156,16 @@ export const skillRungs = {
     consolidatedBy: ['conventions.grade4.03'],
     note: 'The comma after a transition word is named at Grade 4 and nowhere else.',
   },
+  // Alberta names list commas, clause commas and the comma after a transition word specifically, but
+  // never the comma before or after a name being addressed. The only outcome that covers it is the
+  // general Grade 5/6 one, which is a real placement rather than no placement: it means a child meets
+  // this at grade, not below it.
+  'PU.direct-address': {
+    introducedBy: ['conventions.grade5.02'],
+    consolidatedBy: ['conventions.grade6.02'],
+    alsoAt: ['conventions.grade5.03', 'conventions.grade6.03'],
+    note: 'No K\u20134 outcome names this comma. Alberta covers it only under "Apply punctuation to support effective written communication", so it is at grade for a Grade 5 or Grade 6 child rather than catch-up.',
+  },
   'PU.apostrophes': {
     introducedBy: ['conventions.grade2.06'],
     consolidatedBy: ['conventions.grade4.05'],
@@ -236,7 +246,6 @@ export const noCurriculumBasis = {
   'PR.endings': 'ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.',
   'PR.word-stress': 'ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.',
   'PR.sentence-reading': 'ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.',
-  'PU.direct-address': 'Alberta names list commas, clause commas and the comma after a transition word, but never the comma before or after a name being addressed.',
   'ED.explain': 'Saying why an error is an error is a way of asking a question. Alberta names editing, not explaining.',
   'ED.transfer': 'Applying a repaired rule to a fresh sentence is a property of how this app asks, not an outcome.',
 };
@@ -244,6 +253,12 @@ export const noCurriculumBasis = {
 // Where this reading of the curriculum contradicts something already written down. Recorded rather
 // than quietly applied: the earlier file was read by a person, this ladder was not.
 export const disputedByLadder = [
+  {
+    claimIn: 'src/data/curriculum.ladder.rungs.js \u2192 noCurriculumBasis, until 2026-09-19',
+    claim: 'PU.direct-address has no place on the ladder, because Alberta never names the comma before or after a name being addressed.',
+    ladderFinds: 'Alberta names no K\u20134 outcome for it, which is true, but Grade 5 and Grade 6 both state "Apply punctuation to support effective written communication" (conventions.grade5.02, conventions.grade6.02). That covers it, so the skill has a place \u2014 at grade, not below it.',
+    effect: 'Moved from "no curriculum basis" to a Grade 5 rung. The distinction matters to a child: no specific K\u20134 outcome is not the same as no outcome at all.',
+  },
   {
     claimIn: 'src/data/curriculum.alberta.elal.json → skillsWithNoGrade56Outcome',
     claim: 'PH.blend-segment, PH.vowels, PH.digraphs-clusters, PH.syllables and PH.multisyllable have no Grade 5/6 outcome because "Alberta ends the Phonics organizing idea after Grade 4".',

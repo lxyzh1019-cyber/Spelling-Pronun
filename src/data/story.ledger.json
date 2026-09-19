@@ -60,7 +60,7 @@
           "file": "story.c1.draft.json"
         }
       ],
-      "blockedBy": "Needs the punctuation chapter 2 names, beyond the capitals and end marks chapter 1 already teaches. Still without content: PU.direct-address."
+      "blockedBy": "Ready to write: every skill it needs (PU.list-commas, PU.clause-commas, PU.apostrophes, PU.dialogue, PU.direct-address) now has content."
     },
     {
       "chapter": 3,
@@ -100,7 +100,7 @@
       "plannedEpisodes": 2,
       "writtenEpisodes": 0,
       "episodes": [],
-      "blockedBy": "Needs commas, quotations and fragments/run-ons. Still without content: SE.fragments, SE.runons."
+      "blockedBy": "Ready to write: every skill it needs (PU.list-commas, PU.dialogue, SE.fragments, SE.runons) now has content."
     },
     {
       "chapter": 5,
@@ -140,7 +140,7 @@
       "plannedEpisodes": 2,
       "writtenEpisodes": 0,
       "episodes": [],
-      "blockedBy": "Needs integrated editing and sentence writing, and the chapter is the case’s resolution, so it cannot be written before the chapters it resolves. Still without content: ED.locate, ED.repair."
+      "blockedBy": "Ready to write: every skill it needs (ED.locate, ED.repair) now has content."
     }
   ]
 }

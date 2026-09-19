@@ -13,10 +13,10 @@ import { allLessonCatalog, lessonBySessionId, sessionIdForPack } from '../src/da
 
 const items = punctuationPacks.flatMap((pack) => pack.items);
 
-test('the four skills chapter 2 and chapter 4 were blocked on now have content', () => {
+test('the skills chapters 2 and 4 were blocked on now have content', () => {
   assert.deepEqual(
     punctuationPacks.map((pack) => pack.skillId).sort(),
-    ['PU.apostrophes', 'PU.clause-commas', 'PU.dialogue', 'PU.list-commas'],
+    ['PU.apostrophes', 'PU.clause-commas', 'PU.dialogue', 'PU.direct-address', 'PU.list-commas'],
   );
   for (const pack of punctuationPacks) {
     assert.equal(pack.items.length, 24, `${pack.id} is not a full pack`);
@@ -24,7 +24,7 @@ test('the four skills chapter 2 and chapter 4 were blocked on now have content',
     assert.ok(pack.rule.length > 40, `${pack.id} has no rule worth teaching`);
     assert.ok(pack.items[0].helpSteps.length >= 3, `${pack.id} has no help to give`);
   }
-  assert.equal(items.length, 96);
+  assert.equal(items.length, punctuationPacks.length * 24);
 });
 
 // A question with a repeated choice cannot be got wrong; one whose answer is not among its choices
@@ -71,10 +71,13 @@ test('each pack names a real Alberta outcome and leaves the grade to the ladder'
       assert.match(id, /grade[56]/, `${pack.id} cites ${id}, which is not a Grade 5/6 outcome`);
     }
     assert.equal(pack.albertaPlacement, undefined, `${pack.id} states a grade the ladder already holds`);
-    // And the ladder does hold it, below Grade 5, which is the whole reason these are worth building.
+    // And the ladder does hold each one. Four are below Grade 5, which is why they are worth
+    // building; PU.direct-address is at grade, because Alberta names no K–4 outcome for that comma
+    // and covers it only under the general "apply punctuation" statement.
     const rung = ladder.skills.find((skill) => skill.skillId === pack.skillId);
     assert.ok(rung, `${pack.skillId} is not on the ladder`);
-    assert.equal(rung.endsBeforeGrade5, true, `${pack.skillId} is not below-grade after all`);
+    if (pack.skillId === 'PU.direct-address') assert.equal(rung.introducedAt, 'Grade 5');
+    else assert.equal(rung.endsBeforeGrade5, true, `${pack.skillId} is not below-grade after all`);
   }
 });
 
