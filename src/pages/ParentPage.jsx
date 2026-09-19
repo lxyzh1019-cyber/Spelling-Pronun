@@ -11,6 +11,7 @@ import { draftPacksFor, openCorrectionsFor, summariseDraftInventory } from '../l
 import { buildCoverageReport, coverageHeadline } from '../learning/curriculumCoverage';
 import { ladderReview } from '../learning/gradeLadder';
 import ladder from '../data/curriculum.ladder.json';
+import { diagnosticForm } from '../data/diagnostic.k4.draft.js';
 import correctionData from '../data/corrections.c0.json';
 import curriculumMapping from '../data/curriculum.alberta.elal.json';
 import { c1Packs } from '../data/packs.c1.draft';
@@ -208,6 +209,10 @@ export default function ParentPage() {
           {idea.tally.checked} checked · {idea.tally.needs_more_evidence} measured, not enough evidence yet · {idea.tally.not_built} not built · {idea.tally.needs_parent} for you to mark
         </p>
       </article>)}</div>
+      <h2>Finding out what was missed before Grade 5</h2>
+      <p>Alberta finishes with {ladderView.counts.revisiting || diagnosticForm.items.length / 3} of these skills before Grade 5, so nothing later in the curriculum comes back to them. This form asks three questions about each — {diagnosticForm.items.length} in all — to find which ones need building, so the next lessons written are the ones actually needed.</p>
+      <p className={styles.meta}>{diagnosticForm.purpose} It is written but nobody has checked it, so like every other draft it is not in front of a child. When a wrong answer comes back it names the specific thing it found, not just that something was wrong.</p>
+      <p className={styles.meta}>Answers to it can never count as mastery: this is draft content, and both evidence tracks ignore it whatever a child scores. A test enforces that.</p>
       <h2>Which grade is {activeProfileId} in?</h2>
       <p>The lessons can tell a child where a skill sits — Grade 3 work they are revisiting, Grade 6 work they are running ahead into — but only once you have said which grade they are in. Nothing is assumed, so until you set this the lessons show no grade at all.</p>
       <div className={styles.actions}>
