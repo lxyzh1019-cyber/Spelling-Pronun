@@ -375,6 +375,40 @@ Beyond the grade ladder above:
 **The count that matters: 15 draft packs holding 360 questions are waiting at `/parent`, and nothing
 new has reached a child.** That is the lifecycle working. What it needs next is reading, not building.
 
+## The second pass on 2026-09-19: making what exists usable
+
+The morning built the grade ladder. The afternoon found that a lot of what had been built could not
+actually be used, and fixed it.
+
+- **The parent could not approve anything.** Three of the five pack files never ran through
+  `applyPilotApproval`, so an approval record for 264 of the 360 drafted questions would have done
+  nothing. One tail for every batch now, in `src/data/draftBatch.js`.
+- **The ten story episodes were unread, not gated.** Fixing the story path was item four of the
+  morning's own plan and was skipped.
+- **The diagnostic could not be answered.** `/diagnostic` runs it now, into a fenced store that has
+  no path into the learner record.
+- **Nine packs cited four outcomes no answer key can judge**, and two hand-written cross-references
+  between the mapping and the packs had gone stale within a day. Both are derived now.
+- **Six grammar packs**, taking grammar from 1 of 11 skills to 7 of 12: agreement, tense, pronoun
+  reference, possessives, plural forms, and one pack for the five pronoun types that share a single
+  Alberta outcome.
+
+**What a fresh session should know before touching any of this:**
+
+- `test/reachability.test.js` requires any module or content file nothing imports to be **declared
+  with a reason**. If you add a data file and the tests fail, that is the guard working — wire it or
+  say why it is author-time.
+- **Claude may never set a verdict, `reviewStatus`, `integrationStatus`, or a pilot approval.**
+  `test/lifecycleRecords.test.js` makes this mechanical: integration records may be drafted in full,
+  challenge records only as self-challenges that say so in their own fields, and educational review
+  forms are prepared with the judgement left blank.
+- **A count pinned in a test is usually a tripwire, not drift.** Adding one skill fired four of them
+  and all four were right to fire. Update them with the reason recorded beside the change, the way
+  the existing entries do.
+- `/parent` is long now. It carries the approval path, the grade ladder, the diagnostic and its
+  report, the coverage report, and the three lifecycle records — which is the point, because it is
+  the only surface where the parent can act.
+
 ## Recent history
 
 - PR #19 — the R2 correction pass (merged). Shipped a blank-page defect to production.
