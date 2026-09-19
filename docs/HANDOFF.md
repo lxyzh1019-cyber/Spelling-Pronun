@@ -355,6 +355,26 @@ feature the parent asked for.
   rather than assume it, and answers from the SHAPE of the gap — scattered means packs here, wholesale
   means talk first, less than half the form done means no answer at all.
 
+## What was built on 2026-09-19
+
+Beyond the grade ladder above:
+
+- **Season 1 is 12 of 12 episodes written**, up from 7. Ten of the twelve are draft; only chapter 1 is
+  pilot-approved. The ledger's per-chapter blockers are now derived from what has content, so it moves
+  on its own instead of needing an edit.
+- **Nine new packs, 216 questions**, all draft: five punctuation (`PU.list-commas`, `PU.clause-commas`,
+  `PU.apostrophes`, `PU.dialogue`, `PU.direct-address`), two sentence (`SE.fragments`, `SE.runons`) and
+  two editing (`ED.locate`, `ED.repair`). These were the skills the story was blocked on, all declared
+  in `skills.json` with nothing behind them.
+- **A 48-question below-grade diagnostic**, three questions for each of the sixteen skills Alberta
+  finishes with before Grade 5.
+- **One pack builder** instead of three. The three copies had drifted in the direction that mattered:
+  only C0 honoured the fields a correction writes back, so a correction installed into a C1 or F1 pack
+  would have been dropped by the builder that assembled it.
+
+**The count that matters: 15 draft packs holding 360 questions are waiting at `/parent`, and nothing
+new has reached a child.** That is the lifecycle working. What it needs next is reading, not building.
+
 ## Recent history
 
 - PR #19 — the R2 correction pass (merged). Shipped a blank-page defect to production.
