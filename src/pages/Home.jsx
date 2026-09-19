@@ -3,6 +3,7 @@ import { useWords } from '../context/WordProvider';
 import BadgeShelf from '../components/BadgeShelf';
 import Leaderboard from '../components/Leaderboard';
 import AvatarPicker from '../components/AvatarPicker';
+import { learnerLessonTiles } from '../data/lessonCatalog';
 import styles from './Home.module.css';
 
 const games = [
@@ -14,12 +15,9 @@ const games = [
   { to: '/speed', label: 'Speed Round', desc: '60-second challenge', icon: '⚡', color: '#8b5cf6' },
 ];
 
-const pilotLessons = [
-  { to: '/lesson/pilot-sp-patterns', label: 'Spelling patterns', desc: 'Notice and apply word patterns', icon: '✏️', color: '#2563eb' },
-  { to: '/lesson/pilot-se-complete', label: 'Complete sentences', desc: 'Find subjects and predicates', icon: '🧩', color: '#059669' },
-  { to: '/lesson/pilot-pu-capitals', label: 'Capitals and end marks', desc: 'Edit sentence boundaries clearly', icon: '✒️', color: '#d97706' },
-  { to: '/lesson/pilot-gr-pronouns', label: 'Grammar: pronouns', desc: 'Choose subject and object forms', icon: '🔤', color: '#7c3aed' },
-];
+// Derived from the lesson catalog, which gates on approval. A hardcoded list meant an approved pack
+// needed a code change before a child could open it, and a draft pack could be linked by mistake.
+const pilotLessons = learnerLessonTiles();
 
 export default function Home() {
   const {
@@ -70,6 +68,7 @@ export default function Home() {
               <span className={styles.gameIcon} aria-hidden="true">{lesson.icon}</span>
               <h3 className={styles.gameName}>{lesson.label}</h3>
               <p className={styles.gameDesc}>{lesson.desc}</p>
+              {lesson.placement && <p className={styles.gameDesc}><small>Alberta places this at {lesson.placement}</small></p>}
               <span className={styles.gameArrow} aria-hidden="true">Start lesson →</span>
             </Link>
           ))}
