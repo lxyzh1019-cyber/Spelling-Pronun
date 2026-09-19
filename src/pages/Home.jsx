@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import BadgeShelf from '../components/BadgeShelf';
@@ -15,9 +16,6 @@ const games = [
   { to: '/speed', label: 'Speed Round', desc: '60-second challenge', icon: '⚡', color: '#8b5cf6' },
 ];
 
-// Derived from the lesson catalog, which gates on approval. A hardcoded list meant an approved pack
-// needed a code change before a child could open it, and a draft pack could be linked by mistake.
-const pilotLessons = learnerLessonTiles();
 
 export default function Home() {
   const {
@@ -32,7 +30,13 @@ export default function Home() {
     dailyChallengeDone,
     authStatus,
     syncError,
+    learnerGrade,
   } = useWords();
+
+  // Recomputed when the learner changes, because the tiles say where each lesson sits relative to
+  // THIS child. Before the parent records a grade, and before the curriculum mapping is verified,
+  // they say nothing — which is the honest answer, not a missing feature.
+  const pilotLessons = useMemo(() => learnerLessonTiles({ learnerGrade }), [learnerGrade]);
 
   return (
     <div className={styles.home}>
@@ -68,7 +72,7 @@ export default function Home() {
               <span className={styles.gameIcon} aria-hidden="true">{lesson.icon}</span>
               <h3 className={styles.gameName}>{lesson.label}</h3>
               <p className={styles.gameDesc}>{lesson.desc}</p>
-              {lesson.placement && <p className={styles.gameDesc}><small>Alberta places this at {lesson.placement}</small></p>}
+              {lesson.placement && <p className={styles.gameDesc}><small>{lesson.placement}</small></p>}
               <span className={styles.gameArrow} aria-hidden="true">Start lesson →</span>
             </Link>
           ))}

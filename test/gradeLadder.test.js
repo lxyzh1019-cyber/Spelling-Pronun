@@ -104,8 +104,16 @@ test('a skill Alberta does not place is given no grade, only a reason', () => {
   }
   assert.equal(skillRung(ladder, 'PR.word-stress'), null);
   assert.equal(gradeIndex('Grade 9'), -1);
-  // No learner grade means no relation to report, not a guessed one.
-  assert.equal(placementFor(ladder, 'SE.complete', null).placement, 'unplaced');
+  // No learner grade means no relation to report, not a guessed one — and not the same answer as a
+  // skill Alberta places nowhere. Sharing one bucket told a parent who had set no grade that all
+  // fifty skills were absent from the curriculum.
+  const noGrade = placementFor(ladder, 'SE.complete', null);
+  assert.equal(noGrade.placement, 'no_learner_grade');
+  assert.equal(placementLabel(noGrade), 'Alberta states this from Kindergarten to Grade 3');
+  assert.notEqual(noGrade.placement, placementFor(ladder, 'PR.endings', 'Grade 5').placement);
+  const review = ladderReview(ladder, null);
+  assert.equal(review.counts.unplaced, Object.keys(ladder.noCurriculumBasis).length);
+  assert.equal(review.counts.no_learner_grade, ladder.skills.length);
 });
 
 // Rule two, and the one worth breaking on purpose. The ladder is a reading of a PDF that nobody has

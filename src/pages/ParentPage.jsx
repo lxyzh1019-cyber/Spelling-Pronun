@@ -9,6 +9,8 @@ import { c0AssessmentItems } from '../data/assessment.c0.draft';
 import { PENDING_DECISIONS, buildPendingQueue, recordPendingDecision, summarisePendingReview } from '../learning/pendingReview';
 import { draftPacksFor, openCorrectionsFor, summariseDraftInventory } from '../learning/draftInventory';
 import { buildCoverageReport, coverageHeadline } from '../learning/curriculumCoverage';
+import { ladderReview } from '../learning/gradeLadder';
+import ladder from '../data/curriculum.ladder.json';
 import correctionData from '../data/corrections.c0.json';
 import curriculumMapping from '../data/curriculum.alberta.elal.json';
 import { c1Packs } from '../data/packs.c1.draft';
@@ -26,7 +28,7 @@ function friendlyAuthError(code) {
 }
 
 export default function ParentPage() {
-  const { activeProfileId, authStatus, syncError, user, refreshAuthState } = useWords();
+  const { activeProfileId, authStatus, syncError, user, refreshAuthState, learnerGrade, setProfileGrade, LEARNER_GRADES } = useWords();
   const { attempts, saveStatus, syncCloud, previewImport, confirmImport, skipImport, heldImports } = useLearning();
   const [preview, setPreview] = useState(null);
   const heldCount = Object.values(heldImports || {}).reduce((sum, count) => sum + count, 0);
@@ -124,6 +126,10 @@ export default function ParentPage() {
   const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
   const coverageReport = useMemo(() => buildCoverageReport(curriculumMapping), []);
   const coverage = useMemo(() => coverageHeadline(coverageReport), [coverageReport]);
+  // Where each skill sits for THIS learner. Shown here whether or not the mapping has been verified,
+  // because this page is how it gets verified — gating the parent's own view would make the gate on
+  // the learner's view permanent.
+  const ladderView = useMemo(() => ladderReview(ladder, learnerGrade), [learnerGrade]);
 
   return <div className={styles.page}>
     <section className={styles.card}>
@@ -201,6 +207,37 @@ export default function ParentPage() {
         <p className={styles.meta}>
           {idea.tally.checked} checked · {idea.tally.needs_more_evidence} measured, not enough evidence yet · {idea.tally.not_built} not built · {idea.tally.needs_parent} for you to mark
         </p>
+      </article>)}</div>
+      <h2>Which grade is {activeProfileId} in?</h2>
+      <p>The lessons can tell a child where a skill sits — Grade 3 work they are revisiting, Grade 6 work they are running ahead into — but only once you have said which grade they are in. Nothing is assumed, so until you set this the lessons show no grade at all.</p>
+      <div className={styles.actions}>
+        {LEARNER_GRADES.map((grade) => <button
+          key={grade}
+          type="button"
+          className={grade === learnerGrade ? styles.primary : styles.secondary}
+          onClick={() => setProfileGrade(activeProfileId, grade === learnerGrade ? null : grade)}
+        >{grade}</button>)}
+      </div>
+      <h2>Where Alberta puts each skill</h2>
+      <p>{ladderView.summary}</p>
+      <p className={styles.meta}>{learnerGrade
+        ? `${ladderView.counts.revisiting} skills Alberta finishes with below ${learnerGrade} · ${ladderView.counts.at_grade} at grade · ${ladderView.counts.ahead} above it · ${ladderView.counts.unplaced} Alberta does not place at any grade.`
+        : `${ladderView.counts.no_learner_grade} skills are placed on the ladder and ${ladderView.counts.unplaced} are not placed by Alberta at any grade. Set a grade above and each one is shown relative to ${activeProfileId}.`}</p>
+      {ladderView.disputed.length > 0 && <>
+        <h3>Where this reading disagrees with what was written before</h3>
+        {ladderView.disputed.map((entry) => <article className={styles.gate} key={entry.claim}>
+          <p><strong>Written before:</strong> {entry.claim}</p>
+          <p><strong>This reading finds:</strong> {entry.ladderFinds}</p>
+          <p className={styles.meta}>{entry.effect}</p>
+        </article>)}
+      </>}
+      <div className={styles.gateList}>{ladderView.skills.map((entry) => <article className={styles.gate} key={entry.skillId}>
+        <p><strong>{entry.skillId}</strong> <span className={styles.meta}>— {entry.label || 'Alberta does not place this at any grade'}</span></p>
+        {entry.reason && <p className={styles.meta}>{entry.reason}</p>}
+        {entry.note && <p className={styles.meta}>{entry.note}</p>}
+        {entry.evidence && <ul>{entry.evidence.introducedBy.concat(entry.evidence.consolidatedBy).map((cited) => <li key={cited.id}>
+          <span className={styles.meta}>{cited.grade} {cited.organizingIdea}: </span>{cited.text}
+        </li>)}</ul>}
       </article>)}</div>
       <h2>Things I need you to test</h2><p>Some of these gates only move when a person checks something the app cannot check itself. The testing page walks through each one, step by step, and records what you saw.</p><p><Link className={styles.primary} to="/checks">Open the testing checks</Link></p>
       <h2>R2 pilot gate tracker</h2><p>This is a truthful readiness list, not a release claim. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p><div className={styles.gateList}>{r2GateTracker.map((gate) => <article className={styles.gate} key={gate.id}><p><strong>{gate.label}</strong> <span className={styles.meta}>— {gateStateLabel(gate.state)}</span></p><p>{gate.detail}</p></article>)}</div>

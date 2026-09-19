@@ -18,7 +18,11 @@
 
 const ORDER = ['Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'];
 
-export const PLACEMENTS = ['revisiting', 'at_grade', 'ahead', 'unplaced'];
+// `unplaced` and `no_learner_grade` are different facts and must not share a bucket. The first says
+// Alberta places this skill at no grade; the second says we do not know which grade the child is in.
+// Reported together, a parent who had not yet set a grade was told that all fifty skills were absent
+// from the curriculum, which is false about the curriculum rather than merely unhelpful.
+export const PLACEMENTS = ['revisiting', 'at_grade', 'ahead', 'unplaced', 'no_learner_grade'];
 
 export function gradeIndex(grade) {
   return ORDER.indexOf(grade);
@@ -45,7 +49,7 @@ export function placementFor(ladder, skillId, learnerGrade) {
     ...(rung.note ? { note: rung.note } : {}),
   };
   // Without a learner grade there is no relation to report, only the facts of the rung.
-  if (learner < 0) return { ...base, placement: 'unplaced' };
+  if (learner < 0) return { ...base, placement: 'no_learner_grade' };
   if (gradeIndex(rung.introducedAt) > learner) return { ...base, placement: 'ahead' };
   if (gradeIndex(rung.consolidatedAt) < learner) return { ...base, placement: 'revisiting' };
   return { ...base, placement: 'at_grade' };
@@ -55,6 +59,13 @@ export function placementFor(ladder, skillId, learnerGrade) {
 // deliberately no "behind" here, and no percentage anywhere in this module.
 export function placementLabel(placement) {
   if (!placement || placement.placement === 'unplaced') return null;
+  // The rung without a child to compare it to. Still worth stating on the parent's page, which is
+  // read before any grade has been set.
+  if (placement.placement === 'no_learner_grade') {
+    return placement.introducedAt === placement.consolidatedAt
+      ? `Alberta states this at ${placement.introducedAt}`
+      : `Alberta states this from ${placement.introducedAt} to ${placement.consolidatedAt}`;
+  }
   if (placement.placement === 'revisiting') {
     return placement.introducedAt === placement.consolidatedAt
       ? `${placement.consolidatedAt} — revisiting`
@@ -95,6 +106,7 @@ export function ladderReview(ladder, learnerGrade) {
     disputed: ladder?.disputedByLadder || [],
     // Counts, never a proportion. "34% at grade" would read as a score of the child rather than a
     // description of the content, which is the one thing this must not become.
+    unplacedSkills: unplaced.length,
     summary: ladder?.mappingReviewedBy
       ? `Verified by ${ladder.mappingReviewedBy}. Learners see the grade on each lesson.`
       : 'Nobody has checked this mapping yet, so learners are shown no grade at all. Read the rungs below; each one quotes the Alberta outcome it rests on.',

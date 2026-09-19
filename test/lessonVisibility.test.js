@@ -18,6 +18,7 @@ import {
   packIsLearnerVisible,
   sessionIdForPack,
 } from '../src/data/lessonCatalog.js';
+import ladder from '../src/data/curriculum.ladder.json' with { type: 'json' };
 import { c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c1Packs } from '../src/data/packs.c1.draft.js';
 import { foundationPacks } from '../src/data/packs.foundation.draft.js';
@@ -109,4 +110,32 @@ test('a pack that states where Alberta places it keeps that through to the tile'
     assert.ok(lesson.curriculumOutcomeIds?.length, `${pack.id} names no outcome`);
     assert.equal(lesson.albertaPlacement, undefined);
   }
+});
+
+// The grade a tile shows is the ladder's, and it appears only when there is both a verified mapping
+// and a learner grade to compare against. Two gates, and the test breaks each one separately —
+// otherwise "shows nothing" passes for the wrong reason, because nothing is wired at all.
+test('a tile names a grade only once the mapping is verified and the learner has one', () => {
+  const verified = { ...ladder, mappingReviewedBy: 'parent (fixture)' };
+  // Neither gate open: the four C0 packs have no albertaPlacement of their own, so no grade at all.
+  for (const tile of learnerLessonTiles()) assert.equal(tile.relation, undefined);
+  // Verified but no learner grade: still nothing, because there is nothing to be relative to.
+  for (const tile of learnerLessonTiles({ gradeLadder: verified })) assert.equal(tile.relation, undefined);
+  // A learner grade but an unverified mapping: still nothing.
+  for (const tile of learnerLessonTiles({ learnerGrade: 'Grade 5' })) assert.equal(tile.relation, undefined);
+  // Both: every tile is placed, and SE.complete is the one Alberta finishes with at Grade 3.
+  const placed = learnerLessonTiles({ learnerGrade: 'Grade 5', gradeLadder: verified });
+  assert.equal(placed.length, Object.keys(c0LessonCatalog).length);
+  for (const tile of placed) {
+    assert.ok(['revisiting', 'at_grade', 'ahead'].includes(tile.relation), `${tile.to} has no placement`);
+    assert.ok(tile.placement.includes('Grade'), `${tile.to} states a relation with no grade`);
+  }
+  const sentences = placed.find((tile) => tile.to === '/lesson/pilot-se-complete');
+  assert.equal(sentences.relation, 'revisiting');
+  assert.match(sentences.placement, /Grade 3/);
+  // A Grade 3 child doing the same lesson is at grade, not revisiting. The tile describes the
+  // relation, not the lesson, so the same lesson reads differently for a different child.
+  const younger = learnerLessonTiles({ learnerGrade: 'Grade 3', gradeLadder: verified })
+    .find((tile) => tile.to === '/lesson/pilot-se-complete');
+  assert.equal(younger.relation, 'at_grade');
 });

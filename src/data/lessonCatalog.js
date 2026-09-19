@@ -2,6 +2,8 @@ import { c0PilotPacks } from './packs.c0.draft.js';
 import { c1Packs } from './packs.c1.draft.js';
 import { foundationPacks } from './packs.foundation.draft.js';
 import { isQuarantined, usableItems } from '../learning/contentCorrections.js';
+import ladder from './curriculum.ladder.json' with { type: 'json' };
+import { learnerPlacement } from '../learning/gradeLadder.js';
 
 // Route ids for the four C0 lessons. These are pinned, not derived: a durable session, a bookmark and
 // the learner's completion count are all keyed by session id, so deriving them would silently orphan
@@ -136,18 +138,28 @@ const TILE_STYLE = {
   default: { icon: '📚', color: '#475569' },
 };
 
-export function learnerLessonTiles() {
+// `gradeLadder` is a parameter only so a test can pass a verified fixture; the app always uses the
+// real one, which is unverified, which is why no tile shows a grade today.
+export function learnerLessonTiles({ learnerGrade = null, gradeLadder = ladder } = {}) {
   return Object.values(c0LessonCatalog).map((lesson) => {
     const style = TILE_STYLE[lesson.skillId] || TILE_STYLE[lesson.skillId.split('.')[0]] || TILE_STYLE.default;
+    // Where this sits relative to the child. The ladder answers it for every skill Alberta places,
+    // and answers nothing at all until a person has verified the mapping and the learner has a grade
+    // recorded — so a tile says "Grade 3 — revisiting" only when both of those are true. The pack's
+    // own `albertaPlacement` remains the fallback: it is a flat statement of where Alberta puts the
+    // skill, with no claim about this particular child.
+    const placed = learnerGrade ? learnerPlacement(gradeLadder, lesson.skillId, learnerGrade) : null;
     return {
       to: `/lesson/${lesson.sessionId}`,
       label: lesson.title,
       // The rule is the lesson's own sentence; a tile shows its first clause rather than a second
       // description somebody has to keep in step with it.
       desc: lesson.rule.split(/[.;]/)[0].trim(),
-      // What a child is told about where this sits. Absent unless the pack says, because inventing a
-      // grade for a lesson that never claimed one is exactly the false confidence to avoid.
-      ...(lesson.albertaPlacement ? { placement: lesson.albertaPlacement.albertaGrades } : {}),
+      // What a child is told about where this sits. Absent unless the ladder or the pack says,
+      // because inventing a grade for a lesson that never claimed one is exactly the false confidence
+      // to avoid.
+      ...(placed ? { placement: placed.label, relation: placed.placement } : {}),
+      ...(!placed && lesson.albertaPlacement ? { placement: `Alberta places this at ${lesson.albertaPlacement.albertaGrades}` } : {}),
       ...style,
     };
   });
