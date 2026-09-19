@@ -1,65 +1,14 @@
+import { makePack as buildPack } from './packBuilder.js';
 import { applyCorrections, installReplacements } from '../learning/contentCorrections.js';
 import { applyPilotApproval } from '../learning/pilotApproval.js';
 import { INSTALLED_ITEM_REPLACEMENTS } from './corrections.c0.replacements.js';
 import pilotApprovalData from './pilotApproval.c0.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
-const ROLE_SEQUENCE = [
-  'worked_example', 'worked_example',
-  ...Array(6).fill('guided'),
-  ...Array(10).fill('independent'),
-  ...Array(2).fill('transfer'),
-  ...Array(4).fill('delayed_review'),
-];
 
 const defaultSourceIds = ['ab-elal-2022-overview', 'ab-eal-benchmarks-4-6'];
 
 function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
-  if (rows.length !== 24) throw new Error(`${skillId} must contain 24 rows`);
-  const sourceIds = options.sourceIds || defaultSourceIds;
-  const reviewStatus = options.reviewStatus || 'needs_independent_challenge';
-  const authorStatus = options.authorStatus || 'draft';
-  const integrationStatus = options.integrationStatus || 'not_integrated';
-  return {
-    id: `c0.pack.${skillId.toLowerCase()}`,
-    version: 1,
-    status: options.status || 'draft_needs_independent_challenge',
-    skillId,
-    title,
-    rule,
-    sourceIds,
-    items: rows.map((row, index) => {
-      const role = ROLE_SEQUENCE[index];
-      const displayOnly = role === 'worked_example';
-      return {
-        packId: `c0.pack.${skillId.toLowerCase()}`,
-        id: `c0.${skillId.toLowerCase()}.${String(index + 1).padStart(2, '0')}`,
-        // A corrected item is installed as a new version in place. The correction record stays in
-        // the repository so the defect and its replacement are both auditable.
-        version: row.version || 1,
-        primarySkill: skillId,
-        secondarySkills: [],
-        role,
-        difficulty: index < 8 ? 1 : index < 18 ? 2 : 3,
-        prerequisites: [],
-        prompt: row.prompt,
-        responseType: displayOnly ? 'display' : row.responseType || 'choice',
-        evaluator: displayOnly ? 'human_rubric' : row.evaluator || 'choice',
-        ...(displayOnly ? { rubric: { displayOnly: true } } : { acceptedAnswers: row.acceptedAnswers }),
-        ...(row.choices ? { choices: row.choices.map(([id, text]) => ({ id, text })) } : {}),
-        ...(row.allowReview ? { allowReview: true } : {}),
-        explanation: row.explanation,
-        helpSteps,
-        commonErrors: row.commonErrors || [],
-        evidenceEligibility: ['independent', 'transfer', 'delayed_review'].includes(role) ? `independent_${role}` : 'instruction_only',
-        transferGroup: `${skillId.toLowerCase()}-${row.transferGroup || index + 1}`,
-        authorStatus,
-        reviewStatus,
-        integrationStatus,
-        releaseStatus: 'not_released',
-        sourceIds,
-      };
-    }),
-  };
+  return buildPack({ prefix: 'c0', skillId, title, rule, helpSteps, rows, sourceIds: defaultSourceIds, ...options });
 }
 
 const choice = (prompt, answer, choices, explanation, transferGroup) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup });

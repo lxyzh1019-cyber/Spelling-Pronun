@@ -22,68 +22,16 @@
 // in `photograph` can be asked and answered in print. The rest of the PR.* skills cannot, and this
 // file does not pretend otherwise.
 
+import { makePack as buildPack } from './packBuilder.js';
 import { applyCorrections } from '../learning/contentCorrections.js';
 import correctionData from './corrections.c0.json' with { type: 'json' };
 
-const ROLE_SEQUENCE = [
-  'worked_example', 'worked_example',
-  ...Array(6).fill('guided'),
-  ...Array(10).fill('independent'),
-  ...Array(2).fill('transfer'),
-  ...Array(4).fill('delayed_review'),
-];
 
 const choice = (prompt, answer, choices, explanation, transferGroup) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup });
 const example = (prompt, explanation, transferGroup) => ({ prompt, explanation, transferGroup });
 
 function makePack(skillId, title, rule, helpSteps, rows, albertaPlacement) {
-  if (rows.length !== 24) throw new Error(`${skillId} must contain 24 rows`);
-  const packId = `f1.pack.${skillId.toLowerCase()}`;
-  return {
-    id: packId,
-    version: 1,
-    status: 'draft_needs_independent_challenge',
-    batch: 'F1',
-    skillId,
-    title,
-    rule,
-    albertaPlacement,
-    // Deliberately empty. These packs measure no Grade 5/6 outcome, and saying so in the data is
-    // stronger than saying it in a comment.
-    curriculumOutcomeIds: [],
-    sourceIds: ['ab-elal-2022-overview'],
-    items: rows.map((row, index) => {
-      const role = ROLE_SEQUENCE[index];
-      const displayOnly = role === 'worked_example';
-      return {
-        packId,
-        id: `f1.${skillId.toLowerCase()}.${String(index + 1).padStart(2, '0')}`,
-        version: 1,
-        primarySkill: skillId,
-        secondarySkills: [],
-        role,
-        difficulty: index < 8 ? 1 : index < 18 ? 2 : 3,
-        prerequisites: [],
-        prompt: row.prompt,
-        responseType: displayOnly ? 'display' : 'choice',
-        evaluator: displayOnly ? 'human_rubric' : 'choice',
-        ...(displayOnly ? { rubric: { displayOnly: true } } : { acceptedAnswers: row.acceptedAnswers }),
-        ...(row.choices ? { choices: row.choices.map(([id, text]) => ({ id, text })) } : {}),
-        explanation: row.explanation,
-        helpSteps,
-        commonErrors: [],
-        evidenceEligibility: ['independent', 'transfer', 'delayed_review'].includes(role) ? `independent_${role}` : 'instruction_only',
-        transferGroup: `${skillId.toLowerCase()}-${row.transferGroup || index + 1}`,
-        curriculumOutcomeIds: [],
-        albertaPlacement,
-        authorStatus: 'draft',
-        reviewStatus: 'needs_independent_challenge',
-        integrationStatus: 'not_integrated',
-        releaseStatus: 'not_released',
-        sourceIds: ['ab-elal-2022-overview'],
-      };
-    }),
-  };
+  return buildPack({ prefix: 'f1', batch: 'F1', skillId, title, rule, helpSteps, rows, albertaPlacement });
 }
 
 // --- PH.vowels ----------------------------------------------------------------------------------

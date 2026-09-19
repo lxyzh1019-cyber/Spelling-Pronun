@@ -22,64 +22,16 @@
 //   - the explanation names the answer by its words, never by its position, because options shuffle
 //   - the prompt never gives the answer away, and no fragment is marked out by its punctuation
 
+import { makePack as buildPack } from './packBuilder.js';
 import { applyCorrections } from '../learning/contentCorrections.js';
 import correctionData from './corrections.c0.json' with { type: 'json' };
 
-const ROLE_SEQUENCE = [
-  'worked_example', 'worked_example',
-  ...Array(6).fill('guided'),
-  ...Array(10).fill('independent'),
-  ...Array(2).fill('transfer'),
-  ...Array(4).fill('delayed_review'),
-];
 
 const choice = (prompt, answer, choices, explanation, transferGroup, outcomeIds) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup, outcomeIds });
 const example = (prompt, explanation, transferGroup, outcomeIds) => ({ prompt, explanation, transferGroup, outcomeIds });
 
 function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
-  if (rows.length !== 24) throw new Error(`${skillId} must contain 24 rows`);
-  const packId = `c1.pack.${skillId.toLowerCase()}`;
-  return {
-    id: packId,
-    version: 1,
-    status: 'draft_needs_independent_challenge',
-    batch: 'C1',
-    skillId,
-    title,
-    rule,
-    sourceIds: options.sourceIds || ['ab-elal-2022-overview'],
-    curriculumOutcomeIds: [...new Set(rows.flatMap((row) => row.outcomeIds || []))],
-    items: rows.map((row, index) => {
-      const role = ROLE_SEQUENCE[index];
-      const displayOnly = role === 'worked_example';
-      return {
-        packId,
-        id: `c1.${skillId.toLowerCase()}.${String(index + 1).padStart(2, '0')}`,
-        version: row.version || 1,
-        primarySkill: skillId,
-        secondarySkills: [],
-        role,
-        difficulty: index < 8 ? 1 : index < 18 ? 2 : 3,
-        prerequisites: [],
-        prompt: row.prompt,
-        responseType: displayOnly ? 'display' : 'choice',
-        evaluator: displayOnly ? 'human_rubric' : 'choice',
-        ...(displayOnly ? { rubric: { displayOnly: true } } : { acceptedAnswers: row.acceptedAnswers }),
-        ...(row.choices ? { choices: row.choices.map(([id, text]) => ({ id, text })) } : {}),
-        explanation: row.explanation,
-        helpSteps,
-        commonErrors: [],
-        evidenceEligibility: ['independent', 'transfer', 'delayed_review'].includes(role) ? `independent_${role}` : 'instruction_only',
-        transferGroup: `${skillId.toLowerCase()}-${row.transferGroup || index + 1}`,
-        curriculumOutcomeIds: row.outcomeIds || [],
-        authorStatus: 'draft',
-        reviewStatus: 'needs_independent_challenge',
-        integrationStatus: 'not_integrated',
-        releaseStatus: 'not_released',
-        sourceIds: options.sourceIds || ['ab-elal-2022-overview'],
-      };
-    }),
-  };
+  return buildPack({ prefix: 'c1', batch: 'C1', skillId, title, rule, helpSteps, rows, ...options });
 }
 
 // --- VO.affixes ---------------------------------------------------------------------------------
