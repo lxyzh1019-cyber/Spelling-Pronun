@@ -18,15 +18,18 @@ import { allLessonCatalog, lessonBySessionId, sessionIdForPack } from '../src/da
 const items = grammarPacks.flatMap((pack) => pack.items);
 const answered = items.filter((item) => item.role !== 'worked_example');
 
-test('the three grammar skills with the strongest claim to being at grade now have content', () => {
-  assert.deepEqual(grammarPacks.map((pack) => pack.skillId).sort(), ['GR.agreement', 'GR.antecedents', 'GR.tense']);
+test('the five grammar skills built so far all have full packs', () => {
+  assert.deepEqual(
+    grammarPacks.map((pack) => pack.skillId).sort(),
+    ['GR.agreement', 'GR.antecedents', 'GR.articles-plurals', 'GR.possessives', 'GR.tense'],
+  );
   for (const pack of grammarPacks) {
     assert.equal(pack.items.length, 24, `${pack.id} is not a full pack`);
     assert.equal(pack.batch, 'G1');
     assert.ok(pack.rule.length > 60, `${pack.id} has no rule worth teaching`);
     assert.ok(pack.items[0].helpSteps.length >= 4, `${pack.id} has too little help to give`);
   }
-  assert.equal(items.length, 72);
+  assert.equal(items.length, grammarPacks.length * 24);
 });
 
 test('every question is answerable, with one answer among four distinct choices', () => {
@@ -112,9 +115,39 @@ test('each pack cites real Grade 5/6 outcomes and sits on the ladder', () => {
     }
     const rung = ladder.skills.find((skill) => skill.skillId === pack.skillId);
     assert.ok(rung, `${pack.skillId} is not on the ladder`);
-    // All three are at grade for a Grade 5 or 6 child, which is why they were chosen first.
-    assert.equal(rung.endsBeforeGrade5, false, `${pack.skillId} is below grade and was not meant to be in this batch`);
   }
+  // Three of the five are at grade and two are below it, and that difference is the reason the
+  // ladder exists: a child meeting possessives or plural forms in Grade 5 is revisiting Grade 4
+  // work, and the tile will say so once the mapping is verified.
+  const atGrade = grammarPacks.filter((pack) => !ladder.skills.find((skill) => skill.skillId === pack.skillId).endsBeforeGrade5);
+  const revisiting = grammarPacks.filter((pack) => ladder.skills.find((skill) => skill.skillId === pack.skillId).endsBeforeGrade5);
+  assert.deepEqual(atGrade.map((pack) => pack.skillId).sort(), ['GR.agreement', 'GR.antecedents', 'GR.tense']);
+  assert.deepEqual(revisiting.map((pack) => pack.skillId).sort(), ['GR.articles-plurals', 'GR.possessives']);
+});
+
+// The plural pack's real lesson, and the one a rule-only pack would get wrong: the f-to-v pattern is
+// not reliable. A rule that is right most of the time is more dangerous than no rule, because it is
+// applied confidently to the exceptions.
+test('the plural pack teaches that its own pattern has exceptions', () => {
+  const pack = grammarPacks.find((entry) => entry.skillId === 'GR.articles-plurals');
+  const prompts = pack.items.map((item) => item.prompt).join(' ');
+  assert.match(prompts, /leaf|knife|shelf|half/i, 'no f-to-v word is asked');
+  assert.match(prompts, /roof/i, 'the f word that does NOT change is never asked, so the pattern reads as reliable');
+  // Both halves of the y rule, not just the one people remember.
+  assert.match(prompts, /baby|story/i);
+  assert.match(prompts, /\bday\b|\bkey\b/i, 'the vowel-before-y case is missing');
+  assert.ok(pack.items.some((item) => /right most of the time is more dangerous/i.test(item.explanation)));
+});
+
+// The possessive pack's hard case is the one where the apostrophe does not mean ownership.
+test('the possessive pack separates the apostrophe from the possessive pronoun', () => {
+  const pack = grammarPacks.find((entry) => entry.skillId === 'GR.possessives');
+  const readable = pack.items.map((item) => `${item.prompt} ${(item.choices || []).map((choice) => choice.text).join(' ')} ${item.explanation}`).join(' ');
+  assert.match(readable, /it\u2019s|it is/i);
+  assert.match(readable, /who\u2019s|whose/i);
+  assert.ok(pack.items.some((item) => /read it back as "it is"/i.test(item.explanation)), 'the test that works every time is never given');
+  // And it says WHY possessive pronouns take no apostrophe, rather than asserting it.
+  assert.ok(pack.items.some((item) => /already possessive on its own/i.test((item.choices || []).map((choice) => choice.text).join(' '))));
 });
 
 test('no grammar pack is reachable by a learner', () => {

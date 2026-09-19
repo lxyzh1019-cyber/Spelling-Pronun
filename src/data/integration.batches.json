@@ -170,13 +170,17 @@
       "packIds": [
         "g1.pack.gr.agreement",
         "g1.pack.gr.tense",
-        "g1.pack.gr.antecedents"
+        "g1.pack.gr.antecedents",
+        "g1.pack.gr.possessives",
+        "g1.pack.gr.articles-plurals"
       ],
-      "expectedObjectCount": 72,
+      "expectedObjectCount": 120,
       "routeArtifacts": [
         "/lesson/g1-gr-agreement",
         "/lesson/g1-gr-tense",
-        "/lesson/g1-gr-antecedents"
+        "/lesson/g1-gr-antecedents",
+        "/lesson/g1-gr-possessives",
+        "/lesson/g1-gr-articles-plurals"
       ],
       "checks": [
         "catalog_resolution",

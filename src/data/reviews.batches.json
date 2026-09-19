@@ -311,9 +311,11 @@
       "packIds": [
         "g1.pack.gr.agreement",
         "g1.pack.gr.tense",
-        "g1.pack.gr.antecedents"
+        "g1.pack.gr.antecedents",
+        "g1.pack.gr.possessives",
+        "g1.pack.gr.articles-plurals"
       ],
-      "itemCount": 72,
+      "itemCount": 120,
       "automatedChecks": [
         {
           "rule": "Four distinct choices, exactly one of them the key, and the key is among them",

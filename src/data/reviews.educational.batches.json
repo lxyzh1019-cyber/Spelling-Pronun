@@ -432,6 +432,35 @@
           "albertaPlacement": null,
           "verdict": null,
           "note": null
+        },
+        {
+          "packId": "g1.pack.gr.possessives",
+          "skillId": "GR.possessives",
+          "title": "Showing Who Owns What",
+          "rule": "Ownership is shown two ways: an apostrophe on a noun (the dog’s bowl) or a possessive word that replaces one (his, her, its, their). The possessive form of a pronoun never takes an apostrophe.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.11",
+            "conventions.grade5.02",
+            "conventions.grade6.02"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "g1.pack.gr.articles-plurals",
+          "skillId": "GR.articles-plurals",
+          "title": "Making Words Plural",
+          "rule": "Most words add s. The ones worth learning are the exceptions: words ending in a hissing sound add es, words ending in a consonant and y change to ies, some f words change to ves, and a few do not change at all.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.13",
+            "conventions.grade6.08"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
         }
       ],
       "dimensions": [
