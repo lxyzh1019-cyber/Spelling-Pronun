@@ -321,6 +321,40 @@ Two more earned the hard way:
   it. DEF-37: a guard that pinned the buggy line verbatim and so locked the defect in. When a test reads a
   file as text, name it `source guard:` and assert the *contract*, never the current wording.
 
+## The grade ladder, 2026-09-19
+
+The parent's goal sharpened on 2026-09-19: test the 知识点 from before Grade 5 to find what was missed,
+consolidate Grade 5 and 6 (夯实基础), then prepare for what comes after — and have every tile and every
+question say which grade it belongs to. That last part changes the architecture. A knowledge point used to
+be either in the app or not; it now carries a grade placement, and the app reports POSITION rather than
+pass or fail.
+
+**What exists.** `src/data/curriculum.k6.json` holds all 813 Skills & Procedures across Kindergarten to
+Grade 6, extracted from the PDF's own text layer with column positions preserved. `curriculum.ladder.json`
+places 41 of the app's 50 skills on it; the other 9 get a stated reason instead of a grade. Both are
+generated — `tools/build_k6.mjs` and `tools/build_ladder.mjs` — and neither is hand-edited.
+
+**Why it can be trusted, and what it still cannot claim.** Every rung cites outcome ids that are resolved
+against the extraction, and the build fails on an id that does not exist, so a rung cannot name a grade the
+curriculum does not state. The generalised extractor reproduces all 214 hand-verified Grade 5/6 statements
+word for word, held by test. But **nobody has checked the ladder itself**: `mappingReviewedBy` is null, and
+while it is null no learner is shown a grade at all. That is OPEN-10, and it is the one thing blocking the
+feature the parent asked for.
+
+**Three things a fresh session will get wrong otherwise:**
+
+- Alberta ends **Phonics after Grade 3**, not Grade 4. Phonological Awareness ends after Grade 2, Fluency
+  after Grade 4. The older note in `skillsWithNoGrade56Outcome` says Grade 4 for Phonics and is off by one
+  (DEF-58). The conclusion it supports is still right.
+- A **missing learner grade is not an unplaceable skill**. They were one bucket for an afternoon, and the
+  parent page told anyone who had not yet set a grade that all fifty skills were absent from the
+  curriculum. `no_learner_grade` and `unplaced` are separate and must stay separate.
+- **The recommendation is not to build a separate catch-up app.** A child can be Grade 6 on vocabulary and
+  Grade 3 on apostrophes; one app with grade tags represents that and two apps cannot, and splitting them
+  splits the evidence record. The 48-question below-grade diagnostic exists to test that recommendation
+  rather than assume it, and answers from the SHAPE of the gap — scattered means packs here, wholesale
+  means talk first, less than half the form done means no answer at all.
+
 ## Recent history
 
 - PR #19 — the R2 correction pass (merged). Shipped a blank-page defect to production.
