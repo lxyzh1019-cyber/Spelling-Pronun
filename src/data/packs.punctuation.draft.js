@@ -30,8 +30,16 @@ function makePack(skillId, title, rule, helpSteps, rows) {
   return buildPack({ prefix: 'p1', batch: 'P1', skillId, title, rule, helpSteps, rows });
 }
 
+// Alberta's Grade 5/6 outcome for applying punctuation in writing. Every question here cites it,
+// including the ones that ask what a mark does to the MEANING rather than where it goes.
+//
+// Those questions used to cite conventions.grade5.03 / grade6.03 — "Experiment with capitalization
+// and punctuation to achieve a desired effect" — which is marked `not_measurable` in the mapping,
+// and rightly so: experimenting to achieve an effect is a composition act, and no four-option
+// question can evidence it however good the question is. Citing it was over-claiming. The questions
+// are unchanged and still worth asking; what they actually measure is applying the mark correctly,
+// which is what they now say.
 const APPLY = ['conventions.grade5.02', 'conventions.grade6.02'];
-const EFFECT = ['conventions.grade5.03', 'conventions.grade6.03'];
 
 const rawPunctuationPacks = [
   makePack(
@@ -59,7 +67,7 @@ const rawPunctuationPacks = [
         'The list starts at "a lamp". The words before it say where the things are, which is not part of the list at all.', 4, APPLY),
       choice('Which sentence is punctuated correctly?', 'd',
         [['a', 'My cousins, Ana and Ben came over.'], ['b', 'My cousins Ana, and Ben came over.'], ['c', 'My, cousins Ana and Ben came over.'], ['d', 'My cousins Ana and Ben came over.']],
-        'Only two people are named, so there is no list of three to separate. A comma after "cousins" would turn Ana and Ben into a description of who the cousins are, changing what the sentence says.', 5, EFFECT),
+        'Only two people are named, so there is no list of three to separate. A comma after "cousins" would turn Ana and Ben into a description of who the cousins are, changing what the sentence says.', 5, APPLY),
       choice('How many commas does this sentence need? "The flag is red white and blue."', 'b',
         [['a', 'none'], ['b', 'two'], ['c', 'three'], ['d', 'one']],
         'Three colours are listed, so a comma goes after the first and after the second. The last item takes none.', 6, APPLY),
@@ -78,7 +86,7 @@ const rawPunctuationPacks = [
         'Each of the three items is separated from the next by a comma, and no comma falls inside an item or after the opening verb.', 10, APPLY),
       choice('What does the comma change here? "Let us eat, Grandma." compared with "Let us eat Grandma."', 'c',
         [['a', 'nothing at all'], ['b', 'it makes the sentence a question'], ['c', 'with the comma, Grandma is being spoken to; without it, she is the meal'], ['d', 'it makes the sentence longer']],
-        'A comma before a name marks that the name is being addressed rather than listed or acted upon. The punctuation carries the whole meaning here.', 11, EFFECT),
+        'A comma before a name marks that the name is being addressed rather than listed or acted upon. The punctuation carries the whole meaning here.', 11, APPLY),
       choice('Which sentence lists exactly three things?', 'b',
         [['a', 'I saw a tall, grey bird.'], ['b', 'I saw a heron, an owl, and a hawk.'], ['c', 'I saw a heron and an owl.'], ['d', 'I saw a bird, and then it flew.']],
         'Three separate birds are named and separated. Two adjectives describing one bird are not a list of three, and neither is one bird followed by what happened next.', 12, APPLY),
@@ -93,7 +101,7 @@ const rawPunctuationPacks = [
         'Two items joined by "and" need no comma, and nothing separates a verb from what it acts on.', 15, APPLY),
       choice('How many items are in this list? "We invited Ravi, my neighbour, and two friends."', 'd',
         [['a', 'it is certainly two'], ['b', 'it is certainly four'], ['c', 'it is certainly one'], ['d', 'either two or three, depending on whether Ravi is the neighbour']],
-        'If "my neighbour" tells you who Ravi is, two people were invited; if it names someone else, three were. The same commas allow both readings, which is why a writer sometimes has to reword.', 16, EFFECT),
+        'If "my neighbour" tells you who Ravi is, two people were invited; if it names someone else, three were. The same commas allow both readings, which is why a writer sometimes has to reword.', 16, APPLY),
       choice('Which sentence needs a comma added?', 'b',
         [['a', 'He brought a coat and boots.'], ['b', 'He brought a coat boots and a scarf.'], ['c', 'He brought a warm coat.'], ['d', 'He brought a coat, and he left.']],
         'Three items are listed with nothing between them. The others list two items, describe one item, or join two complete statements.', 17, APPLY),
@@ -116,7 +124,7 @@ const rawPunctuationPacks = [
         'Four items means a comma after each of the first three. The final item takes none.', 22, APPLY),
       choice('Which sentence changes meaning if the comma is removed? ', 'd',
         [['a', 'I bought apples, pears, and plums.'], ['b', 'She packed a hat, a coat, and gloves.'], ['c', 'We saw rain, hail, and snow.'], ['d', 'Thank you, Marcus.']],
-        'Removing the comma before a name being spoken to turns that person into the thing being thanked for. In a plain list, removing a comma makes it harder to read but does not change who did what.', 23, EFFECT),
+        'Removing the comma before a name being spoken to turns that person into the thing being thanked for. In a plain list, removing a comma makes it harder to read but does not change who did what.', 23, APPLY),
     ],
   ),
 
@@ -202,7 +210,7 @@ const rawPunctuationPacks = [
         'The whole opening part is "Before you go to bed", so the comma follows it and falls nowhere inside it.', 22, APPLY),
       choice('Which sentence would read the same with or without its comma?', 'c',
         [['a', 'Let us eat, Marcus.'], ['b', 'No, thank you.'], ['c', 'When the film ended, we left.'], ['d', 'Thank you, Grandma.']],
-        'A comma at a clause join makes a sentence easier to read but changes nothing about who did what. A comma before a name changes who is being spoken to.', 23, EFFECT),
+        'A comma at a clause join makes a sentence easier to read but changes nothing about who did what. A comma before a name changes who is being spoken to.', 23, APPLY),
     ],
   ),
 
@@ -265,7 +273,7 @@ const rawPunctuationPacks = [
         'Two teams own the buses. The plural owner already ends in s, so the apostrophe follows it.', 15, APPLY),
       choice('Which of these could mean either one person or several, depending on where the apostrophe goes?', 'a',
         [['a', 'the player\u2019s / the players\u2019 changing room'], ['b', 'don\u2019t / do not'], ['c', 'its / it\u2019s'], ['d', 'we\u2019re / we are']],
-        'Moving the apostrophe past the s changes the owner from one to many. The others change what kind of word it is, not how many people.', 16, EFFECT),
+        'Moving the apostrophe past the s changes the owner from one to many. The others change what kind of word it is, not how many people.', 16, APPLY),
       choice('Which sentence is correct?', 'b',
         [['a', 'Thats\u2019 the one I meant.'], ['b', 'That\u2019s the one I meant.'], ['c', 'Thats the one I meant.'], ['d', 'Tha\u2019ts the one I meant.']],
         'The i of "is" is removed and the apostrophe stands there.', 17, APPLY),
@@ -288,7 +296,7 @@ const rawPunctuationPacks = [
         'The o of "not" is the only letter removed.', 22, APPLY),
       choice('Which pair means two different things?', 'c',
         [['a', 'don\u2019t and do not'], ['b', 'we\u2019ll and we will'], ['c', 'the horse\u2019s field and the horses\u2019 field'], ['d', 'she\u2019s and she is']],
-        'One is a field belonging to one horse and the other to several. The other pairs are the same words written short or written out.', 23, EFFECT),
+        'One is a field belonging to one horse and the other to several. The other pairs are the same words written short or written out.', 23, APPLY),
     ],
   ),
 
@@ -336,7 +344,7 @@ const rawPunctuationPacks = [
         'The exclamation mark already ends the spoken part, so no comma is added after it, and "he said" is not a new sentence.', 10, APPLY),
       choice('Which sentence uses quotation marks for a word used in a special way?', 'c',
         [['a', 'She said, "Come in."'], ['b', 'He asked if we were ready.'], ['c', 'The "shortcut" took us an hour longer.'], ['d', 'They shouted, "Stop!"']],
-        'Marks around a single word can signal that the word is not meant plainly. Nobody is speaking in that sentence.', 11, EFFECT),
+        'Marks around a single word can signal that the word is not meant plainly. Nobody is speaking in that sentence.', 11, APPLY),
       choice('What is wrong with: "I am coming." said Nadia.', 'b',
         [['a', 'nothing'], ['b', 'the full stop should be a comma, because the sentence continues'], ['c', 'the quotation marks are in the wrong place'], ['d', 'Nadia should come first']],
         'A full stop would end the sentence, but "said Nadia" is still to come, so a comma keeps it going.', 12, APPLY),
@@ -354,7 +362,7 @@ const rawPunctuationPacks = [
         'A comma after the speaking word, a capital to start the spoken sentence, and the full stop inside the closing mark.', 16, APPLY),
       choice('What does changing "He said the test was easy" to \u2018He said, "The test was easy."\u2019 do?', 'a',
         [['a', 'it claims those were his exact words'], ['b', 'it makes the sentence a question'], ['c', 'it changes who was speaking'], ['d', 'nothing at all']],
-        'Quotation marks are a claim about accuracy. A report only has to be true in substance; a quotation has to be word for word.', 17, EFFECT),
+        'Quotation marks are a claim about accuracy. A report only has to be true in substance; a quotation has to be word for word.', 17, APPLY),
 
       choice('Rewrite this as a quotation: Ana said she would call later. Which is right?', 'b',
         [['a', 'Ana said, "she would call later."'], ['b', 'Ana said, "I will call later."'], ['c', 'Ana said "I will call later".'], ['d', '"Ana said, I will call later."']],
@@ -374,7 +382,7 @@ const rawPunctuationPacks = [
         'When the speech comes first, the comma replaces its full stop and stays inside the marks.', 22, APPLY),
       choice('Which pair means two different things?', 'd',
         [['a', 'She said, "Come in." and She said, "Come in."'], ['b', 'He asked, "Why?" and He asked, "Why?"'], ['c', 'They shouted, "Now!" and They shouted, "Now!"'], ['d', 'He called it a bargain. and He called it a "bargain".']],
-        'Marks around the one word suggest the writer does not accept it, which the plain sentence does not say at all.', 23, EFFECT),
+        'Marks around the one word suggest the writer does not accept it, which the plain sentence does not say at all.', 23, APPLY),
     ],
   ),
 
@@ -389,7 +397,7 @@ const rawPunctuationPacks = [
       'If the name is in the middle, it needs a comma on both sides.',
     ],
     [
-      example('Read these two: "Let us eat, Grandma." and "Let us eat Grandma." One is an invitation to a meal and the other is a plan to eat her.', 'The comma is the only difference, and it carries the whole meaning. Nothing else in the sentence changes.', 1, EFFECT),
+      example('Read these two: "Let us eat, Grandma." and "Let us eat Grandma." One is an invitation to a meal and the other is a plan to eat her.', 'The comma is the only difference, and it carries the whole meaning. Nothing else in the sentence changes.', 1, APPLY),
       example('Read this: "Marcus, could you close the door?" The name is somebody being spoken to, so a comma follows it.', 'Compare "Marcus closed the door", where Marcus is being talked about and does the closing. There the name is part of the sentence and takes no comma.', 1, APPLY),
 
       choice('Which sentence is speaking TO Priya?', 'b',
@@ -397,7 +405,7 @@ const rawPunctuationPacks = [
         'A comma after the name marks it as somebody being addressed rather than somebody doing something.', 2, APPLY),
       choice('What does the comma change? "Thank you, Marcus." compared with "Thank you Marcus."', 'c',
         [['a', 'nothing'], ['b', 'it makes it a question'], ['c', 'with the comma, Marcus is being thanked; without it, "Marcus" reads as the thing being thanked for'], ['d', 'it makes it louder']],
-        'The punctuation decides whether the name is the person spoken to or part of what is said.', 3, EFFECT),
+        'The punctuation decides whether the name is the person spoken to or part of what is said.', 3, APPLY),
       choice('Where does the comma belong? "Ravi can you pass the salt?"', 'a',
         [['a', 'after "Ravi"'], ['b', 'after "can"'], ['c', 'after "you"'], ['d', 'no comma is needed']],
         'Ravi is being asked, so his name is separated from the question itself.', 4, APPLY),
@@ -422,7 +430,7 @@ const rawPunctuationPacks = [
         'The greeting, the person addressed and the question are three parts, and the name in the middle is separated on both sides.', 10, APPLY),
       choice('Which pair means two different things?', 'b',
         [['a', '"Come in, Sam." and "Sam, come in."'], ['b', '"I know, Ben." and "I know Ben."'], ['c', '"Hello, Ana." and "Ana, hello."'], ['d', '"Wait, Kai." and "Kai, wait."']],
-        'One of the pair agrees with Ben about something; the other says you are acquainted with him. The rest only change the word order.', 11, EFFECT),
+        'One of the pair agrees with Ben about something; the other says you are acquainted with him. The rest only change the word order.', 11, APPLY),
       choice('Where does the comma belong? "That is not what I meant Dad."', 'c',
         [['a', 'after "that"'], ['b', 'after "not"'], ['c', 'after "meant"'], ['d', 'no comma is needed']],
         'The name comes at the end, so the comma goes where the statement finishes and the address begins.', 12, APPLY),
@@ -434,7 +442,7 @@ const rawPunctuationPacks = [
         'The name is the subject of the sentence and doing the waiting.', 14, APPLY),
       choice('Which sentence would change meaning if its comma were removed?', 'c',
         [['a', 'We packed bread, cheese, and fruit.'], ['b', 'When it rained, we left.'], ['c', 'Look out, Jo.'], ['d', 'Although it was late, we stayed.']],
-        'Removing the comma before a name turns the person being warned into the thing being looked out for. The others only become harder to read.', 15, EFFECT),
+        'Removing the comma before a name turns the person being warned into the thing being looked out for. The others only become harder to read.', 15, APPLY),
       choice('Where do the commas belong? "No Ana that is not right."', 'b',
         [['a', 'after "no" only'], ['b', 'after "no" and after "Ana"'], ['c', 'after "Ana" only'], ['d', 'no commas are needed']],
         'Three parts: the answer, the person spoken to, and the statement. Each needs separating from the next.', 16, APPLY),
@@ -460,7 +468,7 @@ const rawPunctuationPacks = [
         'The statement ends at "right" and the person spoken to follows it.', 22, APPLY),
       choice('Why does this comma matter more than most?', 'd',
         [['a', 'it is harder to remember'], ['b', 'it is used more often'], ['c', 'it is a newer rule'], ['d', 'leaving it out can change who the sentence is about, not just how easily it reads']],
-        'Most commas make a sentence easier to follow. This one decides whether a name is the person being spoken to or part of what is being said.', 23, EFFECT),
+        'Most commas make a sentence easier to follow. This one decides whether a name is the person being spoken to or part of what is being said.', 23, APPLY),
     ],
   ),
 ];

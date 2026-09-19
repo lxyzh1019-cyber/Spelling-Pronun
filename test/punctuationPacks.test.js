@@ -94,9 +94,15 @@ test('no punctuation pack is reachable by a learner', () => {
 
 // The point of the comma packs, and the thing that separates a child who can punctuate from one who
 // has memorised a placement. Several questions ask what the sentence MEANS with the mark and without.
+//
+// This used to identify those questions by the outcome they cited (conventions.grade5.03, "Experiment
+// with capitalization and punctuation to achieve a desired effect"). That citation was an over-claim
+// — the mapping marks it not_measurable, because experimenting to achieve an effect is composition —
+// so it was removed, and this now identifies them by what they ask, which is what mattered anyway.
+// The rule against citing a not_measurable outcome lives in test/outcomeClaims.test.js.
 test('the packs ask about meaning, not only about placement', () => {
-  const meaning = items.filter((item) => (item.curriculumOutcomeIds || []).some((id) => /grade[56]\.03$/.test(id)));
-  assert.ok(meaning.length >= 6, `only ${meaning.length} questions ask what the punctuation does to the meaning`);
+  const meaning = items.filter((item) => /mean|change|differ|matter/i.test(item.prompt));
+  assert.ok(meaning.length >= 12, `only ${meaning.length} questions ask what the punctuation does to the meaning`);
   // "Let us eat, Grandma" is the case that makes it unarguable: the comma decides who is the meal.
   assert.ok(items.some((item) => /Grandma/.test(item.prompt)), 'the clearest example of a comma changing meaning is missing');
 });

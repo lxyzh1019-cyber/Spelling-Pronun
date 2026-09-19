@@ -31,8 +31,14 @@ function makePack(skillId, title, rule, helpSteps, rows) {
 const CLAUSES = ['conventions.grade6.06'];
 const SIMPLE_COMPOUND = ['conventions.grade6.07'];
 const JOIN = ['conventions.grade5.10', 'conventions.grade6.07'];
+// "Edit writing for spelling, punctuation, and grammar" — the Grade 5/6 outcome these packs measure.
+//
+// The repair questions used to cite writing.grade5.07 / grade6.09, "Revise drafts to improve the
+// fluency, coherence, sequence, and logical support of ideas", which the mapping marks
+// `not_measurable`. Revising a draft is composition: a child does it to their own writing over time,
+// and a multiple-choice question cannot evidence it. Finding and mending an error in a given
+// sentence is editing, which is exactly what the outcome below names.
 const EDIT = ['writing.grade5.08', 'writing.grade6.10'];
-const REVISE = ['writing.grade5.07', 'writing.grade6.09'];
 
 const rawSentencePacks = [
   makePack(
@@ -304,27 +310,27 @@ const rawSentencePacks = [
       'Check the meaning is still what the writer intended.',
     ],
     [
-      example('Take "The dogs barks loudly." One repair is "The dogs bark loudly." Another is "The dog barks loudly."', 'Both are correct English and they mean different things. Which repair is right depends on how many dogs there were, which is why naming the mistake comes before fixing it.', 1, REVISE),
-      example('Take "Its raining." Adding the apostrophe gives "It’s raining." Changing it to "Its raining outside" fixes nothing.', 'The smallest change that puts it right is the one to make. Adding words around a mistake leaves the mistake there.', 1, REVISE),
+      example('Take "The dogs barks loudly." One repair is "The dogs bark loudly." Another is "The dog barks loudly."', 'Both are correct English and they mean different things. Which repair is right depends on how many dogs there were, which is why naming the mistake comes before fixing it.', 1, EDIT),
+      example('Take "Its raining." Adding the apostrophe gives "It’s raining." Changing it to "Its raining outside" fixes nothing.', 'The smallest change that puts it right is the one to make. Adding words around a mistake leaves the mistake there.', 1, EDIT),
 
       choice('Which repair fixes "The books is on the shelf." with the smallest change?', 'a',
         [['a', 'The books are on the shelf.'], ['b', 'The book is on the shelf, and there are others.'], ['c', 'On the shelf are the books.'], ['d', 'There is a book on the shelf.']],
-        'Changing the one word that does not match keeps the meaning exactly as it was.', 2, REVISE),
+        'Changing the one word that does not match keeps the meaning exactly as it was.', 2, EDIT),
       choice('"Yesterday she walks to school." Which repair is right?', 'b',
         [['a', 'Today she walks to school.'], ['b', 'Yesterday she walked to school.'], ['c', 'Yesterday she is walking to school.'], ['d', 'She walks to school.']],
-        'The time word is what the writer meant, so the verb is what has to change to match it.', 3, REVISE),
+        'The time word is what the writer meant, so the verb is what has to change to match it.', 3, EDIT),
       choice('Which repair changes the MEANING as well as fixing the mistake?', 'c',
         [['a', '"The childs coat" → "The child’s coat"'], ['b', '"dont" → "don’t"'], ['c', '"The dogs barks" → "The dog barks", when there were several dogs'], ['d', '"wher" → "where"']],
-        'Making the subject singular fixes the mismatch but says something the writer did not mean.', 4, REVISE),
+        'Making the subject singular fixes the mismatch but says something the writer did not mean.', 4, EDIT),
       choice('"Where is the key." Which repair is right?', 'd',
         [['a', 'Where is the key'], ['b', 'where is the key.'], ['c', 'Where, is the key.'], ['d', 'Where is the key?']],
         'The sentence asks something, so the mark at the end has to say so.', 5, EDIT),
       choice('"I looked everywhere, I could not find it." Which repair keeps both ideas in one sentence?', 'b',
         [['a', 'I looked everywhere. I could not find it.'], ['b', 'I looked everywhere, but I could not find it.'], ['c', 'I looked everywhere I could not find it.'], ['d', 'I looked everywhere and I looked again.']],
-        'A joining word after the comma holds both statements together and says how they relate.', 6, REVISE),
+        'A joining word after the comma holds both statements together and says how they relate.', 6, EDIT),
       choice('After repairing "her and me went", what should you do next?', 'c',
         [['a', 'nothing'], ['b', 'add a comma'], ['c', 'read the whole sentence again to check nothing else broke'], ['d', 'change the verb']],
-        'A repair in one place can leave the rest disagreeing with it, which only a re-read catches.', 7, REVISE),
+        'A repair in one place can leave the rest disagreeing with it, which only a re-read catches.', 7, EDIT),
 
       choice('"Because the gate was locked." Which repair is best?', 'a',
         [['a', 'Because the gate was locked, we climbed the fence.'], ['b', 'The gate was locked because.'], ['c', 'Because, the gate was locked.'], ['d', 'The gate was locked!']],
@@ -340,13 +346,13 @@ const rawSentencePacks = [
         'A comma after the speaking word, a capital to start the speech, and the end mark inside the closing mark.', 11, EDIT),
       choice('Which is the SMALLEST repair for "He dont know."?', 'a',
         [['a', 'He does not know.'], ['b', 'He has no idea about it.'], ['c', 'He doesn’t know anything.'], ['d', 'Nobody knows.']],
-        'Fixing the verb form fixes both the mismatch and the missing apostrophe at once, without adding anything.', 12, REVISE),
+        'Fixing the verb form fixes both the mismatch and the missing apostrophe at once, without adding anything.', 12, EDIT),
       choice('You repair "The dogs bowl was empty" to "The dog’s bowl was empty". What have you also decided?', 'b',
         [['a', 'nothing'], ['b', 'that there was one dog — "dogs’" would mean several'], ['c', 'that the bowl was full'], ['d', 'that it is a question']],
-        'Where the apostrophe goes settles how many owners there are, so the repair makes a claim about the facts.', 13, REVISE),
+        'Where the apostrophe goes settles how many owners there are, so the repair makes a claim about the facts.', 13, EDIT),
       choice('"It started raining, we ran inside." Which repair does NOT work?', 'd',
         [['a', 'It started raining, so we ran inside.'], ['b', 'It started raining. We ran inside.'], ['c', 'When it started raining, we ran inside.'], ['d', 'It started raining, then we ran inside.']],
-        '"Then" says when something happened rather than joining two statements, so the comma is left doing work it cannot do.', 14, REVISE),
+        '"Then" says when something happened rather than joining two statements, so the comma is left doing work it cannot do.', 14, EDIT),
       choice('A sentence has a spelling mistake and a missing capital. How many changes does the repair need?', 'b',
         [['a', 'one'], ['b', 'two — one for each'], ['c', 'three'], ['d', 'it depends on the length']],
         'Each mistake is repaired separately; fixing one does not fix the other.', 15, EDIT),
@@ -355,27 +361,27 @@ const rawSentencePacks = [
         'Nobody is named as doing the walking, so naming them is the repair.', 16, CLAUSES),
       choice('Why read the whole sentence again after a repair?', 'a',
         [['a', 'a change in one place can leave another part no longer agreeing with it'], ['b', 'to make it longer'], ['c', 'to check the spelling only'], ['d', 'there is no need']],
-        'Changing a subject from plural to singular, for instance, leaves every verb that matched it wrong.', 17, REVISE),
+        'Changing a subject from plural to singular, for instance, leaves every verb that matched it wrong.', 17, EDIT),
 
       choice('Repair all the mistakes in "i cant find it". Which is right?', 'b',
         [['a', 'I cant find it.'], ['b', 'I can’t find it.'], ['c', 'i can’t find it.'], ['d', 'I can’t find it']],
         'The capital, the apostrophe and the end mark all have to be right together.', 18, EDIT),
       choice('A friend writes "The teams bus arrived, they were late." and says there were two teams. Which repair is right?', 'd',
         [['a', 'The team’s bus arrived, they were late.'], ['b', 'The teams bus arrived, but they were late.'], ['c', 'The teams’ bus arrived, they were late.'], ['d', 'The teams’ bus arrived, but they were late.']],
-        'Two teams puts the apostrophe after the s, and the two statements still need a joining word after the comma. Both mistakes have to be repaired, not one.', 19, REVISE),
+        'Two teams puts the apostrophe after the s, and the two statements still need a joining word after the comma. Both mistakes have to be repaired, not one.', 19, EDIT),
 
       choice('Which repair of "She walk to school every day." is right?', 'c',
         [['a', 'She walking to school every day.'], ['b', 'She walk to school every days.'], ['c', 'She walks to school every day.'], ['d', 'She walked to school every day.']],
-        'The time words say this happens regularly, so the verb form for a single subject in the present is what is needed.', 20, REVISE),
+        'The time words say this happens regularly, so the verb form for a single subject in the present is what is needed.', 20, EDIT),
       choice('"The library was shut we went to the park." Which repair is best?', 'a',
         [['a', 'The library was shut, so we went to the park.'], ['b', 'The library was shut, we went to the park.'], ['c', 'The library was shut we went, to the park.'], ['d', 'The library was shut. So.']],
-        'The second statement is the result of the first, and a joining word after a comma says so.', 21, REVISE),
+        'The second statement is the result of the first, and a joining word after a comma says so.', 21, EDIT),
       choice('Which repair keeps the writer’s meaning exactly?', 'b',
         [['a', '"The boxes is heavy" → "The box is heavy"'], ['b', '"The boxes is heavy" → "The boxes are heavy"'], ['c', '"The boxes is heavy" → "It is heavy"'], ['d', '"The boxes is heavy" → "Heavy boxes."']],
-        'Changing the verb keeps every box; changing the subject quietly throws most of them away.', 22, REVISE),
+        'Changing the verb keeps every box; changing the subject quietly throws most of them away.', 22, EDIT),
       choice('When is the biggest repair the right one?', 'd',
         [['a', 'always — more changes are safer'], ['b', 'never'], ['c', 'when the sentence is long'], ['d', 'when the smallest change would leave the sentence saying something the writer did not mean']],
-        'The rule is the smallest change that puts it right. A change that fixes the grammar and breaks the meaning has not put it right.', 23, REVISE),
+        'The rule is the smallest change that puts it right. A change that fixes the grammar and breaks the meaning has not put it right.', 23, EDIT),
     ],
   ),
 ];

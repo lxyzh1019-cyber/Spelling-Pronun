@@ -44,10 +44,52 @@ function emptyTally() {
   return COVERAGE_STATES.reduce((tally, state) => ({ ...tally, [state]: 0 }), {});
 }
 
+// Which outcomes have draft content written against them, worked out from the packs themselves.
+//
+// This used to be a hand-written `draftedIn` field on each outcome in the mapping, and it drifted
+// within a day: the punctuation and sentence packs cited five outcomes that the mapping still showed
+// as unwritten, so /parent reported 9 outcomes as drafted when 14 had content. A hand-maintained
+// cross-reference between two files is a cross-reference that goes stale, so this derives it.
+//
+// The outcome's own `draftedIn` is still honoured, because an outcome can be drafted against by
+// something that is not a pack.
+export function draftedByPack(packs = []) {
+  const drafted = new Map();
+  for (const pack of packs) {
+    for (const id of pack.curriculumOutcomeIds || []) {
+      if (!drafted.has(id)) drafted.set(id, []);
+      if (!drafted.get(id).includes(pack.id)) drafted.get(id).push(pack.id);
+    }
+  }
+  return drafted;
+}
+
+// Which app skills measure an outcome. Same problem, same fix, and it had drifted further than
+// `draftedIn`: the mapping listed `PU.capitals-endmarks` alone against "Apply punctuation to support
+// effective written communication", because that was the only punctuation pack on the day the
+// mapping was written. Five more exist now.
+//
+// The union, never a replacement. An outcome keeps every skill the mapping declares and gains any
+// pack that cites it, so a hand-made judgement is added to rather than overwritten — which matters
+// for the nine `covered` outcomes, where these ids decide whose mastery counts.
+export function skillsForOutcome(outcome, packsByOutcome = new Map()) {
+  const declared = outcome.skillIds || [];
+  const fromPacks = (packsByOutcome.get(outcome.id) || []).map((pack) => pack.skillId);
+  return [...new Set([...declared, ...fromPacks])];
+}
+
 // One row per organizing idea per grade, plus the outcomes themselves so a parent can read the
 // curriculum's own words rather than a label Claude invented for them.
-export function buildCoverageReport(mapping, { masteryBySkill = new Map(), grade = null } = {}) {
+export function buildCoverageReport(mapping, { masteryBySkill = new Map(), grade = null, packs = [] } = {}) {
   const gradeKeys = grade ? [grade] : ['grade5', 'grade6'];
+  const draftedPacks = draftedByPack(packs);
+  const packsByOutcome = new Map();
+  for (const pack of packs) {
+    for (const id of pack.curriculumOutcomeIds || []) {
+      if (!packsByOutcome.has(id)) packsByOutcome.set(id, []);
+      packsByOutcome.get(id).push(pack);
+    }
+  }
   const ideas = (mapping?.organizingIdeas || []).map((idea) => {
     const grades = gradeKeys
       .filter((key) => idea.grades?.[key])
@@ -56,14 +98,19 @@ export function buildCoverageReport(mapping, { masteryBySkill = new Map(), grade
         const outcomes = entry.skillsAndProcedures.map((outcome) => ({
           id: outcome.id,
           text: outcome.text,
-          state: outcomeState(outcome, masteryBySkill),
-          skillIds: outcome.skillIds,
+          state: outcomeState({ ...outcome, skillIds: skillsForOutcome(outcome, packsByOutcome) }, masteryBySkill),
+          skillIds: skillsForOutcome(outcome, packsByOutcome),
           note: outcome.note,
           // Content written for this outcome that is still `draft`. It does not change the state:
           // a draft pack has not been challenged, reviewed, integrated or approved, so no child can
           // meet it, and reporting the outcome as measured would claim a measurement nobody can take.
           // It changes what the row should SAY — "written, waiting for you" rather than "not built".
-          ...(outcome.draftedIn ? { draftedIn: outcome.draftedIn } : {}),
+          // An array, as the mapping declares it — callers iterate it. The union of what the mapping
+          // says and what the packs actually cite.
+          ...(() => {
+            const all = [...new Set([...(outcome.draftedIn || []), ...(draftedPacks.get(outcome.id) || [])])];
+            return all.length ? { draftedIn: all } : {};
+          })(),
         }));
         const tally = emptyTally();
         for (const outcome of outcomes) tally[outcome.state] += 1;

@@ -131,7 +131,13 @@ export default function ParentPage() {
     { batch: 'S1', packs: sentencePacks },
   ]), []);
   const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
-  const coverageReport = useMemo(() => buildCoverageReport(curriculumMapping), []);
+  // The drafted packs are passed in so the report works out for itself which outcomes have content
+  // written against them. It used to read a hand-written `draftedIn` on each outcome, which drifted
+  // within a day of the packs being written.
+  const coverageReport = useMemo(
+    () => buildCoverageReport(curriculumMapping, { packs: [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks] }),
+    [],
+  );
   const coverage = useMemo(() => coverageHeadline(coverageReport), [coverageReport]);
   // Where each skill sits for THIS learner. Shown here whether or not the mapping has been verified,
   // because this page is how it gets verified — gating the parent's own view would make the gate on
