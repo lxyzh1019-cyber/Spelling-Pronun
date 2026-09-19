@@ -18,10 +18,10 @@ import { allLessonCatalog, lessonBySessionId, sessionIdForPack } from '../src/da
 const items = grammarPacks.flatMap((pack) => pack.items);
 const answered = items.filter((item) => item.role !== 'worked_example');
 
-test('the five grammar skills built so far all have full packs', () => {
+test('the six grammar skills built so far all have full packs', () => {
   assert.deepEqual(
     grammarPacks.map((pack) => pack.skillId).sort(),
-    ['GR.agreement', 'GR.antecedents', 'GR.articles-plurals', 'GR.possessives', 'GR.tense'],
+    ['GR.agreement', 'GR.antecedents', 'GR.articles-plurals', 'GR.possessives', 'GR.pronoun-types', 'GR.tense'],
   );
   for (const pack of grammarPacks) {
     assert.equal(pack.items.length, 24, `${pack.id} is not a full pack`);
@@ -121,7 +121,7 @@ test('each pack cites real Grade 5/6 outcomes and sits on the ladder', () => {
   // work, and the tile will say so once the mapping is verified.
   const atGrade = grammarPacks.filter((pack) => !ladder.skills.find((skill) => skill.skillId === pack.skillId).endsBeforeGrade5);
   const revisiting = grammarPacks.filter((pack) => ladder.skills.find((skill) => skill.skillId === pack.skillId).endsBeforeGrade5);
-  assert.deepEqual(atGrade.map((pack) => pack.skillId).sort(), ['GR.agreement', 'GR.antecedents', 'GR.tense']);
+  assert.deepEqual(atGrade.map((pack) => pack.skillId).sort(), ['GR.agreement', 'GR.antecedents', 'GR.pronoun-types', 'GR.tense']);
   assert.deepEqual(revisiting.map((pack) => pack.skillId).sort(), ['GR.articles-plurals', 'GR.possessives']);
 });
 
@@ -158,4 +158,32 @@ test('no grammar pack is reachable by a learner', () => {
     for (const item of pack.items) assert.equal(item.releaseStatus, 'not_released');
   }
   assert.ok(answered.length > 0);
+});
+
+// One pack for the five pronoun types, and the reason it is one rather than five.
+//
+// Alberta states a single outcome for all of them — "Distinguish between different types of pronouns
+// used in a sentence" — which names the class and lists no types. Five packs would have shared one
+// citation, which is the disagreement already recorded in `disputedByLadder`. Parent decision on
+// 2026-09-19: build one now, split later if the children's own answers ask for it. The five
+// type-specific skills stay declared and empty rather than being deleted, so the split stays open.
+test('the pronoun-types pack covers all five kinds, and the five skills stay open', () => {
+  const pack = grammarPacks.find((entry) => entry.skillId === 'GR.pronoun-types');
+  assert.ok(pack, 'the pronoun-types pack is missing');
+  const readable = pack.items.map((item) => `${item.prompt} ${(item.choices || []).map((choice) => choice.text).join(' ')} ${item.explanation}`).join(' ');
+  // All five kinds are actually taught, not just named in the rule.
+  assert.match(readable, /myself|herself|himself|itself|themselves/i, 'reflexive pronouns are not asked');
+  assert.match(readable, /\bwhich\b|\bthat\b/i, 'relative pronouns are not asked');
+  assert.match(readable, /\bwho\b|\bwhom\b|\bwhat\b/i, 'interrogative pronouns are not asked');
+  assert.match(readable, /\bthis\b|\bthose\b|\bthese\b/i, 'demonstrative pronouns are not asked');
+  assert.match(readable, /anyone|everything|several|nothing/i, 'indefinite pronouns are not asked');
+  // The hard part: the same word does different jobs, so the sentence decides, not the spelling.
+  assert.ok(pack.items.some((item) => /the same word can do different jobs/i.test(readable)));
+  assert.ok(pack.items.some((item) => /asks in one sentence and joins in another/i.test((item.choices || []).map((choice) => choice.text).join(' '))));
+  // The five stay declared with no pack of their own, which is what keeps the split available.
+  const built = new Set(grammarPacks.map((entry) => entry.skillId));
+  for (const skillId of ['GR.reflexives', 'GR.relative', 'GR.interrogative', 'GR.demonstrative', 'GR.indefinite']) {
+    assert.ok(ladder.skills.some((skill) => skill.skillId === skillId), `${skillId} left the ladder`);
+    assert.ok(!built.has(skillId), `${skillId} was given its own pack without the split being decided`);
+  }
 });

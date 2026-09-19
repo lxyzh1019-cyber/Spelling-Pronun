@@ -5,7 +5,7 @@
   "batches": [
     {
       "id": "C1",
-      "expectedObjectCount": 480,
+      "expectedObjectCount": 504,
       "expectedEpisodeCount": 6,
       "entries": [
         {
@@ -175,6 +175,19 @@
             "ab-eal-benchmarks-4-6"
           ],
           "sourcePreparationStatus": "mapped_for_item_level_review"
+        },
+        {
+          "skillId": "GR.pronoun-types",
+          "workshopId": "workshop.gr.pronoun-types",
+          "episodeIds": [
+            "c1.chapter3.episode2"
+          ],
+          "sourceIds": [
+            "ca-language-portal-personal-pronouns",
+            "ab-elal-2022-overview"
+          ],
+          "sourcePreparationStatus": "needs_item_level_source_selection",
+          "note": "The pack that was actually built for Alberta's single outcome covering all five pronoun types (conventions.grade5.11). The five type-specific entries above stay planned: whether any of them needs a pack of its own is a question the children's answers can settle."
         },
         {
           "skillId": "PU.list-commas",

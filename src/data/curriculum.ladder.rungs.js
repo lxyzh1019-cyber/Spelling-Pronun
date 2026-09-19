@@ -101,11 +101,16 @@ export const skillRungs = {
   // Alberta names the category, not the five types. Grade 5 Conventions says "Distinguish between
   // different types of pronouns used in a sentence" and lists none, so each of these five sits under
   // one outcome and none of them has an outcome of its own. See `disputedByLadder` below.
-  'GR.reflexives': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types.' },
-  'GR.relative': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types.' },
-  'GR.interrogative': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types.' },
-  'GR.demonstrative': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types.' },
-  'GR.indefinite': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types.' },
+  // All six share one outcome, because Alberta states one: "Distinguish between different types of
+  // pronouns used in a sentence" names the class and lists no types. `GR.pronoun-types` is the pack
+  // that was actually built, and the five type-specific skills stay declared and empty rather than
+  // being deleted — splitting them out later is a decision the children's own answers can inform.
+  'GR.pronoun-types': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Telling the five kinds of pronoun apart, which is exactly what Alberta\u2019s single outcome for them asks. First stated at Grade 5, so this is at grade.' },
+  'GR.reflexives': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later.' },
+  'GR.relative': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later.' },
+  'GR.interrogative': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later.' },
+  'GR.demonstrative': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later.' },
+  'GR.indefinite': { introducedBy: ['conventions.grade5.11'], consolidatedBy: ['conventions.grade5.11'], note: 'Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later.' },
 
   // ——— Sentences ———
   'SE.complete': {

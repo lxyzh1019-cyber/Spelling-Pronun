@@ -313,9 +313,10 @@
         "g1.pack.gr.tense",
         "g1.pack.gr.antecedents",
         "g1.pack.gr.possessives",
-        "g1.pack.gr.articles-plurals"
+        "g1.pack.gr.articles-plurals",
+        "g1.pack.gr.pronoun-types"
       ],
-      "itemCount": 120,
+      "itemCount": 144,
       "automatedChecks": [
         {
           "rule": "Four distinct choices, exactly one of them the key, and the key is among them",

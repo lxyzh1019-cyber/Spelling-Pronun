@@ -2056,7 +2056,8 @@
               "coverage": "partial",
               "skillIds": [
                 "GR.subject-object-pronouns",
-                "GR.possessives"
+                "GR.possessives",
+                "GR.pronoun-types"
               ],
               "note": "Subject and object forms are covered; GR.possessives is declared with no content, and the other types have no skill at all."
             },

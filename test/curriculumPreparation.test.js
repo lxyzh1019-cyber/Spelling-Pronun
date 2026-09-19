@@ -10,8 +10,10 @@ test('C1/C2 preparation maps every future pack without claiming authored curricu
   assert.deepEqual(result.errors, []);
   // C3 was added on 2026-09-18 from the Alberta mapping, which supersedes the C1/C2 ordering: the
   // eight Vocabulary and Comprehension skills are the largest unmeasured part of the curriculum.
-  assert.equal(result.preparedPackCount, 46);
-  assert.equal(result.preparedObjectCount, 1104);
+  // GR.pronoun-types joined C1 on 2026-09-19 — one pack for Alberta's single pronoun-types outcome,
+  // with the five type-specific skills left planned in case the split is wanted later.
+  assert.equal(result.preparedPackCount, 47);
+  assert.equal(result.preparedObjectCount, 1128);
   assert.equal(preparation.status, 'pre_pilot_source_and_mapping_preparation');
   assert.ok(preparation.batches.flatMap((batch) => batch.entries).some((entry) => entry.sourcePreparationStatus.includes('needs_specialist')));
 });

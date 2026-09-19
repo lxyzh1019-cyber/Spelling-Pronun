@@ -256,7 +256,7 @@
         ],
         "alsoAt": []
       },
-      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types."
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
     },
     {
       "skillId": "GR.indefinite",
@@ -284,7 +284,7 @@
         ],
         "alsoAt": []
       },
-      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types."
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
     },
     {
       "skillId": "GR.interrogative",
@@ -312,7 +312,7 @@
         ],
         "alsoAt": []
       },
-      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types."
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
     },
     {
       "skillId": "GR.possessives",
@@ -373,6 +373,34 @@
       }
     },
     {
+      "skillId": "GR.pronoun-types",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Telling the five kinds of pronoun apart, which is exactly what Alberta’s single outcome for them asks. First stated at Grade 5, so this is at grade."
+    },
+    {
       "skillId": "GR.reflexives",
       "introducedAt": "Grade 5",
       "consolidatedAt": "Grade 5",
@@ -398,7 +426,7 @@
         ],
         "alsoAt": []
       },
-      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types."
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
     },
     {
       "skillId": "GR.relative",
@@ -426,7 +454,7 @@
         ],
         "alsoAt": []
       },
-      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types."
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
     },
     {
       "skillId": "GR.subject-object-pronouns",

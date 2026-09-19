@@ -461,6 +461,19 @@
           "albertaPlacement": null,
           "verdict": null,
           "note": null
+        },
+        {
+          "packId": "g1.pack.gr.pronoun-types",
+          "skillId": "GR.pronoun-types",
+          "title": "The Different Kinds of Pronoun",
+          "rule": "Pronouns do different jobs. Some point (this, those), some ask (who, which), some refer back to the subject (myself, themselves), some join a description onto a noun (who, which, that), and some stand for nobody in particular (anyone, several, nothing).",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.11"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
         }
       ],
       "dimensions": [
