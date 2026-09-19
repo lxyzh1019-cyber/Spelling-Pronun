@@ -21,6 +21,7 @@ const ReviewPage = lazy(() => import('./pages/ReviewPage'));
 const ProgressPage = lazy(() => import('./pages/ProgressPage'));
 const ParentPage = lazy(() => import('./pages/ParentPage'));
 const ChecksPage = lazy(() => import('./pages/ChecksPage'));
+const DiagnosticPage = lazy(() => import('./pages/DiagnosticPage'));
 
 function PageFallback() {
   return (
@@ -55,6 +56,7 @@ export default function App() {
                 <Route path="/progress" element={<ProgressPage />} />
                 <Route path="/parent" element={<ParentPage />} />
                 <Route path="/checks" element={<ChecksPage />} />
+                <Route path="/diagnostic" element={<DiagnosticPage />} />
               </Routes>
             </Suspense>
           </ChunkBoundary>

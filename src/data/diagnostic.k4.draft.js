@@ -27,7 +27,13 @@
 
 const row = (id, skillId, probesGrade, prompt, answer, choices, locates) => ({
   id: `d1.${id}`,
+  version: 1,
   skillId,
+  // `primarySkill` as well as `skillId`, because `buildAttempt` reads the former. A row without it
+  // produced `skillIds: [undefined]`, which would have bucketed all 48 answers under one key in any
+  // skill-wise aggregation. The diagnostic keeps its own store and never calls `buildAttempt`, but a
+  // row that is wrong in a way that only shows up elsewhere is still wrong.
+  primarySkill: skillId,
   probesGrade,
   prompt,
   acceptedAnswers: [answer],
@@ -36,8 +42,11 @@ const row = (id, skillId, probesGrade, prompt, answer, choices, locates) => ({
   // not solid without saying what to build, which is the thing this is supposed to produce.
   locates,
   evaluator: 'choice',
+  responseType: 'choice',
   role: 'diagnostic',
   releaseStatus: 'not_released',
+  reviewStatus: 'needs_independent_challenge',
+  integrationStatus: 'not_integrated',
   status: 'draft_needs_independent_challenge',
 });
 

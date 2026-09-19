@@ -12,6 +12,8 @@ import { buildCoverageReport, coverageHeadline } from '../learning/curriculumCov
 import { ladderReview } from '../learning/gradeLadder';
 import ladder from '../data/curriculum.ladder.json';
 import { diagnosticForm } from '../data/diagnostic.k4.draft.js';
+import { buildDiagnosticReport } from '../learning/diagnosticReport';
+import { attemptsFrom, readDiagnosticRun } from '../persistence/diagnosticStore';
 import correctionData from '../data/corrections.c0.json';
 import curriculumMapping from '../data/curriculum.alberta.elal.json';
 import { c1Packs } from '../data/packs.c1.draft';
@@ -135,6 +137,13 @@ export default function ParentPage() {
   // because this page is how it gets verified — gating the parent's own view would make the gate on
   // the learner's view permanent.
   const ladderView = useMemo(() => ladderReview(ladder, learnerGrade), [learnerGrade]);
+  // What the diagnostic found for the learner currently selected. Null until that child has answered
+  // something, because a report over no answers would read as a result rather than as an absence.
+  const diagnosticReport = useMemo(() => {
+    const run = readDiagnosticRun(globalThis.localStorage, activeProfileId, diagnosticForm.id);
+    const attempts = attemptsFrom(run);
+    return attempts.length ? buildDiagnosticReport(diagnosticForm, attempts, { ladder }) : null;
+  }, [activeProfileId]);
 
   return <div className={styles.page}>
     <section className={styles.card}>
@@ -215,8 +224,22 @@ export default function ParentPage() {
       </article>)}</div>
       <h2>Finding out what was missed before Grade 5</h2>
       <p>Alberta finishes with {ladderView.counts.revisiting || diagnosticForm.items.length / 3} of these skills before Grade 5, so nothing later in the curriculum comes back to them. This form asks three questions about each — {diagnosticForm.items.length} in all — to find which ones need building, so the next lessons written are the ones actually needed.</p>
-      <p className={styles.meta}>{diagnosticForm.purpose} It is written but nobody has checked it, so like every other draft it is not in front of a child. When a wrong answer comes back it names the specific thing it found, not just that something was wrong.</p>
-      <p className={styles.meta}>Answers to it can never count as mastery: this is draft content, and both evidence tracks ignore it whatever a child scores. A test enforces that.</p>
+      <p className={styles.meta}>{diagnosticForm.purpose} When a wrong answer comes back it names the specific thing it found, not just that something was wrong.</p>
+      <p className={styles.meta}>Answers to it can never count as mastery: they are kept in their own store with no path into the learning record, and both evidence tracks ignore this content whatever a child scores. Tests enforce both halves.</p>
+      <div className={styles.actions}><Link className={styles.primary} to="/diagnostic">Open the diagnostic</Link></div>
+      {!diagnosticReport && <p role="status">{activeProfileId} has not answered any of it yet. What it finds will appear here.</p>}
+      {diagnosticReport && <>
+        <h3>What it found for {activeProfileId}</h3>
+        <p role="status"><strong>{diagnosticReport.separateAppQuestion.detail}</strong></p>
+        <p className={styles.meta}>
+          {diagnosticReport.counts.solid} solid · {diagnosticReport.counts.partly_solid} partly solid · {diagnosticReport.counts.needs_building} need building · {diagnosticReport.counts.not_enough_evidence} not answered yet
+        </p>
+        <p className={styles.meta}>{diagnosticReport.masteryNote}</p>
+        <div className={styles.gateList}>{diagnosticReport.skills.filter((skill) => skill.state !== 'not_enough_evidence').map((skill) => <article className={styles.gate} key={skill.skillId}>
+          <p><strong>{skill.skillId}</strong> <span className={styles.meta}>— {skill.correct} of {skill.answered} right{skill.albertaFinishesAt ? `, Alberta finishes with this at ${skill.albertaFinishesAt}` : ''}</span></p>
+          {skill.locates.length > 0 && <ul>{skill.locates.map((located) => <li key={located.itemId}>{located.locates}</li>)}</ul>}
+        </article>)}</div>
+      </>}
       <h2>Which grade is {activeProfileId} in?</h2>
       <p>The lessons can tell a child where a skill sits — Grade 3 work they are revisiting, Grade 6 work they are running ahead into — but only once you have said which grade they are in. Nothing is assumed, so until you set this the lessons show no grade at all.</p>
       <div className={styles.actions}>
