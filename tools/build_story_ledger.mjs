@@ -1,4 +1,8 @@
 import fs from 'node:fs';
+import { c0PilotPacks } from '../src/data/packs.c0.draft.js';
+import { c1Packs } from '../src/data/packs.c1.draft.js';
+import { foundationPacks } from '../src/data/packs.foundation.draft.js';
+import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 const c0 = JSON.parse(fs.readFileSync('src/data/story.c0.draft.json', 'utf8'));
 const c1 = JSON.parse(fs.readFileSync('src/data/story.c1.draft.json', 'utf8'));
 const written = [...c0.episodes.map((e) => ({ ...e, file: 'story.c0.draft.json' })), ...c1.episodes.map((e) => ({ ...e, file: 'story.c1.draft.json' }))];
@@ -14,11 +18,25 @@ const CHAPTERS = [
 ];
 const EPISODES_PER_CHAPTER = 2;
 
-const BLOCKED = {
-  2: 'The second episode needs the punctuation content chapter 2 names (end punctuation beyond capitals and end marks). PU.list-commas, PU.direct-address, PU.clause-commas, PU.apostrophes and PU.dialogue are declared in skills.json with no content.',
-  4: 'Both episodes need commas, quotations and fragments/run-ons. PU.* and SE.fragments/SE.runons are declared with no content.',
-  6: 'Both episodes need integrated editing and sentence writing. ED.locate, ED.repair, ED.explain and ED.transfer are declared with no content, and the chapter is the case’s resolution, so it cannot be written before the chapters it resolves.',
+// What each unwritten chapter needs before it can be written. These were prose, hand-written, so a
+// chapter stayed "blocked on PU.list-commas" after PU.list-commas was built. They are skill ids now,
+// and the blocker is DERIVED: a chapter is blocked only by the skills that still have no content, so
+// building a pack moves the ledger without anyone remembering to edit it.
+const NEEDS = {
+  2: { skills: ['PU.list-commas', 'PU.clause-commas', 'PU.apostrophes', 'PU.dialogue', 'PU.direct-address'], why: 'the punctuation chapter 2 names, beyond the capitals and end marks chapter 1 already teaches' },
+  4: { skills: ['PU.list-commas', 'PU.dialogue', 'SE.fragments', 'SE.runons'], why: 'commas, quotations and fragments/run-ons' },
+  6: { skills: ['ED.locate', 'ED.repair'], why: 'integrated editing and sentence writing, and the chapter is the case’s resolution, so it cannot be written before the chapters it resolves' },
 };
+
+const skillsWithContent = new Set([...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks].map((pack) => pack.skillId));
+
+function blockerFor(chapter) {
+  const need = NEEDS[chapter];
+  if (!need) return 'Not yet written.';
+  const missing = need.skills.filter((skillId) => !skillsWithContent.has(skillId));
+  if (!missing.length) return `Ready to write: every skill it needs (${need.skills.join(', ')}) now has content.`;
+  return `Needs ${need.why}. Still without content: ${missing.join(', ')}.`;
+}
 
 const chapters = CHAPTERS.map((chapter) => {
   const mine = written.filter((episode) => episode.chapter === chapter.chapter).sort((a, b) => a.sequence - b.sequence);
@@ -31,7 +49,7 @@ const chapters = CHAPTERS.map((chapter) => {
       reviewStatus: episode.reviewStatus, releaseStatus: episode.releaseStatus,
       taskCount: episode.taskIds.length, file: episode.file,
     })),
-    ...(mine.length < EPISODES_PER_CHAPTER ? { blockedBy: BLOCKED[chapter.chapter] || 'Not yet written.' } : {}),
+    ...(mine.length < EPISODES_PER_CHAPTER ? { blockedBy: blockerFor(chapter.chapter) } : {}),
   };
 });
 

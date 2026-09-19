@@ -1,6 +1,7 @@
 import { c0PilotPacks } from './packs.c0.draft.js';
 import { c1Packs } from './packs.c1.draft.js';
 import { foundationPacks } from './packs.foundation.draft.js';
+import { punctuationPacks } from './packs.punctuation.draft.js';
 import { isQuarantined, usableItems } from '../learning/contentCorrections.js';
 import ladder from './curriculum.ladder.json' with { type: 'json' };
 import { learnerPlacement } from '../learning/gradeLadder.js';
@@ -89,7 +90,7 @@ function buildLesson(pack) {
   }];
 }
 
-const ALL_PACKS = [...c0PilotPacks, ...c1Packs, ...foundationPacks];
+const ALL_PACKS = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks];
 
 // Every authored pack, approved or not. This is for the parent's review surface, never for a learner
 // route: nothing here is gated, so anything reading it must gate for itself.
@@ -135,6 +136,9 @@ const TILE_STYLE = {
   VO: { icon: '📖', color: '#0891b2' },
   RC: { icon: '🔍', color: '#be123c' },
   PH: { icon: '🔊', color: '#ca8a04' },
+  PU: { icon: '✒️', color: '#d97706' },
+  SE: { icon: '🧩', color: '#059669' },
+  ED: { icon: '🔧', color: '#4f46e5' },
   default: { icon: '📚', color: '#475569' },
 };
 

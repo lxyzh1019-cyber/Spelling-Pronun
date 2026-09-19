@@ -16,6 +16,7 @@ import correctionData from '../data/corrections.c0.json';
 import curriculumMapping from '../data/curriculum.alberta.elal.json';
 import { c1Packs } from '../data/packs.c1.draft';
 import { foundationPacks } from '../data/packs.foundation.draft';
+import { punctuationPacks } from '../data/packs.punctuation.draft';
 import { pendingDecisionsKey, readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
@@ -123,6 +124,7 @@ export default function ParentPage() {
   const draftPacks = useMemo(() => draftPacksFor([
     { batch: 'C1', packs: c1Packs },
     { batch: 'F1', packs: foundationPacks },
+    { batch: 'P1', packs: punctuationPacks },
   ]), []);
   const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
   const coverageReport = useMemo(() => buildCoverageReport(curriculumMapping), []);

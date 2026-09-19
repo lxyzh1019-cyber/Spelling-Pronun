@@ -22,8 +22,9 @@ import ladder from '../src/data/curriculum.ladder.json' with { type: 'json' };
 import { c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c1Packs } from '../src/data/packs.c1.draft.js';
 import { foundationPacks } from '../src/data/packs.foundation.draft.js';
+import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 
-const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks];
+const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks];
 
 test('the catalog knows every authored pack, and each has its own route', () => {
   assert.equal(Object.keys(allLessonCatalog).length, allPacks.length, 'a pack is missing from the catalog');
@@ -57,7 +58,7 @@ test('only approved content is reachable by a learner', () => {
   }
   // Today: the four C0 packs are approved and the six drafted ones are not.
   assert.equal(Object.keys(c0LessonCatalog).length, 4);
-  assert.equal(Object.keys(allLessonCatalog).length - Object.keys(c0LessonCatalog).length, 6);
+  assert.equal(Object.keys(allLessonCatalog).length - Object.keys(c0LessonCatalog).length, allPacks.length - 4);
 });
 
 // A pack with no approval must not become visible by having no independent items to check, which is
