@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "protocol": "MASTER_PLAN.md lifecycle",
+  "note": "Integration records for every batch after C0. Drafted by Claude because every claim in them is mechanical and re-checkable; the parent countersigns.",
+  "records": [
+    {
+      "id": "c1.integration.lesson-packs.v1",
+      "type": "lesson_packs",
+      "stage": "content_integration",
+      "status": "drafted_awaiting_parent_countersignature",
+      "draftedBy": "claude",
+      "draftedAt": "2026-09-19",
+      "countersignedBy": null,
+      "batch": "C1",
+      "describes": "vocabulary and comprehension",
+      "packIds": [
+        "c1.pack.vo.affixes",
+        "c1.pack.rc.literal",
+        "c1.pack.rc.inference",
+        "c1.pack.vo.context"
+      ],
+      "expectedObjectCount": 96,
+      "routeArtifacts": [
+        "/lesson/c1-vo-affixes",
+        "/lesson/c1-rc-literal",
+        "/lesson/c1-rc-inference",
+        "/lesson/c1-vo-context"
+      ],
+      "checks": [
+        "catalog_resolution",
+        "route_derivation",
+        "approval_gate",
+        "id_stability",
+        "release_exclusion"
+      ],
+      "evidence": [
+        "Every pack resolves through the lesson catalog and derives its own route id from its pack id.",
+        "Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.",
+        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.",
+        "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
+        "Nothing in this batch is released, and nothing carries a status the parent did not grant."
+      ],
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+    },
+    {
+      "id": "f1.integration.lesson-packs.v1",
+      "type": "lesson_packs",
+      "stage": "content_integration",
+      "status": "drafted_awaiting_parent_countersignature",
+      "draftedBy": "claude",
+      "draftedAt": "2026-09-19",
+      "countersignedBy": null,
+      "batch": "F1",
+      "describes": "phonics foundation",
+      "packIds": [
+        "f1.pack.ph.vowels",
+        "f1.pack.ph.syllables"
+      ],
+      "expectedObjectCount": 48,
+      "routeArtifacts": [
+        "/lesson/f1-ph-vowels",
+        "/lesson/f1-ph-syllables"
+      ],
+      "checks": [
+        "catalog_resolution",
+        "route_derivation",
+        "approval_gate",
+        "id_stability",
+        "release_exclusion"
+      ],
+      "evidence": [
+        "Every pack resolves through the lesson catalog and derives its own route id from its pack id.",
+        "Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.",
+        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.",
+        "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
+        "Nothing in this batch is released, and nothing carries a status the parent did not grant."
+      ],
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+    },
+    {
+      "id": "p1.integration.lesson-packs.v1",
+      "type": "lesson_packs",
+      "stage": "content_integration",
+      "status": "drafted_awaiting_parent_countersignature",
+      "draftedBy": "claude",
+      "draftedAt": "2026-09-19",
+      "countersignedBy": null,
+      "batch": "P1",
+      "describes": "punctuation",
+      "packIds": [
+        "p1.pack.pu.list-commas",
+        "p1.pack.pu.clause-commas",
+        "p1.pack.pu.apostrophes",
+        "p1.pack.pu.dialogue",
+        "p1.pack.pu.direct-address"
+      ],
+      "expectedObjectCount": 120,
+      "routeArtifacts": [
+        "/lesson/p1-pu-list-commas",
+        "/lesson/p1-pu-clause-commas",
+        "/lesson/p1-pu-apostrophes",
+        "/lesson/p1-pu-dialogue",
+        "/lesson/p1-pu-direct-address"
+      ],
+      "checks": [
+        "catalog_resolution",
+        "route_derivation",
+        "approval_gate",
+        "id_stability",
+        "release_exclusion"
+      ],
+      "evidence": [
+        "Every pack resolves through the lesson catalog and derives its own route id from its pack id.",
+        "Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.",
+        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.",
+        "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
+        "Nothing in this batch is released, and nothing carries a status the parent did not grant."
+      ],
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+    },
+    {
+      "id": "s1.integration.lesson-packs.v1",
+      "type": "lesson_packs",
+      "stage": "content_integration",
+      "status": "drafted_awaiting_parent_countersignature",
+      "draftedBy": "claude",
+      "draftedAt": "2026-09-19",
+      "countersignedBy": null,
+      "batch": "S1",
+      "describes": "sentences and editing",
+      "packIds": [
+        "s1.pack.se.fragments",
+        "s1.pack.se.runons",
+        "s1.pack.ed.locate",
+        "s1.pack.ed.repair"
+      ],
+      "expectedObjectCount": 96,
+      "routeArtifacts": [
+        "/lesson/s1-se-fragments",
+        "/lesson/s1-se-runons",
+        "/lesson/s1-ed-locate",
+        "/lesson/s1-ed-repair"
+      ],
+      "checks": [
+        "catalog_resolution",
+        "route_derivation",
+        "approval_gate",
+        "id_stability",
+        "release_exclusion"
+      ],
+      "evidence": [
+        "Every pack resolves through the lesson catalog and derives its own route id from its pack id.",
+        "Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.",
+        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.",
+        "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
+        "Nothing in this batch is released, and nothing carries a status the parent did not grant."
+      ],
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+    }
+  ]
+}

@@ -19,6 +19,9 @@ import curriculumMapping from '../data/curriculum.alberta.elal.json';
 import { c1Packs } from '../data/packs.c1.draft';
 import { foundationPacks } from '../data/packs.foundation.draft';
 import { punctuationPacks } from '../data/packs.punctuation.draft';
+import integrationRecords from '../data/integration.batches.json';
+import challengeRecords from '../data/reviews.batches.json';
+import educationalForms from '../data/reviews.educational.batches.json';
 import { sentencePacks } from '../data/packs.sentences.draft';
 import { pendingDecisionsKey, readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
@@ -246,6 +249,26 @@ export default function ParentPage() {
           {skill.locates.length > 0 && <ul>{skill.locates.map((located) => <li key={located.itemId}>{located.locates}</li>)}</ul>}
         </article>)}</div>
       </>}
+      <h2>What has to happen before any of this reaches a child</h2>
+      <p>Draft content cannot be approved straight from draft. Three records stand between it and a child, and two of them are now prepared for you rather than blank. The third is yours and only yours.</p>
+      <div className={styles.gateList}>
+        <article className={styles.gate}>
+          <p><strong>1. Integration</strong> <span className={styles.meta}>— drafted in full, waiting for you to countersign</span></p>
+          <p>{integrationRecords.note}</p>
+          <p className={styles.meta}>{integrationRecords.records.length} records covering {integrationRecords.records.reduce((sum, record) => sum + record.expectedObjectCount, 0)} questions. Each one is a mechanical claim you can re-check by running the tests it names.</p>
+        </article>
+        <article className={styles.gate}>
+          <p><strong>2. Challenge</strong> <span className={styles.meta}>— drafted as a SELF-challenge, which is not the independent one</span></p>
+          <p>{challengeRecords.limitation}</p>
+          <p className={styles.meta}>Defects found and fixed this way so far:</p>
+          <ul>{challengeRecords.reviews[0].findings.map((finding) => <li key={finding.id}>{finding.found} <em>{finding.action}</em></li>)}</ul>
+        </article>
+        <article className={styles.gate}>
+          <p><strong>3. Educational review</strong> <span className={styles.meta}>— yours, and blank</span></p>
+          <p>{educationalForms.reviews[0].instructions}</p>
+          <p className={styles.meta}>{educationalForms.reviews.length} forms covering {educationalForms.reviews.reduce((sum, form) => sum + form.packs.length, 0)} packs, plus {educationalForms.episodesAwaitingReview.length} story episodes. Every field is filled except the verdict.</p>
+        </article>
+      </div>
       <h2>Which grade is {activeProfileId} in?</h2>
       <p>The lessons can tell a child where a skill sits — Grade 3 work they are revisiting, Grade 6 work they are running ahead into — but only once you have said which grade they are in. Nothing is assumed, so until you set this the lessons show no grade at all.</p>
       <div className={styles.actions}>

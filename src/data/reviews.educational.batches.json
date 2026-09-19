@@ -1,0 +1,383 @@
+{
+  "version": 1,
+  "protocol": "MASTER_PLAN.md section 0.8",
+  "note": "Educational review FORMS, prepared for the parent with every field filled except the judgement. Claude never sets a verdict, reviewedBy or reviewedAt here.",
+  "episodesAwaitingReview": [
+    {
+      "episodeId": "c1.story.ch2.01",
+      "chapter": 2,
+      "sequence": 1,
+      "title": "The Letter’s Recipient",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch2.02",
+      "chapter": 2,
+      "sequence": 2,
+      "title": "The Name on the Cover",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch3.01",
+      "chapter": 3,
+      "sequence": 1,
+      "title": "Two Accounts",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch3.02",
+      "chapter": 3,
+      "sequence": 2,
+      "title": "What the Words Were Worth",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch4.01",
+      "chapter": 4,
+      "sequence": 1,
+      "title": "What the Witness Actually Said",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch4.02",
+      "chapter": 4,
+      "sequence": 2,
+      "title": "Two Sentences Pushed Together",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch5.01",
+      "chapter": 5,
+      "sequence": 1,
+      "title": "The Words on the Manifest",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch5.02",
+      "chapter": 5,
+      "sequence": 2,
+      "title": "Names Nobody Can Say",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch6.01",
+      "chapter": 6,
+      "sequence": 1,
+      "title": "Reading for One Thing at a Time",
+      "verdict": null,
+      "note": null
+    },
+    {
+      "episodeId": "c1.story.ch6.02",
+      "chapter": 6,
+      "sequence": 2,
+      "title": "The Smallest Change That Puts It Right",
+      "verdict": null,
+      "note": null
+    }
+  ],
+  "reviews": [
+    {
+      "id": "c1.educational.v1",
+      "stage": "educational_source_review",
+      "status": "awaiting_parent",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "verdict": null,
+      "formPreparedBy": "claude",
+      "formPreparedAt": "2026-09-19",
+      "batch": "C1",
+      "describes": "vocabulary and comprehension",
+      "instructions": "Read each pack below, then set verdict to \"approved\" or \"changes_required\" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.",
+      "packs": [
+        {
+          "packId": "c1.pack.vo.affixes",
+          "skillId": "VO.affixes",
+          "title": "Word Parts: Prefixes and Suffixes",
+          "rule": "A base is the main part of a word. A prefix goes in front of it and a suffix goes after it, and each one changes the meaning in a way you can predict. Knowing the parts lets you work out a word you have never seen.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "vocabulary.grade5.04",
+            "vocabulary.grade6.07",
+            "vocabulary.grade6.08"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "c1.pack.rc.literal",
+          "skillId": "RC.literal",
+          "title": "What the Text Says, and What You Worked Out",
+          "rule": "A text tells you some things directly. Everything else you put together yourself from what it tells you. Both are useful, but they are not the same, and a good reader can always say which one an idea came from.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "comprehension.grade5.05",
+            "comprehension.grade6.11"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "c1.pack.rc.inference",
+          "skillId": "RC.inference",
+          "title": "Working Out What the Text Does Not Say",
+          "rule": "Writers leave things for you to conclude. An inference is a conclusion the details support, even though nobody wrote it down. A good inference can point to the detail it rests on; a guess cannot.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "comprehension.grade5.06",
+            "comprehension.grade6.09"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "c1.pack.vo.context",
+          "skillId": "VO.context",
+          "title": "Working Out a Word from the Sentence",
+          "rule": "When you meet a word you do not know, the words around it usually tell you what it means. Look for an explanation right after it, a contrast word such as but or unlike, a list of examples, or the general sense of what is happening.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "vocabulary.grade5.12",
+            "vocabulary.grade6.10"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        }
+      ],
+      "dimensions": [
+        "curriculum_alignment",
+        "rule_accuracy",
+        "answer_accuracy",
+        "feedback_quality",
+        "age_accessibility"
+      ]
+    },
+    {
+      "id": "f1.educational.v1",
+      "stage": "educational_source_review",
+      "status": "awaiting_parent",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "verdict": null,
+      "formPreparedBy": "claude",
+      "formPreparedAt": "2026-09-19",
+      "batch": "F1",
+      "describes": "phonics foundation",
+      "instructions": "Read each pack below, then set verdict to \"approved\" or \"changes_required\" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.",
+      "packs": [
+        {
+          "packId": "f1.pack.ph.vowels",
+          "skillId": "PH.vowels",
+          "title": "Vowel Sounds and What Changes Them",
+          "rule": "A vowel can say its short sound or its long sound. A silent e at the end, a second vowel teaming up with it, or an r straight after it will each change which sound you hear. Knowing the patterns lets you read a word you have never seen.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Kindergarten to Grade 4",
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "f1.pack.ph.syllables",
+          "skillId": "PH.syllables",
+          "title": "Breaking Long Words into Beats",
+          "rule": "Every syllable holds exactly one vowel sound, so the number of vowel sounds is the number of beats. Where a word breaks depends on how many consonants sit between the vowels, and the break decides whether the first vowel is long or short.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Kindergarten to Grade 4",
+          "verdict": null,
+          "note": null
+        }
+      ],
+      "dimensions": [
+        "curriculum_alignment",
+        "rule_accuracy",
+        "answer_accuracy",
+        "feedback_quality",
+        "age_accessibility"
+      ]
+    },
+    {
+      "id": "p1.educational.v1",
+      "stage": "educational_source_review",
+      "status": "awaiting_parent",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "verdict": null,
+      "formPreparedBy": "claude",
+      "formPreparedAt": "2026-09-19",
+      "batch": "P1",
+      "describes": "punctuation",
+      "instructions": "Read each pack below, then set verdict to \"approved\" or \"changes_required\" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.",
+      "packs": [
+        {
+          "packId": "p1.pack.pu.list-commas",
+          "skillId": "PU.list-commas",
+          "title": "Commas in a List",
+          "rule": "When you list three or more things, put a comma after each one except the last. Two things joined by \"and\" need no comma at all.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.02",
+            "conventions.grade6.02"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "p1.pack.pu.clause-commas",
+          "skillId": "PU.clause-commas",
+          "title": "Commas Between Parts of a Sentence",
+          "rule": "When a sentence starts with a part that cannot stand alone — \"When the rain stopped\", \"Although it was late\" — put a comma where that part ends. When the main part comes first, no comma is needed.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.02",
+            "conventions.grade6.02"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "p1.pack.pu.apostrophes",
+          "skillId": "PU.apostrophes",
+          "title": "Apostrophes: Missing Letters and Ownership",
+          "rule": "An apostrophe does one of two jobs. It stands in for letters that were left out (do not → don’t), or it shows ownership (the dog’s bowl). It never makes a word plural.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.02",
+            "conventions.grade6.02"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "p1.pack.pu.dialogue",
+          "skillId": "PU.dialogue",
+          "title": "Punctuating What Someone Said",
+          "rule": "Quotation marks go around the speaker’s exact words and nothing else. A comma separates the speech from who said it, and the end mark goes inside the closing quotation mark.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.02",
+            "conventions.grade6.02"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "p1.pack.pu.direct-address",
+          "skillId": "PU.direct-address",
+          "title": "Commas Around a Name You Are Speaking To",
+          "rule": "When you speak TO somebody by name, a comma separates their name from the rest. Without it the name stops being the person you are talking to and becomes part of what you are saying.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.02",
+            "conventions.grade6.02"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        }
+      ],
+      "dimensions": [
+        "curriculum_alignment",
+        "rule_accuracy",
+        "answer_accuracy",
+        "feedback_quality",
+        "age_accessibility"
+      ]
+    },
+    {
+      "id": "s1.educational.v1",
+      "stage": "educational_source_review",
+      "status": "awaiting_parent",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "verdict": null,
+      "formPreparedBy": "claude",
+      "formPreparedAt": "2026-09-19",
+      "batch": "S1",
+      "describes": "sentences and editing",
+      "instructions": "Read each pack below, then set verdict to \"approved\" or \"changes_required\" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.",
+      "packs": [
+        {
+          "packId": "s1.pack.se.fragments",
+          "skillId": "SE.fragments",
+          "title": "Groups of Words That Are Not Sentences",
+          "rule": "A sentence needs someone or something (the subject) and something happening (the predicate), and it must not leave the reader waiting. A group of words missing any of those is not a sentence yet.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade6.06"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "s1.pack.se.runons",
+          "skillId": "SE.runons",
+          "title": "Two Sentences Run Together",
+          "rule": "Two complete statements cannot simply be pushed together, with a comma or with nothing. Join them with a word like \"and\", \"but\" or \"so\", separate them with a full stop, or use a semicolon.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade6.07",
+            "conventions.grade5.10",
+            "conventions.grade6.06"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "s1.pack.ed.locate",
+          "skillId": "ED.locate",
+          "title": "Finding the Mistake",
+          "rule": "Editing starts with finding. Read for one kind of mistake at a time — spelling, then punctuation, then grammar — because looking for everything at once is how errors get missed.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "writing.grade5.08",
+            "writing.grade6.10"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "s1.pack.ed.repair",
+          "skillId": "ED.repair",
+          "title": "Fixing It Without Breaking Something Else",
+          "rule": "A repair has to fix the mistake and leave the meaning alone. Change the smallest thing that puts it right, then read the whole sentence again to check nothing else broke.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "writing.grade5.08",
+            "writing.grade6.10",
+            "conventions.grade6.06"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        }
+      ],
+      "dimensions": [
+        "curriculum_alignment",
+        "rule_accuracy",
+        "answer_accuracy",
+        "feedback_quality",
+        "age_accessibility"
+      ]
+    }
+  ]
+}
