@@ -23,6 +23,7 @@ import integrationRecords from '../data/integration.batches.json';
 import challengeRecords from '../data/reviews.batches.json';
 import educationalForms from '../data/reviews.educational.batches.json';
 import { sentencePacks } from '../data/packs.sentences.draft';
+import { grammarPacks } from '../data/packs.grammar.draft';
 import { pendingDecisionsKey, readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
@@ -132,13 +133,14 @@ export default function ParentPage() {
     { batch: 'F1', packs: foundationPacks },
     { batch: 'P1', packs: punctuationPacks },
     { batch: 'S1', packs: sentencePacks },
+    { batch: 'G1', packs: grammarPacks },
   ]), []);
   const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
   // The drafted packs are passed in so the report works out for itself which outcomes have content
   // written against them. It used to read a hand-written `draftedIn` on each outcome, which drifted
   // within a day of the packs being written.
   const coverageReport = useMemo(
-    () => buildCoverageReport(curriculumMapping, { packs: [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks] }),
+    () => buildCoverageReport(curriculumMapping, { packs: [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks] }),
     [],
   );
   const coverage = useMemo(() => coverageHeadline(coverageReport), [coverageReport]);

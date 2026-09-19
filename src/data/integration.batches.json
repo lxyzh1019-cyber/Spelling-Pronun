@@ -156,6 +156,43 @@
         "Nothing in this batch is released, and nothing carries a status the parent did not grant."
       ],
       "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+    },
+    {
+      "id": "g1.integration.lesson-packs.v1",
+      "type": "lesson_packs",
+      "stage": "content_integration",
+      "status": "drafted_awaiting_parent_countersignature",
+      "draftedBy": "claude",
+      "draftedAt": "2026-09-19",
+      "countersignedBy": null,
+      "batch": "G1",
+      "describes": "grammar: agreement, tense and pronoun reference",
+      "packIds": [
+        "g1.pack.gr.agreement",
+        "g1.pack.gr.tense",
+        "g1.pack.gr.antecedents"
+      ],
+      "expectedObjectCount": 72,
+      "routeArtifacts": [
+        "/lesson/g1-gr-agreement",
+        "/lesson/g1-gr-tense",
+        "/lesson/g1-gr-antecedents"
+      ],
+      "checks": [
+        "catalog_resolution",
+        "route_derivation",
+        "approval_gate",
+        "id_stability",
+        "release_exclusion"
+      ],
+      "evidence": [
+        "Every pack resolves through the lesson catalog and derives its own route id from its pack id.",
+        "Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.",
+        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.",
+        "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
+        "Nothing in this batch is released, and nothing carries a status the parent did not grant."
+      ],
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
     }
   ]
 }

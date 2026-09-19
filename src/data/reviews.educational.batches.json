@@ -378,6 +378,69 @@
         "feedback_quality",
         "age_accessibility"
       ]
+    },
+    {
+      "id": "g1.educational.v1",
+      "stage": "educational_source_review",
+      "status": "awaiting_parent",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "verdict": null,
+      "formPreparedBy": "claude",
+      "formPreparedAt": "2026-09-19",
+      "batch": "G1",
+      "describes": "grammar: agreement, tense and pronoun reference",
+      "instructions": "Read each pack below, then set verdict to \"approved\" or \"changes_required\" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.",
+      "packs": [
+        {
+          "packId": "g1.pack.gr.agreement",
+          "skillId": "GR.agreement",
+          "title": "Making the Verb Match the Subject",
+          "rule": "A verb has to match the subject in number: one thing does, more than one thing do. The trap is that the subject is not always the noun nearest the verb.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.05",
+            "conventions.grade6.05"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "g1.pack.gr.tense",
+          "skillId": "GR.tense",
+          "title": "Keeping the Time Steady",
+          "rule": "Tense says when something happens. Within one piece of writing it has to stay steady: if you start in the past, stay in the past unless the meaning genuinely changes.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.04",
+            "conventions.grade6.04"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "g1.pack.gr.antecedents",
+          "skillId": "GR.antecedents",
+          "title": "Pronouns That Match What They Stand For",
+          "rule": "A pronoun stands in for a noun, and it has to match that noun in number. It also has to be clear which noun it stands for — if two are possible, the sentence has to be reworded.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [
+            "conventions.grade5.08"
+          ],
+          "albertaPlacement": null,
+          "verdict": null,
+          "note": null
+        }
+      ],
+      "dimensions": [
+        "curriculum_alignment",
+        "rule_accuracy",
+        "answer_accuracy",
+        "feedback_quality",
+        "age_accessibility"
+      ]
     }
   ]
 }

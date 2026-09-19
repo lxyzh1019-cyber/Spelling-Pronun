@@ -28,6 +28,7 @@ import { c1Packs } from '../src/data/packs.c1.draft.js';
 import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
+import { grammarPacks } from '../src/data/packs.grammar.draft.js';
 import { c1StoryEpisodes } from '../src/data/storyEpisodes.js';
 import { sessionIdForPack } from '../src/data/lessonCatalog.js';
 
@@ -36,6 +37,7 @@ const BATCHES = [
   { batch: 'F1', packs: foundationPacks, what: 'phonics foundation' },
   { batch: 'P1', packs: punctuationPacks, what: 'punctuation' },
   { batch: 'S1', packs: sentencePacks, what: 'sentences and editing' },
+  { batch: 'G1', packs: grammarPacks, what: 'grammar: agreement, tense and pronoun reference' },
 ];
 const allPacks = BATCHES.flatMap((entry) => entry.packs);
 const TODAY = '2026-09-19';

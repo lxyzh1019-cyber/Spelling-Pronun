@@ -23,10 +23,11 @@ import { c1Packs } from '../src/data/packs.c1.draft.js';
 import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
+import { grammarPacks } from '../src/data/packs.grammar.draft.js';
 import { c0AssessmentForms } from '../src/data/assessment.c0.draft.js';
 import { allStoryEpisodes } from '../src/data/storyEpisodes.js';
 
-const draftPacks = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks];
+const draftPacks = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
 
 // A pack that has cleared every gate except the parent's decision. Built here as a fixture and never
 // written to the repository, because Claude may not set `reviewStatus` or `integrationStatus`.

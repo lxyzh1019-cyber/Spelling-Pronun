@@ -4,6 +4,7 @@ import { c1Packs } from '../src/data/packs.c1.draft.js';
 import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
+import { grammarPacks } from '../src/data/packs.grammar.draft.js';
 const c0 = JSON.parse(fs.readFileSync('src/data/story.c0.draft.json', 'utf8'));
 const c1 = JSON.parse(fs.readFileSync('src/data/story.c1.draft.json', 'utf8'));
 const written = [...c0.episodes.map((e) => ({ ...e, file: 'story.c0.draft.json' })), ...c1.episodes.map((e) => ({ ...e, file: 'story.c1.draft.json' }))];
@@ -29,7 +30,7 @@ const NEEDS = {
   6: { skills: ['ED.locate', 'ED.repair'], why: 'integrated editing and sentence writing, and the chapter is the case’s resolution, so it cannot be written before the chapters it resolves' },
 };
 
-const skillsWithContent = new Set([...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks].map((pack) => pack.skillId));
+const skillsWithContent = new Set([...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks].map((pack) => pack.skillId));
 
 function blockerFor(chapter) {
   const need = NEEDS[chapter];

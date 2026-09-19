@@ -20,9 +20,10 @@ import { c1Packs } from '../src/data/packs.c1.draft.js';
 import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
+import { grammarPacks } from '../src/data/packs.grammar.draft.js';
 import { c1StoryEpisodes } from '../src/data/storyEpisodes.js';
 
-const allPacks = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks];
+const allPacks = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
 const packIds = new Set(allPacks.map((pack) => pack.id));
 
 // THE RULE. Nothing Claude writes may carry a judgement attributed to anyone.

@@ -20,10 +20,11 @@ import { c1Packs } from '../src/data/packs.c1.draft.js';
 import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
+import { grammarPacks } from '../src/data/packs.grammar.draft.js';
 import { c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { buildCoverageReport, draftedGaps } from '../src/learning/curriculumCoverage.js';
 
-const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks];
+const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
 
 const outcomes = new Map();
 for (const idea of mapping.organizingIdeas) {
@@ -103,7 +104,7 @@ test('the punctuation packs still ask what the mark does to the meaning', () => 
 // A hand-maintained cross-reference between two files is a cross-reference that goes stale. Both are
 // derived now, and these tests hold the two properties that make the derivation safe.
 test('a pack that cites an outcome is reported against it, without anyone maintaining a list', () => {
-  const packs = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks];
+  const packs = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
   const report = buildCoverageReport(mapping, { packs });
   const rows = new Map();
   for (const idea of report.ideas) for (const grade of idea.grades) for (const outcome of grade.outcomes) rows.set(outcome.id, outcome);
