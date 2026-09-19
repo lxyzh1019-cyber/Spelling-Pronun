@@ -48,6 +48,25 @@ export function validateContent({ skills = [], items = [], episodes = [], assess
     if (!skillIds.has(item.primarySkill)) errors.push(`${item.id} has unknown primary skill ${item.primarySkill}`);
     for (const secondary of item.secondarySkills || []) if (!skillIds.has(secondary)) errors.push(`${item.id} has unknown secondary skill ${secondary}`);
     if (!item.acceptedAnswers?.length && !item.rubric) errors.push(`${item.id} has no answer or rubric`);
+    // Structural checks on a multiple-choice item. The validator used to accept an item whose key named
+    // an option that did not exist, or whose options repeated an id or said the same thing twice, so an
+    // unanswerable or double-keyed question could reach a learner. Only a test fixture caught these, and
+    // only for the packs.
+    if (item.choices) {
+      const choiceIds = item.choices.map((choice) => choice.id);
+      if (new Set(choiceIds).size !== choiceIds.length) errors.push(`${item.id} repeats a choice id`);
+      // Compared with case intact. A capitals item's two options differ only in case, by design:
+      // `I asked Mateo for help.` against `I asked mateo for help.` is the whole question. Folding case
+      // here would report the pack's correct items as duplicates.
+      const texts = item.choices.map((choice) => String(choice.text ?? '').trim());
+      if (texts.some((text) => !text)) errors.push(`${item.id} has a choice with no text`);
+      if (new Set(texts).size !== texts.length) errors.push(`${item.id} offers the same choice text twice`);
+      if (item.evaluator === 'choice') {
+        const unknown = (item.acceptedAnswers || []).filter((answer) => !choiceIds.includes(answer));
+        if (unknown.length) errors.push(`${item.id} accepts ${unknown.join(', ')}, which is not one of its choices`);
+        if ((item.acceptedAnswers || []).length > 1) errors.push(`${item.id} marks more than one choice correct`);
+      }
+    }
     if (item.ruleHelpZh !== undefined && (typeof item.ruleHelpZh !== 'string' || !item.ruleHelpZh.trim())) errors.push(`${item.id} has an empty or non-string Chinese rule help`);
     if (item.sourceRequired && !item.sourceIds?.length) errors.push(`${item.id} is missing required sources`);
     for (const sourceId of item.sourceIds || []) if (sources.length && !sourceIds.has(sourceId)) errors.push(`${item.id} has unknown source ${sourceId}`);

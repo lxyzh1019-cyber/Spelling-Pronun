@@ -11,7 +11,14 @@ test('chapter-one story challenge covers both versioned episodes and every sourc
   const validation = validateStoryReviews({ reviews: reviewData.reviews, story, items: c0PilotItems, sources: sourceData.sources });
   assert.deepEqual(validation.errors, []);
   assert.equal(reviewData.reviews[0].results.length, 2);
-  assert.ok(story.episodes.every((episode) => episode.version === 2 && episode.reviewStatus === 'reviewed'));
+  // Every episode is reviewed, and its version is the one the review record pins — not a number
+  // written here, which would only have to be edited each time a correction moves the episodes.
+  const pinned = new Map(reviewData.reviews[0].results.map((result) => [result.episodeId, result.episodeVersion]));
+  for (const episode of story.episodes) {
+    assert.equal(episode.reviewStatus, 'reviewed', `${episode.id} is not reviewed`);
+    assert.equal(episode.version, pinned.get(episode.id), `${episode.id} is not at the version its review pins`);
+  }
+  assert.equal(reviewData.reviews[0].storyVersion, story.version, 'the review pins a stale story version');
 });
 
 test('story task links match the authored learner tasks, and quarantined tasks are withheld not deleted', async () => {

@@ -51,7 +51,10 @@ test('the audio checks are derived from the assessment, not typed out here', () 
     ['dictation', 'contrast', 'decoding']
   );
   assert.equal(dictation.prompts.length, 16);
-  assert.equal(contrast.prompts.length, 16, 'both sides of eight pairs');
+  // One row per listening prompt. Before corr.c0.011 these were minimal pairs and each needed both
+  // sides; the replacements are homophones that are supposed to sound alike, so there is no second
+  // side to play. `testLabAudio` decides this from the item, and this count follows it.
+  assert.equal(contrast.prompts.length, 8, 'one row per listening prompt');
   assert.equal(decoding.prompts.length, 12);
   // Every derived prompt carries the item it came from.
   [dictation, contrast, decoding].forEach((check) => {
@@ -171,8 +174,13 @@ test('the exported log reports the findings and states its own limits', () => {
   };
   const report = checkReportMarkdown(humanChecks, results, { today: '2026-09-09' });
   assert.match(report, /not mastery evidence and they do not release content/);
-  assert.match(report, /\| .*ship \/ sheep.* \| Problem found \| Parent \| — \| ship and sheep sound identical \|/);
-  assert.match(report, /Technical Test Lab · Status: Problem found \(2 of 16 recorded\)/);
+  // The row's own label has to reach the report; pinning a particular pair here would only re-assert
+  // today's content, and did exactly that until the listening items were retargeted.
+  const label = contrast.prompts[0].label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  assert.match(report, new RegExp(`\\| .*${label}.* \\| Problem found \\| Parent \\| — \\| ship and sheep sound identical \\|`));
+  // Two of the check's own rows were recorded. The denominator is the check's real prompt count, so
+  // this does not have to be edited every time the derived rows change.
+  assert.match(report, new RegExp(`Technical Test Lab · Status: Problem found \\(2 of ${contrast.prompts.length} recorded\\)`));
   // The report has to say which half of the page a row came from.
   assert.match(report, /Test Lab rows ran against an isolated test record and changed no learning progress/);
   assert.match(report, /Family Pilot rows were real learner sessions/);

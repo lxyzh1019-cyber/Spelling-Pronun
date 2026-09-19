@@ -1,0 +1,1877 @@
+{
+  "version": 1,
+  "status": "ladder_awaiting_parent_verification",
+  "generatedBy": "tools/build_ladder.mjs",
+  "mappingReviewedBy": null,
+  "mappingReviewNote": "Every rung cites outcome ids that resolve against curriculum.k6.json, which was extracted from the PDF’s own text layer. That the ids resolve says the quotation is real; it does not say the judgement is right. Nothing in the app may present a grade to a learner as fact while this is null.",
+  "source": "extracted_awaiting_parent_verification",
+  "organizingIdeaRange": {
+    "Text Forms and Structures": "Kindergarten to Grade 6",
+    "Oral Language": "Kindergarten to Grade 6",
+    "Vocabulary": "Kindergarten to Grade 6",
+    "Phonological Awareness": "Kindergarten to Grade 2",
+    "Phonics": "Kindergarten to Grade 3",
+    "Fluency": "Kindergarten to Grade 4",
+    "Comprehension": "Kindergarten to Grade 6",
+    "Writing": "Kindergarten to Grade 6",
+    "Conventions": "Kindergarten to Grade 6"
+  },
+  "skills": [
+    {
+      "skillId": "ED.locate",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "writing.grade1.06",
+            "grade": "Grade 1",
+            "organizingIdea": "Writing",
+            "text": "Edit written work for spelling, grammar, and punctuation."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "writing.grade6.10",
+            "grade": "Grade 6",
+            "organizingIdea": "Writing",
+            "text": "Edit writing for spelling, punctuation, and grammar."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "writing.grade2.06",
+            "grade": "Grade 2",
+            "organizingIdea": "Writing",
+            "text": "Edit written work for spelling, grammar, and punctuation."
+          },
+          {
+            "id": "writing.grade3.08",
+            "grade": "Grade 3",
+            "organizingIdea": "Writing",
+            "text": "Edit writing for spelling, punctuation, and grammar."
+          },
+          {
+            "id": "writing.grade4.10",
+            "grade": "Grade 4",
+            "organizingIdea": "Writing",
+            "text": "Edit writing for spelling, punctuation, and grammar."
+          },
+          {
+            "id": "writing.grade5.08",
+            "grade": "Grade 5",
+            "organizingIdea": "Writing",
+            "text": "Edit writing for spelling, punctuation, and grammar."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "ED.repair",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "writing.grade1.06",
+            "grade": "Grade 1",
+            "organizingIdea": "Writing",
+            "text": "Edit written work for spelling, grammar, and punctuation."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "writing.grade6.09",
+            "grade": "Grade 6",
+            "organizingIdea": "Writing",
+            "text": "Revise text for clarity, focus, and audience."
+          },
+          {
+            "id": "writing.grade6.10",
+            "grade": "Grade 6",
+            "organizingIdea": "Writing",
+            "text": "Edit writing for spelling, punctuation, and grammar."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "writing.grade3.07",
+            "grade": "Grade 3",
+            "organizingIdea": "Writing",
+            "text": "Revise written texts for accuracy, clarity, or appeal by adding, removing, or changing words or sentences."
+          },
+          {
+            "id": "writing.grade4.09",
+            "grade": "Grade 4",
+            "organizingIdea": "Writing",
+            "text": "Revise texts to enhance clarity or fluency."
+          },
+          {
+            "id": "writing.grade5.07",
+            "grade": "Grade 5",
+            "organizingIdea": "Writing",
+            "text": "Revise drafts to improve the fluency, coherence, sequence, and logical support of ideas."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "GR.agreement",
+      "introducedAt": "Grade 2",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade2.12",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Identify when subjects and verbs agree in sentences."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.05",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Use subject-verb agreement in communications."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade3.14",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify subject-verb agreement in a variety of sentences."
+          },
+          {
+            "id": "conventions.grade4.13",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Apply consistent subject-verb agreement in a variety of sentences."
+          },
+          {
+            "id": "conventions.grade5.05",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Identify subject-verb agreement in communications."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "GR.antecedents",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.08",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Use noun-pronoun agreement in communications."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.08",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Use noun-pronoun agreement in communications."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Noun-pronoun agreement appears for the first time at Grade 5. This one is exactly at grade."
+    },
+    {
+      "skillId": "GR.articles-plurals",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade3.19",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify plural nouns that are spelled the same as or differently from their singular form."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.21",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Spell a range of compound words, contractions, possessives, and complex plurals."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade3.31",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Spell some complex plural words."
+          }
+        ]
+      },
+      "note": "Plurals are named; articles are not named as an outcome at any K–6 grade. The rung is the plural half only."
+    },
+    {
+      "skillId": "GR.demonstrative",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
+    },
+    {
+      "skillId": "GR.indefinite",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
+    },
+    {
+      "skillId": "GR.interrogative",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
+    },
+    {
+      "skillId": "GR.possessives",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade3.15",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Differentiate between possessive nouns, possessive adjectives, and possessive pronouns."
+          },
+          {
+            "id": "conventions.grade3.20",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Add an apostrophe and an <s> to nouns to show ownership."
+          },
+          {
+            "id": "conventions.grade3.21",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Add only an apostrophe to show ownership if a noun is plural and already ends in an <s>."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.05",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Insert apostrophes in place of letters in contractions and to show possession."
+          },
+          {
+            "id": "conventions.grade4.10",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Examine possessive adjectives in a variety of sentences."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade3.30",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Spell singular and plural possessives."
+          },
+          {
+            "id": "conventions.grade4.21",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Spell a range of compound words, contractions, possessives, and complex plurals."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "GR.pronoun-types",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Telling the five kinds of pronoun apart, which is exactly what Alberta’s single outcome for them asks. First stated at Grade 5, so this is at grade."
+    },
+    {
+      "skillId": "GR.reflexives",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
+    },
+    {
+      "skillId": "GR.relative",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.11",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Distinguish between different types of pronouns used in a sentence."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta names the class of pronoun types at Grade 5 without listing which types. Covered by the GR.pronoun-types pack; may be split out later."
+    },
+    {
+      "skillId": "GR.subject-object-pronouns",
+      "introducedAt": "Grade 2",
+      "consolidatedAt": "Grade 5",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade2.08",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Recognize and use pronouns to replace nouns in sentences."
+          },
+          {
+            "id": "conventions.grade2.11",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Identify the subject of a sentence."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.06",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Determine nouns or pronouns that are the subject in a variety of sentences."
+          },
+          {
+            "id": "conventions.grade5.07",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Determine nouns or pronouns that are the object in a variety of sentences."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade3.09",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify the subject of a variety of sentences."
+          },
+          {
+            "id": "conventions.grade3.10",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify the predicate of a variety of sentences."
+          },
+          {
+            "id": "conventions.grade4.08",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Identify nouns or pronouns that are the subject of a variety of sentences."
+          },
+          {
+            "id": "conventions.grade4.09",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Identify nouns or pronouns that are the object of a variety of sentences."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "GR.tense",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade1.10",
+            "grade": "Grade 1",
+            "organizingIdea": "Vocabulary",
+            "text": "Add or remove suffixes to change the tense of words."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.04",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Maintain consistent use of tense throughout communications."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade4.07",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Determine if text is in the present, past, or future tense."
+          },
+          {
+            "id": "conventions.grade5.04",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Apply appropriate tense throughout communications."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "PH.blend-segment",
+      "introducedAt": "Kindergarten",
+      "consolidatedAt": "Grade 2",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "phonological-awareness.kindergarten.16",
+            "grade": "Kindergarten",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Blend sounds to form words."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "phonological-awareness.grade2.01",
+            "grade": "Grade 2",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Segment sounds in words that have five or more phonemes."
+          },
+          {
+            "id": "phonological-awareness.grade2.04",
+            "grade": "Grade 2",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Blend sounds in words that have up to six phonemes."
+          },
+          {
+            "id": "phonological-awareness.grade2.05",
+            "grade": "Grade 2",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Blend sounds in words that have consonant blends."
+          }
+        ],
+        "alsoAt": []
+      }
+    },
+    {
+      "skillId": "PH.digraphs-clusters",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 3",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "phonics.grade1.09",
+            "grade": "Grade 1",
+            "organizingIdea": "Phonics",
+            "text": "Read and write two consonant letters that represent one sound at the beginning, middle, and ending of words."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "phonics.grade3.01",
+            "grade": "Grade 3",
+            "organizingIdea": "Phonics",
+            "text": "Recognize consonant clusters at the beginning and ending of a word."
+          },
+          {
+            "id": "phonics.grade3.02",
+            "grade": "Grade 3",
+            "organizingIdea": "Phonics",
+            "text": "Recognize and apply less frequent consonant digraphs."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "phonics.grade2.03",
+            "grade": "Grade 2",
+            "organizingIdea": "Phonics",
+            "text": "Recognize and use a wide range of consonant letters and letter combinations in the beginning, middle, and ending of words."
+          },
+          {
+            "id": "phonological-awareness.grade2.03",
+            "grade": "Grade 2",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Segment sounds in words that have consonant blends."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "PH.multisyllable",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 3",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "phonological-awareness.grade1.06",
+            "grade": "Grade 1",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Identify syllables in words that have three or more syllables."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "phonics.grade3.04",
+            "grade": "Grade 3",
+            "organizingIdea": "Phonics",
+            "text": "Recognize and apply a wide variety of long and short vowel sounds when decoding unknown multisyllabic words."
+          },
+          {
+            "id": "phonics.grade3.05",
+            "grade": "Grade 3",
+            "organizingIdea": "Phonics",
+            "text": "Use phonetic strategies to decode complex words in continuous text."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "comprehension.grade2.06",
+            "grade": "Grade 2",
+            "organizingIdea": "Comprehension",
+            "text": "Solve unfamiliar or multisyllabic words in a variety of ways."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "PH.syllables",
+      "introducedAt": "Kindergarten",
+      "consolidatedAt": "Grade 3",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "phonological-awareness.kindergarten.11",
+            "grade": "Kindergarten",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Identify the number of syllables in one- to three-syllable words."
+          },
+          {
+            "id": "phonological-awareness.kindergarten.14",
+            "grade": "Kindergarten",
+            "organizingIdea": "Phonological Awareness",
+            "text": "Blend syllables to form words."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "vocabulary.grade3.11",
+            "grade": "Grade 3",
+            "organizingIdea": "Vocabulary",
+            "text": "Distinguish syllables in words."
+          },
+          {
+            "id": "phonics.grade3.04",
+            "grade": "Grade 3",
+            "organizingIdea": "Phonics",
+            "text": "Recognize and apply a wide variety of long and short vowel sounds when decoding unknown multisyllabic words."
+          }
+        ],
+        "alsoAt": []
+      }
+    },
+    {
+      "skillId": "PH.vowels",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 3",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "phonics.grade1.07",
+            "grade": "Grade 1",
+            "organizingIdea": "Phonics",
+            "text": "Recognize and use long and short vowel sounds in words."
+          },
+          {
+            "id": "phonics.grade1.10",
+            "grade": "Grade 1",
+            "organizingIdea": "Phonics",
+            "text": "Identify short vowel sounds in words and identify the letters that represent them."
+          },
+          {
+            "id": "phonics.grade1.11",
+            "grade": "Grade 1",
+            "organizingIdea": "Phonics",
+            "text": "Identify long vowel sounds in words and identify the letters that represent them."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "phonics.grade3.04",
+            "grade": "Grade 3",
+            "organizingIdea": "Phonics",
+            "text": "Recognize and apply a wide variety of long and short vowel sounds when decoding unknown multisyllabic words."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "phonics.grade2.04",
+            "grade": "Grade 2",
+            "organizingIdea": "Phonics",
+            "text": "Recognize and use letter combinations that represent long vowel sounds."
+          },
+          {
+            "id": "phonics.grade2.05",
+            "grade": "Grade 2",
+            "organizingIdea": "Phonics",
+            "text": "Recognize how the letter <r> can influence the vowel sound."
+          },
+          {
+            "id": "phonics.grade1.12",
+            "grade": "Grade 1",
+            "organizingIdea": "Phonics",
+            "text": "Recognize how the letter <r> can influence the vowel sound."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "PU.apostrophes",
+      "introducedAt": "Grade 2",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade2.06",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Insert apostrophes in place of letters in contractions."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.05",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Insert apostrophes in place of letters in contractions and to show possession."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade3.06",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Insert apostrophes in place of letters in contractions."
+          },
+          {
+            "id": "conventions.grade3.07",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Insert apostrophes to show possession."
+          },
+          {
+            "id": "conventions.grade3.20",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Add an apostrophe and an <s> to nouns to show ownership."
+          },
+          {
+            "id": "conventions.grade3.21",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Add only an apostrophe to show ownership if a noun is plural and already ends in an <s>."
+          },
+          {
+            "id": "conventions.grade3.30",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Spell singular and plural possessives."
+          },
+          {
+            "id": "conventions.grade4.21",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Spell a range of compound words, contractions, possessives, and complex plurals."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "PU.capitals-endmarks",
+      "introducedAt": "Kindergarten",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.kindergarten.01",
+            "grade": "Kindergarten",
+            "organizingIdea": "Conventions",
+            "text": "Identify capital letters in names."
+          },
+          {
+            "id": "conventions.kindergarten.02",
+            "grade": "Kindergarten",
+            "organizingIdea": "Conventions",
+            "text": "Identify capital letters at the beginning of sentences."
+          },
+          {
+            "id": "conventions.kindergarten.03",
+            "grade": "Kindergarten",
+            "organizingIdea": "Conventions",
+            "text": "Identify periods at the end of sentences."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.01",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Capitalize words appropriately in different contexts."
+          },
+          {
+            "id": "conventions.grade4.02",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Include a variety of punctuation at the end of sentences."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade1.02",
+            "grade": "Grade 1",
+            "organizingIdea": "Conventions",
+            "text": "Apply capital letters when writing the first word of a sentence."
+          },
+          {
+            "id": "conventions.grade1.05",
+            "grade": "Grade 1",
+            "organizingIdea": "Conventions",
+            "text": "Identify and use end punctuation in sentences."
+          },
+          {
+            "id": "conventions.grade2.01",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Capitalize the first word of a sentence."
+          },
+          {
+            "id": "conventions.grade2.05",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Include punctuation at the end of sentences."
+          },
+          {
+            "id": "conventions.grade3.01",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Capitalize words appropriately in different contexts."
+          },
+          {
+            "id": "conventions.grade3.02",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Include a variety of punctuation at the end of sentences."
+          }
+        ]
+      },
+      "note": "Grade 5 and Grade 6 restate this only in the general form \"Apply capitalization/punctuation to support effective written communication\". The specific rules are finished by Grade 4."
+    },
+    {
+      "skillId": "PU.clause-commas",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade3.03",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Insert commas to indicate a pause between parts of sentences or to separate items in a list."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.03",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Insert commas to indicate a pause between parts of sentences, to separate items in a list, or to follow a transition word."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta says \"a pause between parts of sentences\" rather than naming clauses, and does so at Grade 3 and Grade 4 only."
+    },
+    {
+      "skillId": "PU.dialogue",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade3.04",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Insert quotation marks to identify the words of a speaker."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.04",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Insert quotation marks to identify the words of a speaker or to bring attention to a word that is used in a special way."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade3.05",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Insert quotation marks to bring attention to a word that is used in a special way."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "PU.direct-address",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade5.02",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Apply punctuation to support effective written communication."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.02",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Apply punctuation appropriately in written communication."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade5.03",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Experiment with capitalization and punctuation to achieve a desired effect."
+          },
+          {
+            "id": "conventions.grade6.03",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Experiment with capitalization and punctuation to create a variety of effects and improve readability."
+          }
+        ]
+      },
+      "note": "No K–4 outcome names this comma. Alberta covers it only under \"Apply punctuation to support effective written communication\", so it is at grade for a Grade 5 or Grade 6 child rather than catch-up."
+    },
+    {
+      "skillId": "PU.introductory",
+      "introducedAt": "Grade 4",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade4.03",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Insert commas to indicate a pause between parts of sentences, to separate items in a list, or to follow a transition word."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.03",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Insert commas to indicate a pause between parts of sentences, to separate items in a list, or to follow a transition word."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "The comma after a transition word is named at Grade 4 and nowhere else."
+    },
+    {
+      "skillId": "PU.list-commas",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade3.03",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Insert commas to indicate a pause between parts of sentences or to separate items in a list."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.03",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Insert commas to indicate a pause between parts of sentences, to separate items in a list, or to follow a transition word."
+          }
+        ],
+        "alsoAt": []
+      }
+    },
+    {
+      "skillId": "RC.inference",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "comprehension.grade3.09",
+            "grade": "Grade 3",
+            "organizingIdea": "Comprehension",
+            "text": "Make inferences by combining background knowledge with information that is not explicitly stated within a text."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "comprehension.grade6.10",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Interpret and draw conclusions from texts, using stated and implied ideas or information."
+          },
+          {
+            "id": "comprehension.grade6.11",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Distinguish between information that is stated and inferred."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "comprehension.grade4.09",
+            "grade": "Grade 4",
+            "organizingIdea": "Comprehension",
+            "text": "Make inferences in texts that reach beyond personal experiences."
+          },
+          {
+            "id": "comprehension.grade4.11",
+            "grade": "Grade 4",
+            "organizingIdea": "Comprehension",
+            "text": "Infer ideas that are not explicitly stated in texts."
+          },
+          {
+            "id": "comprehension.grade5.06",
+            "grade": "Grade 5",
+            "organizingIdea": "Comprehension",
+            "text": "Make inferences based on content that is implicit in texts."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "RC.literal",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "comprehension.grade1.19",
+            "grade": "Grade 1",
+            "organizingIdea": "Comprehension",
+            "text": "Answer questions requiring literal recall and understanding of examples, details, or facts in texts."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "comprehension.grade6.11",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Distinguish between information that is stated and inferred."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "comprehension.grade2.16",
+            "grade": "Grade 2",
+            "organizingIdea": "Comprehension",
+            "text": "Answer questions requiring literal recall and understanding of evidence, details, or facts from texts."
+          },
+          {
+            "id": "comprehension.grade5.05",
+            "grade": "Grade 5",
+            "organizingIdea": "Comprehension",
+            "text": "Examine ideas and information within texts that are explicit and implicit."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "RC.main-idea",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "comprehension.grade1.09",
+            "grade": "Grade 1",
+            "organizingIdea": "Comprehension",
+            "text": "Discuss the main idea of a variety of texts."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "comprehension.grade6.04",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Respond to texts by summarizing main ideas and providing supporting evidence from the texts."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "comprehension.grade2.08",
+            "grade": "Grade 2",
+            "organizingIdea": "Comprehension",
+            "text": "Summarize a text, including the main idea and key ideas."
+          },
+          {
+            "id": "comprehension.grade3.11",
+            "grade": "Grade 3",
+            "organizingIdea": "Comprehension",
+            "text": "Determine the most important information in a text."
+          },
+          {
+            "id": "comprehension.grade4.12",
+            "grade": "Grade 4",
+            "organizingIdea": "Comprehension",
+            "text": "Synthesize a variety of information when creating summaries of texts."
+          },
+          {
+            "id": "comprehension.grade5.04",
+            "grade": "Grade 5",
+            "organizingIdea": "Comprehension",
+            "text": "Respond to texts by summarizing main ideas and providing supporting evidence from self, other texts, or the world."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "RC.perspective",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "comprehension.grade5.10",
+            "grade": "Grade 5",
+            "organizingIdea": "Comprehension",
+            "text": "Explore how varied perspectives presented in texts can influence personal perspectives."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "comprehension.grade6.15",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Compare personal perspectives to varied perspectives found in texts."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "comprehension.grade5.13",
+            "grade": "Grade 5",
+            "organizingIdea": "Comprehension",
+            "text": "Identify various perspectives in texts and propose alternative perspectives."
+          },
+          {
+            "id": "comprehension.grade6.13",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Connect perspectives reflected in texts to personal experiences."
+          },
+          {
+            "id": "comprehension.grade6.14",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Analyze factors that cause characters in texts to change their perspectives."
+          }
+        ]
+      },
+      "note": "Perspective is a Grade 5 and Grade 6 idea. Nothing below Grade 5 names it."
+    },
+    {
+      "skillId": "SE.clauses",
+      "introducedAt": "Grade 6",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade6.06",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Use independent and dependent clauses in sentences."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.06",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Use independent and dependent clauses in sentences."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Independent and dependent clauses appear for the first time at Grade 6. A Grade 5 child meeting this is working ahead."
+    },
+    {
+      "skillId": "SE.combining",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade3.11",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Examine conjunctions in a variety of sentences."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.07",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Differentiate between simple and compound sentences."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade4.12",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Use conjunctions to connect phrases in sentences."
+          },
+          {
+            "id": "conventions.grade5.10",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Integrate conjunctions into sentences."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "SE.complete",
+      "introducedAt": "Kindergarten",
+      "consolidatedAt": "Grade 3",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.kindergarten.04",
+            "grade": "Kindergarten",
+            "organizingIdea": "Conventions",
+            "text": "Recognize sentences in oral language that include a complete thought or idea."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade3.09",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify the subject of a variety of sentences."
+          },
+          {
+            "id": "conventions.grade3.10",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify the predicate of a variety of sentences."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade1.06",
+            "grade": "Grade 1",
+            "organizingIdea": "Conventions",
+            "text": "Recognize sentences in oral or written language that include a complete thought or idea."
+          },
+          {
+            "id": "conventions.grade2.07",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Write a variety of sentences that include a complete thought or idea."
+          },
+          {
+            "id": "conventions.grade2.11",
+            "grade": "Grade 2",
+            "organizingIdea": "Conventions",
+            "text": "Identify the subject of a sentence."
+          }
+        ]
+      },
+      "note": "Subject and predicate are named as outcomes for the last time at Grade 3. A Grade 5 child doing this pack is revisiting."
+    },
+    {
+      "skillId": "SE.fragments",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade3.09",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify the subject of a variety of sentences."
+          },
+          {
+            "id": "conventions.grade3.10",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Identify the predicate of a variety of sentences."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.06",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Use independent and dependent clauses in sentences."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta never uses the word \"fragment\". Identifying the subject and the predicate is the outcome that makes a fragment visible, and clause work at Grade 6 is where it is finally settled."
+    },
+    {
+      "skillId": "SE.runons",
+      "introducedAt": "Grade 6",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade6.07",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Differentiate between simple and compound sentences."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade6.07",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Differentiate between simple and compound sentences."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta never uses the phrase \"run-on\". Telling a simple sentence from a compound one at Grade 6 is the nearest stated outcome."
+    },
+    {
+      "skillId": "SP.confusables",
+      "introducedAt": "Grade 2",
+      "consolidatedAt": "Grade 4",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade2.07",
+            "grade": "Grade 2",
+            "organizingIdea": "Vocabulary",
+            "text": "Examine homophones and homographs."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade4.18",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Differentiate between the spellings and associated meanings of a variety of homophones."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta names homophone spelling last at Grade 4. Grade 5 and Grade 6 say only that spelling patterns and affix knowledge are applied, so a Grade 5 child meeting this is revisiting Grade 4 work."
+    },
+    {
+      "skillId": "SP.inflections",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 3",
+      "endsBeforeGrade5": true,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade1.09",
+            "grade": "Grade 1",
+            "organizingIdea": "Vocabulary",
+            "text": "Add or remove suffixes to make words plural or singular."
+          },
+          {
+            "id": "vocabulary.grade1.10",
+            "grade": "Grade 1",
+            "organizingIdea": "Vocabulary",
+            "text": "Add or remove suffixes to change the tense of words."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade3.28",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Apply inflectional endings in writing."
+          },
+          {
+            "id": "conventions.grade3.32",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Apply endings that show comparisons."
+          },
+          {
+            "id": "conventions.grade3.33",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Recognize basic guidelines for adding inflectional endings."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade4.22",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Recognize and spell common suffixes."
+          },
+          {
+            "id": "conventions.grade5.14",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Apply knowledge of prefixes and suffixes to spell words."
+          },
+          {
+            "id": "conventions.grade6.09",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Apply knowledge of bases and affixes to spell words."
+          }
+        ]
+      },
+      "note": "Named as its own outcome last at Grade 3 (\"Recognize basic guidelines for adding inflectional endings\"); after that it is folded into affix spelling."
+    },
+    {
+      "skillId": "SP.patterns",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "conventions.grade1.09",
+            "grade": "Grade 1",
+            "organizingIdea": "Conventions",
+            "text": "Recognize letter patterns in words."
+          },
+          {
+            "id": "conventions.grade1.10",
+            "grade": "Grade 1",
+            "organizingIdea": "Conventions",
+            "text": "Apply spelling patterns to spell unfamiliar words."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.12",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Investigate spelling patterns within and across words."
+          },
+          {
+            "id": "conventions.grade5.13",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Apply knowledge of spelling patterns to spell unfamiliar words."
+          },
+          {
+            "id": "conventions.grade6.08",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Apply spelling patterns within and across known and unfamiliar words."
+          }
+        ],
+        "alsoAt": []
+      },
+      "note": "Alberta restates spelling patterns at every grade from 1 to 6; the wording moves from \"recognize\" to \"apply\"."
+    },
+    {
+      "skillId": "SP.wordparts",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade1.07",
+            "grade": "Grade 1",
+            "organizingIdea": "Vocabulary",
+            "text": "Identify words according to their base."
+          },
+          {
+            "id": "vocabulary.grade1.08",
+            "grade": "Grade 1",
+            "organizingIdea": "Vocabulary",
+            "text": "Recognize suffixes in oral or written language."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "conventions.grade5.14",
+            "grade": "Grade 5",
+            "organizingIdea": "Conventions",
+            "text": "Apply knowledge of prefixes and suffixes to spell words."
+          },
+          {
+            "id": "conventions.grade6.09",
+            "grade": "Grade 6",
+            "organizingIdea": "Conventions",
+            "text": "Apply knowledge of bases and affixes to spell words."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "conventions.grade3.22",
+            "grade": "Grade 3",
+            "organizingIdea": "Conventions",
+            "text": "Spell a variety of prefixes and suffixes accurately in words."
+          },
+          {
+            "id": "conventions.grade4.16",
+            "grade": "Grade 4",
+            "organizingIdea": "Conventions",
+            "text": "Spell a variety of prefixes and suffixes accurately in words."
+          },
+          {
+            "id": "vocabulary.grade4.09",
+            "grade": "Grade 4",
+            "organizingIdea": "Vocabulary",
+            "text": "Examine morphemes in words to determine meaning."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "VO.affixes",
+      "introducedAt": "Grade 1",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade1.07",
+            "grade": "Grade 1",
+            "organizingIdea": "Vocabulary",
+            "text": "Identify words according to their base."
+          },
+          {
+            "id": "vocabulary.grade1.08",
+            "grade": "Grade 1",
+            "organizingIdea": "Vocabulary",
+            "text": "Recognize suffixes in oral or written language."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "vocabulary.grade6.07",
+            "grade": "Grade 6",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze how adding affixes changes the meaning of words."
+          },
+          {
+            "id": "vocabulary.grade6.08",
+            "grade": "Grade 6",
+            "organizingIdea": "Vocabulary",
+            "text": "Add affixes to bases to build new words."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "vocabulary.grade2.14",
+            "grade": "Grade 2",
+            "organizingIdea": "Vocabulary",
+            "text": "Examine changes in meaning when suffixes are added to or removed from bases."
+          },
+          {
+            "id": "vocabulary.grade3.07",
+            "grade": "Grade 3",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze bases and affixes for meaning."
+          },
+          {
+            "id": "vocabulary.grade4.10",
+            "grade": "Grade 4",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze the meaning of affixes and how they influence the meaning of bases."
+          },
+          {
+            "id": "vocabulary.grade5.04",
+            "grade": "Grade 5",
+            "organizingIdea": "Vocabulary",
+            "text": "Investigate the meaning of bases and affixes in words."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "VO.context",
+      "introducedAt": "Grade 5",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade5.12",
+            "grade": "Grade 5",
+            "organizingIdea": "Vocabulary",
+            "text": "Discuss how context can influence the meaning of words and phrases."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "vocabulary.grade6.10",
+            "grade": "Grade 6",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze word parts and cross-check with context clues to determine the meaning of unknown words."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "comprehension.grade6.09",
+            "grade": "Grade 6",
+            "organizingIdea": "Comprehension",
+            "text": "Infer meanings from texts based on context clues."
+          }
+        ]
+      },
+      "note": "Using context to work out a word is named for the first time at Grade 5. This one is exactly at grade."
+    },
+    {
+      "skillId": "VO.figurative",
+      "introducedAt": "Grade 3",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade3.05",
+            "grade": "Grade 3",
+            "organizingIdea": "Vocabulary",
+            "text": "Recognize and use figurative language in oral and written communication."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "vocabulary.grade6.12",
+            "grade": "Grade 6",
+            "organizingIdea": "Vocabulary",
+            "text": "Use similes, metaphors, and analogies to enhance communication."
+          },
+          {
+            "id": "vocabulary.grade6.13",
+            "grade": "Grade 6",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze the meanings of words or phrases expressed figuratively."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "vocabulary.grade4.08",
+            "grade": "Grade 4",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze the meanings of words or phrases expressed figuratively."
+          },
+          {
+            "id": "vocabulary.grade5.13",
+            "grade": "Grade 5",
+            "organizingIdea": "Vocabulary",
+            "text": "Examine word meanings in similes, metaphors, and analogies."
+          },
+          {
+            "id": "vocabulary.grade5.14",
+            "grade": "Grade 5",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze the meanings of words or phrases expressed figuratively."
+          }
+        ]
+      }
+    },
+    {
+      "skillId": "VO.roots",
+      "introducedAt": "Grade 4",
+      "consolidatedAt": "Grade 6",
+      "endsBeforeGrade5": false,
+      "extendedAt": [],
+      "scaleNote": "Grades 7–12 are not on this ladder. Alberta’s 7–9 program is organised by General Outcomes 1–5 and its 10–12 program by course (ELA 10-1, 10-2, 20-1, 30-1), neither of which is the grade-by-grade scale used K–6. Placing a rung there would mean inventing a correspondence the curriculum does not state.",
+      "evidence": {
+        "introducedBy": [
+          {
+            "id": "vocabulary.grade4.12",
+            "grade": "Grade 4",
+            "organizingIdea": "Vocabulary",
+            "text": "Analyze word origins for meaning and spelling."
+          }
+        ],
+        "consolidatedBy": [
+          {
+            "id": "vocabulary.grade6.03",
+            "grade": "Grade 6",
+            "organizingIdea": "Vocabulary",
+            "text": "Research the meaning of words with Greek or Latin roots that are still in use today."
+          }
+        ],
+        "alsoAt": [
+          {
+            "id": "vocabulary.grade5.01",
+            "grade": "Grade 5",
+            "organizingIdea": "Vocabulary",
+            "text": "Examine words to determine their origins."
+          }
+        ]
+      }
+    }
+  ],
+  "noCurriculumBasis": {
+    "SP.dictation": "Dictation is a way of asking a question, not a skill Alberta names.",
+    "PR.discrimination": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
+    "PR.target-sounds": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
+    "PR.endings": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
+    "PR.word-stress": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
+    "PR.sentence-reading": "ELAL has no pronunciation organizing idea at any grade, K–6. These five skills came from the English-as-a-second-language benchmarks.",
+    "ED.explain": "Saying why an error is an error is a way of asking a question. Alberta names editing, not explaining.",
+    "ED.transfer": "Applying a repaired rule to a fresh sentence is a property of how this app asks, not an outcome."
+  },
+  "disputedByLadder": [
+    {
+      "claimIn": "src/data/curriculum.ladder.rungs.js → noCurriculumBasis, until 2026-09-19",
+      "claim": "PU.direct-address has no place on the ladder, because Alberta never names the comma before or after a name being addressed.",
+      "ladderFinds": "Alberta names no K–4 outcome for it, which is true, but Grade 5 and Grade 6 both state \"Apply punctuation to support effective written communication\" (conventions.grade5.02, conventions.grade6.02). That covers it, so the skill has a place — at grade, not below it.",
+      "effect": "Moved from \"no curriculum basis\" to a Grade 5 rung. The distinction matters to a child: no specific K–4 outcome is not the same as no outcome at all."
+    },
+    {
+      "claimIn": "src/data/curriculum.alberta.elal.json → skillsWithNoGrade56Outcome",
+      "claim": "PH.blend-segment, PH.vowels, PH.digraphs-clusters, PH.syllables and PH.multisyllable have no Grade 5/6 outcome because \"Alberta ends the Phonics organizing idea after Grade 4\".",
+      "ladderFinds": "Alberta ends Phonics after Grade 3, not Grade 4. Page 33 heads the Grade 3/Grade 4 spread but prints one set of columns, and the Grade 4 half of that table does not exist. Phonological Awareness ends after Grade 2 and Fluency after Grade 4.",
+      "effect": "The conclusion (no Grade 5/6 outcome) is unchanged. The stated reason is off by one grade."
+    },
+    {
+      "claimIn": "src/data/curriculum.alberta.elal.json → skillsWithNoGrade56Outcome",
+      "claim": "GR.reflexives, GR.relative, GR.interrogative, GR.demonstrative and GR.indefinite have no Grade 5/6 outcome.",
+      "ladderFinds": "Grade 5 Conventions states \"Distinguish between different types of pronouns used in a sentence\" (conventions.grade5.11). It names the class without listing which types, so all five sit under one outcome — which is not the same as having none.",
+      "effect": "Whether one outcome naming no types is evidence for five separate skills is a judgement for the parent. The ladder places them at Grade 5 and flags it here rather than deciding quietly."
+    }
+  ]
+}

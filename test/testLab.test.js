@@ -131,7 +131,7 @@ test('the practice learner id can never belong to a real profile', () => {
 });
 
 test('every audio row comes from a real assessment item at its current version', () => {
-  assert.equal(rows.length, 44);
+  assert.equal(rows.length, 36);
   const itemById = new Map(c0AssessmentItems.map((item) => [item.id, item]));
   rows.forEach((row) => {
     const item = itemById.get(row.itemId);
@@ -154,51 +154,66 @@ test('dictation and contrast rows call playback exactly as the assessment does',
   rowsInGroup(rows, 'decoding').forEach((row) => assert.equal(row.playback.rate, CHOICE_RATE));
 });
 
-test('both sides of all eight contrast pairs are playable and reported separately', () => {
+// A listening row's shape is derived from what the item does, never from a list of ids.
+//
+// A minimal pair — the app speaks "ship", and "sheep" is only choice text — needs both sides, because
+// the question the check exists to answer is whether a child can tell them apart. After corr.c0.011
+// the real forms hold no minimal pairs: the children are native speakers, so the eight prompts now ask
+// about `their` against `there`, the three sounds of -ed, and the spoken possessive. Those sides are
+// supposed to sound identical, so asking the parent to hear a difference would invite a truthful
+// answer that reads as a defect. They get one row about the audio itself instead.
+test('a listening item is checked the way its own question can be answered', () => {
   const contrast = rowsInGroup(rows, 'contrast');
-  assert.equal(contrast.length, 16, 'eight pairs, two utterances each');
   const byItem = new Map();
   contrast.forEach((row) => byItem.set(row.itemId, [...(byItem.get(row.itemId) || []), row]));
-  assert.equal(byItem.size, 8);
-  for (const [itemId, pair] of byItem) {
+  assert.equal(byItem.size, 8, 'every listening prompt is checked');
+  for (const [itemId, group] of byItem) {
     const item = c0AssessmentItems.find((entry) => entry.id === itemId);
-    const target = pair.find((row) => !row.comparisonOnly);
-    const compare = pair.find((row) => row.comparisonOnly);
-    assert.ok(target && compare, `${itemId} needs a target and a comparison`);
+    const target = group.find((row) => !row.comparisonOnly);
+    assert.ok(target, `${itemId} needs a row for the audio the assessment plays`);
     assert.equal(target.playback.text, item.spokenText);
-    // The comparison is the distractor the assessment never speaks.
-    const distractor = item.choices.find((choice) => choice.text !== item.spokenText);
-    assert.equal(compare.playback.text, distractor.text);
-    assert.notEqual(target.playback.text, compare.playback.text);
-    // Same rate, or the comparison would not be fair.
-    assert.equal(compare.playback.rate, target.playback.rate);
-    assert.notEqual(target.rowId, compare.rowId, 'each side records its own result');
+    const spokenIsAChoice = item.choices.some((choice) => choice.text.trim().toLowerCase() === String(item.spokenText).trim().toLowerCase());
+    const compare = group.find((row) => row.comparisonOnly);
+    if (spokenIsAChoice) {
+      assert.ok(compare, `${itemId} speaks one of its own options, so the other side must be playable`);
+      assert.notEqual(target.playback.text, compare.playback.text);
+      assert.equal(compare.playback.rate, target.playback.rate, 'a different rate would make the comparison unfair');
+      assert.notEqual(target.rowId, compare.rowId, 'each side records its own result');
+    } else {
+      assert.equal(group.length, 1, `${itemId} speaks a sentence, so there is no second side to hear`);
+      assert.equal(compare, undefined, `${itemId} asks the parent to hear a difference that is not there`);
+      assert.match(target.detail, /sound alike on purpose/, `${itemId} does not say why there is nothing to compare`);
+      assert.match(target.detail, new RegExp(item.spokenText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${itemId} does not say what the audio should say`);
+    }
   }
 });
 
-test('all twelve decoding candidates are playable and keep the item’s own metadata', () => {
-  const decoding = rowsInGroup(rows, 'decoding');
-  assert.equal(decoding.length, 12);
-  const byItem = new Map();
-  decoding.forEach((row) => byItem.set(row.itemId, [...(byItem.get(row.itemId) || []), row]));
-  assert.equal(byItem.size, 4);
-  for (const [itemId, candidates] of byItem) {
-    const item = c0AssessmentItems.find((entry) => entry.id === itemId);
-    assert.equal(candidates.length, 3);
-    assert.equal(candidates.filter((row) => row.expected).length, 1, `${itemId} must have exactly one expected reading`);
-    const expected = candidates.find((row) => row.expected);
-    assert.equal(item.acceptedAnswers.includes(expected.rowId.split(':')[1]), true);
-    candidates.forEach((row) => {
-      const choice = item.choices.find((entry) => row.rowId.endsWith(`:${entry.id}`));
-      assert.equal(row.playback.text, choice.spokenText);
-      assert.equal(row.detail, choice.checkerNote, 'the row shows the item’s own checker note');
-      assert.equal(row.printedWord, item.printedWord);
-    });
-  }
+// The minimal-pair path still has to work: it is what the check will need again if a contrast item is
+// ever authored. Driving it from a fixture keeps the rule covered now that the real forms hold none.
+test('a minimal pair still gets both sides, spoken at the same rate', () => {
+  const pair = {
+    id: 'x.13', version: 1, form: 'A', category: 'listening', order: 1,
+    spokenText: 'ship', acceptedAnswers: ['a'],
+    choices: [{ id: 'a', text: 'ship' }, { id: 'b', text: 'sheep' }],
+  };
+  const built = buildAudioRows([pair]);
+  assert.equal(built.length, 2);
+  const [target, compare] = built;
+  assert.equal(target.comparisonOnly, false);
+  assert.equal(target.playback.text, 'ship');
+  assert.equal(compare.comparisonOnly, true);
+  assert.equal(compare.playback.text, 'sheep');
+  assert.equal(compare.playback.rate, target.playback.rate);
+  assert.match(compare.detail, /assessment never plays this/);
 });
 
 test('playback is described truthfully, and a comparison is never called assessment audio', () => {
-  const compare = rows.find((row) => row.comparisonOnly);
+  // The real forms hold no minimal pair any more, so the comparison row comes from the fixture.
+  const compare = buildAudioRows([{
+    id: 'x.13', version: 1, form: 'A', category: 'listening', order: 1,
+    spokenText: 'ship', acceptedAnswers: ['a'],
+    choices: [{ id: 'a', text: 'ship' }, { id: 'b', text: 'sheep' }],
+  }]).find((row) => row.comparisonOnly);
   const target = rows.find((row) => row.group === 'contrast' && !row.comparisonOnly);
   assert.match(playbackDisclosure(compare, { ok: true, usedRequestedLocale: true }), /Test Lab comparison/);
   assert.doesNotMatch(playbackDisclosure(target, { ok: true, usedRequestedLocale: true }), /Test Lab comparison/);

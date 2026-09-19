@@ -35,6 +35,9 @@ const WordContext = createContext(null);
 
 const AVATAR_OPTIONS = ['🧠', '🚀', '🎨', '🦁', '🌟', '📚', '🎯', '🏆'];
 const DEFAULT_AVATAR = '🧠';
+// The grades the ladder knows. Alberta's 2022 English Language Arts and Literature curriculum runs
+// Kindergarten to Grade 6, so a grade outside that range would have nothing to compare against.
+const LEARNER_GRADES = ['Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'];
 
 const DEFAULT_PROFILES = [
   { id: 'jenn', name: 'Jenn', avatar: '🌟', color: '#f472b6' },
@@ -729,6 +732,28 @@ export function WordProvider({ children }) {
     [user, profiles, loading]
   );
 
+  // The grade a learner is actually in. Absent on every existing profile and never guessed: the grade
+  // ladder shows a child where a skill sits relative to them, and with no grade recorded it shows
+  // nothing rather than assuming Grade 5. The parent sets it at /parent.
+  const setProfileGrade = useCallback(
+    async (profileId, grade) => {
+      const value = LEARNER_GRADES.includes(grade) ? grade : null;
+      const updated = profiles.map((p) => (p.id === profileId ? { ...p, grade: value } : p));
+      setProfiles(updated);
+      // Match updateProfileAvatar: no write back before the initial load resolves, or an early tap
+      // persists the default seed array on top of saved profiles.
+      if (user && !loading) {
+        try {
+          const userDocRef = doc(db, 'spelling-users', user.uid);
+          await setDoc(userDocRef, { profiles: updated }, { merge: true });
+        } catch (err) {
+          console.error('Failed to persist grade update:', err);
+        }
+      }
+    },
+    [user, profiles, loading]
+  );
+
   const toggleSound = useCallback(async () => {
     const newState = !soundEnabled;
     setSoundEnabled(newState);
@@ -793,6 +818,9 @@ export function WordProvider({ children }) {
     dailyChallengeDone,
     recordDailyChallengeAttempt,
     updateProfileAvatar,
+    setProfileGrade,
+    learnerGrade: profiles.find((p) => p.id === activeProfileId)?.grade || null,
+    LEARNER_GRADES,
     multiplayer,
     setMultiplayer,
     AVATAR_OPTIONS,

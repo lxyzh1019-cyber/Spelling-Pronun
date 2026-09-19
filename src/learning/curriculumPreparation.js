@@ -7,7 +7,17 @@ export function validateCurriculumPreparation({ preparation, skills = [], source
   const sourceIds = new Set(sources.map((source) => source.id));
   const expectedIds = skills.map((skill) => skill.id).filter((id) => !CURRENT_C0_SKILL_IDS.has(id));
   const batches = preparation?.batches || [];
-  if (batches.length !== 2 || !batches.some((batch) => batch.id === 'C1') || !batches.some((batch) => batch.id === 'C2')) errors.push('Preparation must contain C1 and C2 batches');
+  // C1 and C2 must still be here — they are the original plan and dropping one would silently unplan
+  // its skills. A third batch is not a fault: C3 was added from the Alberta curriculum mapping, which
+  // supersedes the C1/C2 ordering. What matters is that every batch is named once and every future
+  // skill is planned exactly once, both of which are checked below.
+  for (const required of ['C1', 'C2']) {
+    if (!batches.some((batch) => batch.id === required)) errors.push(`Preparation must contain the ${required} batch`);
+  }
+  const batchIds = batches.map((batch) => batch.id);
+  const duplicateBatches = batchIds.filter((id, index) => batchIds.indexOf(id) !== index);
+  if (duplicateBatches.length) errors.push(`Preparation repeats a batch: ${[...new Set(duplicateBatches)].join(', ')}`);
+  if (!batches.length) errors.push('Preparation contains no batches');
   const entries = batches.flatMap((batch) => batch.entries || []);
   const entryIds = entries.map((entry) => entry.skillId);
   if (new Set(entryIds).size !== entryIds.length) errors.push('Preparation repeats a skill');
