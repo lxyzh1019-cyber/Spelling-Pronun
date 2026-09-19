@@ -461,3 +461,5 @@ export const punctuationPacks = [
     ],
   ),
 ];
+
+export const punctuationItems = punctuationPacks.flatMap((pack) => pack.items);

@@ -376,3 +376,5 @@ export const sentencePacks = [
     ],
   ),
 ];
+
+export const sentenceItems = sentencePacks.flatMap((pack) => pack.items);

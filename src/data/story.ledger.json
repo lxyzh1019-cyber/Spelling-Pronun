@@ -5,8 +5,8 @@
   "plannedChapters": 6,
   "episodesPerChapter": 2,
   "plannedEpisodes": 12,
-  "writtenEpisodes": 7,
-  "remainingEpisodes": 5,
+  "writtenEpisodes": 12,
+  "remainingEpisodes": 0,
   "releasedEpisodes": 0,
   "pilotApprovedEpisodes": 2,
   "pilotApprovedNote": "Only chapter 1’s two episodes are pilot-approved, at version 3. Every episode written since is draft and cannot reach a child.",
@@ -47,7 +47,7 @@
       "caseProgression": "A letter's intended recipient is unclear",
       "languageFocus": "Pronouns, antecedents, end punctuation",
       "plannedEpisodes": 2,
-      "writtenEpisodes": 1,
+      "writtenEpisodes": 2,
       "episodes": [
         {
           "id": "c1.story.ch2.01",
@@ -58,9 +58,18 @@
           "releaseStatus": "not_released",
           "taskCount": 8,
           "file": "story.c1.draft.json"
+        },
+        {
+          "id": "c1.story.ch2.02",
+          "sequence": 2,
+          "title": "The Name on the Cover",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
         }
-      ],
-      "blockedBy": "Ready to write: every skill it needs (PU.list-commas, PU.clause-commas, PU.apostrophes, PU.dialogue, PU.direct-address) now has content."
+      ]
     },
     {
       "chapter": 3,
@@ -98,9 +107,29 @@
       "caseProgression": "A report changes meaning in transcription",
       "languageFocus": "Commas, quotations, fragments/run-ons",
       "plannedEpisodes": 2,
-      "writtenEpisodes": 0,
-      "episodes": [],
-      "blockedBy": "Ready to write: every skill it needs (PU.list-commas, PU.dialogue, SE.fragments, SE.runons) now has content."
+      "writtenEpisodes": 2,
+      "episodes": [
+        {
+          "id": "c1.story.ch4.01",
+          "sequence": 1,
+          "title": "What the Witness Actually Said",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
+        },
+        {
+          "id": "c1.story.ch4.02",
+          "sequence": 2,
+          "title": "Two Sentences Pushed Together",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
+        }
+      ]
     },
     {
       "chapter": 5,
@@ -138,9 +167,29 @@
       "caseProgression": "Evidence supports the corrected attribution",
       "languageFocus": "Integrated editing, sentence writing and final evidence explanation",
       "plannedEpisodes": 2,
-      "writtenEpisodes": 0,
-      "episodes": [],
-      "blockedBy": "Ready to write: every skill it needs (ED.locate, ED.repair) now has content."
+      "writtenEpisodes": 2,
+      "episodes": [
+        {
+          "id": "c1.story.ch6.01",
+          "sequence": 1,
+          "title": "Reading for One Thing at a Time",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
+        },
+        {
+          "id": "c1.story.ch6.02",
+          "sequence": 2,
+          "title": "The Smallest Change That Puts It Right",
+          "version": 1,
+          "reviewStatus": "needs_independent_challenge",
+          "releaseStatus": "not_released",
+          "taskCount": 8,
+          "file": "story.c1.draft.json"
+        }
+      ]
     }
   ]
 }

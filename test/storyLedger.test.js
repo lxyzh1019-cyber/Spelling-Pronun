@@ -16,10 +16,12 @@ import sourceData from '../src/data/sources.json' with { type: 'json' };
 import { c0PilotItems } from '../src/data/packs.c0.draft.js';
 import { c1Items } from '../src/data/packs.c1.draft.js';
 import { foundationItems } from '../src/data/packs.foundation.draft.js';
+import { punctuationItems } from '../src/data/packs.punctuation.draft.js';
+import { sentenceItems } from '../src/data/packs.sentences.draft.js';
 import { readingGrade } from '../src/learning/readability.js';
 
 const allEpisodes = [...c0Story.episodes, ...c1Story.episodes];
-const itemIds = new Set([...c0PilotItems, ...c1Items, ...foundationItems].map((item) => item.id));
+const itemIds = new Set([...c0PilotItems, ...c1Items, ...foundationItems, ...punctuationItems, ...sentenceItems].map((item) => item.id));
 const sourceIds = new Set(sourceData.sources.map((source) => source.id));
 
 test('the ledger states the plan’s totals and matches the episodes that exist', () => {

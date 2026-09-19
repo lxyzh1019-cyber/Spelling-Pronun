@@ -110,7 +110,13 @@ test('a chapter is blocked only by skills that really have no content', () => {
       for (const skillId of named) assert.ok(built.has(skillId), `chapter ${chapter.chapter} is called ready but ${skillId} has no content`);
     }
   }
-  // Today: all three unwritten chapters have their content. What is left is writing the episodes.
-  assert.equal(ledger.writtenEpisodes, 7);
-  assert.equal(ledger.chapters.filter((chapter) => /Ready to write/.test(chapter.blockedBy || '')).length, 3);
+  // The contract, not a count: a chapter carries a blocker only while it is short of episodes, and
+  // the plan's total is what "done" means. Pinning today's number here would have to be edited every
+  // time an episode is written, which is how a ledger stops being the thing that tells you.
+  for (const chapter of ledger.chapters) {
+    const complete = chapter.writtenEpisodes >= chapter.plannedEpisodes;
+    assert.equal(Boolean(chapter.blockedBy), !complete, `chapter ${chapter.chapter} blocker does not match its count`);
+  }
+  assert.equal(ledger.writtenEpisodes, ledger.chapters.reduce((sum, chapter) => sum + chapter.writtenEpisodes, 0));
+  assert.equal(ledger.remainingEpisodes, ledger.plannedEpisodes - ledger.writtenEpisodes);
 });
