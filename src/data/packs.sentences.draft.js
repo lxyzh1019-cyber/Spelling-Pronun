@@ -1,0 +1,397 @@
+// S1 packs: the sentence and editing content chapters 4 and 6 are blocked on.
+//
+// WHY THESE FOUR. `story.ledger.json` derives each unwritten chapter's blocker from what has content.
+// After the punctuation packs landed it named `SE.fragments` and `SE.runons` for chapter 4, and
+// `ED.locate` and `ED.repair` for chapter 6 — the case's resolution, which cannot be written before
+// the chapters it resolves. All four were declared in `skills.json` with nothing behind them.
+//
+// WHAT ALBERTA ACTUALLY SAYS. Alberta never uses the words "fragment" or "run-on". What it states is
+// the outcome that makes each one visible: identifying the subject and the predicate (Grade 3), and
+// telling a simple sentence from a compound one (Grade 6). The rule text in these packs says so in
+// the child's own terms rather than teaching a label the curriculum does not use.
+//
+// EDITING IS TWO SKILLS, NOT ONE. `ED.locate` is finding the error; `ED.repair` is fixing it without
+// breaking something else. They are separated because a child who can spot a mistake and a child who
+// can mend it are different children, and a lesson that ran them together would never tell you which
+// one you had. Alberta names editing from Grade 1 to Grade 6 ("Edit writing for spelling,
+// punctuation, and grammar"), so both are at grade rather than catch-up.
+
+import { makePack as buildPack } from './packBuilder.js';
+import { finaliseDraftPacks } from './draftBatch.js';
+import correctionData from './corrections.c0.json' with { type: 'json' };
+import pilotApprovalData from './pilotApproval.batches.json' with { type: 'json' };
+
+const choice = (prompt, answer, choices, explanation, transferGroup, outcomeIds) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup, outcomeIds });
+const example = (prompt, explanation, transferGroup, outcomeIds) => ({ prompt, explanation, transferGroup, outcomeIds });
+
+function makePack(skillId, title, rule, helpSteps, rows) {
+  return buildPack({ prefix: 's1', batch: 'S1', skillId, title, rule, helpSteps, rows });
+}
+
+const CLAUSES = ['conventions.grade6.06'];
+const SIMPLE_COMPOUND = ['conventions.grade6.07'];
+const JOIN = ['conventions.grade5.10', 'conventions.grade6.07'];
+// "Edit writing for spelling, punctuation, and grammar" — the Grade 5/6 outcome these packs measure.
+//
+// The repair questions used to cite writing.grade5.07 / grade6.09, "Revise drafts to improve the
+// fluency, coherence, sequence, and logical support of ideas", which the mapping marks
+// `not_measurable`. Revising a draft is composition: a child does it to their own writing over time,
+// and a multiple-choice question cannot evidence it. Finding and mending an error in a given
+// sentence is editing, which is exactly what the outcome below names.
+const EDIT = ['writing.grade5.08', 'writing.grade6.10'];
+
+const rawSentencePacks = [
+  makePack(
+    'SE.fragments',
+    'Groups of Words That Are Not Sentences',
+    'A sentence needs someone or something (the subject) and something happening (the predicate), and it must not leave the reader waiting. A group of words missing any of those is not a sentence yet.',
+    [
+      'Ask who or what the group of words is about. If there is nobody, it is not a sentence.',
+      'Ask what is happening. If nothing happens, it is not a sentence.',
+      'Read it aloud on its own. If it leaves you waiting for the rest, it is not a sentence.',
+      'To mend it, add the missing part or join it to the sentence beside it.',
+    ],
+    [
+      example('Read these two: "The dog ran along the wet path." and "Running along the wet path behind the school." The second has something happening but nobody doing it.', 'Length is not the test. The second group is longer and still not a sentence, because no one is named as doing the running.', 1, CLAUSES),
+      example('Read this: "Because the path was wet that morning." Somebody and something happen in it, and it still leaves you waiting.', 'The word "because" makes the whole group depend on a statement that never arrives. Remove it and what is left would stand alone.', 1, CLAUSES),
+
+      choice('Which one is a complete sentence?', 'b',
+        [['a', 'Running along the wet path behind the school.'], ['b', 'The dog ran along the wet path.'], ['c', 'Because the path was wet that morning.'], ['d', 'The wet path behind the old school.']],
+        'One of these names who did something and says what they did, and does not leave the reader waiting.', 2, CLAUSES),
+      choice('What is missing from "The two cats on the warm windowsill."?', 'c',
+        [['a', 'a subject'], ['b', 'a capital letter'], ['c', 'a predicate — nothing happens'], ['d', 'nothing, it is complete']],
+        'The cats are named and described, but they never do anything and nothing is said about them.', 3, CLAUSES),
+      choice('What is missing from "Ran all the way to the corner shop."?', 'a',
+        [['a', 'a subject — nobody is named'], ['b', 'a predicate'], ['c', 'an end mark'], ['d', 'nothing, it is complete']],
+        'Something happens, but the reader is never told who did it.', 4, CLAUSES),
+      choice('Which of these leaves the reader waiting for more?', 'd',
+        [['a', 'The kettle boiled.'], ['b', 'She waited.'], ['c', 'The train was late again.'], ['d', 'Although the train was late again.']],
+        'A joining word at the front makes the whole group depend on a statement that has not been given.', 5, CLAUSES),
+      choice('How would you mend "Because the gate was locked."?', 'b',
+        [['a', 'Add a capital letter.'], ['b', 'Add what happened: "Because the gate was locked, we climbed the fence."'], ['c', 'Remove the full stop.'], ['d', 'Nothing — it is already a sentence.']],
+        'The missing part is the statement the reason was given for. Supplying it completes the thought.', 6, CLAUSES),
+      choice('Which pair shows the SAME words as a fragment and then as a sentence?', 'a',
+        [['a', '"Waiting by the door." / "The cat was waiting by the door."'], ['b', '"The cat waited." / "The cat waited."'], ['c', '"By the door." / "Near the door."'], ['d', '"The cat waited." / "Waited."']],
+        'Adding the subject and a verb that agrees with it is what turns the group into a sentence. The other pairs change nothing or take something away.', 7, CLAUSES),
+
+      choice('Which group of words is NOT a sentence?', 'a',
+        [['a', 'The long grey building at the end of our street.'], ['b', 'The building is grey.'], ['c', 'It stands at the end of our street.'], ['d', 'Our street ends there.']],
+        'A long description of something is not a sentence until something is said about it.', 8, CLAUSES),
+      choice('Which group of words IS a sentence?', 'c',
+        [['a', 'After the long journey home.'], ['b', 'Which nobody had noticed before.'], ['c', 'Nobody noticed.'], ['d', 'Walking slowly through the empty hall.']],
+        'Two words can be a whole sentence if one of them names somebody and the other says what they did.', 9, CLAUSES),
+      choice('What is wrong with this? "She opened the box. And found nothing inside."', 'b',
+        [['a', 'nothing'], ['b', 'the second group has no subject, so it is not a sentence'], ['c', 'the first group has no predicate'], ['d', 'it needs a comma']],
+        'The reader has to carry "she" across from the sentence before, which a sentence should never require.', 10, CLAUSES),
+      choice('Which is the best way to mend "She opened the box. And found nothing inside."?', 'd',
+        [['a', 'Delete the second part.'], ['b', 'Add a comma after "box".'], ['c', 'Start the second part with a capital.'], ['d', 'Join them: "She opened the box and found nothing inside."']],
+        'Joining the two puts the subject and both actions in one sentence without repeating anybody.', 11, CLAUSES),
+      choice('Which group of words is a fragment even though it is long?', 'b',
+        [['a', 'The rain that had been falling all morning finally stopped.'], ['b', 'The rain that had been falling all morning and soaking the fields.'], ['c', 'It rained.'], ['d', 'Rain fell all morning.']],
+        'Everything in it describes the rain; nothing is ever said to happen to it.', 12, CLAUSES),
+      choice('Which word turns "the lights went out" into something that cannot stand alone?', 'a',
+        [['a', 'when'], ['b', 'suddenly'], ['c', 'quickly'], ['d', 'almost']],
+        'A joining word at the front makes the group depend on a statement that must follow. The others only describe how or when.', 13, CLAUSES),
+      choice('Which sentence is complete?', 'c',
+        [['a', 'Standing at the top of the hill in the wind.'], ['b', 'Which we had not expected at all.'], ['c', 'We had not expected it.'], ['d', 'Not expecting it at all.']],
+        'Only one of these names who did something and says what they did, without leaving anything hanging.', 14, CLAUSES),
+      choice('How would you mend "Walking home in the dark."?', 'b',
+        [['a', 'Add a comma.'], ['b', 'Say who was walking: "Priya was walking home in the dark."'], ['c', 'Remove "walking".'], ['d', 'Add an exclamation mark.']],
+        'The action is there and the person is not, so the person is what has to be supplied.', 15, CLAUSES),
+      choice('Which of these could be a sentence on its own?', 'd',
+        [['a', 'Because it was raining.'], ['b', 'The tall man in the doorway.'], ['c', 'Which had been left open.'], ['d', 'It was raining.']],
+        'Removing the joining word from the front leaves a statement that finishes by itself.', 16, CLAUSES),
+      choice('A writer ends a paragraph with "A complete disaster." Is this a fragment?', 'a',
+        [['a', 'Yes — nothing happens in it, though a writer may use one on purpose for effect.'], ['b', 'No, because it is short.'], ['c', 'No, because it starts with a capital.'], ['d', 'No, because it ends with a full stop.']],
+        'A fragment is defined by what it lacks, not by punctuation. Writers do use them deliberately, which is a choice rather than a mistake.', 17, CLAUSES),
+
+      choice('Mend this fragment: "The box under the stairs." Which is best?', 'c',
+        [['a', 'The box, under the stairs.'], ['b', 'Under the stairs, the box.'], ['c', 'The box under the stairs was empty.'], ['d', 'The box under the stairs!']],
+        'Adding what happened to the box gives the group something to say.', 18, CLAUSES),
+      choice('A friend writes "He ran to the gate. Then stopped and listened." What should change?', 'b',
+        [['a', 'nothing'], ['b', 'join the two, or add a subject to the second'], ['c', 'add a comma after "gate"'], ['d', 'remove "then"']],
+        'The second group has actions but nobody doing them, so either the subject is supplied or the two are joined.', 19, CLAUSES),
+
+      choice('Which group of words is NOT a sentence?', 'd',
+        [['a', 'The door closed.'], ['b', 'Nobody moved.'], ['c', 'She waited for an hour.'], ['d', 'After nobody moved for an hour.']],
+        'The joining word at the front leaves the reader waiting for what happened next.', 20, CLAUSES),
+      choice('What does "The old wooden bridge across the river." need?', 'a',
+        [['a', 'something to happen to it'], ['b', 'a subject'], ['c', 'a capital letter'], ['d', 'nothing']],
+        'The bridge is named and described at length; nothing is ever said about it.', 21, CLAUSES),
+      choice('Which is a complete sentence?', 'b',
+        [['a', 'Hoping for better weather.'], ['b', 'We hoped for better weather.'], ['c', 'Better weather at last.'], ['d', 'If the weather improves.']],
+        'Naming who hoped is what completes it.', 22, CLAUSES),
+      choice('Why is "Because I said so." a fragment, even though people say it all the time?', 'c',
+        [['a', 'it is too short'], ['b', 'it has no verb'], ['c', 'it gives a reason for a statement that is not there — in speech the listener supplies it'], ['d', 'it has no subject']],
+        'Speech can leave out what both people already know. Writing usually cannot, because the reader is not there to supply it.', 23, CLAUSES),
+    ],
+  ),
+
+  makePack(
+    'SE.runons',
+    'Two Sentences Run Together',
+    'Two complete statements cannot simply be pushed together, with a comma or with nothing. Join them with a word like "and", "but" or "so", separate them with a full stop, or use a semicolon.',
+    [
+      'Find each complete statement. Each one has somebody and something happening.',
+      'If two of them are stuck together with only a comma, or with nothing, that is the problem.',
+      'Choose one repair: a full stop, a joining word after the comma, or a semicolon.',
+      'Read it back — each part must still stand alone after the repair.',
+    ],
+    [
+      example('Read this: "The bell rang, we went outside." Two complete statements are joined by a comma alone, which a comma cannot do.', 'Either could be a sentence by itself, which is exactly what makes the comma too weak to hold them.', 1, SIMPLE_COMPOUND),
+      example('Read the same idea three ways: "The bell rang. We went outside." / "The bell rang, so we went outside." / "The bell rang; we went outside."', 'All three are correct. Which one to use depends on how closely the two ideas belong together.', 1, SIMPLE_COMPOUND),
+
+      choice('Which sentence is run together incorrectly?', 'a',
+        [['a', 'It was getting late, we started walking home.'], ['b', 'It was getting late, so we started walking home.'], ['c', 'It was getting late. We started walking home.'], ['d', 'Because it was getting late, we started walking home.']],
+        'Two statements that could each stand alone need more than a comma between them.', 2, SIMPLE_COMPOUND),
+      choice('How many complete statements are in "The kettle boiled, the toast burned"?', 'b',
+        [['a', 'one'], ['b', 'two'], ['c', 'three'], ['d', 'none']],
+        'Each half names something and says what it did, so each could be a sentence on its own.', 3, SIMPLE_COMPOUND),
+      choice('Which repair is NOT correct for "I looked everywhere, I could not find it."?', 'd',
+        [['a', 'I looked everywhere. I could not find it.'], ['b', 'I looked everywhere, but I could not find it.'], ['c', 'I looked everywhere; I could not find it.'], ['d', 'I looked everywhere I could not find it.']],
+        'Removing the comma leaves the two statements with nothing between them at all, which is the same fault made worse.', 4, SIMPLE_COMPOUND),
+      choice('Which sentence is correct?', 'c',
+        [['a', 'The film ended, everyone clapped.'], ['b', 'The film ended everyone clapped.'], ['c', 'The film ended, and everyone clapped.'], ['d', 'The film ended, everyone, clapped.']],
+        'The joining word after the comma is what allows two complete statements to share one sentence.', 5, JOIN),
+      choice('Which of these is NOT two statements run together?', 'b',
+        [['a', 'She opened the letter, her hands were shaking.'], ['b', 'She opened the letter with shaking hands.'], ['c', 'She opened the letter her hands were shaking.'], ['d', 'The letter arrived, she opened it at once.']],
+        'One of these says one thing, with the shaking described inside it rather than stated separately.', 6, SIMPLE_COMPOUND),
+      choice('Which joining word fits best? "The road was closed ___ we had to turn back."', 'a',
+        [['a', ', so'], ['b', ', but'], ['c', ', or'], ['d', ', yet']],
+        'The second statement is the result of the first, and only one of these joining words says that.', 7, JOIN),
+
+      choice('Which sentence needs repairing?', 'b',
+        [['a', 'The lights went out, but the music kept playing.'], ['b', 'The lights went out, the music kept playing.'], ['c', 'The lights went out. The music kept playing.'], ['d', 'When the lights went out, the music kept playing.']],
+        'Two complete statements held together by a comma alone.', 8, SIMPLE_COMPOUND),
+      choice('What is the best repair for "He checked the map, he had gone the wrong way."?', 'c',
+        [['a', 'He checked the map he had gone the wrong way.'], ['b', 'He checked the map, he, had gone the wrong way.'], ['c', 'He checked the map and saw that he had gone the wrong way.'], ['d', 'He checked the map; and he had gone the wrong way.']],
+        'Rewriting so the second part depends on the first says what actually happened, rather than stacking two separate facts.', 9, JOIN),
+      choice('Which sentence is correct?', 'd',
+        [['a', 'I called twice, nobody answered.'], ['b', 'I called twice nobody answered.'], ['c', 'I called twice, nobody, answered.'], ['d', 'I called twice; nobody answered.']],
+        'A semicolon is strong enough to hold two complete statements that belong closely together.', 10, SIMPLE_COMPOUND),
+      choice('Which one is a single statement, not two?', 'c',
+        [['a', 'The rain stopped, the sun came out.'], ['b', 'The rain stopped and the sun came out.'], ['c', 'The rain stopped before the sun came out.'], ['d', 'The rain stopped; the sun came out.']],
+        'A joining word like "before" makes the second part depend on the first instead of standing beside it.', 11, CLAUSES),
+      choice('How many sentences should "She packed her bag she locked the door she left" become?', 'b',
+        [['a', 'one, unchanged'], ['b', 'three, or one sentence properly joined'], ['c', 'two'], ['d', 'four']],
+        'Three complete statements are stuck together with nothing between them, so each needs separating or joining properly.', 12, SIMPLE_COMPOUND),
+      choice('Which repair keeps the two ideas closest together?', 'a',
+        [['a', 'The kettle boiled; the toast burned.'], ['b', 'The kettle boiled. The toast burned.'], ['c', 'The kettle boiled, the toast burned.'], ['d', 'The kettle boiled the toast burned.']],
+        'A semicolon separates the statements while showing they belong to one moment. A full stop is correct too but pushes them further apart.', 13, SIMPLE_COMPOUND),
+      choice('Which sentence is correct?', 'b',
+        [['a', 'We waited an hour, the bus never came.'], ['b', 'We waited an hour, but the bus never came.'], ['c', 'We waited an hour the bus never came.'], ['d', 'We waited, an hour the bus never came.']],
+        'The joining word after the comma both connects the statements and says how they relate.', 14, JOIN),
+      choice('What is wrong with "The door was open, so, we went in."?', 'c',
+        [['a', 'nothing'], ['b', 'it needs a semicolon'], ['c', 'the second comma separates the joining word from what it joins'], ['d', 'it needs a full stop']],
+        'One comma before the joining word is enough. A second one cuts the joining word off from the statement it introduces.', 15, JOIN),
+      choice('Which is NOT a correct repair for "It started raining, we ran inside."?', 'a',
+        [['a', 'It started raining, then we ran inside.'], ['b', 'It started raining, so we ran inside.'], ['c', 'It started raining. We ran inside.'], ['d', 'When it started raining, we ran inside.']],
+        '"Then" describes when something happened; it does not join two statements the way "so" or "and" does, so the comma is still doing work it cannot do.', 16, JOIN),
+      choice('Which sentence contains two complete statements correctly joined?', 'd',
+        [['a', 'Running fast, she caught the bus.'], ['b', 'She caught the bus after running fast.'], ['c', 'She ran fast, caught the bus.'], ['d', 'She ran fast, and she caught the bus.']],
+        'Both halves name somebody and say what they did, and a joining word sits after the comma.', 17, JOIN),
+
+      choice('Repair this: "The library was shut we went to the park." Which is best?', 'b',
+        [['a', 'The library was shut, we went to the park.'], ['b', 'The library was shut, so we went to the park.'], ['c', 'The library was shut we went, to the park.'], ['d', 'The library, was shut we went to the park.']],
+        'The second statement is the result of the first, and the joining word says so.', 18, JOIN),
+      choice('A friend writes "I finished my homework, I watched a film." What should change?', 'a',
+        [['a', 'a full stop, a semicolon, or a joining word after the comma'], ['b', 'remove the comma'], ['c', 'add a comma after "film"'], ['d', 'nothing']],
+        'Any of the three repairs works. Removing the comma leaves the same two statements with even less between them.', 19, SIMPLE_COMPOUND),
+
+      choice('Which sentence is run together incorrectly?', 'c',
+        [['a', 'The tide came in, and the path disappeared.'], ['b', 'The tide came in. The path disappeared.'], ['c', 'The tide came in, the path disappeared.'], ['d', 'As the tide came in, the path disappeared.']],
+        'A comma alone cannot hold two statements that could each stand by themselves.', 20, SIMPLE_COMPOUND),
+      choice('How many complete statements are in "He knocked twice and then waited"?', 'a',
+        [['a', 'one — the same person does both actions, and it is not repeated'], ['b', 'two'], ['c', 'three'], ['d', 'none']],
+        'Two actions by one subject named once is a single statement, so nothing needs separating.', 21, SIMPLE_COMPOUND),
+      choice('Which repair is correct for "Nobody spoke the room was silent."?', 'd',
+        [['a', 'Nobody spoke, the room was silent.'], ['b', 'Nobody spoke the room, was silent.'], ['c', 'Nobody, spoke the room was silent.'], ['d', 'Nobody spoke; the room was silent.']],
+        'A semicolon holds two closely related statements. A comma alone would leave the same fault.', 22, SIMPLE_COMPOUND),
+      choice('Why is "I came, I saw, I conquered." acceptable although it joins three statements with commas?', 'b',
+        [['a', 'because the statements are short'], ['b', 'it is a deliberate effect a writer chooses, not an accident — and knowing the rule is what makes the choice possible'], ['c', 'because it is famous'], ['d', 'because there are three, not two']],
+        'Writers break this rule on purpose for rhythm. The difference between that and an error is whether the writer knew.', 23, SIMPLE_COMPOUND),
+    ],
+  ),
+
+  makePack(
+    'ED.locate',
+    'Finding the Mistake',
+    'Editing starts with finding. Read for one kind of mistake at a time — spelling, then punctuation, then grammar — because looking for everything at once is how errors get missed.',
+    [
+      'Read the sentence through once for meaning.',
+      'Read it again looking only for spelling.',
+      'Read it again looking only for punctuation: capitals, end marks, commas, apostrophes.',
+      'Read it again looking only for grammar: do the subject and verb match, is the tense steady.',
+    ],
+    [
+      example('Read this: "we went to the libary on tuesday" — three different mistakes, of three different kinds.', 'A missing capital, a misspelling and a missing capital on a day name. Reading for one kind at a time is what makes all three findable.', 1, EDIT),
+      example('Read this: "The dogs barks loudly." Nothing is misspelled and the punctuation is correct.', 'The mistake is grammar: one subject that is plural with a verb built for a single one. Spelling and punctuation checks would both pass it.', 1, EDIT),
+
+      choice('How many mistakes are in "we went to the libary on tuesday"?', 'c',
+        [['a', 'one'], ['b', 'two'], ['c', 'three'], ['d', 'none']],
+        'The opening word needs a capital, the name of the day needs a capital, and one word is misspelled.', 2, EDIT),
+      choice('What KIND of mistake is in "The dogs barks loudly."?', 'b',
+        [['a', 'spelling'], ['b', 'grammar — the subject and verb do not match'], ['c', 'punctuation'], ['d', 'there is no mistake']],
+        'Every word is spelled correctly and the punctuation is right. A plural subject needs a verb built for more than one.', 3, EDIT),
+      choice('Which word is misspelled? "She recieved the parcel on Friday."', 'a',
+        [['a', 'recieved'], ['b', 'parcel'], ['c', 'Friday'], ['d', 'none of them']],
+        'The i and the e are the wrong way round in one word.', 4, EDIT),
+      choice('What is missing from "where did you put my bag"?', 'd',
+        [['a', 'a comma'], ['b', 'a capital only'], ['c', 'an end mark only'], ['d', 'a capital at the start and a question mark at the end']],
+        'Reading for punctuation alone finds both: the opening capital and the mark that shows it is a question.', 5, EDIT),
+      choice('Which sentence has NO mistake?', 'c',
+        [['a', 'The childs coat is wet.'], ['b', 'the coat is wet.'], ['c', 'The child’s coat is wet.'], ['d', 'The child’s coat are wet.']],
+        'One of these has the apostrophe, the capital and the verb all correct together.', 6, EDIT),
+      choice('Which kind of check would find the mistake in "He dont know."?', 'b',
+        [['a', 'spelling'], ['b', 'both punctuation and grammar — a missing apostrophe and a verb that does not match'], ['c', 'capitals'], ['d', 'nothing is wrong']],
+        'The short form is missing its apostrophe, and the form of the verb does not go with a single subject.', 7, EDIT),
+
+      choice('How many mistakes are in "my freind and i went swiming"?', 'd',
+        [['a', 'two'], ['b', 'three'], ['c', 'one'], ['d', 'five']],
+        'A missing opening capital, a lower-case I, two misspellings, and a missing end mark.', 8, EDIT),
+      choice('What KIND of mistake is in "Yesterday she walks to school."?', 'c',
+        [['a', 'spelling'], ['b', 'punctuation'], ['c', 'grammar — the tense does not match "yesterday"'], ['d', 'no mistake']],
+        'The time word says it already happened and the verb says it is happening now.', 9, EDIT),
+      choice('Which sentence has a punctuation mistake but no spelling mistake?', 'a',
+        [['a', 'Where is the key.'], ['b', 'Where is the kee?'], ['c', 'Where is the key?'], ['d', 'wher is the key?']],
+        'Every word is correct and the mark at the end is the wrong one for a question.', 10, EDIT),
+      choice('Which word is misspelled? "The weather was diffrent on Saturday."', 'b',
+        [['a', 'weather'], ['b', 'diffrent'], ['c', 'Saturday'], ['d', 'none of them']],
+        'A syllable is missing from the middle of one word.', 11, EDIT),
+      choice('How many capitals are missing from "on monday we visited calgary"?', 'c',
+        [['a', 'one'], ['b', 'two'], ['c', 'three'], ['d', 'none']],
+        'The first word, the day and the place name each need one.', 12, EDIT),
+      choice('Which sentence has a mistake that a spell-checker would NOT catch?', 'b',
+        [['a', 'She recieved it.'], ['b', 'She new the answer.'], ['c', 'She relized it.'], ['d', 'She anserwed.']],
+        'One of these is a correctly spelled word in the wrong place, which a checker has no way to see.', 13, EDIT),
+      choice('What is wrong with "The books is on the shelf."?', 'a',
+        [['a', 'the verb does not match the plural subject'], ['b', 'a spelling mistake'], ['c', 'a missing capital'], ['d', 'a missing comma']],
+        'More than one book needs a verb built for more than one.', 14, EDIT),
+      choice('Which of these needs an apostrophe?', 'c',
+        [['a', 'The dogs ran fast.'], ['b', 'She has three cats.'], ['c', 'The dogs bowl was empty, and there is one dog.'], ['d', 'We bought apples.']],
+        'Only one of these shows something belonging to somebody. The rest are plurals.', 15, EDIT),
+      choice('Which sentence has exactly TWO mistakes?', 'd',
+        [['a', 'The cat sat on the mat.'], ['b', 'the cat sat on the mat.'], ['c', 'the cat sat on teh mat'], ['d', 'the cat sat on teh mat.']],
+        'A missing opening capital and one misspelling, with the end mark already in place.', 16, EDIT),
+      choice('Why does reading for one kind of mistake at a time work better?', 'b',
+        [['a', 'it is faster'], ['b', 'looking for everything at once means the eye settles on the first mistake and stops noticing the rest'], ['c', 'it is what teachers say'], ['d', 'it makes the writing longer']],
+        'A single pass tends to find one error and declare the sentence checked. Separate passes each have one thing to look for.', 17, EDIT),
+
+      choice('Find every mistake in "her and me went to the shop on friday". How many are there?', 'c',
+        [['a', 'one'], ['b', 'two'], ['c', 'four'], ['d', 'none']],
+        'A missing opening capital, two pronouns in their object forms where subjects are needed, and a day name without its capital.', 18, EDIT),
+      choice('A friend asks you to check "Its been raining all day, the garden is soaked." What do you find?', 'd',
+        [['a', 'nothing'], ['b', 'only a missing apostrophe'], ['c', 'only two statements run together'], ['d', 'both — a missing apostrophe in "Its" and two statements joined by a comma alone']],
+        'Checking punctuation alone finds the apostrophe; checking sentence structure finds the join. Both passes are needed.', 19, EDIT),
+
+      choice('What KIND of mistake is in "She walk to school every day."?', 'a',
+        [['a', 'grammar — the verb does not match the subject'], ['b', 'spelling'], ['c', 'punctuation'], ['d', 'no mistake']],
+        'A single subject needs the verb form built for one.', 20, EDIT),
+      choice('Which sentence has no mistake?', 'b',
+        [['a', 'Where are my keys.'], ['b', 'Where are my keys?'], ['c', 'where are my keys?'], ['d', 'Where is my keys?']],
+        'The capital, the verb and the question mark all have to be right together.', 21, EDIT),
+      choice('How many mistakes are in "i cant find it"?', 'c',
+        [['a', 'one'], ['b', 'two'], ['c', 'three'], ['d', 'none']],
+        'A lower-case I, a missing apostrophe, and a missing end mark.', 22, EDIT),
+      choice('Why is a mistake in your OWN writing harder to see than one in somebody else’s?', 'd',
+        [['a', 'it is not harder'], ['b', 'your writing is longer'], ['c', 'you write faster than you read'], ['d', 'you already know what you meant, so you read what you intended instead of what is on the page']],
+        'Reading aloud, or leaving it and coming back, forces the eye to take in what was actually written.', 23, EDIT),
+    ],
+  ),
+
+  makePack(
+    'ED.repair',
+    'Fixing It Without Breaking Something Else',
+    'A repair has to fix the mistake and leave the meaning alone. Change the smallest thing that puts it right, then read the whole sentence again to check nothing else broke.',
+    [
+      'Name the mistake before changing anything.',
+      'Make the smallest change that fixes it.',
+      'Read the whole sentence again — a repair in one place can break something in another.',
+      'Check the meaning is still what the writer intended.',
+    ],
+    [
+      example('Take "The dogs barks loudly." One repair is "The dogs bark loudly." Another is "The dog barks loudly."', 'Both are correct English and they mean different things. Which repair is right depends on how many dogs there were, which is why naming the mistake comes before fixing it.', 1, EDIT),
+      example('Take "Its raining." Adding the apostrophe gives "It’s raining." Changing it to "Its raining outside" fixes nothing.', 'The smallest change that puts it right is the one to make. Adding words around a mistake leaves the mistake there.', 1, EDIT),
+
+      choice('Which repair fixes "The books is on the shelf." with the smallest change?', 'a',
+        [['a', 'The books are on the shelf.'], ['b', 'The book is on the shelf, and there are others.'], ['c', 'On the shelf are the books.'], ['d', 'There is a book on the shelf.']],
+        'Changing the one word that does not match keeps the meaning exactly as it was.', 2, EDIT),
+      choice('"Yesterday she walks to school." Which repair is right?', 'b',
+        [['a', 'Today she walks to school.'], ['b', 'Yesterday she walked to school.'], ['c', 'Yesterday she is walking to school.'], ['d', 'She walks to school.']],
+        'The time word is what the writer meant, so the verb is what has to change to match it.', 3, EDIT),
+      choice('Which repair changes the MEANING as well as fixing the mistake?', 'c',
+        [['a', '"The childs coat" → "The child’s coat"'], ['b', '"dont" → "don’t"'], ['c', '"The dogs barks" → "The dog barks", when there were several dogs'], ['d', '"wher" → "where"']],
+        'Making the subject singular fixes the mismatch but says something the writer did not mean.', 4, EDIT),
+      choice('"Where is the key." Which repair is right?', 'd',
+        [['a', 'Where is the key'], ['b', 'where is the key.'], ['c', 'Where, is the key.'], ['d', 'Where is the key?']],
+        'The sentence asks something, so the mark at the end has to say so.', 5, EDIT),
+      choice('"I looked everywhere, I could not find it." Which repair keeps both ideas in one sentence?', 'b',
+        [['a', 'I looked everywhere. I could not find it.'], ['b', 'I looked everywhere, but I could not find it.'], ['c', 'I looked everywhere I could not find it.'], ['d', 'I looked everywhere and I looked again.']],
+        'A joining word after the comma holds both statements together and says how they relate.', 6, EDIT),
+      choice('After repairing "her and me went", what should you do next?', 'c',
+        [['a', 'nothing'], ['b', 'add a comma'], ['c', 'read the whole sentence again to check nothing else broke'], ['d', 'change the verb']],
+        'A repair in one place can leave the rest disagreeing with it, which only a re-read catches.', 7, EDIT),
+
+      choice('"Because the gate was locked." Which repair is best?', 'a',
+        [['a', 'Because the gate was locked, we climbed the fence.'], ['b', 'The gate was locked because.'], ['c', 'Because, the gate was locked.'], ['d', 'The gate was locked!']],
+        'The missing part is what the reason was given for, so supplying it is the repair.', 8, CLAUSES),
+      choice('"we went to the libary on tuesday" needs three repairs. Which version has all three?', 'd',
+        [['a', 'We went to the libary on tuesday.'], ['b', 'we went to the library on Tuesday.'], ['c', 'We went to the library on tuesday.'], ['d', 'We went to the library on Tuesday.']],
+        'The opening capital, the spelling and the capital on the day all have to be right together.', 9, EDIT),
+      choice('Which repair of "The soup had carrots onions and beans." is correct?', 'b',
+        [['a', 'The soup had carrots, onions and, beans.'], ['b', 'The soup had carrots, onions, and beans.'], ['c', 'The soup, had carrots onions and beans.'], ['d', 'The soup had, carrots onions and beans.']],
+        'Three items means a comma between each pair, and nothing after the verb or after "and".', 10, EDIT),
+      choice('"She said the gate is locked." The writer meant to quote her exactly. Which repair is right?', 'c',
+        [['a', 'She said "the gate is locked".'], ['b', 'She said, the gate is locked.'], ['c', 'She said, "The gate is locked."'], ['d', '"She said the gate is locked."']],
+        'A comma after the speaking word, a capital to start the speech, and the end mark inside the closing mark.', 11, EDIT),
+      choice('Which is the SMALLEST repair for "He dont know."?', 'a',
+        [['a', 'He does not know.'], ['b', 'He has no idea about it.'], ['c', 'He doesn’t know anything.'], ['d', 'Nobody knows.']],
+        'Fixing the verb form fixes both the mismatch and the missing apostrophe at once, without adding anything.', 12, EDIT),
+      choice('You repair "The dogs bowl was empty" to "The dog’s bowl was empty". What have you also decided?', 'b',
+        [['a', 'nothing'], ['b', 'that there was one dog — "dogs’" would mean several'], ['c', 'that the bowl was full'], ['d', 'that it is a question']],
+        'Where the apostrophe goes settles how many owners there are, so the repair makes a claim about the facts.', 13, EDIT),
+      choice('"It started raining, we ran inside." Which repair does NOT work?', 'd',
+        [['a', 'It started raining, so we ran inside.'], ['b', 'It started raining. We ran inside.'], ['c', 'When it started raining, we ran inside.'], ['d', 'It started raining, then we ran inside.']],
+        '"Then" says when something happened rather than joining two statements, so the comma is left doing work it cannot do.', 14, EDIT),
+      choice('A sentence has a spelling mistake and a missing capital. How many changes does the repair need?', 'b',
+        [['a', 'one'], ['b', 'two — one for each'], ['c', 'three'], ['d', 'it depends on the length']],
+        'Each mistake is repaired separately; fixing one does not fix the other.', 15, EDIT),
+      choice('Which repair of "Walking home in the dark." is best?', 'c',
+        [['a', 'Walking home, in the dark.'], ['b', 'Walking home in the dark!'], ['c', 'Priya was walking home in the dark.'], ['d', 'In the dark, walking home.']],
+        'Nobody is named as doing the walking, so naming them is the repair.', 16, CLAUSES),
+      choice('Why read the whole sentence again after a repair?', 'a',
+        [['a', 'a change in one place can leave another part no longer agreeing with it'], ['b', 'to make it longer'], ['c', 'to check the spelling only'], ['d', 'there is no need']],
+        'Changing a subject from plural to singular, for instance, leaves every verb that matched it wrong.', 17, EDIT),
+
+      choice('Repair all the mistakes in "i cant find it". Which is right?', 'b',
+        [['a', 'I cant find it.'], ['b', 'I can’t find it.'], ['c', 'i can’t find it.'], ['d', 'I can’t find it']],
+        'The capital, the apostrophe and the end mark all have to be right together.', 18, EDIT),
+      choice('A friend writes "The teams bus arrived, they were late." and says there were two teams. Which repair is right?', 'd',
+        [['a', 'The team’s bus arrived, they were late.'], ['b', 'The teams bus arrived, but they were late.'], ['c', 'The teams’ bus arrived, they were late.'], ['d', 'The teams’ bus arrived, but they were late.']],
+        'Two teams puts the apostrophe after the s, and the two statements still need a joining word after the comma. Both mistakes have to be repaired, not one.', 19, EDIT),
+
+      choice('Which repair of "She walk to school every day." is right?', 'c',
+        [['a', 'She walking to school every day.'], ['b', 'She walk to school every days.'], ['c', 'She walks to school every day.'], ['d', 'She walked to school every day.']],
+        'The time words say this happens regularly, so the verb form for a single subject in the present is what is needed.', 20, EDIT),
+      choice('"The library was shut we went to the park." Which repair is best?', 'a',
+        [['a', 'The library was shut, so we went to the park.'], ['b', 'The library was shut, we went to the park.'], ['c', 'The library was shut we went, to the park.'], ['d', 'The library was shut. So.']],
+        'The second statement is the result of the first, and a joining word after a comma says so.', 21, EDIT),
+      choice('Which repair keeps the writer’s meaning exactly?', 'b',
+        [['a', '"The boxes is heavy" → "The box is heavy"'], ['b', '"The boxes is heavy" → "The boxes are heavy"'], ['c', '"The boxes is heavy" → "It is heavy"'], ['d', '"The boxes is heavy" → "Heavy boxes."']],
+        'Changing the verb keeps every box; changing the subject quietly throws most of them away.', 22, EDIT),
+      choice('When is the biggest repair the right one?', 'd',
+        [['a', 'always — more changes are safer'], ['b', 'never'], ['c', 'when the sentence is long'], ['d', 'when the smallest change would leave the sentence saying something the writer did not mean']],
+        'The rule is the smallest change that puts it right. A change that fixes the grammar and breaks the meaning has not put it right.', 23, EDIT),
+    ],
+  ),
+];
+
+// Corrections first, then the parent's pilot approval — the same tail every other batch runs
+// through, via `draftBatch.js`. Until 2026-09-19 this file had neither: a defect found in one of
+// these questions could not be withheld, and an approval record for the pack would have done
+// nothing, because no code read one.
+export const sentencePacks = finaliseDraftPacks(rawSentencePacks, {
+  corrections: correctionData.corrections,
+  approvals: pilotApprovalData.approvals,
+});
+export const sentenceItems = sentencePacks.flatMap((pack) => pack.items);

@@ -38,6 +38,12 @@ export function sessionStorageKey(learnerId, mode, category) {
   return `spelling-r1-session:${learnerId}:${mode}:${category}`;
 }
 
+// Where a parent's judgements on pending answers are kept. Local to this device: the decisions are one
+// person's reading, they are never evidence, and no Firestore rule exists for them yet.
+export function pendingDecisionsKey(learnerId) {
+  return `spelling-pending-decisions:${learnerId}`;
+}
+
 export function achievementsStorageKey(learnerId) {
   return `spelling-r1-achievements:${learnerId}`;
 }

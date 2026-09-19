@@ -1,0 +1,986 @@
+[
+  {
+    "id": "c0.pack.sp.patterns",
+    "skillId": "SP.patterns",
+    "items": [
+      {
+        "id": "c0.sp.patterns.01",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "sp.patterns-double-or-drop",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.02",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "sp.patterns-c-before-ing",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.03",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-double-short-vowel",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.04",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-drop-silent-e",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.05",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-ch-exception-rich",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.06",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-tch-short-vowel",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.07",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-prefix-assimilation",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.08",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-vowel-team-ea",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.sp.patterns.09",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-drop-e-context",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.10",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-base-plus-suffix",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.11",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-stressed-final",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.12",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-necessary-pattern",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.13",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-y-to-i",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.14",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-keep-e-soft-c",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.15",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-suffix-ian",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.16",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-stressed-r",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.17",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-canadian-ize",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.18",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-occasion-pattern",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.sp.patterns.19",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-transfer-drop-e",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.sp.patterns.20",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-transfer-ian",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.sp.patterns.21",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "sp.patterns-review-silent",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.sp.patterns.22",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-review-double-t",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.sp.patterns.23",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-review-y-i",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.sp.patterns.24",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "sp.patterns-review-canadian",
+        "difficulty": 3
+      }
+    ]
+  },
+  {
+    "id": "c0.pack.se.complete",
+    "skillId": "SE.complete",
+    "items": [
+      {
+        "id": "c0.se.complete.01",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "se.complete-fragment-v-complete",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.02",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "se.complete-length-not-test",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.03",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-subject-predicate-1",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.04",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-subject-predicate-2",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.05",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-command",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.06",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-question",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.07",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-identify-parts",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.08",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-because-fragment",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.se.complete.09",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-understood-you",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.10",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-statement",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.11",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-predicate-verb",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.12",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-finite-verb",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.13",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-complete-thought",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.14",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-there-are",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.15",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-dependent-marker",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.16",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-link-complete",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.17",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-noun-verb",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.18",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-independent",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.se.complete.19",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-transfer-sign",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.se.complete.20",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-transfer-report",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.se.complete.21",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-review-1",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.se.complete.22",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-review-2",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.se.complete.23",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-review-3",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.se.complete.24",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "se.complete-review-4",
+        "difficulty": 3
+      }
+    ]
+  },
+  {
+    "id": "c0.pack.pu.capitals-endmarks",
+    "skillId": "PU.capitals-endmarks",
+    "items": [
+      {
+        "id": "c0.pu.capitals-endmarks.01",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "pu.capitals-endmarks-statement",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.02",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "pu.capitals-endmarks-question-exclamation",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.03",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-capital-period-1",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.04",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-question-mark-1",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.05",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "pu.capitals-endmarks-exclamation-1",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.06",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-proper-name",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.07",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-place-name",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.08",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-request-period",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.09",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "text",
+        "evaluator": "punctuation",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-edit-statement-1",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.10",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "text",
+        "evaluator": "punctuation",
+        "version": 1,
+        "transferGroup": "pu.capitals-endmarks-edit-question-1",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.11",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "pu.capitals-endmarks-exclamation-2",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.12",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-title-capital",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.13",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-family-day",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.14",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-question-mark-2",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.15",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "text",
+        "evaluator": "punctuation",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-proper-places",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.16",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "pu.capitals-endmarks-day-statement",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.17",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-direct-question",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.18",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "text",
+        "evaluator": "punctuation",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-family-name",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.19",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-transfer-sign",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.20",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "text",
+        "evaluator": "punctuation",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-transfer-exhibit",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.21",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-review-period",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.22",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-review-place",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.23",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "text",
+        "evaluator": "punctuation",
+        "version": 1,
+        "transferGroup": "pu.capitals-endmarks-review-question",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.pu.capitals-endmarks.24",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "pu.capitals-endmarks-review-exclamation",
+        "difficulty": 3
+      }
+    ]
+  },
+  {
+    "id": "c0.pack.gr.subject-object-pronouns",
+    "skillId": "GR.subject-object-pronouns",
+    "items": [
+      {
+        "id": "c0.gr.subject-object-pronouns.01",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "gr.subject-object-pronouns-subject-object",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.02",
+        "role": "worked_example",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "display",
+        "evaluator": "human_rubric",
+        "version": 1,
+        "transferGroup": "gr.subject-object-pronouns-plural-forms",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.03",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-subject-she",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.04",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-object-us",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.05",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-compound-subject-i",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.06",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-compound-object-me",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.07",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "gr.subject-object-pronouns-subject-they",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.08",
+        "role": "guided",
+        "evidenceEligibility": "instruction_only",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-object-him",
+        "difficulty": 1
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.09",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-compound-subject",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.10",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-object-them",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.11",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "gr.subject-object-pronouns-subject-i",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.12",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-object-her",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.13",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-subject-plural",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.14",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "gr.subject-object-pronouns-object-after-verb",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.15",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-singular-they",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.16",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-between-me",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.17",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "gr.subject-object-pronouns-roles-both",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.18",
+        "role": "independent",
+        "evidenceEligibility": "independent_independent",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-nor-subject",
+        "difficulty": 2
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.19",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-transfer-service",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.20",
+        "role": "transfer",
+        "evidenceEligibility": "independent_transfer",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-transfer-report",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.21",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 1,
+        "transferGroup": "gr.subject-object-pronouns-review-object-me",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.22",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-review-subject-we",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.23",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-review-object-us",
+        "difficulty": 3
+      },
+      {
+        "id": "c0.gr.subject-object-pronouns.24",
+        "role": "delayed_review",
+        "evidenceEligibility": "independent_delayed_review",
+        "responseType": "choice",
+        "evaluator": "choice",
+        "version": 2,
+        "transferGroup": "gr.subject-object-pronouns-review-compound",
+        "difficulty": 3
+      }
+    ]
+  }
+]

@@ -9,9 +9,13 @@
       "status": "complete",
       "reviewedAt": "2026-09-07",
       "reviewerRole": "separate_educational_source_review",
-      "storyVersion": 2,
+      "storyVersion": 3,
       "chapter": 1,
-      "sourceIds": ["tna-william-caxton", "bl-printer-guide", "bl-ames-printing-collections"],
+      "sourceIds": [
+        "tna-william-caxton",
+        "bl-printer-guide",
+        "bl-ames-printing-collections"
+      ],
       "dimensions": [
         "historical_accuracy",
         "source_mapping",
@@ -23,19 +27,26 @@
       "results": [
         {
           "episodeId": "c0.story.01",
-          "episodeVersion": 2,
+          "episodeVersion": 3,
           "outcome": "pass",
-          "note": "The qualified Caxton claim and 1476 date map to The National Archives, while the earlier history of printing in China maps to the British Library guide. The archive box, exhibit label, copied proof and pencilled checker are consistently identified as invented. The sixteen linked tasks exactly support the spelling and capitalization decisions without presenting a lesson answer in the story prose. The two-sentence recap is concise, age-accessible, narratively accurate, and adds no unsupported factual claim."
+          "note": "The qualified Caxton claim and 1476 date map to The National Archives, while the earlier history of printing in China maps to the British Library guide. The archive box, exhibit label, copied proof and pencilled checker are consistently identified as invented. The sixteen linked tasks exactly support the spelling and capitalization decisions without presenting a lesson answer in the story prose. The two-sentence recap is concise, age-accessible, narratively accurate, and adds no unsupported factual claim. Version 3 replaces the prose of this episode: the sentences are shorter and a few noun phrases are unpacked, aiming at grade 7 to 8 rather than at the readers’ own grade. Every documented claim, every invented-element disclosure and the fiction label are unchanged, and no task id moved. Re-checked by the parent on 2026-09-18, who read the full before-and-after and approved version 3 for the pilot.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "episodeId": "c0.story.02",
-          "episodeVersion": 2,
+          "episodeVersion": 3,
           "outcome": "pass",
-          "note": "The British Library catalogue supports the general description of papers, letters, memoranda, drafts, amendments and handwritten copying. The working sheet, margin directions, port file and recipient puzzle are explicitly fictional. The eight linked tasks support the complete-sentence decision, and the prose distinguishes fragments from complete directions without leaking a task answer. The two-sentence recap is concise, age-accessible, narratively accurate, and adds no unsupported factual claim."
+          "note": "The British Library catalogue supports the general description of papers, letters, memoranda, drafts, amendments and handwritten copying. The working sheet, margin directions, port file and recipient puzzle are explicitly fictional. The eight linked tasks support the complete-sentence decision, and the prose distinguishes fragments from complete directions without leaking a task answer. The two-sentence recap is concise, age-accessible, narratively accurate, and adds no unsupported factual claim. Version 3 replaces the prose of this episode: the sentences are shorter and a few noun phrases are unpacked, aiming at grade 7 to 8 rather than at the readers’ own grade. Every documented claim, every invented-element disclosure and the fiction label are unchanged, and no task id moved. Re-checked by the parent on 2026-09-18, who read the full before-and-after and approved version 3 for the pilot.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         }
       ],
       "discrepancies": [],
-      "releaseDecision": "reviewed_not_released"
+      "releaseDecision": "reviewed_not_released",
+      "recheckedAt": "2026-09-18",
+      "recheckedBy": "parent",
+      "recheckNote": "The review id keeps its .v2 suffix because it names the review pass, not the story version, exactly as the pack challenge records kept .v1 while their items moved to version 2. The findings below were re-checked against version 3 rather than re-run: corr.c0.013 changed sentence length and word choice only, and a test asserts the documented claims, the invented-element disclosures and the fiction label all survived it."
     }
   ]
 }

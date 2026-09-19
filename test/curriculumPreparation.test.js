@@ -8,8 +8,12 @@ import { validateCurriculumPreparation } from '../src/learning/curriculumPrepara
 test('C1/C2 preparation maps every future pack without claiming authored curriculum', () => {
   const result = validateCurriculumPreparation({ preparation, skills: skillsData.skills, sources: sourceData.sources });
   assert.deepEqual(result.errors, []);
-  assert.equal(result.preparedPackCount, 38);
-  assert.equal(result.preparedObjectCount, 912);
+  // C3 was added on 2026-09-18 from the Alberta mapping, which supersedes the C1/C2 ordering: the
+  // eight Vocabulary and Comprehension skills are the largest unmeasured part of the curriculum.
+  // GR.pronoun-types joined C1 on 2026-09-19 — one pack for Alberta's single pronoun-types outcome,
+  // with the five type-specific skills left planned in case the split is wanted later.
+  assert.equal(result.preparedPackCount, 47);
+  assert.equal(result.preparedObjectCount, 1128);
   assert.equal(preparation.status, 'pre_pilot_source_and_mapping_preparation');
   assert.ok(preparation.batches.flatMap((batch) => batch.entries).some((entry) => entry.sourcePreparationStatus.includes('needs_specialist')));
 });
@@ -22,4 +26,22 @@ test('C1/C2 preparation rejects a duplicate skill or mismatched episode plan', (
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.includes('repeats a skill')));
   assert.ok(result.errors.some((error) => error.includes('episode map')));
+});
+
+// The batch list is allowed to grow — C3 came from the Alberta mapping — but never to lose a batch
+// or repeat one, because either silently unplans the skills inside it.
+test('preparation may add a batch but never drop or repeat one', () => {
+  const missing = structuredClone(preparation);
+  missing.batches = missing.batches.filter((batch) => batch.id !== 'C1');
+  const dropped = validateCurriculumPreparation({ preparation: missing, skills: skillsData.skills, sources: sourceData.sources });
+  assert.ok(dropped.errors.some((error) => error.includes('must contain the C1 batch')));
+
+  const repeated = structuredClone(preparation);
+  repeated.batches.push({ ...repeated.batches[0] });
+  const twice = validateCurriculumPreparation({ preparation: repeated, skills: skillsData.skills, sources: sourceData.sources });
+  assert.ok(twice.errors.some((error) => error.includes('repeats a batch')));
+
+  // A third batch is fine in itself: the real preparation has one, and it validates clean.
+  assert.ok(preparation.batches.some((batch) => batch.id === 'C3'));
+  assert.deepEqual(validateCurriculumPreparation({ preparation, skills: skillsData.skills, sources: sourceData.sources }).errors, []);
 });

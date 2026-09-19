@@ -44,22 +44,40 @@
     {
       "scopeId": "c0.story.01",
       "scopeType": "episode",
-      "scopeVersion": 2,
+      "scopeVersion": 3,
       "decision": "approved",
       "decidedBy": "parent",
-      "decidedAt": "2026-09-09",
-      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
-      "evidence": "Both episodes completed challenge, source review, and integration. Narration is on-screen text read by synthesis and is labelled as such; no answer depends on hearing it."
+      "decidedAt": "2026-09-18",
+      "basis": "Parent decision on 2026-09-18: \"approve version 3 for the reading material\", after reading the full before-and-after of the rewrite. Version 2 was approved on 2026-09-09 and that decision is kept in previousDecisions; this record supersedes it rather than replacing the history.",
+      "evidence": "Version 3 changes prose only. Every documented claim, invented-element disclosure and the fiction label are unchanged, and a test asserts it. Narration is on-screen text read by synthesis and is labelled as such; no answer depends on hearing it.",
+      "previousDecisions": [
+        {
+          "scopeVersion": 2,
+          "decision": "approved",
+          "decidedBy": "parent",
+          "decidedAt": "2026-09-09",
+          "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed."
+        }
+      ]
     },
     {
       "scopeId": "c0.story.02",
       "scopeType": "episode",
-      "scopeVersion": 2,
+      "scopeVersion": 3,
       "decision": "approved",
       "decidedBy": "parent",
-      "decidedAt": "2026-09-09",
-      "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed.",
-      "evidence": "Both episodes completed challenge, source review, and integration. Narration is on-screen text read by synthesis and is labelled as such; no answer depends on hearing it."
+      "decidedAt": "2026-09-18",
+      "basis": "Parent decision on 2026-09-18: \"approve version 3 for the reading material\", after reading the full before-and-after of the rewrite. Version 2 was approved on 2026-09-09 and that decision is kept in previousDecisions; this record supersedes it rather than replacing the history.",
+      "evidence": "Version 3 changes prose only. Every documented claim, invented-element disclosure and the fiction label are unchanged, and a test asserts it. Narration is on-screen text read by synthesis and is labelled as such; no answer depends on hearing it.",
+      "previousDecisions": [
+        {
+          "scopeVersion": 2,
+          "decision": "approved",
+          "decidedBy": "parent",
+          "decidedAt": "2026-09-09",
+          "basis": "Parent decision recorded in docs/IMPLEMENTATION_STATUS.md on 2026-09-09, after the six audit corrections were resolved and their replacements installed."
+        }
+      ]
     },
     {
       "scopeId": "c0.assessment.a",

@@ -44,135 +44,179 @@
         },
         {
           "itemId": "c0.se.complete.03",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice b contains an explicit subject and finite predicate; the other choice is a prepositional phrase."
+          "note": "Only choice b contains an explicit subject and finite predicate; the other choice is a prepositional phrase. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.04",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice a states what the named subject does; the distractor is a prepositional phrase."
+          "note": "Only choice a states what the named subject does; the distractor is a prepositional phrase. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.05",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice b is an imperative with understood you; the alternative is an incomplete time phrase."
+          "note": "Choice b is an imperative with understood you; the alternative is an incomplete time phrase. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.06",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice a is a complete direct question; the when-clause cannot stand alone in the intended formal-writing context."
+          "note": "Choice a is a complete direct question; the when-clause cannot stand alone in the intended formal-writing context. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.07",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice c combines the subject noun phrase with a finite predicate."
+          "note": "Only choice c combines the subject noun phrase with a finite predicate. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.08",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The because-clause is dependent; choice b is an independent clause and the explanation does not leak another item."
+          "note": "The because-clause is dependent; choice b is an independent clause and the explanation does not leak another item. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.09",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice a is an unambiguous command with understood you; the alternative is a location phrase."
+          "note": "Choice a is an unambiguous command with understood you; the alternative is a location phrase. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.10",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice c completes the event; if leaves choice a dependent and choice b has no finite verb."
+          "note": "Only choice c completes the event; if leaves choice a dependent and choice b has no finite verb. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.11",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Are visiting supplies the finite predicate missing from the otherwise identical distractor."
+          "note": "Are visiting supplies the finite predicate missing from the otherwise identical distractor. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.12",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice b supplies an explicit subject and finite verb; the participial phrase is not forced as a sentence."
+          "note": "Choice b supplies an explicit subject and finite verb; the participial phrase is not forced as a sentence. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.13",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice c is independent; the although-clause and noun phrase are intentionally unfinished."
+          "note": "Only choice c is independent; the although-clause and noun phrase are intentionally unfinished. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.14",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice a is a complete existential sentence; the explanation was clarified to avoid treating dummy there as the grammatical subject."
+          "note": "Choice a is a complete existential sentence; the explanation was clarified to avoid treating dummy there as the grammatical subject. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.15",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "While makes choice a dependent; choice b has an explicit subject and finite predicate."
+          "note": "While makes choice a dependent; choice b has an explicit subject and finite predicate. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.16",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Belongs to our team completes the predicate; the distractor is only a noun phrase with a modifier."
+          "note": "Belongs to our team completes the predicate; the distractor is only a noun phrase with a modifier. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.17",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice c pairs the subject with a finite verb and communicates a complete event."
+          "note": "Only choice c pairs the subject with a finite verb and communicates a complete event. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.18",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Whenever marks choice a as a dependent clause in formal writing; choice b stands alone without missing context."
+          "note": "Whenever marks choice a as a dependent clause in formal writing; choice b stands alone without missing context. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.19",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The museum direction is a complete command and uses a distinct practical context for transfer."
+          "note": "The museum direction is a complete command and uses a distinct practical context for transfer. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.20",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The news-report line is independent; the alternative is a dependent after-clause in a distinct transfer context."
+          "note": "The news-report line is independent; the alternative is a dependent after-clause in a distinct transfer context. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.21",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice c has a subject and finite predicate; the other choices test phrase and dependent-clause recognition."
+          "note": "Only choice c has a subject and finite predicate; the other choices test phrase and dependent-clause recognition. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.22",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice a is a complete imperative with understood you; the location phrase is not a competing command."
+          "note": "Choice a is a complete imperative with understood you; the location phrase is not a competing command. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.23",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice b uses complete direct-question word order; choice a functions as an embedded-question fragment here."
+          "note": "Choice b uses complete direct-question word order; choice a functions as an embedded-question fragment here. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.se.complete.24",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice a states a complete event; choice b is an incomplete prepositional phrase."
+          "note": "Choice a states a complete event; choice b is an incomplete prepositional phrase. Version 2 gives every option an end mark, so the full stop no longer marks the answer out on its own. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         }
       ],
       "discrepancies": [
@@ -233,15 +277,19 @@
         },
         {
           "itemId": "c0.pu.capitals-endmarks.03",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Only choice a begins the statement with a capital and closes it with a period."
+          "note": "Only choice a begins the statement with a capital and closes it with a period. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.04",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Choice b is the only capitalized direct question ending with a question mark."
+          "note": "Choice b is the only capitalized direct question ending with a question mark. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.05",
@@ -251,27 +299,35 @@
         },
         {
           "itemId": "c0.pu.capitals-endmarks.06",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Mateo is an ordinary personal name and is unambiguously capitalized in choice a."
+          "note": "Mateo is an ordinary personal name and is unambiguously capitalized in choice a. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.07",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Red Deer is an official Canadian place name and both words are capitalized."
+          "note": "Red Deer is an official Canadian place name and both words are capitalized. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.08",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The polite command is correctly capitalized and normally ends with a period rather than a question mark."
+          "note": "The polite command is correctly capitalized and normally ends with a period rather than a question mark. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.09",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The prompt specifies a statement, making the single capitalized, period-ended response exact."
+          "note": "The prompt specifies a statement, making the single capitalized, period-ended response exact. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.10",
@@ -287,27 +343,35 @@
         },
         {
           "itemId": "c0.pu.capitals-endmarks.12",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "A is the first word of the title and in is a short internal preposition, matching the cited Canadian convention."
+          "note": "A is the first word of the title and in is a short internal preposition, matching the cited Canadian convention. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.13",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Grandma Lee uses the family term as part of a name, and Sunday is a named day; choice a is unambiguous."
+          "note": "Grandma Lee uses the family term as part of a name, and Sunday is a named day; choice a is unambiguous. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.14",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The former polite-request example was replaced with a direct information question to remove documented punctuation variation."
+          "note": "The former polite-request example was replaced with a direct information question to remove documented punctuation variation. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.15",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Edmonton and Alberta are proper place names; the statement also requires an initial capital and period."
+          "note": "Edmonton and Alberta are proper place names; the statement also requires an initial capital and period. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.16",
@@ -317,41 +381,51 @@
         },
         {
           "itemId": "c0.pu.capitals-endmarks.17",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Have you seen the keys is explicitly a direct question, so the question mark is required."
+          "note": "Have you seen the keys is explicitly a direct question, so the question mark is required. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.18",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Aunt Rosa uses an unmodified family term as part of the name; the command has a capital and period."
+          "note": "Aunt Rosa uses an unmodified family term as part of the name; the command has a capital and period. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.19",
           "itemVersion": 2,
           "outcome": "pass",
-          "note": "The sign transfer keeps its answer key. Version 2 replaces the explanation, which had called the sign fragment a complete statement; it now names it a fragment and contrasts sign style with ordinary writing. Re-checked against SE.complete on 2026-09-09.",
-          "recheckedAt": "2026-09-09",
+          "note": "The sign transfer keeps its answer key. Version 2 replaces the explanation, which had called the sign fragment a complete statement; it now names it a fragment and contrasts sign style with ordinary writing. Re-checked against SE.complete on 2026-09-09. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
           "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.20",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The unseen exhibit context asks a direct who-question with a unique capitalization and end-mark repair."
+          "note": "The unseen exhibit context asks a direct who-question with a unique capitalization and end-mark repair. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.21",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The snow-melting sentence is declarative, making the period the single intended end mark."
+          "note": "The snow-melting sentence is declarative, making the period the single intended end mark. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.22",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Nova Scotia is the official two-word province name and is correctly capitalized only in choice b."
+          "note": "Nova Scotia is the official two-word province name and is correctly capitalized only in choice b. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.pu.capitals-endmarks.23",
@@ -361,9 +435,11 @@
         },
         {
           "itemId": "c0.pu.capitals-endmarks.24",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The prompt asks for an exclamation, so choice c is uniquely matched despite a declarative period being possible in another context."
+          "note": "The prompt asks for an exclamation, so choice c is uniquely matched despite a declarative period being possible in another context. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         }
       ],
       "discrepancies": [
@@ -428,27 +504,35 @@
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.03",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "She is uniquely correct as the subject performing found."
+          "note": "She is uniquely correct as the subject performing found. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.04",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Us is uniquely correct as the direct object of helped."
+          "note": "Us is uniquely correct as the direct object of helped. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.05",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "I is required in the compound subject; the removal check is accurate and age-appropriate."
+          "note": "I is required in the compound subject; the removal check is accurate and age-appropriate. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.06",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Me is the object of to in the compound prepositional phrase; no alternative answer is grammatical."
+          "note": "Me is the object of to in the compound prepositional phrase; no alternative answer is grammatical. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.07",
@@ -458,21 +542,27 @@
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.08",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Him is the object form required after the preposition to."
+          "note": "Him is the object form required after the preposition to. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.09",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "She and I are both subject forms; the distractor exposes the common her-for-she error."
+          "note": "She and I are both subject forms; the distractor exposes the common her-for-she error. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.10",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Them is the direct object of surprised and is uniquely grammatical."
+          "note": "Them is the direct object of surprised and is uniquely grammatical. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.11",
@@ -482,15 +572,19 @@
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.12",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Her is the object of with; the explanation directly identifies the controlling feature."
+          "note": "Her is the object of with; the explanation directly identifies the controlling feature. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.13",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "They is the subject performing invited; Alex and me do not affect that choice."
+          "note": "They is the subject performing invited; Alex and me do not affect that choice. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.14",
@@ -500,15 +594,19 @@
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.15",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The distractor was replaced to test subject case without presenting an exclusionary binary claim; choice b uses singular they correctly."
+          "note": "The distractor was replaced to test subject case without presenting an exclusionary binary claim; choice b uses singular they correctly. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.16",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Between governs object case, and the cited Canadian source gives between you and me as its example."
+          "note": "Between governs object case, and the cited Canadian source gives between you and me as its example. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.17",
@@ -518,21 +616,27 @@
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.18",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "She is part of the compound subject joined by nor and therefore takes subject case."
+          "note": "She is part of the compound subject joined by nor and therefore takes subject case. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.19",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "The service-desk transfer combines subject they with object me in a distinct practical context."
+          "note": "The service-desk transfer combines subject they with object me in a distinct practical context. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.20",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "She and he are both subject forms performing measured in the distinct science-report transfer."
+          "note": "She and he are both subject forms performing measured in the distinct science-report transfer. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.21",
@@ -542,21 +646,27 @@
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.22",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "We is the subject form performing will present and is uniquely correct."
+          "note": "We is the subject form performing will present and is uniquely correct. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.23",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Us is the indirect object of showed; the subject-form distractor is ungrammatical."
+          "note": "Us is the indirect object of showed; the subject-form distractor is ungrammatical. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.gr.subject-object-pronouns.24",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "He and I are the compound subject, while both distractor pronouns use object case."
+          "note": "He and I are the compound subject, while both distractor pronouns use object case. Version 2 raises the question from two options to four, each wrong option carrying a different error. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         }
       ],
       "discrepancies": [
@@ -617,9 +727,11 @@
         },
         {
           "itemId": "c0.sp.patterns.03",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Running uniquely applies the one-syllable single-vowel, single-consonant doubling pattern."
+          "note": "Running uniquely applies the one-syllable single-vowel, single-consonant doubling pattern. Version 2 replaces the distractor runnning, which three n letters ruled out on sight, with runeing: the silent-e rule misapplied to a word that needs the doubled consonant. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.sp.patterns.04",
@@ -667,9 +779,11 @@
         },
         {
           "itemId": "c0.sp.patterns.11",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Beginning doubles final n because begin has final stress and takes a vowel-initial suffix."
+          "note": "Beginning doubles final n because begin has final stress and takes a vowel-initial suffix. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.sp.patterns.12",
@@ -679,15 +793,19 @@
         },
         {
           "itemId": "c0.sp.patterns.13",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Happiness correctly changes consonant-y to i before ness."
+          "note": "Happiness correctly changes consonant-y to i before ness. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.sp.patterns.14",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Noticeable retains e to preserve soft c before able and is an explicit example in the cited source."
+          "note": "Noticeable retains e to preserve soft c before able and is an explicit example in the cited source. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.sp.patterns.15",
@@ -703,9 +821,11 @@
         },
         {
           "itemId": "c0.sp.patterns.17",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Analyzed is the only correctly spelled offered form; the explanation now explicitly acknowledges the legitimate Canadian analyse family."
+          "note": "Analyzed is the only correctly spelled offered form; the explanation now explicitly acknowledges the legitimate Canadian analyse family. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.sp.patterns.18",
@@ -733,21 +853,27 @@
         },
         {
           "itemId": "c0.sp.patterns.22",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Admitted correctly doubles t under the final-stress rule; both distractors make distinct errors."
+          "note": "Admitted correctly doubles t under the final-stress rule; both distractors make distinct errors. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.sp.patterns.23",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Reliable correctly changes final consonant-y to i before able and is the only accepted option."
+          "note": "Reliable correctly changes final consonant-y to i before able and is the only accepted option. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         },
         {
           "itemId": "c0.sp.patterns.24",
-          "itemVersion": 1,
+          "itemVersion": 2,
           "outcome": "pass",
-          "note": "Colour is the identified Canadian convention; the feedback also distinguishes legitimate US color from the actual misspellings offered."
+          "note": "Colour is the identified Canadian convention; the feedback also distinguishes legitimate US color from the actual misspellings offered. Version 2 replaces the explanation, which read above the grade the lesson teaches; the rule and the example are unchanged. The correct answer is unchanged. Re-checked by the parent on 2026-09-18 against the full before-and-after of every replacement.",
+          "recheckedAt": "2026-09-18",
+          "recheckedBy": "parent"
         }
       ],
       "discrepancies": [

@@ -1,23 +1,107 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCorrections, isQuarantined, openCorrections, quarantinedItemIds, usableItems, validateCorrections } from '../src/learning/contentCorrections.js';
+import { applyCorrections, correctionScopeIds, installReplacements, isQuarantined, openCorrections, quarantinedItemIds, usableItems, validateCorrections } from '../src/learning/contentCorrections.js';
 import correctionData from '../src/data/corrections.c0.json' with { type: 'json' };
 import { c0PilotItems, c0PilotPacks } from '../src/data/packs.c0.draft.js';
 import { c0AssessmentItems } from '../src/data/assessment.c0.draft.js';
 import { c0LessonCatalog } from '../src/data/lessonCatalog.js';
+import { INSTALLED_ITEM_REPLACEMENTS } from '../src/data/corrections.c0.replacements.js';
+import storyData from '../src/data/story.c0.draft.json' with { type: 'json' };
+
+const resolvedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'reviewed');
+const draftedCorrections = correctionData.corrections.filter((correction) => correction.reviewStatus === 'changes_required');
 
 test('every recorded correction targets a real item and its replacement is installed', () => {
   const items = [...c0PilotItems, ...c0AssessmentItems];
-  const validation = validateCorrections({ corrections: correctionData.corrections, items });
+  // Episodes go in too. `corr.c0.013` names only episodes, and validating against items alone would
+  // have reported its scope as unknown and its replacement as never installed.
+  const validation = validateCorrections({ corrections: correctionData.corrections, items, episodes: storyData.episodes });
   assert.deepEqual(validation.errors, []);
-  assert.equal(openCorrections(correctionData.corrections).length, 0, 'the parent resolved all six on 2026-09-09');
-  assert.ok(correctionData.corrections.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
-  // Every resolved correction actually moved its items to the recorded replacement version.
+  // Two batches are resolved: the six defects the 2026-09-08 audit found, reviewed on 2026-09-09, and
+  // the six item-level improvements the 2026-09-17 audit found, reviewed on 2026-09-18. In both the
+  // parent is the reviewer and Claude the proposer, and in both the replacement is really in the
+  // content — `correctionInstalled` is what makes "reviewed" mean more than a status change.
+  assert.equal(resolvedCorrections.length, 13);
+  assert.ok(resolvedCorrections.every((correction) => correction.proposedBy === 'claude' && correction.reviewedBy === 'parent'));
   const byId = new Map(items.map((item) => [item.id, item]));
-  for (const correction of correctionData.corrections) {
-    for (const itemId of correction.itemIds) assert.equal(byId.get(itemId).version, correction.toVersion, `${itemId} carries the replacement version`);
+  const scopeById = new Map([...items, ...storyData.episodes].map((entry) => [entry.id, entry]));
+  for (const correction of resolvedCorrections) {
+    for (const scopeId of correctionScopeIds(correction)) {
+      assert.equal(scopeById.get(scopeId).version, correction.toVersion, `${scopeId} carries the replacement version`);
+    }
   }
-  assert.deepEqual([...new Set(correctionData.corrections.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
+  const firstBatch = resolvedCorrections.filter((correction) => correction.reviewedAt === '2026-09-09');
+  const auditBatch = resolvedCorrections.filter((correction) => correction.reviewedAt === '2026-09-18');
+  assert.equal(firstBatch.length, 6);
+  assert.equal(auditBatch.length, 7);
+  assert.deepEqual([...new Set(firstBatch.map((correction) => correction.auditFinding))].sort(), ['1a', '1b', '2a', '2b']);
+  assert.ok(auditBatch.every((correction) => correction.severity === 'improvement'), 'an audit improvement was recorded as a defect');
+});
+
+// The installed replacements are the ones a child now meets, not just text sitting in a module. This
+// is the check that would fail if the wiring in `packs.c0.draft.js` were removed while the correction
+// records still said `reviewed`.
+test('the resolved audit replacements are the content the app serves', () => {
+  const byId = new Map([...c0PilotItems, ...c0AssessmentItems].map((item) => [item.id, item]));
+  for (const [id, replacement] of Object.entries(INSTALLED_ITEM_REPLACEMENTS)) {
+    const item = byId.get(id);
+    assert.ok(item, `${id} is named by an installed replacement but is not in the content`);
+    assert.equal(item.version, 2, `${id} did not move to the replacement version`);
+    if (replacement.choices) {
+      assert.deepEqual(item.choices.map((choice) => choice.text), replacement.choices.map(([, text]) => text), `${id} still serves the old options`);
+      assert.deepEqual(item.acceptedAnswers, [replacement.answer], `${id} still serves the old key`);
+    }
+    if (replacement.explanation) assert.equal(item.explanation, replacement.explanation, `${id} still serves the old explanation`);
+    if (replacement.spokenText) assert.equal(item.spokenText, replacement.spokenText, `${id} still speaks the old text`);
+  }
+});
+
+// An open correction is a proposal the parent has not answered yet. Whatever is open, these hold: it
+// is Claude's proposal, it claims no review, it says what it waits for and where its text is, and
+// because it is an `improvement` the content it names keeps running. The lesson assertions are the
+// ones that matter — DEF-48 withheld 46 fully corrected items and left three of the four lessons
+// unable to serve six questions, and this is what caught it.
+test('an open correction claims no review and withholds nothing', () => {
+  const items = [...c0PilotItems, ...c0AssessmentItems];
+  for (const correction of draftedCorrections) {
+    assert.equal(correction.severity, 'improvement', `${correction.id} would withhold its items`);
+    assert.equal(correction.reviewedBy, undefined, `${correction.id} claims a review that has not happened`);
+    assert.equal(correction.proposedBy, 'claude');
+    assert.equal(correction.reviewer, 'parent');
+    assert.ok(correction.draftedIn, `${correction.id} does not say where its replacement text is`);
+    assert.ok(correction.awaiting, `${correction.id} does not say what it is waiting for`);
+    assert.ok(correction.requiresOnInstall, `${correction.id} does not say what installing it costs`);
+    // A record moves every item it names to one version, so they must all start from the same one.
+    const versions = new Set(correction.itemIds.map((id) => items.find((item) => item.id === id)?.version));
+    assert.equal(versions.size <= 1, true, `${correction.id} names items at versions ${[...versions].join(', ')}, which cannot all reach one toVersion`);
+    if (correction.fromVersion) assert.deepEqual([...versions], correction.itemIds.length ? [correction.fromVersion] : [], `${correction.id} says it starts from version ${correction.fromVersion}`);
+  }
+  // Nothing open is withheld, and the packs still serve full lessons.
+  const quarantined = quarantinedItemIds(correctionData.corrections);
+  assert.equal(quarantined.size, 0, 'an open improvement withheld its items');
+  const stamped = applyCorrections(items, correctionData.corrections);
+  assert.equal(stamped.filter(isQuarantined).length, 0);
+  for (const lesson of Object.values(c0LessonCatalog)) {
+    assert.equal(lesson.practicePool.length, 10, `${lesson.sessionId} lost independent questions`);
+    assert.equal(lesson.transfer.length, 2, `${lesson.sessionId} lost a transfer task`);
+  }
+});
+
+// A real defect must still withhold its item. The severity field exists to spare correct content,
+// never to let a wrong answer or a false explanation keep running.
+test('a defect still withholds its item while it waits', () => {
+  const open = { id: 'c9', itemIds: ['x'], reason: 'teaches something false', proposedBy: 'claude', reviewer: 'parent', raisedAt: '2026-09-18', reviewStatus: 'changes_required' };
+  for (const correction of [open, { ...open, severity: 'defect' }]) {
+    assert.ok(quarantinedItemIds([correction]).has('x'), 'a defect did not withhold its item');
+    assert.ok(isQuarantined(applyCorrections([{ id: 'x', version: 1 }], [correction])[0]));
+  }
+  // Only an explicit improvement is spared.
+  const improvement = { ...open, severity: 'improvement' };
+  assert.ok(!quarantinedItemIds([improvement]).has('x'));
+  assert.ok(!isQuarantined(applyCorrections([{ id: 'x', version: 1 }], [improvement])[0]));
+  // And an unknown severity is rejected outright rather than treated as harmless.
+  const bogus = validateCorrections({ corrections: [{ ...open, severity: 'cosmetic' }], items: [{ id: 'x', version: 1 }] });
+  assert.ok(bogus.errors.some((error) => error.includes('unsupported severity')));
 });
 
 test('resolving a correction never restores the defective version on its own', () => {
@@ -120,4 +204,21 @@ test('helpers withhold quarantined items and leave everything else untouched', (
   assert.deepEqual(usableItems(stamped).map(({ id }) => id), ['a']);
   const resolved = applyCorrections(items, [{ ...corrections[0], reviewStatus: 'reviewed', reviewedBy: 'codex' }]);
   assert.ok(resolved.every((item) => !isQuarantined(item)), 'a resolved correction with no version change releases the item again');
+});
+
+// A replacement keyed to an id that does not exist must fail loudly. Silently skipping it would let a
+// typo in a correction record look like a successful install: the record would say `reviewed`, the
+// item would still be the old one, and nothing would say so.
+test('a replacement for an item that does not exist is refused', () => {
+  assert.throws(
+    () => installReplacements([{ id: 'a', version: 1 }], { 'c0.se.complete.03': { explanation: 'x' } }),
+    /is not an item in this content/,
+  );
+  // And the honest case still works, bumping the version because that is what makes the install real.
+  const [item] = installReplacements([{ id: 'a', version: 1, choices: [{ id: 'x', text: 'old' }], acceptedAnswers: ['x'] }], {
+    a: { answer: 'y', choices: [['y', 'new'], ['z', 'other']] },
+  });
+  assert.equal(item.version, 2);
+  assert.deepEqual(item.choices, [{ id: 'y', text: 'new' }, { id: 'z', text: 'other' }]);
+  assert.deepEqual(item.acceptedAnswers, ['y']);
 });

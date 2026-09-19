@@ -1,9 +1,30 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
 import { registerParent, signInParent, signOutParent } from '../firebase';
 import { gateStateLabel, r2GateTracker } from '../data/r2GateTracker';
+import { c0PilotItems } from '../data/packs.c0.draft';
+import { c0AssessmentItems } from '../data/assessment.c0.draft';
+import { PENDING_DECISIONS, buildPendingQueue, recordPendingDecision, summarisePendingReview } from '../learning/pendingReview';
+import { draftPacksFor, openCorrectionsFor, summariseDraftInventory } from '../learning/draftInventory';
+import { buildCoverageReport, coverageHeadline } from '../learning/curriculumCoverage';
+import { ladderReview } from '../learning/gradeLadder';
+import ladder from '../data/curriculum.ladder.json';
+import { diagnosticForm } from '../data/diagnostic.k4.draft.js';
+import { buildDiagnosticReport } from '../learning/diagnosticReport';
+import { attemptsFrom, readDiagnosticRun } from '../persistence/diagnosticStore';
+import correctionData from '../data/corrections.c0.json';
+import curriculumMapping from '../data/curriculum.alberta.elal.json';
+import { c1Packs } from '../data/packs.c1.draft';
+import { foundationPacks } from '../data/packs.foundation.draft';
+import { punctuationPacks } from '../data/packs.punctuation.draft';
+import integrationRecords from '../data/integration.batches.json';
+import challengeRecords from '../data/reviews.batches.json';
+import educationalForms from '../data/reviews.educational.batches.json';
+import { sentencePacks } from '../data/packs.sentences.draft';
+import { grammarPacks } from '../data/packs.grammar.draft';
+import { pendingDecisionsKey, readJson, writeJson } from '../utils/localStore';
 import styles from './Learning.module.css';
 
 function friendlyAuthError(code) {
@@ -16,7 +37,7 @@ function friendlyAuthError(code) {
 }
 
 export default function ParentPage() {
-  const { activeProfileId, authStatus, syncError, user, refreshAuthState } = useWords();
+  const { activeProfileId, authStatus, syncError, user, refreshAuthState, learnerGrade, setProfileGrade, LEARNER_GRADES } = useWords();
   const { attempts, saveStatus, syncCloud, previewImport, confirmImport, skipImport, heldImports } = useLearning();
   const [preview, setPreview] = useState(null);
   const heldCount = Object.values(heldImports || {}).reduce((sum, count) => sum + count, 0);
@@ -26,6 +47,20 @@ export default function ParentPage() {
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const parentConnected = Boolean(user && !user.isAnonymous);
+
+  // Answers the evaluator could not decide, waiting for a person. Before this existed they were
+  // recorded and never shown to anybody. A judgement here is one person's reading: it is kept and
+  // reported, and it never becomes mastery evidence.
+  const [decisions, setDecisions] = useState(() => readJson(pendingDecisionsKey(activeProfileId), []) || []);
+  const [notes, setNotes] = useState({});
+  const reviewableItems = useMemo(() => [...c0PilotItems, ...c0AssessmentItems], []);
+  const pendingQueue = useMemo(() => buildPendingQueue(attempts, reviewableItems, decisions), [attempts, reviewableItems, decisions]);
+  const pendingSummary = useMemo(() => summarisePendingReview(attempts, decisions), [attempts, decisions]);
+  const decide = (attemptId, decision) => {
+    const next = recordPendingDecision(decisions, { attemptId, decision, decidedBy: 'Parent', note: notes[attemptId] || '' });
+    setDecisions(next);
+    writeJson(pendingDecisionsKey(activeProfileId), next);
+  };
 
   const submit = async (event) => {
     event.preventDefault(); setBusy(true); setMessage('');
@@ -92,6 +127,35 @@ export default function ParentPage() {
     finally { setBusy(false); }
   };
 
+  const openCorrections = useMemo(() => openCorrectionsFor(correctionData.corrections), []);
+  const draftPacks = useMemo(() => draftPacksFor([
+    { batch: 'C1', packs: c1Packs },
+    { batch: 'F1', packs: foundationPacks },
+    { batch: 'P1', packs: punctuationPacks },
+    { batch: 'S1', packs: sentencePacks },
+    { batch: 'G1', packs: grammarPacks },
+  ]), []);
+  const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
+  // The drafted packs are passed in so the report works out for itself which outcomes have content
+  // written against them. It used to read a hand-written `draftedIn` on each outcome, which drifted
+  // within a day of the packs being written.
+  const coverageReport = useMemo(
+    () => buildCoverageReport(curriculumMapping, { packs: [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks] }),
+    [],
+  );
+  const coverage = useMemo(() => coverageHeadline(coverageReport), [coverageReport]);
+  // Where each skill sits for THIS learner. Shown here whether or not the mapping has been verified,
+  // because this page is how it gets verified — gating the parent's own view would make the gate on
+  // the learner's view permanent.
+  const ladderView = useMemo(() => ladderReview(ladder, learnerGrade), [learnerGrade]);
+  // What the diagnostic found for the learner currently selected. Null until that child has answered
+  // something, because a report over no answers would read as a result rather than as an absence.
+  const diagnosticReport = useMemo(() => {
+    const run = readDiagnosticRun(globalThis.localStorage, activeProfileId, diagnosticForm.id);
+    const attempts = attemptsFrom(run);
+    return attempts.length ? buildDiagnosticReport(diagnosticForm, attempts, { ladder }) : null;
+  }, [activeProfileId]);
+
   return <div className={styles.page}>
     <section className={styles.card}>
       <h1>Parent view</h1>
@@ -115,6 +179,129 @@ export default function ParentPage() {
         <div className={styles.actions}><button className={styles.primary} type="button" disabled={busy || preview.nothingToImport} onClick={runImport}>{preview.nothingToImport ? 'Nothing to import' : `Import ${preview.totals.newAttempts + preview.totals.newWords} item${preview.totals.newAttempts + preview.totals.newWords === 1 ? '' : 's'}`}</button><button className={styles.secondary} type="button" disabled={busy} onClick={declineImport}>Skip for now</button></div>
       </section>}
       {message && <p role="status">{message}</p>}
+      <h2>Answers waiting for you</h2>
+      <p>The app does not mark a typed sentence right or wrong. When an answer is not the exact wording in the key, it is kept for you to read. These are for <strong>{activeProfileId}</strong>, the learner currently selected; switch profiles to see another child's.</p>
+      <p className={styles.meta}>Your judgement is recorded and shown here. It is never counted as mastery evidence: one person reading an answer is not the reviewed, independent evidence a release needs.</p>
+      {pendingQueue.length === 0
+        ? <p role="status">Nothing is waiting. {pendingSummary.reviewed > 0 ? `You have read ${pendingSummary.reviewed} answer${pendingSummary.reviewed === 1 ? '' : 's'}, and marked ${pendingSummary.acceptable} acceptable.` : ''}</p>
+        : <>
+          <p role="status"><strong>{pendingQueue.length} answer{pendingQueue.length === 1 ? '' : 's'} waiting.</strong></p>
+          {pendingQueue.map((row) => <article className={styles.feedback} key={row.attemptId}>
+            {row.itemMissing
+              ? <p><strong>This question is no longer in the app,</strong> so it cannot be shown. The answer is kept below.</p>
+              : <p><strong>{row.prompt}</strong></p>}
+            <p><strong>{activeProfileId} wrote:</strong> {String(row.submitted ?? '')}</p>
+            {row.expected.length > 0 && <p><strong>The key expected:</strong> {row.expected.join(' / ')}</p>}
+            {row.rubric?.modelAnswer && <p><strong>One answer that fits:</strong> {row.rubric.modelAnswer}</p>}
+            {row.rubric?.answerKey && <ul>{row.rubric.answerKey.map((target) => <li key={target}>{target}</li>)}</ul>}
+            {row.helped && <p className={styles.meta}>Help was used on this answer.</p>}
+            <label>Note (optional)<input className={styles.input} type="text" value={notes[row.attemptId] || ''} onChange={(event) => setNotes((current) => ({ ...current, [row.attemptId]: event.target.value }))} /></label>
+            <div className={styles.actions}>
+              <button className={styles.primary} type="button" onClick={() => decide(row.attemptId, PENDING_DECISIONS.ACCEPTED)}>This is an acceptable answer</button>
+              <button className={styles.secondary} type="button" onClick={() => decide(row.attemptId, PENDING_DECISIONS.REJECTED)}>This one needs more teaching</button>
+            </div>
+          </article>)}
+        </>}
+      <h2>Written and waiting for you</h2>
+      <p>{draftSummary.summary}</p>
+      {openCorrections.length > 0 && <>
+        <h3>Changes proposed to lessons that already exist</h3>
+        {openCorrections.map((correction) => <article className={styles.gate} key={correction.id}>
+          <p><strong>{correction.id}</strong> <span className={styles.meta}>— {correction.itemCount} questions</span></p>
+          <p>{correction.reason}</p>
+          <p className={styles.meta}>Proposed: {correction.change}</p>
+          <p className={styles.meta}>The replacement wording is in <code>{correction.draftedIn}</code>. Installing it: {correction.requiresOnInstall}</p>
+        </article>)}
+      </>}
+      {draftPacks.length > 0 && <>
+        <h3>New lessons nobody has approved yet</h3>
+        <p>These are written but not checked, not reviewed and not approved, so no child can open them. That is the lifecycle working, not a fault.</p>
+        {draftPacks.map((pack) => <article className={styles.gate} key={pack.id}>
+          <p><strong>{pack.title}</strong> <span className={styles.meta}>— {pack.questionCount} questions, {pack.skillId}</span></p>
+          <p>{pack.rule}</p>
+          <p className={styles.meta}>{pack.albertaPlacement
+            ? `Alberta places this at ${pack.albertaPlacement.albertaGrades}, so it is practice rather than a Grade 5/6 check. ${pack.albertaPlacement.note}`
+            : `Written for Alberta Grade 5/6 outcomes: ${pack.curriculumOutcomeIds.join(', ')}.`}</p>
+        </article>)}
+      </>}
+      <h2>What Alberta asks for, and what this app checks</h2>
+      <p>{coverage.summary}</p>
+      {!coverageReport.verified && <p className={styles.meta}>{coverageReport.verificationNote}</p>}
+      <div className={styles.gateList}>{coverageReport.ideas.map((idea) => <article className={styles.gate} key={idea.id}>
+        <p><strong>{idea.name}</strong> <span className={styles.meta}>— {idea.total} outcomes</span></p>
+        <p className={styles.meta}>
+          {idea.tally.checked} checked · {idea.tally.needs_more_evidence} measured, not enough evidence yet · {idea.tally.not_built} not built · {idea.tally.needs_parent} for you to mark
+        </p>
+      </article>)}</div>
+      <h2>Finding out what was missed before Grade 5</h2>
+      <p>Alberta finishes with {ladderView.counts.revisiting || diagnosticForm.items.length / 3} of these skills before Grade 5, so nothing later in the curriculum comes back to them. This form asks three questions about each — {diagnosticForm.items.length} in all — to find which ones need building, so the next lessons written are the ones actually needed.</p>
+      <p className={styles.meta}>{diagnosticForm.purpose} When a wrong answer comes back it names the specific thing it found, not just that something was wrong.</p>
+      <p className={styles.meta}>Answers to it can never count as mastery: they are kept in their own store with no path into the learning record, and both evidence tracks ignore this content whatever a child scores. Tests enforce both halves.</p>
+      <div className={styles.actions}><Link className={styles.primary} to="/diagnostic">Open the diagnostic</Link></div>
+      {!diagnosticReport && <p role="status">{activeProfileId} has not answered any of it yet. What it finds will appear here.</p>}
+      {diagnosticReport && <>
+        <h3>What it found for {activeProfileId}</h3>
+        <p role="status"><strong>{diagnosticReport.separateAppQuestion.detail}</strong></p>
+        <p className={styles.meta}>
+          {diagnosticReport.counts.solid} solid · {diagnosticReport.counts.partly_solid} partly solid · {diagnosticReport.counts.needs_building} need building · {diagnosticReport.counts.not_enough_evidence} not answered yet
+        </p>
+        <p className={styles.meta}>{diagnosticReport.masteryNote}</p>
+        <div className={styles.gateList}>{diagnosticReport.skills.filter((skill) => skill.state !== 'not_enough_evidence').map((skill) => <article className={styles.gate} key={skill.skillId}>
+          <p><strong>{skill.skillId}</strong> <span className={styles.meta}>— {skill.correct} of {skill.answered} right{skill.albertaFinishesAt ? `, Alberta finishes with this at ${skill.albertaFinishesAt}` : ''}</span></p>
+          {skill.locates.length > 0 && <ul>{skill.locates.map((located) => <li key={located.itemId}>{located.locates}</li>)}</ul>}
+        </article>)}</div>
+      </>}
+      <h2>What has to happen before any of this reaches a child</h2>
+      <p>Draft content cannot be approved straight from draft. Three records stand between it and a child, and two of them are now prepared for you rather than blank. The third is yours and only yours.</p>
+      <div className={styles.gateList}>
+        <article className={styles.gate}>
+          <p><strong>1. Integration</strong> <span className={styles.meta}>— drafted in full, waiting for you to countersign</span></p>
+          <p>{integrationRecords.note}</p>
+          <p className={styles.meta}>{integrationRecords.records.length} records covering {integrationRecords.records.reduce((sum, record) => sum + record.expectedObjectCount, 0)} questions. Each one is a mechanical claim you can re-check by running the tests it names.</p>
+        </article>
+        <article className={styles.gate}>
+          <p><strong>2. Challenge</strong> <span className={styles.meta}>— drafted as a SELF-challenge, which is not the independent one</span></p>
+          <p>{challengeRecords.limitation}</p>
+          <p className={styles.meta}>Defects found and fixed this way so far:</p>
+          <ul>{challengeRecords.reviews[0].findings.map((finding) => <li key={finding.id}>{finding.found} <em>{finding.action}</em></li>)}</ul>
+        </article>
+        <article className={styles.gate}>
+          <p><strong>3. Educational review</strong> <span className={styles.meta}>— yours, and blank</span></p>
+          <p>{educationalForms.reviews[0].instructions}</p>
+          <p className={styles.meta}>{educationalForms.reviews.length} forms covering {educationalForms.reviews.reduce((sum, form) => sum + form.packs.length, 0)} packs, plus {educationalForms.episodesAwaitingReview.length} story episodes. Every field is filled except the verdict.</p>
+        </article>
+      </div>
+      <h2>Which grade is {activeProfileId} in?</h2>
+      <p>The lessons can tell a child where a skill sits — Grade 3 work they are revisiting, Grade 6 work they are running ahead into — but only once you have said which grade they are in. Nothing is assumed, so until you set this the lessons show no grade at all.</p>
+      <div className={styles.actions}>
+        {LEARNER_GRADES.map((grade) => <button
+          key={grade}
+          type="button"
+          className={grade === learnerGrade ? styles.primary : styles.secondary}
+          onClick={() => setProfileGrade(activeProfileId, grade === learnerGrade ? null : grade)}
+        >{grade}</button>)}
+      </div>
+      <h2>Where Alberta puts each skill</h2>
+      <p>{ladderView.summary}</p>
+      <p className={styles.meta}>{learnerGrade
+        ? `${ladderView.counts.revisiting} skills Alberta finishes with below ${learnerGrade} · ${ladderView.counts.at_grade} at grade · ${ladderView.counts.ahead} above it · ${ladderView.counts.unplaced} Alberta does not place at any grade.`
+        : `${ladderView.counts.no_learner_grade} skills are placed on the ladder and ${ladderView.counts.unplaced} are not placed by Alberta at any grade. Set a grade above and each one is shown relative to ${activeProfileId}.`}</p>
+      {ladderView.disputed.length > 0 && <>
+        <h3>Where this reading disagrees with what was written before</h3>
+        {ladderView.disputed.map((entry) => <article className={styles.gate} key={entry.claim}>
+          <p><strong>Written before:</strong> {entry.claim}</p>
+          <p><strong>This reading finds:</strong> {entry.ladderFinds}</p>
+          <p className={styles.meta}>{entry.effect}</p>
+        </article>)}
+      </>}
+      <div className={styles.gateList}>{ladderView.skills.map((entry) => <article className={styles.gate} key={entry.skillId}>
+        <p><strong>{entry.skillId}</strong> <span className={styles.meta}>— {entry.label || 'Alberta does not place this at any grade'}</span></p>
+        {entry.reason && <p className={styles.meta}>{entry.reason}</p>}
+        {entry.note && <p className={styles.meta}>{entry.note}</p>}
+        {entry.evidence && <ul>{entry.evidence.introducedBy.concat(entry.evidence.consolidatedBy).map((cited) => <li key={cited.id}>
+          <span className={styles.meta}>{cited.grade} {cited.organizingIdea}: </span>{cited.text}
+        </li>)}</ul>}
+      </article>)}</div>
       <h2>Things I need you to test</h2><p>Some of these gates only move when a person checks something the app cannot check itself. The testing page walks through each one, step by step, and records what you saw.</p><p><Link className={styles.primary} to="/checks">Open the testing checks</Link></p>
       <h2>R2 pilot gate tracker</h2><p>This is a truthful readiness list, not a release claim. Only content marked explicitly released after review, integration, and learner testing can affect mastery.</p><div className={styles.gateList}>{r2GateTracker.map((gate) => <article className={styles.gate} key={gate.id}><p><strong>{gate.label}</strong> <span className={styles.meta}>— {gateStateLabel(gate.state)}</span></p><p>{gate.detail}</p></article>)}</div>
     </section>

@@ -1,64 +1,14 @@
-import { applyCorrections } from '../learning/contentCorrections.js';
+import { makePack as buildPack } from './packBuilder.js';
+import { applyCorrections, installReplacements } from '../learning/contentCorrections.js';
 import { applyPilotApproval } from '../learning/pilotApproval.js';
+import { INSTALLED_ITEM_REPLACEMENTS } from './corrections.c0.replacements.js';
 import pilotApprovalData from './pilotApproval.c0.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
-const ROLE_SEQUENCE = [
-  'worked_example', 'worked_example',
-  ...Array(6).fill('guided'),
-  ...Array(10).fill('independent'),
-  ...Array(2).fill('transfer'),
-  ...Array(4).fill('delayed_review'),
-];
 
 const defaultSourceIds = ['ab-elal-2022-overview', 'ab-eal-benchmarks-4-6'];
 
 function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
-  if (rows.length !== 24) throw new Error(`${skillId} must contain 24 rows`);
-  const sourceIds = options.sourceIds || defaultSourceIds;
-  const reviewStatus = options.reviewStatus || 'needs_independent_challenge';
-  const authorStatus = options.authorStatus || 'draft';
-  const integrationStatus = options.integrationStatus || 'not_integrated';
-  return {
-    id: `c0.pack.${skillId.toLowerCase()}`,
-    version: 1,
-    status: options.status || 'draft_needs_independent_challenge',
-    skillId,
-    title,
-    rule,
-    sourceIds,
-    items: rows.map((row, index) => {
-      const role = ROLE_SEQUENCE[index];
-      const displayOnly = role === 'worked_example';
-      return {
-        packId: `c0.pack.${skillId.toLowerCase()}`,
-        id: `c0.${skillId.toLowerCase()}.${String(index + 1).padStart(2, '0')}`,
-        // A corrected item is installed as a new version in place. The correction record stays in
-        // the repository so the defect and its replacement are both auditable.
-        version: row.version || 1,
-        primarySkill: skillId,
-        secondarySkills: [],
-        role,
-        difficulty: index < 8 ? 1 : index < 18 ? 2 : 3,
-        prerequisites: [],
-        prompt: row.prompt,
-        responseType: displayOnly ? 'display' : row.responseType || 'choice',
-        evaluator: displayOnly ? 'human_rubric' : row.evaluator || 'choice',
-        ...(displayOnly ? { rubric: { displayOnly: true } } : { acceptedAnswers: row.acceptedAnswers }),
-        ...(row.choices ? { choices: row.choices.map(([id, text]) => ({ id, text })) } : {}),
-        ...(row.allowReview ? { allowReview: true } : {}),
-        explanation: row.explanation,
-        helpSteps,
-        commonErrors: row.commonErrors || [],
-        evidenceEligibility: ['independent', 'transfer', 'delayed_review'].includes(role) ? `independent_${role}` : 'instruction_only',
-        transferGroup: `${skillId.toLowerCase()}-${row.transferGroup || index + 1}`,
-        authorStatus,
-        reviewStatus,
-        integrationStatus,
-        releaseStatus: 'not_released',
-        sourceIds,
-      };
-    }),
-  };
+  return buildPack({ prefix: 'c0', skillId, title, rule, helpSteps, rows, sourceIds: defaultSourceIds, ...options });
 }
 
 const choice = (prompt, answer, choices, explanation, transferGroup) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup });
@@ -114,22 +64,22 @@ const sentenceRows = [
   choice('Which group expresses a complete command?', 'b', [['a', 'Before the next stop'], ['b', 'Check the route before the next stop.']], 'A command can have an understood subject, you: “You check the route.”', 'command'),
   choice('Which group is a complete question?', 'a', [['a', 'Did the package arrive?'], ['b', 'When the package arrived']], 'Did the package arrive asks a complete question; the other group leaves the thought unfinished.', 'question'),
   choice('Which group has both a subject and a predicate?', 'c', [['a', 'The noisy machine'], ['b', 'Working after lunch'], ['c', 'The noisy machine stopped after lunch.']], 'The noisy machine is the subject and stopped after lunch is the predicate.', 'identify-parts'),
-  choice('Choose the complete sentence.', 'b', [['a', 'Because the trail was muddy'], ['b', 'The trail was muddy after the storm.']], 'The second choice can stand alone and communicates a complete idea.', 'because-fragment'),
+  choice('Choose the complete sentence.', 'b', [['a', 'Because the trail was muddy'], ['b', 'The trail was muddy after the storm.']], '“The trail was muddy after the storm.” can stand alone, because it tells us who or what and what happened.', 'because-fragment'),
   choice('Which sentence is complete even though its subject is understood?', 'a', [['a', 'Please close the window.'], ['b', 'Near the open window.']], 'The command has the understood subject you and the predicate close the window.', 'understood-you'),
-  choice('Choose the complete statement.', 'c', [['a', 'If the lights turn off'], ['b', 'During the final scene'], ['c', 'The lights turned off during the final scene.']], 'The third choice tells who or what and what happened without leaving an if-condition unfinished.', 'statement'),
+  choice('Choose the complete statement.', 'c', [['a', 'If the lights turn off'], ['b', 'During the final scene'], ['c', 'The lights turned off during the final scene.']], '“The lights turned off during the final scene.” tells us who or what and what happened. It does not leave an if waiting for an answer.', 'statement'),
   choice('Which group can stand alone as a sentence?', 'a', [['a', 'My cousins from Calgary are visiting.'], ['b', 'My cousins from Calgary']], 'Are visiting completes what the cousins are doing.', 'predicate-verb'),
   choice('Choose the complete sentence.', 'b', [['a', 'Running quickly toward the gate'], ['b', 'The child ran quickly toward the gate.']], 'The child supplies a subject, and ran supplies the finite verb in the predicate.', 'finite-verb'),
-  choice('Which group communicates a complete thought?', 'c', [['a', 'Although the recipe looked simple'], ['b', 'The recipe on the counter'], ['c', 'The recipe looked simple, but it took an hour.']], 'The third choice completes both ideas and joins them with but.', 'complete-thought'),
+  choice('Which group communicates a complete thought?', 'c', [['a', 'Although the recipe looked simple'], ['b', 'The recipe on the counter'], ['c', 'The recipe looked simple, but it took an hour.']], '“The recipe looked simple, but it took an hour.” finishes both ideas and joins them with the word but.', 'complete-thought'),
   choice('Choose the complete sentence.', 'a', [['a', 'There are three messages in the folder.'], ['b', 'Three messages in the folder.']], 'The complete sentence includes the verb are and tells us that three messages exist in the folder.', 'there-are'),
   choice('Which group is a complete sentence?', 'b', [['a', 'While everyone was listening'], ['b', 'Everyone listened quietly.']], 'Everyone is the subject and listened quietly is the predicate; while makes the other group dependent.', 'dependent-marker'),
   choice('Choose the complete sentence.', 'a', [['a', 'The blue canoe belongs to our team.'], ['b', 'The blue canoe by the dock.']], 'Belongs to our team tells what is true about the blue canoe.', 'link-complete'),
   choice('Which group is complete?', 'c', [['a', 'Such a surprising ending'], ['b', 'After a surprising ending'], ['c', 'The ending surprised us.']], 'The ending is the subject and surprised us states what it did.', 'noun-verb'),
-  choice('Choose the sentence, not the fragment.', 'b', [['a', 'Whenever the alarm sounds'], ['b', 'The class follows the safety plan.']], 'The second choice is independent; whenever makes the first choice wait for another idea.', 'independent'),
+  choice('Choose the sentence, not the fragment.', 'b', [['a', 'Whenever the alarm sounds'], ['b', 'The class follows the safety plan.']], '“The class follows the safety plan.” stands on its own. The word whenever makes the other group wait for another idea.', 'independent'),
   choice('A museum sign needs a complete direction. Choose it.', 'a', [['a', 'Place wet umbrellas in the rack.'], ['b', 'Wet umbrellas in the rack.']], 'The command gives a complete action with the understood subject you.', 'transfer-sign'),
-  choice('Which line could stand alone in a news report?', 'b', [['a', 'After the council meeting ended'], ['b', 'The council released its decision.']], 'The second line states a complete event; the first only introduces when something happened.', 'transfer-report'),
+  choice('Which line could stand alone in a news report?', 'b', [['a', 'After the council meeting ended'], ['b', 'The council released its decision.']], '“The council released its decision.” states a complete event. A group that begins with after only tells us when something happened.', 'transfer-report'),
   choice('Choose the complete sentence.', 'c', [['a', 'Behind the community centre'], ['b', 'Because practice ended early'], ['c', 'Practice ended early today.']], 'Practice is the subject and ended early today is the predicate.', 'review-1'),
   choice('Which group is complete?', 'a', [['a', 'Turn left at the library.'], ['b', 'At the library on the left.']], 'Turn left is a complete command with an understood subject.', 'review-2'),
-  choice('Choose the complete question.', 'b', [['a', 'Why the door was open'], ['b', 'Why was the door open?']], 'The second choice has question word order and asks a complete question.', 'review-3'),
+  choice('Choose the complete question.', 'b', [['a', 'Why the door was open'], ['b', 'Why was the door open?']], '“Why was the door open?” uses question word order and asks a complete question.', 'review-3'),
   choice('Which group expresses a complete thought?', 'a', [['a', 'The concert begins at seven.'], ['b', 'Before the concert at seven.']], 'The concert is the subject and begins at seven completes the thought.', 'review-4'),
 ];
 
@@ -257,8 +207,20 @@ const rawC0PilotPacks = [
 // Corrections resolve first, then the parent's pilot approval is applied to what remains usable.
 // An item only reaches `pilot_approved` if it is reviewed, integrated, free of open corrections,
 // and does not depend on audio nobody has listened to yet.
-export const c0PilotPacks = rawC0PilotPacks.map((pack) => ({
-  ...pack,
-  items: applyCorrections(pack.items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, pack.id)),
-}));
+// The resolved corrections install first, because `applyCorrections` decides whether an item is still
+// withheld by comparing its version against the correction's `toVersion`. Installing afterwards would
+// stamp every corrected item `correction_not_installed` on the way past.
+const packReplacements = Object.fromEntries(
+  Object.entries(INSTALLED_ITEM_REPLACEMENTS).filter(([id]) => id.startsWith('c0.') && !id.startsWith('c0.assessment.')),
+);
+export const c0PilotPacks = rawC0PilotPacks.map((pack) => {
+  const owned = Object.fromEntries(
+    Object.entries(packReplacements).filter(([id]) => pack.items.some((item) => item.id === id)),
+  );
+  const items = installReplacements(pack.items, owned, { toVersion: 2 });
+  return {
+    ...pack,
+    items: applyCorrections(items, correctionData.corrections).map((item) => applyPilotApproval(item, pilotApprovalData.approvals, pack.id)),
+  };
+});
 export const c0PilotItems = c0PilotPacks.flatMap((pack) => pack.items);

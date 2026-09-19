@@ -1,4 +1,5 @@
 import { EVIDENCE_TRACKS, contentStatusesForTrack } from './pilotApproval.js';
+import { newOrderSeed } from './choiceOrder.js';
 
 // Only content in the selected evidence track may be served. The released queue admits released
 // items alone; the pilot queue admits pilot-approved items alone.
@@ -23,9 +24,11 @@ export function buildReviewQueue(dueReviews, packs, limit = 4, { track = EVIDENC
 }
 
 export function createReviewSession(entries = []) {
+  // See `createLessonState`: the seed fixes this sitting's choice order and is kept in durable state.
+  const orderSeed = newOrderSeed();
   return entries.length
-    ? { stage: 'attempt', entries, index: 0, evidenceIds: [], lastResult: null }
-    : { stage: 'idle', entries: [], index: 0, evidenceIds: [], lastResult: null };
+    ? { stage: 'attempt', entries, index: 0, evidenceIds: [], lastResult: null, orderSeed }
+    : { stage: 'idle', entries: [], index: 0, evidenceIds: [], lastResult: null, orderSeed };
 }
 
 export function resolveReviewItem(session, packs) {
