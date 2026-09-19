@@ -169,3 +169,31 @@ export function learnerLessonTiles({ learnerGrade = null, gradeLadder = ladder }
     };
   });
 }
+
+// The lessons an episode's tasks belong to, in the order the episode names them.
+//
+// An episode links ITEM ids; a learner opens LESSONS. `CasePage` held that mapping as a hardcoded
+// two-entry literal keyed by `c0.story.01/02`, so any episode outside chapter 1 had no entry — and
+// the page did not degrade, it threw, because `episodeLessons[episode.id].every(...)` ran on
+// undefined. That is the same hardcoded-literal pattern DEF-56 was about, left behind when the pack
+// path was fixed.
+//
+// Only learner-visible lessons are returned. An approved episode whose lesson is still draft yields
+// fewer entries rather than a link a child cannot open.
+export function lessonsForTaskIds(taskIds = []) {
+  const lessonByItemId = new Map();
+  for (const pack of ALL_PACKS) {
+    const sessionId = sessionIdForPack(pack);
+    for (const item of pack.items) lessonByItemId.set(item.id, sessionId);
+  }
+  const seen = new Set();
+  const out = [];
+  for (const taskId of taskIds) {
+    const sessionId = lessonByItemId.get(taskId);
+    if (!sessionId || seen.has(sessionId)) continue;
+    seen.add(sessionId);
+    const lesson = c0LessonCatalog[sessionId];
+    if (lesson) out.push({ id: sessionId, label: lesson.title });
+  }
+  return out;
+}

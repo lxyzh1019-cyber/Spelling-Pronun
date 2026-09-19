@@ -23,7 +23,8 @@
 //   - the prompt never gives the answer away, and no fragment is marked out by its punctuation
 
 import { makePack as buildPack } from './packBuilder.js';
-import { applyCorrections } from '../learning/contentCorrections.js';
+import { finaliseDraftPacks } from './draftBatch.js';
+import pilotApprovalData from './pilotApproval.batches.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
 
 
@@ -215,9 +216,12 @@ const rawC1Packs = [
 ];
 
 // Corrections apply to C1 exactly as they do to C0: an open defect withholds its item. No C1
-// correction exists yet, but wiring it now means the first one does not need a code change.
-export const c1Packs = rawC1Packs.map((pack) => ({
-  ...pack,
-  items: applyCorrections(pack.items, correctionData.corrections),
-}));
+// correction exists yet, but wiring it now means the first one does not need a code change. The
+// pilot approval runs after them, which is what makes the parent's decision able to take effect —
+// before 2026-09-19 this file applied corrections only, so an approval record would have done
+// nothing at all.
+export const c1Packs = finaliseDraftPacks(rawC1Packs, {
+  corrections: correctionData.corrections,
+  approvals: pilotApprovalData.approvals,
+});
 export const c1Items = c1Packs.flatMap((pack) => pack.items);

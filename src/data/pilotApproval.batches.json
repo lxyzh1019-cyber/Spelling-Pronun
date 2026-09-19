@@ -1,0 +1,6 @@
+{
+  "note": "Approved-for-private-pilot decisions for every batch written after C0: C1 (vocabulary and comprehension), F1 (phonics), P1 (punctuation), S1 (sentences and editing), and the chapter 2 to 6 story episodes. Same meaning and same rules as pilotApproval.c0.json — a record here is the parent's explicit decision, and pilot attempts are kept in a separate evidence record that is never presented as validated mastery.",
+  "emptyOnPurpose": "The list below is empty because the parent has not approved any of this content, and Claude may never add a record to it. Until 2026-09-19 there was no mechanism at all: these packs did not run through applyPilotApproval, so a record would have done nothing even if one existed. The mechanism is wired now and the list is still the parent's to fill.",
+  "howAnApprovalTakesEffect": "applyPilotApproval will only promote an item whose reviewStatus is 'reviewed' AND whose integrationStatus is 'integrated', that has no open correction against it, and that does not depend on audio nobody has listened to. So a record here is the last step, not the first: the challenge, review and integration records have to exist first. Claude drafts the integration record and a self-labelled challenge record; the review decision is the parent's alone.",
+  "approvals": []
+}

@@ -17,6 +17,9 @@
 // punctuation, and grammar"), so both are at grade rather than catch-up.
 
 import { makePack as buildPack } from './packBuilder.js';
+import { finaliseDraftPacks } from './draftBatch.js';
+import correctionData from './corrections.c0.json' with { type: 'json' };
+import pilotApprovalData from './pilotApproval.batches.json' with { type: 'json' };
 
 const choice = (prompt, answer, choices, explanation, transferGroup, outcomeIds) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup, outcomeIds });
 const example = (prompt, explanation, transferGroup, outcomeIds) => ({ prompt, explanation, transferGroup, outcomeIds });
@@ -31,7 +34,7 @@ const JOIN = ['conventions.grade5.10', 'conventions.grade6.07'];
 const EDIT = ['writing.grade5.08', 'writing.grade6.10'];
 const REVISE = ['writing.grade5.07', 'writing.grade6.09'];
 
-export const sentencePacks = [
+const rawSentencePacks = [
   makePack(
     'SE.fragments',
     'Groups of Words That Are Not Sentences',
@@ -377,4 +380,12 @@ export const sentencePacks = [
   ),
 ];
 
+// Corrections first, then the parent's pilot approval — the same tail every other batch runs
+// through, via `draftBatch.js`. Until 2026-09-19 this file had neither: a defect found in one of
+// these questions could not be withheld, and an approval record for the pack would have done
+// nothing, because no code read one.
+export const sentencePacks = finaliseDraftPacks(rawSentencePacks, {
+  corrections: correctionData.corrections,
+  approvals: pilotApprovalData.approvals,
+});
 export const sentenceItems = sentencePacks.flatMap((pack) => pack.items);

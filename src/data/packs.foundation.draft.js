@@ -23,7 +23,8 @@
 // file does not pretend otherwise.
 
 import { makePack as buildPack } from './packBuilder.js';
-import { applyCorrections } from '../learning/contentCorrections.js';
+import { finaliseDraftPacks } from './draftBatch.js';
+import pilotApprovalData from './pilotApproval.batches.json' with { type: 'json' };
 import correctionData from './corrections.c0.json' with { type: 'json' };
 
 
@@ -115,8 +116,8 @@ const rawFoundationPacks = [
   ),
 ];
 
-export const foundationPacks = rawFoundationPacks.map((pack) => ({
-  ...pack,
-  items: applyCorrections(pack.items, correctionData.corrections),
-}));
+export const foundationPacks = finaliseDraftPacks(rawFoundationPacks, {
+  corrections: correctionData.corrections,
+  approvals: pilotApprovalData.approvals,
+});
 export const foundationItems = foundationPacks.flatMap((pack) => pack.items);
