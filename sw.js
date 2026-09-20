@@ -1,4 +1,5 @@
-const CACHE_NAME = 'spelling-tutor-v2';
+// v3: the home-screen icons changed, and a cache-first entry would keep serving the old ones.
+const CACHE_NAME = 'spelling-tutor-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
