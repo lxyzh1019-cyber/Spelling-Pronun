@@ -233,7 +233,7 @@ export default function ParentPage() {
           {idea.tally.checked} checked · {idea.tally.needs_more_evidence} measured, not enough evidence yet · {idea.tally.not_built} not built · {idea.tally.needs_parent} for you to mark
         </p>
       </article>)}</div>
-      <h2>Finding out what was missed before Grade 5</h2>
+      <h2 id="diagnostic">The diagnostic: finding out what was missed before Grade 5</h2>
       <p>Alberta finishes with {ladderView.counts.revisiting || diagnosticForm.items.length / 3} of these skills before Grade 5, so nothing later in the curriculum comes back to them. This form asks three questions about each — {diagnosticForm.items.length} in all — to find which ones need building, so the next lessons written are the ones actually needed.</p>
       <p className={styles.meta}>{diagnosticForm.purpose} When a wrong answer comes back it names the specific thing it found, not just that something was wrong.</p>
       <p className={styles.meta}>Answers to it can never count as mastery: they are kept in their own store with no path into the learning record, and both evidence tracks ignore this content whatever a child scores. Tests enforce both halves.</p>
