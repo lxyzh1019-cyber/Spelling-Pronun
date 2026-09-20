@@ -145,3 +145,149 @@ test('the content that was unreachable is reachable now', () => {
     assert.ok(imported.has(path.join(root, name)), `${name} is unreachable again`);
   }
 });
+
+// ————————————————————————————————————————————————————————————————————————————————————————————
+// The fifth time, and the one the guard above could not see.
+//
+// 2026-09-19: `/diagnostic` was built, wired, tested, merged and deployed — and the parent could not
+// find it. Every check above passed, because every check above asks whether a file is IMPORTED. The
+// route existed. The page rendered. `diagnostic.k4.draft.js` had an importer. What it did not have
+// was a link anyone would come across: the only one sat two thirds of the way down a 309-line
+// `/parent`, under a heading that did not contain the word, reached by a link at the very bottom of
+// Home below the badge shelf.
+//
+// A feature a person cannot find is unreachable in the only sense that matters to that person, and
+// an import graph cannot tell you so. So this asks the other question: starting at Home, can a
+// person CLICK their way to every route?
+//
+// The rule is the same as above — unreachable is allowed, but it has to be declared with a reason.
+const ROUTE_ENTRY = '/';
+
+// Routes nothing links to, each with the reason. A route here is a route a person can only reach by
+// typing a URL, which for this app's users means not at all.
+const ALLOWED_UNLINKED_ROUTES = {};
+
+function routesFromApp() {
+  const text = readFileSync(path.join(root, 'App.jsx'), 'utf8');
+  return [...text.matchAll(/<Route\s+path="([^"]+)"\s+element=\{<(\w+)\s*\/>\}/g)]
+    .map(([, route, component]) => ({ route, component }));
+}
+
+// Where each page component lives, so a link found in a file can be attributed to the route that
+// renders it. Both the lazy imports and the eager one are read from App.jsx itself.
+function componentFiles() {
+  const text = readFileSync(path.join(root, 'App.jsx'), 'utf8');
+  const files = {};
+  for (const [, name, spec] of text.matchAll(/const (\w+) = lazy\(\(\) => import\('([^']+)'\)\)/g)) {
+    files[name] = path.resolve(root, spec.replace(/^\.\//, '')) + '.jsx';
+  }
+  for (const [, name, spec] of text.matchAll(/^import (\w+) from '(\.\/pages\/[^']+)'/gm)) {
+    files[name] = path.resolve(root, spec.replace(/^\.\//, '')) + '.jsx';
+  }
+  return files;
+}
+
+// Every `to="..."` in a file, plus the static prefix of a template link like `to={`/lesson/${id}`}`,
+// because a parameterised route is linked by construction rather than by literal.
+//
+// It also reads link TABLES — `{ to: '/test', label: 'Spelling Test' }` rendered later as
+// `to={game.to}`. The first version of this test missed both that and `to="/test?mode=daily"`, and
+// reported `/test` as unreachable when Home links it twice. A guard that cries wolf gets an
+// allowlist entry written for it, which is how a guard quietly stops guarding.
+function linksIn(file) {
+  const text = readFileSync(file, 'utf8');
+  const links = [
+    ...[...text.matchAll(/\bto=\{?["'`](\/[^"'`$]*)/g)].map((match) => match[1]),
+    ...[...text.matchAll(/\bto:\s*["'`](\/[^"'`$]*)/g)].map((match) => match[1]),
+  ];
+  // A query string or a fragment is the same route to the router and to the person clicking it.
+  return links.map((link) => link.split(/[?#]/)[0].replace(/\/$/, '') || '/');
+}
+
+// A file's links plus the links of every component it imports, since a page reached through a
+// shared component still offers that component's links to the person looking at it.
+function linksReachableFrom(file, seen = new Set()) {
+  if (seen.has(file)) return [];
+  seen.add(file);
+  let links = [];
+  try {
+    links = linksIn(file);
+  } catch {
+    return [];
+  }
+  const text = readFileSync(file, 'utf8');
+  for (const [, specifier] of text.matchAll(/from\s*['"](\.[^'"]+)['"]/g)) {
+    const resolved = path.resolve(path.dirname(file), specifier);
+    for (const candidate of [resolved, resolved + '.jsx', resolved + '.js']) {
+      try {
+        if (readFileSync(candidate, 'utf8')) {
+          links = links.concat(linksReachableFrom(candidate, seen));
+          break;
+        }
+      } catch { /* not this spelling */ }
+    }
+  }
+  return links;
+}
+
+// A route matches a link when they are equal, or — for `/lesson/:sessionId` — when the link starts
+// with the static part the route is built from.
+const routeMatchesLink = (route, link) => {
+  if (route === link) return true;
+  const prefix = route.split('/:')[0];
+  return route.includes('/:') && link.startsWith(prefix + '/');
+};
+
+test('source guard: every route can be reached by clicking, starting at the home page', () => {
+  const routes = routesFromApp();
+  const files = componentFiles();
+  assert.ok(routes.length >= 15, 'the route table was not read');
+
+  // Grow the set of routes a person can get to, one click at a time, until it stops growing.
+  const reached = new Set([ROUTE_ENTRY]);
+  for (let pass = 0; pass < routes.length + 1; pass += 1) {
+    const before = reached.size;
+    // The header is on every page, so its links are available from anywhere.
+    const offered = linksReachableFrom(path.join(root, 'components', 'Header.jsx'));
+    for (const { route, component } of routes) {
+      if (!reached.has(route)) continue;
+      const file = files[component];
+      if (file) offered.push(...linksReachableFrom(file));
+    }
+    for (const { route } of routes) {
+      if (offered.some((link) => routeMatchesLink(route, link))) reached.add(route);
+    }
+    if (reached.size === before) break;
+  }
+
+  const unlinked = routes.map(({ route }) => route).filter((route) => !reached.has(route));
+  for (const route of unlinked) {
+    assert.ok(
+      ALLOWED_UNLINKED_ROUTES[route],
+      `${route} cannot be reached by clicking from ${ROUTE_ENTRY}. A route a person can only reach by typing its URL is the defect that hid /diagnostic for a day: it existed, it rendered, it deployed, and the parent could not find it. Link it, or record here why it is unlinkable.`,
+    );
+  }
+  for (const [route, reason] of Object.entries(ALLOWED_UNLINKED_ROUTES)) {
+    assert.ok(unlinked.includes(route), `${route} is on the unlinked allowlist but something links to it now — remove the entry.`);
+    assert.ok(reason.length > 40, `${route} has no real reason recorded`);
+  }
+});
+
+// Findable is more than linked. The diagnostic was linked the whole time — once, from deep inside
+// the longest page in the app. The parent's own words were "I did not find diagnostic in the app".
+// So the link that matters is the one on the page a person actually starts from.
+test('the diagnostic is offered on the home page, not only buried in the parent view', () => {
+  const home = readFileSync(path.join(root, 'pages', 'Home.jsx'), 'utf8');
+  assert.match(home, /to="\/diagnostic"/, 'Home no longer offers the diagnostic; it was unfindable the last time that was true');
+  // And named in words the parent would recognise, rather than hidden behind a phrase like
+  // "finding out what was missed", which is what it was called when they went looking for it.
+  const link = home.match(/to="\/diagnostic">([^<]+)</);
+  assert.ok(link, 'the diagnostic link has no visible text');
+  assert.match(link[1], /diagnostic/i, `the home link reads "${link?.[1]}" and never says the word the parent searched for`);
+  // It must sit above the games furniture. Below the badge shelf is where it was, and where it was
+  // not found.
+  assert.ok(
+    home.indexOf('to="/diagnostic"') < home.indexOf('<BadgeShelf'),
+    'the diagnostic sits below the badge shelf and leaderboard again, which is where the parent failed to find it',
+  );
+});

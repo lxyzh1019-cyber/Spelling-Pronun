@@ -89,6 +89,29 @@ export default function Home() {
         </div>
       </section>
 
+      <section className={styles.parentSection} aria-labelledby="for-the-parent">
+        <h2 id="for-the-parent">For the parent</h2>
+        <p className={styles.sectionIntro}>
+          Some things can only be decided by a person: which skills a child missed before Grade 5, whether a voice is
+          clear on the iPad, whether a lesson actually teaches. These are yours, not theirs.
+        </p>
+        {/* The diagnostic sits first and named in full. It was reachable only from two thirds of the way down
+            /parent, which is not reachable at all in the sense that matters: the parent looked for it and did not
+            find it. A route that exists and cannot be found is the same defect as a route that does not exist. */}
+        <p className={styles.parentLinks}>
+          <Link className={styles.parentPrimary} to="/diagnostic">Diagnostic: what they missed before Grade 5</Link>
+        </p>
+        <p className={styles.sectionIntro}>
+          Forty-eight questions across the sixteen skills Alberta finishes with before Grade 5, in one sitting, one
+          child at a time. It teaches nothing and gives no score, and its answers never count towards mastery — it
+          finds which foundations need building.
+        </p>
+        <p className={styles.parentLinks}>
+          <Link to="/checks">Things I need you to test</Link>
+          <Link to="/parent">Parent view: what is waiting for you</Link>
+        </p>
+      </section>
+
       {dailyChallengeWord && !dailyChallengeDone && (
         <section className={styles.dailyChallenge}>
           <div className={styles.dailyCard}>
@@ -191,18 +214,6 @@ export default function Home() {
       <section className={styles.bottomSection}>
         <BadgeShelf />
         <Leaderboard />
-      </section>
-
-      <section className={styles.parentSection} aria-labelledby="for-the-parent">
-        <h2 id="for-the-parent">For the parent</h2>
-        <p className={styles.sectionIntro}>
-          Some things can only be checked by a person: whether a voice is clear on the iPad, whether a lesson actually
-          teaches. The testing page lists each one with the steps to follow, and keeps a record of what you saw.
-        </p>
-        <p className={styles.parentLinks}>
-          <Link to="/checks">Things I need you to test</Link>
-          <Link to="/parent">Parent account and gates</Link>
-        </p>
       </section>
     </div>
   );
