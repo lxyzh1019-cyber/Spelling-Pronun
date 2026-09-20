@@ -12,7 +12,7 @@ import { buildCoverageReport, coverageHeadline } from '../learning/curriculumCov
 import { ladderReview } from '../learning/gradeLadder';
 import ladder from '../data/curriculum.ladder.json';
 import { diagnosticForm } from '../data/diagnostic.k4.draft.js';
-import { buildDiagnosticReport } from '../learning/diagnosticReport';
+import { buildDiagnosticReport, diagnosticReportMarkdown } from '../learning/diagnosticReport';
 import { attemptsFrom, readDiagnosticRun } from '../persistence/diagnosticStore';
 import correctionData from '../data/corrections.c0.json';
 import curriculumMapping from '../data/curriculum.alberta.elal.json';
@@ -37,7 +37,7 @@ function friendlyAuthError(code) {
 }
 
 export default function ParentPage() {
-  const { activeProfileId, authStatus, syncError, user, refreshAuthState, learnerGrade, setProfileGrade, LEARNER_GRADES } = useWords();
+  const { activeProfileId, profiles, authStatus, syncError, user, refreshAuthState, learnerGrade, setProfileGrade, LEARNER_GRADES } = useWords();
   const { attempts, saveStatus, syncCloud, previewImport, confirmImport, skipImport, heldImports } = useLearning();
   const [preview, setPreview] = useState(null);
   const heldCount = Object.values(heldImports || {}).reduce((sum, count) => sum + count, 0);
@@ -155,6 +155,21 @@ export default function ParentPage() {
     const attempts = attemptsFrom(run);
     return attempts.length ? buildDiagnosticReport(diagnosticForm, attempts, { ladder }) : null;
   }, [activeProfileId]);
+  const diagnosticLearnerName = (profiles || []).find((profile) => profile.id === activeProfileId)?.name || activeProfileId;
+  // The answers live only in this browser. The markdown is how they reach the next conversation.
+  const diagnosticMarkdown = useMemo(
+    () => diagnosticReport ? diagnosticReportMarkdown(diagnosticReport, { learnerName: diagnosticLearnerName, today: new Date().toISOString().slice(0, 10) }) : '',
+    [diagnosticReport, diagnosticLearnerName],
+  );
+  const [diagnosticCopied, setDiagnosticCopied] = useState('');
+  const copyDiagnosticReport = async () => {
+    try {
+      await navigator.clipboard.writeText(diagnosticMarkdown);
+      setDiagnosticCopied('Copied. Paste it into the next conversation.');
+    } catch {
+      setDiagnosticCopied('Copying was blocked. Select the text below and copy it manually.');
+    }
+  };
 
   return <div className={styles.page}>
     <section className={styles.card}>
@@ -250,6 +265,16 @@ export default function ParentPage() {
           <p><strong>{skill.skillId}</strong> <span className={styles.meta}>— {skill.correct} of {skill.answered} right{skill.albertaFinishesAt ? `, Alberta finishes with this at ${skill.albertaFinishesAt}` : ''}</span></p>
           {skill.locates.length > 0 && <ul>{skill.locates.map((located) => <li key={located.itemId}>{located.locates}</li>)}</ul>}
         </article>)}</div>
+        <h3>Send what it found back</h3>
+        <p className={styles.meta}>This report is for <strong>{diagnosticLearnerName}</strong>, the learner currently selected. Switch profiles to export another child&rsquo;s. It lives on this device only; copy it and paste it into the next conversation.</p>
+        <div className={styles.actions}>
+          <button type="button" className={styles.primary} onClick={copyDiagnosticReport}>Copy the report</button>
+        </div>
+        {diagnosticCopied && <p role="status">{diagnosticCopied}</p>}
+        <label>
+          The report
+          <textarea className={styles.input} rows={10} readOnly value={diagnosticMarkdown} />
+        </label>
       </>}
       <h2>What has to happen before any of this reaches a child</h2>
       <p>Draft content cannot be approved straight from draft. Three records stand between it and a child, and two of them are now prepared for you rather than blank. The third is yours and only yours.</p>

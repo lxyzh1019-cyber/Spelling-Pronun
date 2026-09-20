@@ -170,3 +170,38 @@ test('the report states no proportion and passes no verdict on the child', () =>
     assert.ok(['solid', 'needs_building', 'partly_solid', 'not_enough_evidence'].includes(skill.state));
   }
 });
+
+// The answers live only in the browser that recorded them. The markdown is the one way they reach
+// the next conversation, so it carries the same wording rule as the report and says who it is for.
+test('the markdown export states no proportion and passes no verdict, and names the learner, form and date', async () => {
+  const { diagnosticReportMarkdown } = await import('../src/learning/diagnosticReport.js');
+  const attempts = diagnosticItems.map((item, index) => ({ itemId: item.id, correct: index % 5 !== 0 }));
+  const report = buildDiagnosticReport(diagnosticForm, attempts, { ladder });
+  const markdown = diagnosticReportMarkdown(report, { learnerName: 'Jenn', today: '2026-09-20' });
+  assert.doesNotMatch(markdown, /%|percent|score|behind|failed|weak/i, 'the export judges the child');
+  assert.match(markdown, /what it found for Jenn/);
+  assert.match(markdown, new RegExp(diagnosticForm.id.replace(/\./g, '\\.')));
+  assert.match(markdown, /Exported 2026-09-20/);
+  assert.ok(markdown.includes(report.masteryNote));
+  assert.ok(markdown.includes(report.separateAppQuestion.detail));
+  for (const skill of report.skills) {
+    assert.ok(markdown.includes(`### ${skill.skillId}`), `${skill.skillId} is missing from the export`);
+    for (const located of skill.locates) assert.ok(markdown.includes(located.locates), 'a located gap is missing');
+  }
+  const withGrade = report.skills.find((skill) => skill.albertaFinishesAt);
+  assert.ok(withGrade, 'no skill carries a grade, so the test cannot check it');
+  assert.match(markdown, new RegExp(`Alberta finishes with this at ${withGrade.albertaFinishesAt}`));
+  assert.match(markdown, /selected on the parent page/);
+  assert.equal(diagnosticReportMarkdown(null), '');
+});
+
+test('source guard: the parent page exports the diagnostic report for the selected learner and the finish card says so', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const parent = await readFile(new URL('../src/pages/ParentPage.jsx', import.meta.url), 'utf8');
+  assert.match(parent, /diagnosticReportMarkdown\(/);
+  assert.match(parent, /Copy the report/);
+  assert.match(parent, /readOnly/);
+  assert.match(parent, /currently selected/);
+  const page = await readFile(new URL('../src/pages/DiagnosticPage.jsx', import.meta.url), 'utf8');
+  assert.match(page, /selected learner/);
+});

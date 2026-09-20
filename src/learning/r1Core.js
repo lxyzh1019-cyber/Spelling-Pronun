@@ -36,6 +36,7 @@ export function createAttempt({
   sessionId = null,
   helped = false,
   skipped = false,
+  inputMode = null,
   clientTime = new Date().toISOString(),
 }) {
   if (!attemptId || !wordId || !learnerId) throw new Error('Attempt identity is required');
@@ -48,6 +49,9 @@ export function createAttempt({
     sessionId,
     helped: Boolean(helped),
     skipped: Boolean(skipped),
+    // Only present when the page knew it. Which input the child used is worth observing and is not a
+    // fact about the answer, so an attempt recorded without it keeps exactly the shape it had before.
+    ...(inputMode ? { inputMode } : {}),
     clientTime,
   };
 }
@@ -86,7 +90,9 @@ export function dailyChallengeComplete(wordIds, attemptsByWord) {
   return wordIds.length > 0 && wordIds.every((wordId) => Boolean(attemptsByWord[wordId]));
 }
 
-export function createSessionSnapshot({ learnerId, mode, category, words, index = 0, score = EMPTY_SCORE, started = false, finished = false }) {
+// `results` and `round` are optional and the version deliberately stays 1: a snapshot written before
+// they existed must still restore, or a reload would throw away a round in progress.
+export function createSessionSnapshot({ learnerId, mode, category, words, index = 0, score = EMPTY_SCORE, started = false, finished = false, results = [], round = null }) {
   return {
     version: 1,
     learnerId,
@@ -97,6 +103,8 @@ export function createSessionSnapshot({ learnerId, mode, category, words, index 
     score: { ...score },
     started,
     finished,
+    results: results.map(({ wordId, word, outcome, attempt = '', assisted = false, inputMode = null }) => ({ wordId, word, outcome, attempt, assisted, inputMode })),
+    round,
     savedAt: new Date().toISOString(),
   };
 }
@@ -106,7 +114,12 @@ export function restoreSessionSnapshot(snapshot, { learnerId, mode, category, wo
   const byId = new Map(words.map((word) => [word.id, word]));
   const restoredWords = snapshot.wordIds.map((id) => byId.get(id)).filter(Boolean);
   if (!restoredWords.length || restoredWords.length !== snapshot.wordIds.length) return null;
-  return { ...snapshot, words: restoredWords };
+  return {
+    ...snapshot,
+    words: restoredWords,
+    results: Array.isArray(snapshot.results) ? snapshot.results : [],
+    round: snapshot.round || null,
+  };
 }
 
 // A daily challenge is completed once. The award depends on the transition, not on the state, so

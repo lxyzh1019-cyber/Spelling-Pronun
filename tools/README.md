@@ -38,3 +38,22 @@ twelve. Generating it is the point: on 2026-09-18 six new lessons were built wit
 against a standing decision to keep the story for everything, and nobody noticed because nothing
 counted. A chapter short of its two episodes must record what is blocking it, and a test fails if it
 does not.
+
+## build_icons.mjs — the home-screen icons
+
+```bash
+node tools/build_icons.mjs                 # render both candidates into docs/icons/
+node tools/build_icons.mjs --install dot   # …and install that one into public/ (dot | tile)
+CHROMIUM=/path/to/chrome node tools/build_icons.mjs
+```
+
+The candidates are `tools/icons/dot.html` and `tools/icons/tile.html`, drawn in the facelift's colours
+with Fredoka committed beside them (`tools/icons/fonts/`) — a Google Fonts request at render time would
+fall back to system-ui whenever the network is unavailable, and the icon would quietly stop matching
+the app.
+
+Each page is rendered once at 512 by headless Chromium and resized by `tools/png.mjs`, which is a
+small decoder, box-filter and encoder over `node:zlib`. The browser cannot screenshot the small sizes
+directly: it refuses to open a window much under 500px, so a 180px screenshot comes back as a crop of
+the full-size artwork rather than a picture of it. The output is opaque RGB with no alpha channel,
+because iOS ignores transparency on a home-screen icon and composites whatever is behind it on black.

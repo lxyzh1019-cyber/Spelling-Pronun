@@ -4,25 +4,31 @@ import { useWords } from '../context/WordProvider';
 import BadgeShelf from '../components/BadgeShelf';
 import Leaderboard from '../components/Leaderboard';
 import AvatarPicker from '../components/AvatarPicker';
-import { learnerLessonTiles } from '../data/lessonCatalog';
+import Dot from '../components/Dot';
+import { c0LessonCatalog, learnerLessonTiles, lessonBySessionId, lessonsForTaskIds } from '../data/lessonCatalog';
+import { story as storyDraft } from '../data/storyEpisodes';
+import { continueCta, continueEyebrow, continueReassurance, continueTarget } from '../learning/homeContinue';
+import { isCurrentLessonCompletion, nextStoryEpisode } from '../learning/storyProgress';
+import { spellAgainWords } from '../persistence/spellAgain';
+import { readJson, spellAgainStorageKey } from '../utils/localStore';
 import styles from './Home.module.css';
 
 const games = [
-  { to: '/test', label: 'Spelling Test', desc: 'Type words you hear', icon: '✏️', color: '#f59e0b' },
-  { to: '/flashcards', label: 'Flashcards', desc: 'Flip and learn', icon: '🃏', color: '#3b82f6' },
-  { to: '/scramble', label: 'Word Scramble', desc: 'Unscramble letters', icon: '🔀', color: '#8b5cf6' },
-  { to: '/hangman', label: 'Hangman', desc: 'Guess the word', icon: '🎯', color: '#ef4444' },
-  { to: '/crossword', label: 'Crossword', desc: 'Fill the grid', icon: '🧩', color: '#10b981' },
-  { to: '/speed', label: 'Speed Round', desc: '60-second challenge', icon: '⚡', color: '#8b5cf6' },
+  { to: '/test', label: 'Spelling Test', desc: 'Type words you hear', icon: '✏️', color: '#C92A2A' },
+  { to: '/flashcards', label: 'Flashcards', desc: 'Flip and learn', icon: '🃏', color: '#3B5BDB' },
+  { to: '/scramble', label: 'Word Scramble', desc: 'Unscramble letters', icon: '🔀', color: '#FFD43B' },
+  { to: '/hangman', label: 'Hangman', desc: 'Guess the word', icon: '🎯', color: '#0B7A5A' },
+  { to: '/crossword', label: 'Crossword', desc: 'Fill the grid', icon: '🧩', color: '#8b5cf6' },
+  { to: '/speed', label: 'Speed Round', desc: '60-second challenge', icon: '⚡', color: '#d97706' },
 ];
 
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default function Home() {
   const {
     categories,
     selectedCategory,
     setSelectedCategory,
-    activeWords,
     stats,
     soundEnabled,
     toggleSound,
@@ -31,22 +37,51 @@ export default function Home() {
     authStatus,
     syncError,
     learnerGrade,
+    profiles,
+    activeProfileId,
+    switchProfile,
   } = useWords();
 
   // Recomputed when the learner changes, because the tiles say where each lesson sits relative to
   // THIS child. Before the parent records a grade, and before the curriculum mapping is verified,
   // they say nothing — which is the honest answer, not a missing feature.
   const pilotLessons = useMemo(() => learnerLessonTiles({ learnerGrade }), [learnerGrade]);
+  const activeProfile = (profiles || []).find((profile) => profile.id === activeProfileId);
+  const otherProfile = (profiles || []).find((profile) => profile.id !== activeProfileId);
+  const learnerName = activeProfile?.name || 'there';
+
+  // The hero offers whatever this child already started. It reads the lesson's own saved session, so
+  // it cannot promise progress the lesson would not restore.
+  const continueHero = useMemo(() => continueTarget({
+    tiles: pilotLessons,
+    lessons: Object.values(c0LessonCatalog),
+    readRaw: (key) => { try { return globalThis.localStorage?.getItem(key) ?? null; } catch { return null; } },
+    learnerId: activeProfileId,
+  }), [pilotLessons, activeProfileId]);
+
+  const savedWords = spellAgainWords(readJson(spellAgainStorageKey(activeProfileId), []));
+  const nextEpisode = useMemo(() => nextStoryEpisode(storyDraft.episodes, {
+    lessonsFor: (episode) => lessonsForTaskIds(episode.taskIds),
+    isComplete: (entry) => isCurrentLessonCompletion(readJson(`spelling-lesson-complete:${activeProfileId}:${entry.id}`), lessonBySessionId(entry.id)),
+  }), [activeProfileId]);
 
   return (
     <div className={styles.home}>
-      <section className={styles.hero}>
-        <h1 className={styles.heading}>Spelling and Language Tutor</h1>
-        <p className={styles.subtitle}>
-          Learn spelling, sentence, punctuation, and grammar skills through short lessons, then use word games as optional practice.
-        </p>
-        <div className={styles.controls}>
+      <section className={styles.greeting}>
+        <div className={styles.greetingLeft}>
           <AvatarPicker />
+          <div>
+            <h1 className={styles.hi}>Hi {learnerName}!</h1>
+            {/* A real count from the record. The design mock showed a consecutive-day streak here; the
+                app has only ever tracked a same-word streak, so that line would be a number nothing
+                can produce. */}
+            <p className={styles.greetingMeta}>{WEEKDAYS[new Date().getDay()]} · {stats.wordsSeen} words practised so far</p>
+          </div>
+        </div>
+        <div className={styles.greetingRight}>
+          {otherProfile && (
+            <button className={styles.switchPill} onClick={() => switchProfile(otherProfile.id)}>Switch to {otherProfile.name}</button>
+          )}
           <button
             className={`${styles.soundToggle} ${soundEnabled ? styles.enabled : ''}`}
             onClick={toggleSound}
@@ -59,12 +94,47 @@ export default function Home() {
       </section>
 
       {authStatus !== 'online' && (
-        <p role="status">Offline mode: progress is saved on this device.</p>
+        <p className={styles.notice} role="status">Offline mode: progress is saved on this device.</p>
       )}
-      {syncError && <p role="alert">{syncError}</p>}
+      {syncError && <p className={styles.notice} role="alert">{syncError}</p>}
+
+      {continueHero && (
+        <Link className={styles.hero} to={continueHero.tile.to}>
+          <Dot expression="idle" size={180} />
+          <div className={styles.heroText}>
+            <p className={styles.heroEyebrow}>{continueEyebrow(continueHero)}</p>
+            <p className={styles.heroTitle}>{continueHero.tile.label}</p>
+            <p className={styles.heroSub}>{continueReassurance(continueHero)}</p>
+          </div>
+          <span className={styles.heroCta}>{continueCta(continueHero)}</span>
+        </Link>
+      )}
+
+      <section className={styles.twoUp}>
+        <Link className={`${styles.wideCard} ${styles.greenCard}`} to={savedWords.length ? '/test?source=again' : '/test'}>
+          <span className={styles.bigNumber}>{savedWords.length}</span>
+          <span className={styles.wideCardText}>
+            <span className={styles.wideCardTitle}>words to spell again</span>
+            <span className={styles.wideCardSub}>
+              {savedWords.length
+                ? savedWords.slice(0, 4).map((word) => word.word).join(' · ')
+                : 'Nothing saved yet. Save the ones you miss at the end of a round.'}
+            </span>
+          </span>
+        </Link>
+        <Link className={`${styles.wideCard} ${styles.blueCard}`} to="/case">
+          <span className={styles.bigNumber}>{nextEpisode ? nextEpisode.episode.sequence : '✓'}</span>
+          <span className={styles.wideCardText}>
+            <span className={styles.wideCardTitle}>Story · {storyDraft.title}</span>
+            <span className={styles.wideCardSub}>
+              {nextEpisode ? `Episode ${nextEpisode.episode.sequence} · ${nextEpisode.episode.title}` : 'Every episode so far is solved.'}
+            </span>
+          </span>
+        </Link>
+      </section>
 
       <section aria-labelledby="learning-actions">
-        <h2 id="learning-actions">Start a language lesson</h2>
+        <h2 id="learning-actions" className={styles.sectionHeading}>Start a language lesson</h2>
         <p className={styles.sectionIntro}>These C0 preview lessons teach a rule, preserve first answers, provide repair, and finish with a new transfer task.</p>
         <div className={styles.gamesGrid}>
           {pilotLessons.map((lesson) => (
@@ -80,17 +150,17 @@ export default function Home() {
       </section>
 
       <section aria-labelledby="journey-actions">
-        <h2 id="journey-actions">Continue your learning</h2>
+        <h2 id="journey-actions" className={styles.sectionHeading}>Continue your learning</h2>
         <div className={styles.gamesGrid}>
-          <Link to="/case" className={styles.gameCard} style={{ '--card-color': '#2563eb' }}><span className={styles.gameIcon}>🔎</span><h3 className={styles.gameName}>Continue my case</h3><p className={styles.gameDesc}>Learn a rule and solve the next clue</p></Link>
-          <Link to="/review" className={styles.gameCard} style={{ '--card-color': '#059669' }}><span className={styles.gameIcon}>↻</span><h3 className={styles.gameName}>Practise again</h3><p className={styles.gameDesc}>Review skills when they are due</p></Link>
-          <Link to="/assessment" className={styles.gameCard} style={{ '--card-color': '#7c3aed' }}><span className={styles.gameIcon}>🧭</span><h3 className={styles.gameName}>Assessment preview</h3><p className={styles.gameDesc}>See strengths by language skill</p></Link>
+          <Link to="/case" className={styles.gameCard} style={{ '--card-color': '#3B5BDB' }}><span className={styles.gameIcon}>🔎</span><h3 className={styles.gameName}>Continue my case</h3><p className={styles.gameDesc}>Learn a rule and solve the next clue</p></Link>
+          <Link to="/review" className={styles.gameCard} style={{ '--card-color': '#0B7A5A' }}><span className={styles.gameIcon}>↻</span><h3 className={styles.gameName}>Practise again</h3><p className={styles.gameDesc}>Review skills when they are due</p></Link>
+          <Link to="/assessment" className={styles.gameCard} style={{ '--card-color': '#8b5cf6' }}><span className={styles.gameIcon}>🧭</span><h3 className={styles.gameName}>Assessment preview</h3><p className={styles.gameDesc}>See strengths by language skill</p></Link>
           <Link to="/progress" className={styles.gameCard} style={{ '--card-color': '#d97706' }}><span className={styles.gameIcon}>📈</span><h3 className={styles.gameName}>My progress</h3><p className={styles.gameDesc}>See evidence by skill, not one overall score</p></Link>
         </div>
       </section>
 
       <section className={styles.parentSection} aria-labelledby="for-the-parent">
-        <h2 id="for-the-parent">For the parent</h2>
+        <h2 id="for-the-parent" className={styles.sectionHeading}>For the parent</h2>
         <p className={styles.sectionIntro}>
           Some things can only be decided by a person: which skills a child missed before Grade 5, whether a voice is
           clear on the iPad, whether a lesson actually teaches. These are yours, not theirs.
@@ -117,7 +187,7 @@ export default function Home() {
           <div className={styles.dailyCard}>
             <h2 className={styles.dailyTitle}>🎯 Daily Challenge</h2>
             <p className={styles.dailyDesc}>
-              Attempt these 5 words. Skips are saved for later practice.
+              Attempt these 5 words. Skip any you are not sure of — the round lists them at the end.
             </p>
             <div className={styles.dailyWords}>
               {dailyChallengeWord.map((w, idx) => (
@@ -160,7 +230,7 @@ export default function Home() {
       </section>
 
       <section aria-labelledby="word-game-activity">
-        <h2 id="word-game-activity">Word-game activity</h2>
+        <h2 id="word-game-activity" className={styles.sectionHeading}>Word-game activity</h2>
         <p className={styles.sectionIntro}>These counts describe optional spelling-game practice. Language-lesson evidence is shown separately in My progress.</p>
         <div className={styles.statsRow} aria-label="Word-game activity">
           <div className={styles.statCard} data-stat="words-seen">
@@ -189,7 +259,7 @@ export default function Home() {
       </section>
 
       <section id="games" aria-labelledby="word-games">
-        <h2 id="word-games">Optional word games</h2>
+        <h2 id="word-games" className={styles.sectionHeading}>Optional word games</h2>
         <p className={styles.sectionIntro}>Games keep the original spelling practice available, but they are not the grammar, sentence, punctuation, or assessment program.</p>
         <div className={styles.gamesGrid}>
           {games.map((game) => (

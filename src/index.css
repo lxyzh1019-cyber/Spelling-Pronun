@@ -34,6 +34,63 @@
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  /* Facelift tokens (design handoff 3a). The older --amber/--gray variables above are still used by
+     the pages this facelift has not reached yet, so both sets live here until it has. */
+  --sp-paper: #FFF6E3;
+  --sp-surface: #FFFFFF;
+  --sp-ink: #2B2118;
+  --sp-ink-muted: #635540;
+  --sp-ink-faint: #B8AB90;
+  --sp-border: #E8DCC2;
+  --sp-track: #F0E7D4;
+  --sp-disabled-fill: #CFC6B2;
+  --sp-disabled-shadow: #B3A894;
+  --sp-red: #C92A2A;
+  --sp-red-shadow: #8F1D1D;
+  --sp-red-tint: #FFF0EE;
+  --sp-red-ink: #8F1D1D;
+  --sp-green: #0B7A5A;
+  --sp-green-shadow: #064835;
+  --sp-green-tint: #E6F6EF;
+  --sp-green-ink: #064835;
+  --sp-blue: #3B5BDB;
+  --sp-blue-shadow: #23399A;
+  --sp-blue-tint: #E0E6FF;
+  --sp-blue-ink: #23399A;
+  --sp-yellow: #FFD43B;
+  --sp-yellow-shadow: #E0B400;
+  --sp-yellow-ink: #5C4700;
+  --sp-cheek: #FF8787;
+  --sp-keybed: #D6D1C6;
+  --sp-key-shadow: #9E9689;
+  --sp-font: 'Fredoka', system-ui, -apple-system, sans-serif;
+  --sp-radius-sm: 12px;
+  --sp-radius-md: 18px;
+  --sp-radius-lg: 22px;
+  --sp-radius-xl: 30px;
+  --sp-radius-pill: 999px;
+  --sp-shadow-key: 0 2px 0;
+  --sp-shadow-button: 0 6px 0;
+  --sp-shadow-card: 0 8px 0;
+  --sp-shadow-hero: 0 10px 0;
+  --sp-space-1: 8px;
+  --sp-space-2: 10px;
+  --sp-space-3: 12px;
+  --sp-space-4: 14px;
+  --sp-space-5: 18px;
+  --sp-space-6: 22px;
+  --sp-space-7: 26px;
+  --sp-space-8: 30px;
+  --sp-touch-min: 44px;
+  --sp-tile: 82px;
+  --sp-slot-w: 78px;
+  --sp-slot-w-narrow: 70px;
+  --sp-slot-h: 92px;
+  --sp-key-w: 70px;
+  --sp-key-h: 68px;
+  --sp-icon-btn: 52px;
+  --sp-primary-h: 56px;
 }
 
 html {
@@ -42,7 +99,9 @@ html {
 
 body {
   font-family: 'Nunito', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
+  /* Flat paper, the facelift's ground. It used to be an amber gradient, which framed every
+     redesigned screen in a colour that is not in the palette. */
+  background: var(--sp-paper);
   color: var(--gray-800);
   min-height: 100vh;
   line-height: 1.6;

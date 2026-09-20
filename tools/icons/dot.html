@@ -1,0 +1,21 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Icon A — Dot</title><link rel="stylesheet" href="icon.css">
+  <script>
+    // The only script in these pages: size the 512 artwork to whatever window the renderer opened.
+    document.documentElement.style.setProperty('--icon-scale', window.innerWidth / 512);
+  </script>
+</head>
+<body>
+  <!-- Candidate A: the character the children meet inside the app, with one red letter tile so the
+       icon says "spelling" and not "a smiley". Everything sits inside the central 80% of the square,
+       which is the safe zone a maskable icon may be cropped to. -->
+  <div class="icon">
+    <div class="dot" style="left:78px;top:64px;transform:scale(3.1)">
+      <div class="face"></div>
+      <div class="eye l"></div><div class="eye r"></div>
+      <div class="hl l"></div><div class="hl r"></div>
+      <div class="smile"></div>
+    </div>
+    <div class="tile" style="left:300px;top:312px;width:118px;height:118px;border-radius:28px;box-shadow:0 11px 0 #8F1D1D;font-size:74px;line-height:118px">a</div>
+  </div>
+</body></html>

@@ -4,6 +4,7 @@ import {
   EMPTY_SCORE,
   applyAttempts,
   createAttempt,
+  createSessionSnapshot,
   dailyChallengeComplete,
   edmontonDayKey,
   isPerfectScore,
@@ -143,4 +144,32 @@ test('crossword evaluation reports wrong entries and repairable cells without ex
   const page = await (await import('node:fs/promises')).readFile(new URL('../src/pages/Crossword.jsx', import.meta.url), 'utf8');
   assert.match(page, /isRevealed \? cell : userValue/, 'solution letters render only in the revealed phase');
   assert.match(page, /evidenceType: 'assisted_repair', helped: true/);
+});
+
+// A round now carries its own review list, so the results screen survives a reload. The snapshot
+// version deliberately did not move: a snapshot written before this existed must still restore.
+test('a session snapshot carries the round review list and restores without one', () => {
+  const words = [{ id: 'a', word: 'apple' }, { id: 'b', word: 'bicycle' }];
+  const results = [
+    { wordId: 'a', word: 'apple', outcome: 'correct', attempt: 'apple', assisted: false, inputMode: 'tiles' },
+    { wordId: 'b', word: 'bicycle', outcome: 'skipped', attempt: '', assisted: false, inputMode: 'keyboard' },
+  ];
+  const snapshot = createSessionSnapshot({ learnerId: 'jenn', mode: 'practice', category: 'Grade 5', words, index: 1, results, round: { kind: 'retry', number: 2 } });
+  assert.equal(snapshot.version, 1, 'the version must not move, or older snapshots stop restoring');
+  const restored = restoreSessionSnapshot(snapshot, { learnerId: 'jenn', mode: 'practice', category: 'Grade 5', words });
+  assert.deepEqual(restored.results, results);
+  assert.deepEqual(restored.round, { kind: 'retry', number: 2 });
+
+  const legacy = { version: 1, learnerId: 'jenn', mode: 'practice', category: 'Grade 5', wordIds: ['a', 'b'], index: 1, score: { correct: 1, incorrect: 0, skipped: 0 } };
+  const older = restoreSessionSnapshot(legacy, { learnerId: 'jenn', mode: 'practice', category: 'Grade 5', words });
+  assert.deepEqual(older.results, [], 'a snapshot from before the review list restores with an empty one');
+  assert.equal(older.round, null);
+  assert.equal(older.index, 1);
+});
+
+test('an attempt records the input the child used, and keeps its old shape when it does not know', () => {
+  const plain = createAttempt({ attemptId: 'a1', wordId: 'w1', learnerId: 'jenn', correct: true });
+  assert.ok(!('inputMode' in plain), 'an attempt with no input mode is byte-for-byte what it always was');
+  const typed = createAttempt({ attemptId: 'a2', wordId: 'w1', learnerId: 'jenn', correct: true, inputMode: 'keyboard' });
+  assert.equal(typed.inputMode, 'keyboard');
 });

@@ -48,6 +48,17 @@ export function achievementsStorageKey(learnerId) {
   return `spelling-r1-achievements:${learnerId}`;
 }
 
+// How this learner likes to answer the spelling test: letter tiles or the in-app keyboard. Kept per
+// learner and on the device, like the lesson length, because it is a preference and not a record.
+export function inputModeStorageKey(learnerId) {
+  return `spelling-input-mode:${learnerId}`;
+}
+
+// The words this learner asked to keep for later. Practice bookkeeping, never evidence.
+export function spellAgainStorageKey(learnerId) {
+  return `spelling-spell-again:${learnerId}`;
+}
+
 export function lessonMinutesStorageKey(learnerId) {
   return `spelling-lesson-minutes:${learnerId}`;
 }

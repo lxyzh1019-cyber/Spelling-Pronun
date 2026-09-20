@@ -139,6 +139,7 @@ export default function DiagnosticPage() {
           <h2>Finished</h2>
           <p>Every question is answered. What it found is on the parent page, with the skills to build next.</p>
           <p className={styles.meta}>{report.masteryNote}</p>
+          <p className={styles.meta}>The parent page shows the report for whichever learner is selected there, and has a <strong>Copy the report</strong> button. To copy {learnerName(run.learnerId)}&rsquo;s, make them the selected learner first.</p>
           <div className={styles.actions}>
             <Link className={styles.primary} to="/parent">See what it found</Link>
             <button
