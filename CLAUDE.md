@@ -9,6 +9,9 @@ npm run dev      # Start Vite dev server (localhost:5173)
 npm run build    # Production build → dist/
 npm run preview  # Preview the production build locally
 npm test         # node --test over test/*.test.js (pure engine, persistence, content, and source checks)
+
+node tools/build_icons.mjs                 # render the home-screen icon candidates into docs/icons/
+node tools/build_icons.mjs --install dot   # …and install that one into public/ (dot | tile)
 ```
 
 There is no lint script. Tests use Node's built-in runner; they do not start a browser or Firebase.
@@ -54,6 +57,11 @@ Pure modules with no React or Firebase imports; every rule has a test in `test/`
 - `pilotApproval.js` — the `pilot_approved` lifecycle state and the two evidence tracks. `deriveMastery`, `deriveReviewProgress`, and `buildReviewQueue` all take a `track`; released and pilot evidence are derived separately and never mix.
 - `contentCorrections.js` — quarantine. An item with an open correction is withheld from lessons and assessments; the correction's proposer may never resolve it, and marking a correction reviewed does not release the item until the replacement is installed at the recorded version.
 - `progressAggregate.js` — word totals derived from the immutable attempt record, with legacy imports kept as a recorded base and a guard against lowering another device's count.
+- `spellingRound.js` — one round of the spelling test: the tile bank, the shared entry both input modes fill, slot states, the feedback copy, the per-word results and the retry queue. No React, no storage.
+- `dotExpressions.js` — the seven faces of `Dot` and their timings, as data, so every expression is checked without a DOM.
+- `homeContinue.js` — which lesson the Home hero offers, read from the lesson's own durable mirror so it cannot promise progress the lesson would not restore.
+
+`src/persistence/spellAgain.js` holds the per-learner "words to spell again" list: practice bookkeeping the child opts into at the end of a round, never evidence.
 
 Content lives in `src/data/` (C0 packs, assessment forms, story, review records, integration records, pilot approvals, corrections). The lifecycle is `draft → schema-valid → independently challenged → reviewed → integrated → pilot_approved → learner_tested → released`. Only `released` content produces validated mastery evidence; `pilot_approved` content runs the same loop into a separate pilot record. Nothing is released. The parent approved the four C0 packs, both episodes, and the 28 Part B prompts for a private pilot on 2026-09-09; every prompt that depends on audio nobody has listened to is excluded.
 
@@ -146,6 +154,12 @@ Routes:
 ### Styling
 
 Every component and page has a co-located CSS Module (`.module.css`). Global styles are in `src/index.css`. No CSS framework is used.
+
+**The facelift tokens** live in `src/index.css` under `--sp-*` (paper, ink, the four action trios, radii, hard-shadow offsets, spacing and touch sizes) and come from the 2026-09-20 design handoff. The older `--amber`/`--gray-*` variables are still there and still used by every screen the facelift has not reached. Home and the spelling test are rebuilt on the tokens; the lesson page is not yet. Depth is always a hard shadow (`0 Npx 0 <shadow colour>`, no blur) and the only press affordance is `translateY(4px)`. Nothing interactive is below 44px, and `prefers-reduced-motion` turns the animation off.
+
+`src/components/Dot.jsx` is the character: CSS shapes on a 100×100 grid, seven expressions, no image assets. She is decorative and `aria-hidden`, she never announces anything, and text from her appears only when the child asks — which spends one of the three daily hints. A test holds all of that.
+
+The spelling test answers into slot elements and **never an `<input>`**: the iOS keyboard resizes the viewport and destroys the landscape layout, so the page provides its own QWERTY. A source guard fails if a text box returns.
 
 ### Word Data
 

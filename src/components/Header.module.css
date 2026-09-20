@@ -2,9 +2,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px;
-  background: white;
-  box-shadow: var(--shadow);
+  padding: var(--sp-space-3) var(--sp-space-7);
+  background: var(--sp-surface);
+  border-bottom: 3px solid var(--sp-border);
+  font-family: var(--sp-font);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -16,10 +17,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 800;
-  font-size: 1.25rem;
-  color: var(--amber-dark);
-  transition: opacity 0.15s;
+  font: 700 20px/1 var(--sp-font);
+  color: var(--sp-ink);
+  min-height: var(--sp-touch-min);
 }
 
 .brand:hover {
@@ -44,27 +44,26 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--gray-600);
-  transition: background 0.15s, color 0.15s;
+  padding: var(--sp-space-2) var(--sp-space-4);
+  border-radius: var(--sp-radius-pill);
+  font: 600 16px/1 var(--sp-font);
+  color: var(--sp-ink-muted);
+  min-height: var(--sp-touch-min);
 }
 
 .navLink:hover {
-  background: var(--gray-100);
-  color: var(--gray-800);
+  background: var(--sp-track);
+  color: var(--sp-ink);
 }
 
 .active {
-  background: var(--amber);
-  color: white;
+  background: var(--sp-ink);
+  color: var(--sp-surface);
 }
 
 .active:hover {
-  background: var(--amber-dark);
-  color: white;
+  background: var(--sp-ink);
+  color: var(--sp-surface);
 }
 
 .icon {

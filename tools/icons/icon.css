@@ -1,0 +1,47 @@
+/* Shared by both icon candidates. Every colour is inlined from the facelift token sheet rather than
+   imported, because these pages are rendered by a headless browser outside Vite.
+   The font is committed beside this file: a Google Fonts request at render time would silently fall
+   back to system-ui when the network is unavailable, and the icon would quietly stop matching the app. */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300 700;
+  src: url('fonts/Fredoka.ttf') format('truetype');
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100vw;
+  height: 100vw;
+  /* Opaque, full bleed, square. iOS masks the corners itself and composites anything transparent on
+     black, so an icon must not round its own corners or leave alpha anywhere. */
+  background: #FFF6E3;
+  overflow: hidden;
+  font-family: Fredoka, system-ui, sans-serif;
+}
+/* Drawn once at 512 and scaled to whatever window the renderer opens, so 180, 192 and 512 are the
+   same artwork rather than three hand-tuned layouts. `--icon-scale` is set by the one-line script in
+   each page: a CSS calc cannot produce it, because dividing a viewport unit yields a length and
+   scale() needs a bare number. */
+.icon {
+  position: relative;
+  width: 512px;
+  height: 512px;
+  background: #FFF6E3;
+  overflow: hidden;
+  transform: scale(var(--icon-scale, 1));
+  transform-origin: top left;
+}
+.icon > * { position: absolute; }
+/* Dot, drawn on her own 100x100 grid and scaled, exactly as the component does. */
+.dot { width: 100px; height: 100px; transform-origin: top left; }
+.dot > * { position: absolute; }
+.face { inset: 0; border-radius: 50%; background: #FFD43B; box-shadow: inset -9px -9px 0 #E0B400; }
+.eye { width: 14px; height: 20px; border-radius: 50%; background: #2B2118; top: 34px; }
+.eye.l { left: 28px; } .eye.r { left: 58px; }
+.hl { width: 5px; height: 5px; border-radius: 50%; background: #fff; top: 36px; }
+.hl.l { left: 31px; } .hl.r { left: 61px; }
+.smile { left: 38px; top: 62px; width: 24px; height: 12px; border-radius: 0 0 18px 18px; background: #2B2118; }
+.tile {
+  background: #C92A2A; color: #fff; text-align: center;
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+}

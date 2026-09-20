@@ -1,47 +1,82 @@
+/* Home, in the facelift's tokens. The page carries its own paper ground and Fredoka rather than
+   changing them globally, because the screens this facelift has not reached yet still use the older
+   palette. Depth is a hard shadow with no blur; pressing a card moves it down. */
 .home {
+  background: var(--sp-paper);
+  font-family: var(--sp-font);
+  color: var(--sp-ink);
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--sp-space-5);
+  padding: var(--sp-space-6) var(--sp-space-8) var(--sp-space-8);
 }
+
+.greeting { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-space-4); flex-wrap: wrap; }
+.greetingLeft, .greetingRight { display: flex; align-items: center; gap: var(--sp-space-4); }
+.hi { font: 600 26px/1.1 var(--sp-font); }
+.greetingMeta { font: 500 16px/1.2 var(--sp-font); color: var(--sp-ink-muted); }
+.switchPill {
+  background: var(--sp-yellow); color: var(--sp-yellow-ink); border-radius: var(--sp-radius-pill);
+  padding: var(--sp-space-3) var(--sp-space-5); font: 600 17px/1 var(--sp-font);
+  box-shadow: 0 5px 0 var(--sp-yellow-shadow); min-height: var(--sp-touch-min);
+}
+.switchPill:active { transform: translateY(3px); box-shadow: var(--sp-shadow-key) var(--sp-yellow-shadow); }
+.notice { background: var(--sp-surface); border: 3px solid var(--sp-border); border-radius: var(--sp-radius-md); padding: var(--sp-space-3) var(--sp-space-5); font: 500 16px/1.3 var(--sp-font); color: var(--sp-ink-muted); }
 
 .hero {
-  text-align: center;
-  padding: 12px 0;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
+  gap: var(--sp-space-7);
+  background: var(--sp-red); color: var(--sp-surface); border-radius: 34px;
+  padding: var(--sp-space-7) var(--sp-space-8); box-shadow: var(--sp-shadow-hero) var(--sp-red-shadow);
+}
+/* Under about a tablet's width the CTA goes below the text rather than squeezing it. */
+@media (max-width: 860px) {
+  .hero { grid-template-columns: auto minmax(0, 1fr); }
+  .heroCta { grid-column: 1 / -1; text-align: center; }
+}
+.hero:active { transform: translateY(4px); box-shadow: var(--sp-shadow-key) var(--sp-red-shadow); }
+.heroText { min-width: 0; }
+.heroEyebrow { font: 600 18px/1 var(--sp-font); color: #FFD1CB; letter-spacing: .04em; }
+.heroTitle {
+  font: 700 clamp(30px, 4vw, 56px)/1.02 var(--sp-font);
+  margin: var(--sp-space-2) 0 var(--sp-space-3);
+  overflow-wrap: anywhere;
+}
+.heroSub { font: 500 20px/1.3 var(--sp-font); color: #FFE4DF; }
+.heroCta {
+  background: var(--sp-surface); color: #A61B1B; border-radius: var(--sp-radius-xl); white-space: nowrap;
+  padding: var(--sp-space-7) var(--sp-space-8); font: 700 clamp(22px, 3vw, 34px)/1 var(--sp-font);
 }
 
-.heading {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--gray-800);
-  margin-bottom: 6px;
+.twoUp { display: grid; grid-template-columns: 1fr; gap: var(--sp-space-5); }
+@media (min-width: 900px) { .twoUp { grid-template-columns: 1fr 1fr; } }
+.wideCard {
+  display: flex; align-items: center; gap: var(--sp-space-6); color: var(--sp-surface);
+  border-radius: 28px; padding: var(--sp-space-6) var(--sp-space-7); min-height: 120px;
 }
+.greenCard { background: var(--sp-green); box-shadow: var(--sp-shadow-card) var(--sp-green-shadow); }
+.blueCard { background: var(--sp-blue); box-shadow: var(--sp-shadow-card) var(--sp-blue-shadow); }
+.greenCard:active { transform: translateY(4px); box-shadow: var(--sp-shadow-key) var(--sp-green-shadow); }
+.blueCard:active { transform: translateY(4px); box-shadow: var(--sp-shadow-key) var(--sp-blue-shadow); }
+.bigNumber { font: 700 70px/1 var(--sp-font); flex: none; }
+.wideCardText { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.wideCardTitle { font: 700 22px/1.15 var(--sp-font); }
+.wideCardSub { font: 500 16px/1.3 var(--sp-font); opacity: .9; }
 
-.subtitle {
-  font-size: 1.1rem;
-  color: var(--gray-500);
-  max-width: 480px;
-  margin: 0 auto 16px;
-}
+.sectionHeading { font: 700 22px/1.1 var(--sp-font); margin-bottom: var(--sp-space-2); }
 
 .sectionIntro {
-  color: var(--gray-500);
+  color: var(--sp-ink-muted);
   margin: 6px 0 14px;
   max-width: 720px;
 }
 
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-
 .soundToggle {
-  background: white;
-  border: 2px solid #e5e7eb;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  background: var(--sp-surface);
+  border: 3px solid var(--sp-border);
+  border-radius: var(--sp-radius-md);
+  width: var(--sp-icon-btn);
+  height: var(--sp-icon-btn);
   font-size: 20px;
   cursor: pointer;
   display: flex;
@@ -71,13 +106,13 @@
 
 .categoryLabel {
   font-weight: 700;
-  color: var(--gray-600);
+  color: var(--sp-ink-muted);
 }
 
 .categorySelect {
   padding: 8px 14px;
   border-radius: var(--radius-sm);
-  border: 2px solid var(--gray-200);
+  border: 3px solid var(--sp-border);
   background: white;
   font-family: inherit;
   font-size: 0.95rem;
@@ -99,26 +134,25 @@
 }
 
 .statCard {
-  background: white;
-  border-radius: var(--radius);
+  background: var(--sp-surface);
+  border: 3px solid var(--sp-border);
+  border-radius: var(--sp-radius-lg);
   padding: 18px 14px;
   text-align: center;
-  box-shadow: var(--shadow);
+  box-shadow: var(--sp-shadow-card) var(--sp-border);
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .statNumber {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--amber-dark);
+  font: 700 34px/1 var(--sp-font);
+  color: var(--sp-ink);
 }
 
 .statLabel {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--gray-400);
+  font: 600 13px/1.2 var(--sp-font);
+  color: var(--sp-ink-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -130,36 +164,39 @@
 }
 
 .gameCard {
-  background: white;
-  border-radius: var(--radius);
-  padding: 22px 18px 18px;
-  box-shadow: var(--shadow);
+  background: var(--sp-surface);
+  border: 3px solid var(--sp-border);
+  border-radius: 24px;
+  padding: var(--sp-space-5) var(--sp-space-5) var(--sp-space-4);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  border-top: 4px solid var(--card-color);
-  transition: transform 0.15s, box-shadow 0.15s;
+  gap: var(--sp-space-2);
+  min-height: 140px;
 }
 
-.gameCard:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-}
+.gameCard:active { transform: translateY(3px); }
 
+/* The colour chip carries the card's identity; the card itself stays white paper stock. */
 .gameIcon {
-  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: var(--sp-radius-md);
+  background: var(--card-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
 }
 
 .gameName {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--gray-800);
+  font: 600 18px/1.15 var(--sp-font);
+  color: var(--sp-ink);
 }
 
 .gameDesc {
-  font-size: 0.85rem;
-  color: var(--gray-400);
+  font: 500 15px/1.3 var(--sp-font);
+  color: var(--sp-ink-muted);
   flex: 1;
 }
 
@@ -280,18 +317,22 @@
   }
 }
 
-.parentSection { margin-top: 28px; padding: 18px 20px; border-top: 1px solid #d1d5db; }
-.parentSection h2 { font-size: 1.05rem; color: #4b5563; }
-.parentLinks { display: flex; flex-wrap: wrap; gap: 18px; }
-.parentLinks a { font-weight: 700; color: #2563eb; }
+.parentSection { margin-top: var(--sp-space-7); padding: var(--sp-space-5) var(--sp-space-6); background: var(--sp-surface); border: 3px solid var(--sp-border); border-radius: 24px; }
+.parentLinks { display: flex; flex-wrap: wrap; gap: var(--sp-space-5); }
+.parentLinks a { font: 600 17px/1 var(--sp-font); color: var(--sp-blue-ink); min-height: var(--sp-touch-min); display: inline-flex; align-items: center; }
 /* The one thing the parent has to do before any more content is worth building. It reads as a
    control rather than as one more link in a row, because being findable is the whole point. */
 .parentPrimary {
   display: inline-block;
-  padding: 10px 18px;
-  border-radius: 10px;
-  background: #2563eb;
+  padding: var(--sp-space-4) var(--sp-space-6);
+  border-radius: var(--sp-radius-md);
+  background: var(--sp-blue);
   color: #ffffff !important;
   text-decoration: none;
+  box-shadow: var(--sp-shadow-button) var(--sp-blue-shadow);
 }
-.parentPrimary:hover, .parentPrimary:focus-visible { background: #1d4ed8; }
+.parentPrimary:active { transform: translateY(4px); box-shadow: var(--sp-shadow-key) var(--sp-blue-shadow); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero, .gameCard, .wideCard, .switchPill { transition: none; }
+}

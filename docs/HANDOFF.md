@@ -77,6 +77,18 @@ which rows were Test Lab and which were real learner sessions.
 A plain sentence works too. The report that produced DEF-37 was: *"the play function only works on the
 second tap when it is showing play again."* That was enough to find and fix it.
 
+### The diagnostic report comes back the same way
+
+Jenn answered the below-grade diagnostic on 2026-09-20. Her answers are in that iPad's browser and
+nowhere else — no sync, by design — so they have to be carried back by hand. `/parent` now has
+**Copy the report** under *Send what it found back*, with the text in a box underneath if copying is
+blocked. Paste it into the next conversation.
+
+Two things about it. It is for the learner **selected** on the parent page, not the one who answered,
+so switch profiles first; the diagnostic's own finish card says so too. And it is a locator: it names
+which skills need building and what each wrong answer points at. It is not a score, not a judgement of
+the child, and never mastery evidence — the wording is held by test in both the report and the export.
+
 ## What the 2026-09-17 content audit changed
 
 The engine defects it found are fixed (DEF-38 to DEF-42). Before them, a repeated assessment showed the
@@ -408,6 +420,40 @@ actually be used, and fixed it.
 - `/parent` is long now. It carries the approval path, the grade ladder, the diagnostic and its
   report, the coverage report, and the three lifecycle records — which is the point, because it is
   the only surface where the parent can act.
+
+## The facelift, 2026-09-20
+
+The parent commissioned a kid-facing redesign ("3a — Big Friendly Buttons": warm paper, large
+high-contrast targets, hard shadows, and one CSS-drawn character called Dot). **Phase 1 is Home, the
+spelling test and its results screen.** The lesson page still looks the way it did; that is phase 2,
+after the children have used this on the iPad.
+
+What a fresh session should know:
+
+- **The tokens are in `src/index.css` under `--sp-*`.** The older `--amber`/`--gray-*` variables are
+  still there because the screens the facelift has not reached still use them. Both sets live side by
+  side until it has.
+- **Dot never speaks.** She reacts — blinks, hops, shakes, falls asleep after 45 seconds — and that is
+  all. Text from her appears only when the child taps her or "Ask Dot", which spends one of the three
+  daily hints. She is `aria-hidden`, and a test holds it: the page's own live region is what a screen
+  reader hears.
+- **The spelling test answers into slots, never an `<input>`.** The iOS keyboard resizes the viewport
+  and destroys the landscape layout, which is why there is an in-app QWERTY instead. A test forbids the
+  text box coming back. A physical keyboard still works.
+- **Both input modes exist because nobody knows which the girls prefer.** The choice is saved per
+  learner and recorded on each attempt as `inputMode`, so the preference can be observed rather than
+  guessed.
+- **"Words to spell again" is opt-in.** Home and the start screen used to say skipped words were saved
+  for later practice, and nothing saved them. Now the child chooses *Save for later* at the end of a
+  round, and a word leaves the list only when it is spelled unaided — a hint keeps it there. A copy
+  guard holds the wording.
+
+## Pick the home-screen icon
+
+Two candidates are rendered at 180, 192 and 512 in `docs/icons/`: **dot** (Dot's face on paper with a
+red letter tile) and **tile** (one red letter tile). **Candidate A is installed provisionally.** Say
+which you want and the other is deleted. Re-render with `node tools/build_icons.mjs`, install with
+`--install dot` or `--install tile`.
 
 ## Recent history
 

@@ -1,0 +1,53 @@
+/* Dot is drawn on a 100x100 grid and scaled by the component, so every offset below is a design
+   constant from the handoff rather than a value tuned per screen. */
+.dot { position: relative; flex: none; }
+.stage { position: absolute; left: 0; top: 0; width: 100px; height: 100px; transform-origin: top left; }
+.stage > * { position: absolute; }
+
+.face { inset: 0; border-radius: 50%; background: var(--sp-yellow); box-shadow: inset -9px -9px 0 var(--sp-yellow-shadow); }
+
+.eye { width: 14px; height: 20px; border-radius: 50%; background: var(--sp-ink); top: 34px; }
+.eyeWide { width: 21px; height: 24px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 3px var(--sp-ink); top: 30px; }
+.pupil { width: 9px; height: 11px; border-radius: 50%; background: var(--sp-ink); top: 38px; }
+.highlight { width: 5px; height: 5px; border-radius: 50%; background: #fff; top: 36px; }
+.arch { width: 18px; height: 11px; border-radius: 50% 50% 0 0; border-top: 5px solid var(--sp-ink); top: 36px; }
+.lid { width: 18px; height: 5px; border-radius: 3px; background: var(--sp-ink); top: 44px; }
+.brow { width: 20px; height: 6px; border-radius: 3px; background: var(--sp-ink); top: 24px; }
+
+.eye.left { left: 28px; } .eye.right { left: 58px; }
+.eyeWide.left { left: 25px; } .eyeWide.right { left: 55px; }
+.pupil.left { left: 32px; } .pupil.right { left: 62px; }
+.highlight.left { left: 31px; } .highlight.right { left: 61px; }
+.arch.left { left: 26px; } .arch.right { left: 56px; }
+.lid.left { left: 26px; } .lid.right { left: 56px; }
+.brow.left { left: 23px; transform: rotate(-14deg); } .brow.right { left: 58px; transform: rotate(14deg); }
+
+.smile { left: 38px; top: 62px; width: 24px; height: 12px; border-radius: 0 0 18px 18px; background: var(--sp-ink); }
+.flat { left: 36px; top: 68px; width: 28px; height: 5px; border-radius: 3px; background: var(--sp-ink); }
+.round { left: 56px; top: 62px; width: 14px; height: 14px; border-radius: 50%; background: var(--sp-ink); }
+.grin { left: 31px; top: 58px; width: 38px; height: 24px; border-radius: 6px 6px 22px 22px; background: var(--sp-ink); overflow: hidden; }
+.teeth { position: absolute; left: 0; top: 0; width: 38px; height: 6px; background: #fff; }
+.tongue { position: absolute; left: 9px; bottom: 0; width: 20px; height: 8px; border-radius: 10px 10px 0 0; background: var(--sp-cheek); }
+
+.cheek { width: 15px; height: 10px; border-radius: 50%; background: var(--sp-cheek); top: 62px; }
+.cheek.left { left: 11px; } .cheek.right { left: 74px; }
+
+.arm { left: 78px; top: 44px; width: 38px; height: 17px; border-radius: 9px; background: var(--sp-yellow); box-shadow: inset 0 -4px 0 var(--sp-yellow-shadow); transform: rotate(-16deg); transform-origin: left center; }
+.hand { left: 110px; top: 36px; width: 17px; height: 17px; border-radius: 50%; background: var(--sp-yellow); box-shadow: inset -3px -3px 0 var(--sp-yellow-shadow); transform: rotate(-16deg); }
+
+.zSmall { left: 78px; top: 2px; font: 700 15px/1 var(--sp-font); color: var(--sp-ink-muted); }
+.zBig { left: 90px; top: -10px; font: 700 21px/1 var(--sp-font); color: var(--sp-ink-muted); }
+
+@keyframes dotBreathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes dotHop { 0%, 100% { transform: translateY(0); } 30% { transform: translateY(-18px); } 60% { transform: translateY(-6px); } }
+@keyframes dotShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-9px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(3px); } }
+
+/* The motion goes on the outer box, never on .stage: .stage carries the inline scale transform, and a
+   keyframe that animates transform would drop that scale for the length of the animation. */
+.dot[data-animation='breathe'] { animation: dotBreathe 3.6s ease-in-out infinite; }
+.dot[data-animation='hop'] { animation: dotHop .6s ease-out; }
+.dot[data-animation='shake'] { animation: dotShake .4s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dot { animation: none !important; }
+}

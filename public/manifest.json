@@ -7,8 +7,8 @@
   "scope": "/Spelling-Pronun/",
   "display": "standalone",
   "orientation": "any",
-  "theme_color": "#f59e0b",
-  "background_color": "#fffbeb",
+  "theme_color": "#FFF6E3",
+  "background_color": "#FFF6E3",
   "icons": [
     {
       "src": "/Spelling-Pronun/icon-192.png",

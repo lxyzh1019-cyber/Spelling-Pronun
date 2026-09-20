@@ -1,6 +1,8 @@
 .main {
   flex: 1;
-  max-width: 960px;
+  /* 1240 rather than 960: the facelift screens are laid out for an iPad in landscape, and the
+     text pages inside keep their own narrower max-width, so nothing else stretches. */
+  max-width: 1240px;
   width: 100%;
   margin: 0 auto;
   padding: 24px 20px 48px;

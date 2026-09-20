@@ -130,3 +130,49 @@ export function separateAppReading(measured, skillCount, needing) {
     needing: needing.map((skill) => skill.skillId),
   };
 }
+
+// The report as text the parent can paste into the next conversation. The answers live only in the
+// browser that recorded them, so without this the result never leaves the iPad. Same wording rules as
+// the report itself: it names what to build, never grades the child, and it says which learner it is
+// for, because the parent page shows whichever child is selected there.
+const STATE_LABELS = {
+  solid: 'solid',
+  partly_solid: 'partly solid',
+  needs_building: 'needs building',
+  not_enough_evidence: 'not enough evidence yet',
+};
+
+export function diagnosticReportMarkdown(report, { learnerName = '', today = '' } = {}) {
+  if (!report) return '';
+  const who = learnerName || 'the selected learner';
+  const lines = [
+    `# Below-grade diagnostic — what it found for ${who}`,
+    '',
+    `Exported ${today || 'today'}. Form ${report.formId || 'unknown'}.`,
+    'This report is for the learner who was selected on the parent page when it was copied.',
+    '',
+    report.masteryNote,
+    '',
+    '## The separate-app question',
+    '',
+    report.separateAppQuestion?.detail || '',
+    '',
+    `${report.counts?.solid ?? 0} solid · ${report.counts?.partly_solid ?? 0} partly solid · ${report.counts?.needs_building ?? 0} need building · ${report.counts?.not_enough_evidence ?? 0} not answered yet`,
+    '',
+    '## Skill by skill',
+    '',
+  ];
+  for (const skill of report.skills || []) {
+    lines.push(`### ${skill.skillId} — ${STATE_LABELS[skill.state] || skill.state}`);
+    const finishes = skill.albertaFinishesAt ? ` Alberta finishes with this at ${skill.albertaFinishesAt}.` : '';
+    lines.push(`${skill.correct} of ${skill.answered} right.${finishes}`);
+    if (skill.locates?.length) {
+      for (const located of skill.locates) lines.push(`- (${located.probesGrade}) ${located.locates}`);
+    } else {
+      lines.push('Nothing located.');
+    }
+    lines.push('');
+  }
+  lines.push('Paste this into the next conversation. It locates gaps in content; it is not a judgement of the child and it is not mastery evidence.');
+  return lines.join('\n');
+}
