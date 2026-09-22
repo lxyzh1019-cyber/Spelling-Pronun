@@ -1,3 +1,8 @@
 node_modules
 dist
 .DS_Store
+__pycache__/
+
+# Working rules: .claude/ is tracked, its runtime state is not.
+!.claude/
+.claude/state/
