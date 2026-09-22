@@ -4,7 +4,7 @@ Locked features of the current version. Every edit is checked against this list 
 regression table. Update this file in the same change that alters a feature. Over-list rather than
 under-list.
 
-Derived from `CLAUDE.md` (Project half) and `docs/CLAUDE_IMPLEMENTATION_HANDOFF.md` on 2026-09-22.
+Derived from `docs/PROJECT_ARCHITECTURE.md` and `docs/CLAUDE_IMPLEMENTATION_HANDOFF.md` on 2026-09-22.
 Items marked *(not released)* exist in code but are gated; their gating is itself the feature.
 
 ## Identity, profiles, auth
@@ -99,7 +99,8 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - No destructive migrations.
 
 ## Working-rules governance (added 2026-09-22)
-- Root `CLAUDE.md` is two parts: bundle general rules v2.1 verbatim, then `# Project — Spelling-Pronun`; the project half never waives the general rules and the stricter rule wins.
+- Root `CLAUDE.md` is the bundle's general working rules v2.1, byte-identical to the shipped file apart from a three-line footer pointing at `docs/PROJECT_ARCHITECTURE.md`.
+- `docs/PROJECT_ARCHITECTURE.md` holds this repository's architecture map, Firestore collection table and never-weaken rules, byte-identical to the pre-bundle root `CLAUDE.md`. It is not auto-loaded; the footer is what makes a session aware of it.
 - `.claude/settings.json`: model `fable`, `defaultMode: plan`, git/deploy `ask`, destructive git `deny`, five hooks registered.
 - `.claude/hooks/`: plan-gate and skill-router on UserPromptSubmit, routing-guard on PreToolUse, record-guard and validation-line on Stop.
 - `.claude/agents/opus-worker.md` sets `model: opus`, effort configured (not verifiable).

@@ -4,7 +4,8 @@ Single working record for this repository. Updated by the main session at the en
 implementation turn (the record guard hook checks this). Keep it terse; history lives in git.
 
 ## Approved baseline
-- Plan v1 approved 2026-09-22: install working-rules bundle v2 at the repo root on branch `rules-v2`; combine `CLAUDE.md` (bundle general rules first, project architecture under a `# Project` heading) rather than replacing it; keep `README.md`; delete the bundle zip and `docs/CLAUDE.review-rev2.md`; track `.claude/`, ignore `.claude/state/`; run `tests/replay-hooks.sh`; commit and push to `rules-v2`.
+- Plan v2 approved 2026-09-22, option (a): install working-rules bundle v2 at the repo root on branch `rules-v2`; root `CLAUDE.md` is the bundle file plus a three-line footer pointing at `docs/PROJECT_ARCHITECTURE.md`, which holds the repo's pre-bundle architecture document unchanged; keep `README.md`; delete the bundle zip and `docs/CLAUDE.review-rev2.md`; track `.claude/`, ignore `.claude/state/`; run `tests/replay-hooks.sh`; commit and push to `rules-v2`.
+- Plan v1 (2026-09-22) superseded: it merged both documents into one root `CLAUDE.md`.
 
 ## Pending
 - None.
@@ -17,22 +18,25 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 | 3 | R1 2026-09-21 | "Make .gitignore track .claude/ and ignore .claude/state/" | done | Also added `__pycache__/`; the hook replay writes `.claude/hooks/__pycache__/` on every run. |
 | 4 | R1 2026-09-21 | "Run bash tests/replay-hooks.sh and show the last line" | done | `passed=14 failed=0`. |
 | 5 | R1 2026-09-21 | "Then commit and push to rules-v2" | done | `15530fb` pushed; lands on open PR #27. |
-| 6 | R2 2026-09-22 | "combine the existing claude.md with the uploaded one, the uploaded one is the general rule" | done | Supersedes the R1 reading that the bundle `CLAUDE.md` replaces the project one. Interim `docs/PROJECT_ARCHITECTURE.md` removed; its content is Part 2 of the merged file. |
-| 7 | R2 2026-09-22 | Record guard: fill `WORKING_RECORD.md` and `FEATURES.md` | done | Manifest v1 derived from `CLAUDE.md` Part 2 and `docs/CLAUDE_IMPLEMENTATION_HANDOFF.md`. |
+| 6 | R2 2026-09-22 | "combine the existing claude.md with the uploaded one, the uploaded one is the general rule" | superseded | Implemented as a merged two-part `CLAUDE.md` in `15530fb`, then withdrawn by #8. |
+| 7 | R2 2026-09-22 | Record guard: fill `WORKING_RECORD.md` and `FEATURES.md` | done | Manifest v1 derived from the architecture document and `docs/CLAUDE_IMPLEMENTATION_HANDOFF.md`. |
+| 8 | R3 2026-09-22 | "your previous structure, replace the claude.md and keep the repo's Claude.md as Project_architecture is more clean" | done | Supersedes #6. Split restored: root `CLAUDE.md` = bundle file + pointer footer (option (a), approved); `docs/PROJECT_ARCHITECTURE.md` = the pre-bundle root `CLAUDE.md`, byte-identical to `61324fc:CLAUDE.md`. |
 
-Superseded: R1's implied "bundle `CLAUDE.md` replaces the project `CLAUDE.md`" → superseded by #6.
+Superseded: #6 (merge into one file) → superseded by #8 (split, with a pointer footer). R1's original reading — bundle `CLAUDE.md` at root, project document alongside it — is what now stands.
 
 ## Hotspot counter
 | Area / feature | Fix rounds | Recurrences | Last symptom | Rewrite-vs-repair reviewed? |
 |---|---|---|---|---|
-| Root `CLAUDE.md` composition | 1 | 0 | R1 moved the project architecture out to `docs/PROJECT_ARCHITECTURE.md`; R2 required one merged file instead | no — below threshold |
+| Root `CLAUDE.md` composition | 2 | 1 | R1 split the documents; R2 merged them into one file; R3 reverted to the split with a pointer footer | no — next round hits the threshold |
 Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → no further patch until the comparison is presented.
+**Live warning:** one more change to how the root `CLAUDE.md` and the architecture document are split trips the threshold. The next such request gets a rewrite-vs-repair comparison before any edit.
 
 ## Deliverable ledger
 | Deliverable | State | Evidence |
 |---|---|---|
 | `.claude/` installed (settings, 6 hooks + 2 json, opus-worker agent, hz-guarantee-audit skill) | COMPLETE | 13 files in `15530fb`; `tests/replay-hooks.sh` → `passed=14 failed=0` |
-| Merged root `CLAUDE.md` (general rules v2.1 + project architecture) | COMPLETE | 31,117 bytes; both `# ` headings present; never-weaken section intact |
+| Root `CLAUDE.md` = bundle general rules v2.1 + pointer footer | COMPLETE | `diff` against the zip's `bundle/CLAUDE.md` shows only the 5 appended footer lines |
+| `docs/PROJECT_ARCHITECTURE.md` = pre-bundle architecture document | COMPLETE | `git diff --no-index` against `61324fc:CLAUDE.md` → identical |
 | `tests/`, `docs/HZ-skill-trigger-tuning.md` | COMPLETE | in `15530fb` |
 | Zip and `docs/CLAUDE.review-rev2.md` removed | COMPLETE | in `15530fb` |
 | `.gitignore` tracks `.claude/`, ignores `.claude/state/` and `__pycache__/` | COMPLETE | `git check-ignore -v .claude/state/x` → `.gitignore:7` |
