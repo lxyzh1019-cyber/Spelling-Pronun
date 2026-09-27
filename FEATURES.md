@@ -98,16 +98,12 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - Never claim Firebase, two-device, real-iPad, learner-test, pilot, or release evidence without the real event.
 - No destructive migrations.
 
-## Working-rules governance (added 2026-09-22)
-- Root `CLAUDE.md` is the bundle's general working rules v2.1, byte-identical to the shipped file apart from a three-line footer pointing at `docs/PROJECT_ARCHITECTURE.md`.
-- `docs/PROJECT_ARCHITECTURE.md` holds this repository's architecture map, Firestore collection table and never-weaken rules, byte-identical to the pre-bundle root `CLAUDE.md`. It is not auto-loaded; the footer is what makes a session aware of it.
-- `.claude/settings.json`: model `fable`, `defaultMode: plan`, git/deploy `ask`, destructive git `deny`, five hooks registered.
-- `.claude/hooks/`: plan-gate and skill-router on UserPromptSubmit, routing-guard on PreToolUse, record-guard and validation-line on Stop.
-- `.claude/agents/opus-worker.md` sets `model: opus`, effort configured (not verifiable).
-- `.claude/skills/hz-guarantee-audit/`.
-- `tests/replay-hooks.sh` must report `passed=14 failed=0`.
+## Working-rules governance (added 2026-09-22; stub install 2026-09-27)
+- Root `CLAUDE.md` is the `hz-claude-config` pointer stub plus a "Project Architecture" section pointing at `docs/PROJECT_ARCHITECTURE.md`. The working rules themselves are not copied into this repository.
+- `docs/PROJECT_ARCHITECTURE.md` holds this repository's architecture map, Firestore collection table and never-weaken rules, byte-identical to the pre-bundle root `CLAUDE.md`. It is not auto-loaded; the pointer section is what makes a session aware of it.
+- `.claude/settings.json`: model `fable`, `defaultMode: plan`, git/deploy `ask`, destructive git `deny`, six hooks registered (SessionStart, plan-gate and skill-router on UserPromptSubmit, routing-guard on PreToolUse, record-guard and validation-line on Stop), each run through `.claude/hz-loader.py`, which fetches the hook scripts from `hz-claude-config`.
+- `.claude/agents/opus-worker.md` sets `model: opus`, effort configured (not verifiable); its instructions are read from `hz-claude-config`.
 - `.claude/` is tracked; `.claude/state/` and `__pycache__/` are ignored.
-- `routing_guard_mode` stays at `observe` until `tests/test-routing-hook.md` is run.
 
 ## Regression table format (paste at the end of every edit)
 | Feature | v<old> → v<new> | Note |
