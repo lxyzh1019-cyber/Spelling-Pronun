@@ -21,6 +21,7 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 | 6 | R2 2026-09-22 | "combine the existing claude.md with the uploaded one, the uploaded one is the general rule" | superseded | Implemented as a merged two-part `CLAUDE.md` in `15530fb`, then withdrawn by #8. |
 | 7 | R2 2026-09-22 | Record guard: fill `WORKING_RECORD.md` and `FEATURES.md` | done | Manifest v1 derived from the architecture document and `docs/CLAUDE_IMPLEMENTATION_HANDOFF.md`. |
 | 8 | R3 2026-09-22 | "your previous structure, replace the claude.md and keep the repo's Claude.md as Project_architecture is more clean" | done | Supersedes #6. Split restored: root `CLAUDE.md` = bundle file + pointer footer (option (a), approved); `docs/PROJECT_ARCHITECTURE.md` = the pre-bundle root `CLAUDE.md`, byte-identical to `61324fc:CLAUDE.md`. |
+| 9 | R4 2026-09-27 | Run the `hz-claude-config` stub installer; commit, push and open a PR if it ends `INSTALL OK` | done | `INSTALL OK`, smoke test `Rules v3.1.4 loaded`. v2 hooks, skill copy, `tests/replay-hooks.sh`, `tests/test-routing-hook.md`, `docs/HZ-skill-trigger-tuning.md` removed; rules and hooks now fetched by `.claude/hz-loader.py`. The installer dropped the `docs/PROJECT_ARCHITECTURE.md` footer (not a `##` section); restored under a `## Project Architecture` heading. |
 
 Superseded: #6 (merge into one file) → superseded by #8 (split, with a pointer footer). R1's original reading — bundle `CLAUDE.md` at root, project document alongside it — is what now stands.
 
@@ -44,7 +45,8 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | `FEATURES.md` manifest v1 | COMPLETE | 2026-09-22, this turn |
 | `WORKING_RECORD.md` ledgers | COMPLETE | this file |
 | Merge PR #27 into `main` | BLOCKED | Parent action on github.com. Cloud sessions start from `main`, so hooks govern new sessions only after the merge. |
-| `routing_guard_mode` → `enforce` | NOT STARTED | Gated on running `tests/test-routing-hook.md` first, per the bundle README. |
+| `routing_guard_mode` → `enforce` | SUPERSEDED | R4 2026-09-27: `.claude/hooks/config.json` and `tests/test-routing-hook.md` removed by the stub install; routing-guard mode is now set in `hz-claude-config`. |
+| Stub install (rules from `hz-claude-config`) | PARTIAL | Installed on `claude/determined-mayer-trrpjn`, smoke test `Rules v3.1.4 loaded`; governs sessions only after merge to `main`. |
 | Fable/Opus routing verified | NOT STARTED | `settings.json` sets `model: fable`, but this session was served Opus and the setting was picked up mid-session. Not verified against a session that started with it. |
 
 ## Checks and evidence
