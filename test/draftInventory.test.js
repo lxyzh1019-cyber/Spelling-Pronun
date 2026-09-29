@@ -33,7 +33,10 @@ test('the open corrections are exactly the unresolved ones, with what they cost'
 // difference between an inventory and a list someone remembers to update.
 test('every draft pack appears, and says what it is for', () => {
   const packs = draftPacksFor(groups);
-  assert.equal(packs.length, c1Packs.length + foundationPacks.length);
+  // A pack a learner can already open is not waiting (PH.syllables, approved 2026-09-29).
+  const waiting = [...c1Packs, ...foundationPacks].filter((pack) => pack.items.some((item) => item.role === 'independent' && item.releaseStatus === 'not_released'));
+  assert.equal(packs.length, waiting.length);
+  assert.ok(packs.length >= c1Packs.length, 'the waiting list lost packs that are still draft');
   for (const pack of packs) {
     assert.ok(pack.title.length > 5, `${pack.id} has no title`);
     assert.ok(pack.rule.length > 60, `${pack.id} does not state its rule`);

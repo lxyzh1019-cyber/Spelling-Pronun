@@ -1,9 +1,17 @@
 {
   "version": 1,
-  "status": "ladder_awaiting_parent_verification",
+  "status": "ladder_accepted_by_parent",
   "generatedBy": "tools/build_ladder.mjs",
-  "mappingReviewedBy": null,
-  "mappingReviewNote": "Every rung cites outcome ids that resolve against curriculum.k6.json, which was extracted from the PDF’s own text layer. That the ids resolve says the quotation is real; it does not say the judgement is right. Nothing in the app may present a grade to a learner as fact while this is null.",
+  "mappingReviewedBy": "parent",
+  "mappingReviewedAt": "2026-09-29",
+  "mappingReviewScope": "accepted as assumed, not checked rung by rung",
+  "mappingReviewBasis": "Given in chat 2026-09-29 (R7): \"assumed this is correct and date it. As government is modifying curriculum\". Accepted as assumed, not checked rung by rung, against the April 2022 edition; because the curriculum is being changed, a newer edition is a reason to check the ladder again.",
+  "mappingSourceEdition": {
+    "title": "Alberta ELAL K–6 Program of Studies",
+    "dated": "April 2022"
+  },
+  "ladderFingerprint": "sha256:5bc546a27b5dde12565d96bd2fa9f0c9ee1c0bb707e2c3bc05d8932935caefb1",
+  "mappingReviewNote": "Every rung cites outcome ids that resolve against curriculum.k6.json, which was extracted from the PDF’s own text layer. The parent accepted it on 2026-09-29 against the Alberta ELAL K–6 Program of Studies, April 2022 edition (accepted as assumed, not checked rung by rung). A newer edition of the curriculum is a reason to check it again, and regenerating it against one drops this acceptance.",
   "source": "extracted_awaiting_parent_verification",
   "organizingIdeaRange": {
     "Text Forms and Structures": "Kindergarten to Grade 6",

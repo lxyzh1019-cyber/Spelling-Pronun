@@ -29,6 +29,7 @@ import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
 import { grammarPacks } from '../src/data/packs.grammar.draft.js';
+import { foundation2Packs } from '../src/data/packs.foundation2.draft.js';
 import { c1StoryEpisodes } from '../src/data/storyEpisodes.js';
 import { sessionIdForPack } from '../src/data/lessonCatalog.js';
 
@@ -38,9 +39,64 @@ const BATCHES = [
   { batch: 'P1', packs: punctuationPacks, what: 'punctuation' },
   { batch: 'S1', packs: sentencePacks, what: 'sentences and editing' },
   { batch: 'G1', packs: grammarPacks, what: 'grammar: agreement, tense and pronoun reference' },
+  // Written on 2026-09-29 for the four gaps the below-grade diagnostic located with no pack behind
+  // them. Its own date, its own findings only (the findings above are about other batches and the
+  // diagnostic, and attaching them here would make this record claim checks it did not run), and
+  // its own checks and evidence: the shared lists name test files that never load these packs
+  // (the punctuation, sentence and C1 pack tests, and a snapshot of the C0 ids only), so reusing
+  // them would claim checks that were never run against F2.
+  {
+    batch: 'F2',
+    packs: foundation2Packs,
+    what: 'below-grade foundation located by the diagnostic: digraphs and clusters, counting sounds, inflectional endings, long words in chunks',
+    date: '2026-09-29',
+    ownFindingsOnly: true,
+    automatedChecks: [
+      { rule: 'Four distinct choices, exactly one of them the key, and the key is among them', test: 'test/foundation2Packs.test.js' },
+      { rule: 'No explanation names an answer by its position or letter, and no pack puts its keys at one position, four in a row, or in a repeating cycle', test: 'test/foundation2Packs.test.js' },
+      { rule: 'Twenty-four objects in the roles a lesson expects, every item passes validateContent, and a worked example can never be answered', test: 'test/foundation2Packs.test.js, test/packBuilder.test.js' },
+      { rule: 'No pack or item cites a Grade 5/6 outcome; every Alberta placement quotes statements that resolve word for word against curriculum.k6.json, cites pages the extraction gives that organizing idea, and states the grade range the ladder derives', test: 'test/foundation2Packs.test.js' },
+      { rule: 'Every question is answered by looking: no spoken text, no audio asset, no audio status on any item or option', test: 'test/foundation2Packs.test.js' },
+      { rule: 'The explanations of each pack read at Grade 7 or below by the readability formula', test: 'test/foundation2Packs.test.js' },
+      { rule: 'Nothing is released, and no item carries a status a parent did not grant', test: 'test/approvalPath.test.js, test/lifecycleRecords.test.js' },
+    ],
+    evidence: [
+      'Every pack resolves through the lesson catalog and derives its own route id from its pack id. Held by test/foundation2Packs.test.js and test/lessonVisibility.test.js.',
+      'Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.',
+      'No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js and test/foundation2Packs.test.js.',
+      'Item ids are derived from the pack id and the row index, f2.<skill>.01 to .24 in order. Held by test/foundation2Packs.test.js.',
+      'Nothing in this batch is released, and nothing carries a status the parent did not grant. Held by test/lifecycleRecords.test.js.',
+    ],
+  },
 ];
 const allPacks = BATCHES.flatMap((entry) => entry.packs);
 const TODAY = '2026-09-19';
+
+// THE PARENT'S DECISIONS, R7, 2026-09-29. Recorded decisions, not something this script decides.
+// The parent approved the four existing packs the diagnostic flagged, and directed that all eight
+// be opened for the pilot once a separate agent had checked them. That check is in
+// reviews.independent.batches.json. The parent did not read the questions item by item, and each
+// basis says so in the parent's terms.
+//
+// Each decision names the pack version it was given against. A pack that moves to a new version is
+// not covered: its educational verdict, integration countersignature and pilot approval all stop
+// matching, and src/learning/independentReview.js returns it to draft. Changing a version here
+// without a new parent decision would be Claude signing on the parent's behalf.
+const PARENT_DECISION_DATE = '2026-09-29';
+const PARENT_BASIS_EXISTING = "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.";
+const PARENT_BASIS_F2 = 'Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.';
+const PARENT_DECISIONS = [
+  { packId: 'g1.pack.gr.possessives', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'p1.pack.pu.apostrophes', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'p1.pack.pu.dialogue', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'f1.pack.ph.syllables', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'f2.pack.ph.digraphs-clusters', packVersion: 2, basis: PARENT_BASIS_F2 },
+  { packId: 'f2.pack.ph.blend-segment', packVersion: 1, basis: PARENT_BASIS_F2 },
+  { packId: 'f2.pack.sp.inflections', packVersion: 2, basis: PARENT_BASIS_F2 },
+  { packId: 'f2.pack.ph.multisyllable', packVersion: 2, basis: PARENT_BASIS_F2 },
+];
+const decisionFor = (packId) => PARENT_DECISIONS.find((decision) => decision.packId === packId) || null;
+const SOURCE_GAP = 'Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.';
 
 // The rules every question was actually checked against. Naming the test file matters: it is how the
 // parent can see what the claim rests on without taking anyone's word for it.
@@ -84,12 +140,71 @@ const SELF_CHALLENGE_FINDINGS = [
     action: 'Both derived from the packs, as a union so no hand-made judgement is overwritten.',
     foundBy: 'a cross-reference of every pack citation against the mapping',
   },
+  // F2. Found by reading all 96 committed questions (688f1a6) against the pack's own rule; each fix
+  // is visible in the git history as a change to that item.
+  {
+    id: 'self.f2.01',
+    batch: 'F2',
+    scope: 'f2.ph.digraphs-clusters.04',
+    found: 'The question asking for the word that starts with a cluster offered whip as a wrong answer, calling wh one sound. Some speakers say the wh in whip as two sounds, and for them whip starts with a cluster too, so the question had two defensible answers.',
+    action: 'whip replaced with chin, which starts with the digraph ch for every speaker.',
+    foundBy: 'reading every option against the rule the pack states',
+  },
+  {
+    id: 'self.f2.02',
+    batch: 'F2',
+    scope: 'f2.ph.digraphs-clusters.13',
+    found: 'The question asked which two letters make ONE sound in phone. The final e is silent, so n and e together also give one sound, and a careful child could defend that option.',
+    action: 'The question now asks which two letters make the f sound, which only p and h do.',
+    foundBy: 'reading every option against the rule the pack states',
+  },
+  {
+    id: 'self.f2.03',
+    batch: 'F2',
+    scope: 'f2.ph.blend-segment.11',
+    found: 'A wrong option was gene, and its common error said that dropping the r from green gives gene. Gene starts with a j sound, not a g sound, so the stated error was false.',
+    action: 'gene replaced with grain, and the common error now names the vowel mistake that gives grin or grain.',
+    foundBy: 'reading every common error back as a claim to be checked',
+  },
+  {
+    id: 'self.f2.04',
+    batch: 'F2',
+    scope: 'f2.sp.inflections.18, f2.pack.sp.inflections rule and help steps',
+    found: 'The pack teaches doubling the last consonant after one short vowel, which applied to fox gives foxxes, one of the wrong options. Neither the rule nor the explanation said that x is never doubled, so a child following the rule exactly would be marked wrong.',
+    action: 'The rule, the help step and the explanation now say x is never doubled, and a common error names the mistake.',
+    foundBy: 'applying the stated rule to every keyed word',
+  },
+  {
+    id: 'self.f2.05',
+    batch: 'F2',
+    scope: 'f2.ph.multisyllable.07',
+    found: 'The question asked which chunk of disagreement is the base word, but the pack defines a chunk as having one vowel sound, and agree has two, so the question contradicted the pack’s own definition.',
+    action: 'Reworded to ask for the base word, like every other base-word question in the pack.',
+    foundBy: 'reading every prompt against the pack’s own terms',
+  },
+  {
+    id: 'self.f2.06',
+    batch: 'F2',
+    scope: 'f2.challenge.self.v1, f2.integration.lesson-packs.v1',
+    found: 'The first draft of these F2 records named checks held by test files that never load the F2 packs (the punctuation, sentence and C1 pack tests, and a snapshot of the C0 ids only), and listed four findings about earlier drafts that were never committed, so nothing in the repository could show them.',
+    action: 'The F2 records now name only tests that load the F2 packs, and list only defects found in the committed draft, each visible in the git history.',
+    foundBy: 'checking which test files import packs.foundation2.draft.js',
+  },
 ];
 
 // What a self-challenge cannot do, said once and referenced by every record that needs it.
 const SELF_CHALLENGE_LIMIT = 'Claude wrote this content and Claude ran these checks, so this is the author checking their own work. It is weaker evidence than an independent pass by design: the checks can only find what their rules describe, and a rule the author did not think to write is a defect the author will not find. It does not satisfy the independent_challenge stage of the lifecycle, and no item reaches reviewed or integrated on the strength of it.';
 
-function integrationRecord({ batch, packs, what }) {
+// The integration evidence every earlier batch carries. F2 names its own (see BATCHES).
+const INTEGRATION_EVIDENCE = [
+  'Every pack resolves through the lesson catalog and derives its own route id from its pack id.',
+  'Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.',
+  'No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.',
+  'Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.',
+  'Nothing in this batch is released, and nothing carries a status the parent did not grant.',
+];
+
+function integrationRecord({ batch, packs, what, date = TODAY, evidence = INTEGRATION_EVIDENCE }) {
   return {
     id: `${batch.toLowerCase()}.integration.lesson-packs.v1`,
     type: 'lesson_packs',
@@ -98,7 +213,7 @@ function integrationRecord({ batch, packs, what }) {
     // re-checkable. The parent countersigns rather than reconstructs.
     status: 'drafted_awaiting_parent_countersignature',
     draftedBy: 'claude',
-    draftedAt: TODAY,
+    draftedAt: date,
     countersignedBy: null,
     batch,
     describes: what,
@@ -106,18 +221,20 @@ function integrationRecord({ batch, packs, what }) {
     expectedObjectCount: packs.reduce((sum, pack) => sum + pack.items.length, 0),
     routeArtifacts: packs.map((pack) => `/lesson/${sessionIdForPack(pack)}`),
     checks: ['catalog_resolution', 'route_derivation', 'approval_gate', 'id_stability', 'release_exclusion'],
-    evidence: [
-      'Every pack resolves through the lesson catalog and derives its own route id from its pack id.',
-      'Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.',
-      'No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.',
-      'Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.',
-      'Nothing in this batch is released, and nothing carries a status the parent did not grant.',
-    ],
+    evidence,
     whatThisDoesNotSay: 'Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should.',
+    // The parent countersigns pack by pack, at the version they were told about. The record as a
+    // whole stays uncountersigned while any pack in it is not.
+    ...(packs.some((pack) => decisionFor(pack.id)) ? {
+      countersignatures: packs.filter((pack) => decisionFor(pack.id)).map((pack) => {
+        const decision = decisionFor(pack.id);
+        return { packId: pack.id, packVersion: decision.packVersion, countersignedBy: 'parent', countersignedAt: PARENT_DECISION_DATE, basis: decision.basis };
+      }),
+    } : {}),
   };
 }
 
-function challengeRecord({ batch, packs }) {
+function challengeRecord({ batch, packs, date = TODAY, ownFindingsOnly = false, automatedChecks = AUTOMATED_CHECKS }) {
   return {
     id: `${batch.toLowerCase()}.challenge.self.v1`,
     stage: 'author_self_challenge',
@@ -128,28 +245,31 @@ function challengeRecord({ batch, packs }) {
     limitation: SELF_CHALLENGE_LIMIT,
     reviewerRole: 'claude_self_challenge',
     checkedBy: 'claude',
-    checkedAt: TODAY,
+    checkedAt: date,
     batch,
     packIds: packs.map((pack) => pack.id),
     itemCount: packs.reduce((sum, pack) => sum + pack.items.length, 0),
-    automatedChecks: AUTOMATED_CHECKS,
-    findings: SELF_CHALLENGE_FINDINGS.filter((finding) => finding.scope.includes(batch.toLowerCase()) || finding.scope.includes('d1.') || finding.scope.includes('curriculum')),
+    automatedChecks,
+    findings: SELF_CHALLENGE_FINDINGS.filter((finding) => (finding.batch || ownFindingsOnly
+      ? finding.batch === batch
+      : finding.scope.includes(batch.toLowerCase()) || finding.scope.includes('d1.') || finding.scope.includes('curriculum'))),
     perItemResults: null,
     whyNoPerItemResults: 'Deliberately absent. Claude wrote all of these questions, so Claude marking each one "pass" would record nothing a reader could rely on. The findings above are the defects actually found; every other item was checked only against the automated rules listed, and that is the whole of the claim.',
   };
 }
 
-function educationalReviewForm({ batch, packs, what }) {
+function educationalReviewForm({ batch, packs, what, date = TODAY }) {
   return {
     id: `${batch.toLowerCase()}.educational.v1`,
     stage: 'educational_source_review',
-    // The one field Claude may never fill.
-    status: 'awaiting_parent',
+    // The one field Claude may never fill on its own judgement. A pack's verdict below is filled only
+    // from PARENT_DECISIONS; the form is decided once every pack in it is.
+    status: packs.every((pack) => decisionFor(pack.id)) ? 'decided_by_parent' : 'awaiting_parent',
     reviewedBy: null,
     reviewedAt: null,
     verdict: null,
     formPreparedBy: 'claude',
-    formPreparedAt: TODAY,
+    formPreparedAt: date,
     batch,
     describes: what,
     instructions: 'Read each pack below, then set verdict to "approved" or "changes_required" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.',
@@ -161,8 +281,17 @@ function educationalReviewForm({ batch, packs, what }) {
       questionCount: pack.items.length,
       curriculumOutcomeIds: pack.curriculumOutcomeIds || [],
       albertaPlacement: pack.albertaPlacement?.albertaGrades || null,
-      // The judgement, per pack, left empty.
-      verdict: null,
+      // The version a verdict is about, so a verdict can never cover a later text.
+      packVersion: pack.version,
+      // The judgement, per pack: empty unless the parent gave one.
+      ...(decisionFor(pack.id) ? {
+        verdict: 'approved',
+        reviewedBy: 'parent',
+        reviewedAt: PARENT_DECISION_DATE,
+        decidedAtPackVersion: decisionFor(pack.id).packVersion,
+        basis: decisionFor(pack.id).basis,
+        openGap: SOURCE_GAP,
+      } : { verdict: null }),
       note: null,
     })),
     dimensions: ['curriculum_alignment', 'rule_accuracy', 'answer_accuracy', 'feedback_quality', 'age_accessibility'],
@@ -202,6 +331,23 @@ const educational = {
 fs.writeFileSync('src/data/integration.batches.json', JSON.stringify(integration, null, 2) + '\n');
 fs.writeFileSync('src/data/reviews.batches.json', JSON.stringify(challenge, null, 2) + '\n');
 fs.writeFileSync('src/data/reviews.educational.batches.json', JSON.stringify(educational, null, 2) + '\n');
+
+// The pilot approvals are the same decisions, so they are written from the same list.
+const approvalFile = JSON.parse(fs.readFileSync('src/data/pilotApproval.batches.json', 'utf8'));
+const { emptyOnPurpose: _retired, ...approvalHeader } = approvalFile;
+fs.writeFileSync('src/data/pilotApproval.batches.json', JSON.stringify({
+  ...approvalHeader,
+  whoFillsThis: 'Only the parent decides what is in this list. Until 2026-09-29 it was empty. On 2026-09-29 (R7) the parent approved eight packs for the pilot in chat, and they were recorded here at the parent\u2019s direction, each with the basis the parent gave and the pack version it covers. Every other pack after C0, and every story episode after chapter 1, is still unapproved, and Claude may not add a record on its own judgement.',
+  approvals: PARENT_DECISIONS.map((decision) => ({
+    scopeId: decision.packId,
+    scopeType: 'pack',
+    scopeVersion: decision.packVersion,
+    decision: 'approved',
+    decidedBy: 'parent',
+    decidedAt: PARENT_DECISION_DATE,
+    basis: decision.basis,
+  })),
+}, null, 2) + '\n');
 
 console.log(`integration records: ${integration.records.length}`);
 console.log(`self-challenge records: ${challenge.reviews.length}, findings: ${SELF_CHALLENGE_FINDINGS.length}`);

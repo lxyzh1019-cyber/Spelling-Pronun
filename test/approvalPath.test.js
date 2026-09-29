@@ -24,10 +24,11 @@ import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
 import { grammarPacks } from '../src/data/packs.grammar.draft.js';
+import { foundation2Packs } from '../src/data/packs.foundation2.draft.js';
 import { c0AssessmentForms } from '../src/data/assessment.c0.draft.js';
 import { allStoryEpisodes } from '../src/data/storyEpisodes.js';
 
-const draftPacks = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
+const draftPacks = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks, ...foundation2Packs];
 
 // A pack that has cleared every gate except the parent's decision. Built here as a fixture and never
 // written to the repository, because Claude may not set `reviewStatus` or `integrationStatus`.
@@ -115,14 +116,27 @@ test('every drafted pack runs through the approval mapper', () => {
   }
 });
 
-// Nothing is approved today, and Claude may never change that.
-test('no batch written after C0 is approved, and the record says why it is empty', () => {
-  assert.deepEqual(approvalData.approvals, [], 'Claude recorded a pilot approval');
-  assert.ok(approvalData.emptyOnPurpose.length > 80, 'the empty list does not say why it is empty');
+// The batch approvals are the parent's eight decisions of 2026-09-29 and nothing else, each at the
+// pack version it was given against. test/lifecycleRecords.test.js pins the exact wording.
+test('the only batch approvals are the parent\u2019s, and each covers the version it names', () => {
+  assert.equal(approvalData.approvals.length, 8, 'the batch approvals are not exactly the parent\u2019s eight');
+  assert.equal(approvalData.emptyOnPurpose, undefined, 'the file still says it is empty');
+  assert.ok(approvalData.whoFillsThis.length > 80, 'the file does not say who fills it');
   assert.match(approvalData.howAnApprovalTakesEffect, /reviewStatus|integrationStatus/);
+  for (const approval of approvalData.approvals) {
+    assert.equal(approval.decidedBy, 'parent');
+    assert.equal(approval.decidedAt, '2026-09-29');
+    assert.equal(approval.decision, 'approved');
+    assert.equal(approval.scopeType, 'pack');
+    assert.match(approval.basis, /^Given in chat 2026-09-29 \(R7\): .*questions not read item by item\.$/);
+    const pack = draftPacks.find((candidate) => candidate.id === approval.scopeId);
+    assert.ok(pack, `${approval.scopeId} is not a drafted pack`);
+    assert.equal(approval.scopeVersion, pack.version, `${approval.scopeId} is approved at a version it is no longer at`);
+  }
+  const approved = new Set(approvalData.approvals.map((approval) => approval.scopeId));
   for (const pack of draftPacks) {
     for (const item of pack.items) {
-      assert.equal(item.releaseStatus, 'not_released', `${item.id} is released without a parent decision`);
+      assert.equal(item.releaseStatus, approved.has(pack.id) ? 'pilot_approved' : 'not_released', `${item.id} does not match the parent\u2019s decision`);
     }
   }
 });

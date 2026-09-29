@@ -110,6 +110,7 @@
             "vocabulary.grade6.08"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -124,6 +125,7 @@
             "comprehension.grade6.11"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -138,6 +140,7 @@
             "comprehension.grade6.09"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -152,6 +155,7 @@
             "vocabulary.grade6.10"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         }
@@ -185,6 +189,7 @@
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Kindergarten to Grade 4",
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -192,11 +197,17 @@
           "packId": "f1.pack.ph.syllables",
           "skillId": "PH.syllables",
           "title": "Breaking Long Words into Beats",
-          "rule": "Every syllable holds exactly one vowel sound, so the number of vowel sounds is the number of beats. Where a word breaks depends on how many consonants sit between the vowels, and the break decides whether the first vowel is long or short.",
+          "rule": "Every syllable holds exactly one vowel sound, so the number of vowel sounds is the number of beats. Where a word breaks depends on how many consonants sit between the vowels, and the break usually decides whether the first vowel is long or short. In a longer word, one beat is said louder than the others: that beat carries the stress.",
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Kindergarten to Grade 4",
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         }
       ],
@@ -232,6 +243,7 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -246,6 +258,7 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -260,7 +273,13 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -274,7 +293,13 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -288,6 +313,7 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         }
@@ -323,6 +349,7 @@
             "conventions.grade6.06"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -338,6 +365,7 @@
             "conventions.grade6.06"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -352,6 +380,7 @@
             "writing.grade6.10"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -367,6 +396,7 @@
             "conventions.grade6.06"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         }
@@ -403,6 +433,7 @@
             "conventions.grade6.05"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -417,6 +448,7 @@
             "conventions.grade6.04"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -430,6 +462,7 @@
             "conventions.grade5.08"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -437,7 +470,7 @@
           "packId": "g1.pack.gr.possessives",
           "skillId": "GR.possessives",
           "title": "Showing Who Owns What",
-          "rule": "Ownership is shown two ways: an apostrophe on a noun (the dog’s bowl) or a possessive word that replaces one (his, her, its, their). The possessive form of a pronoun never takes an apostrophe.",
+          "rule": "Ownership is shown two ways: an apostrophe on a noun (the dog’s bowl) or a possessive word that replaces one (his, her, its, their). The personal possessive pronouns (his, hers, its, ours, yours, theirs) and whose never take an apostrophe. Words like everyone’s and someone’s are not personal pronouns, and they do take one.",
           "questionCount": 24,
           "curriculumOutcomeIds": [
             "conventions.grade5.11",
@@ -445,7 +478,13 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -459,6 +498,7 @@
             "conventions.grade6.08"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -472,7 +512,98 @@
             "conventions.grade5.11"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
+          "note": null
+        }
+      ],
+      "dimensions": [
+        "curriculum_alignment",
+        "rule_accuracy",
+        "answer_accuracy",
+        "feedback_quality",
+        "age_accessibility"
+      ]
+    },
+    {
+      "id": "f2.educational.v1",
+      "stage": "educational_source_review",
+      "status": "decided_by_parent",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "verdict": null,
+      "formPreparedBy": "claude",
+      "formPreparedAt": "2026-09-29",
+      "batch": "F2",
+      "describes": "below-grade foundation located by the diagnostic: digraphs and clusters, counting sounds, inflectional endings, long words in chunks",
+      "instructions": "Read each pack below, then set verdict to \"approved\" or \"changes_required\" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.",
+      "packs": [
+        {
+          "packId": "f2.pack.ph.digraphs-clusters",
+          "skillId": "PH.digraphs-clusters",
+          "title": "Two Letters, One Sound or Two",
+          "rule": "A digraph is two letters that make ONE sound: sh, ch, th, wh, ph, ck and ng. A cluster is two or three consonants side by side where you still hear EVERY sound: st, bl, gr, mp, nd. Some words also hold a silent letter, like the k in knee, that makes no sound at all.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Grade 1 to Grade 3",
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
+          "note": null
+        },
+        {
+          "packId": "f2.pack.ph.blend-segment",
+          "skillId": "PH.blend-segment",
+          "title": "Counting Sounds, Not Letters",
+          "rule": "A word is made of sounds, and the number of sounds is often not the number of letters. A digraph like sh or ck is two letters but one sound, a silent letter is no sound, and a cluster like st is two sounds. Count what you hear, then check each sound against the letters that spell it.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Kindergarten to Grade 2",
+          "packVersion": 1,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 1,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
+          "note": null
+        },
+        {
+          "packId": "f2.pack.sp.inflections",
+          "skillId": "SP.inflections",
+          "title": "Adding -ing, -ed and -es",
+          "rule": "Before you add an ending, look at the end of the base word. If it ends in a silent e and the ending starts with a vowel, drop the e: hope, hoping. If a short word of one syllable has one short vowel and then one consonant, double that consonant: hop, hopping. Never double w, x or y: snow, snowing; mix, mixing; play, played. If it ends in a consonant and y, usually change the y to i before -es or -ed, but keep it before -ing: carry, carries, carrying. After s, x, sh or ch, add -es rather than -s: fox, foxes.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Grade 1 to Grade 3",
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
+          "note": null
+        },
+        {
+          "packId": "f2.pack.ph.multisyllable",
+          "skillId": "PH.multisyllable",
+          "title": "Reading Long Words in Chunks",
+          "rule": "A long word is easier to read in chunks. First look for a prefix at the front and a suffix at the end, and cover them to find the base word. Then break what is left between syllables, so each chunk has one vowel sound. Read the chunks in order and blend them into the word.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Grade 1 to Grade 3",
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         }
       ],

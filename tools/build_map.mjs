@@ -20,7 +20,7 @@ const OVERRIDES = {
       8: ['not_built', ['GR.antecedents', 'GR.agreement'], 'Both skills are declared with no content.'],
       9: ['not_built', [], 'No app skill covers adverb placement.'],
       10: ['not_built', [], 'No app skill covers joining ideas with conjunctions; SE.combining is the nearest and has no content.'],
-      11: ['partial', ['GR.subject-object-pronouns', 'GR.possessives'], 'Subject and object forms are covered; GR.possessives is declared with no content, and the other types have no skill at all.'],
+      11: ['partial', ['GR.subject-object-pronouns', 'GR.possessives'], 'Subject and object forms are covered by GR.subject-object-pronouns. Possessive pronouns have a draft pack (GR.possessives) and the other types a draft pack (GR.pronoun-types); neither is reviewed yet.'],
       12: ['covered', ['SP.patterns']],
       13: ['covered', ['SP.patterns']],
       14: ['not_built', ['SP.wordparts', 'SP.inflections'], 'Both are declared with no lesson content; the assessment has two prefix/suffix prompts.'],

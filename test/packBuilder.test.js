@@ -5,6 +5,7 @@
 // the fields a content correction writes back. So a correction installed into a C1 or F1 pack would
 // have been silently dropped by the builder that assembled it.
 import test from 'node:test';
+import batchApprovalData from '../src/data/pilotApproval.batches.json' with { type: 'json' };
 import assert from 'node:assert/strict';
 import snapshot from './fixtures/c0ItemShape.json' with { type: 'json' };
 import { DEFAULT_SOURCE_IDS, ROLE_SEQUENCE, makePack } from '../src/data/packBuilder.js';
@@ -106,11 +107,12 @@ test('a pack cannot claim a below-grade placement and a Grade 5/6 outcome at onc
 // parent decision recorded on 2026-09-09 — which is a different thing: pilot evidence is derived into
 // its own record and never mixes with released evidence.
 test('nothing is released, and only an approved pack says more than not_released', () => {
-  const approvedSkills = new Set(c0PilotPacks.map((pack) => pack.skillId));
+  // C0 by the 2026-09-09 decision; the batch packs only by the parent's records (2026-09-29).
+  const approvedPacks = new Set([...c0PilotPacks.map((pack) => pack.id), ...batchApprovalData.approvals.map((approval) => approval.scopeId)]);
   for (const pack of [...c0PilotPacks, ...c1Packs, ...foundationPacks]) {
     for (const item of pack.items) {
       assert.notEqual(item.releaseStatus, 'released', `${item.id} claims a release`);
-      const allowed = approvedSkills.has(pack.skillId) ? ['not_released', 'pilot_approved'] : ['not_released'];
+      const allowed = approvedPacks.has(pack.id) ? ['not_released', 'pilot_approved'] : ['not_released'];
       assert.ok(allowed.includes(item.releaseStatus), `${item.id} is ${item.releaseStatus} in an unapproved pack`);
       assert.equal(item.packId, pack.id, `${item.id} names the wrong pack`);
       assert.equal(item.primarySkill, pack.skillId);

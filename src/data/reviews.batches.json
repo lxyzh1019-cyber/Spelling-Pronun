@@ -368,6 +368,107 @@
       ],
       "perItemResults": null,
       "whyNoPerItemResults": "Deliberately absent. Claude wrote all of these questions, so Claude marking each one \"pass\" would record nothing a reader could rely on. The findings above are the defects actually found; every other item was checked only against the automated rules listed, and that is the whole of the claim."
+    },
+    {
+      "id": "f2.challenge.self.v1",
+      "stage": "author_self_challenge",
+      "status": "complete_as_self_challenge",
+      "independent": false,
+      "satisfiesIndependentChallenge": false,
+      "limitation": "Claude wrote this content and Claude ran these checks, so this is the author checking their own work. It is weaker evidence than an independent pass by design: the checks can only find what their rules describe, and a rule the author did not think to write is a defect the author will not find. It does not satisfy the independent_challenge stage of the lifecycle, and no item reaches reviewed or integrated on the strength of it.",
+      "reviewerRole": "claude_self_challenge",
+      "checkedBy": "claude",
+      "checkedAt": "2026-09-29",
+      "batch": "F2",
+      "packIds": [
+        "f2.pack.ph.digraphs-clusters",
+        "f2.pack.ph.blend-segment",
+        "f2.pack.sp.inflections",
+        "f2.pack.ph.multisyllable"
+      ],
+      "itemCount": 96,
+      "automatedChecks": [
+        {
+          "rule": "Four distinct choices, exactly one of them the key, and the key is among them",
+          "test": "test/foundation2Packs.test.js"
+        },
+        {
+          "rule": "No explanation names an answer by its position or letter, and no pack puts its keys at one position, four in a row, or in a repeating cycle",
+          "test": "test/foundation2Packs.test.js"
+        },
+        {
+          "rule": "Twenty-four objects in the roles a lesson expects, every item passes validateContent, and a worked example can never be answered",
+          "test": "test/foundation2Packs.test.js, test/packBuilder.test.js"
+        },
+        {
+          "rule": "No pack or item cites a Grade 5/6 outcome; every Alberta placement quotes statements that resolve word for word against curriculum.k6.json, cites pages the extraction gives that organizing idea, and states the grade range the ladder derives",
+          "test": "test/foundation2Packs.test.js"
+        },
+        {
+          "rule": "Every question is answered by looking: no spoken text, no audio asset, no audio status on any item or option",
+          "test": "test/foundation2Packs.test.js"
+        },
+        {
+          "rule": "The explanations of each pack read at Grade 7 or below by the readability formula",
+          "test": "test/foundation2Packs.test.js"
+        },
+        {
+          "rule": "Nothing is released, and no item carries a status a parent did not grant",
+          "test": "test/approvalPath.test.js, test/lifecycleRecords.test.js"
+        }
+      ],
+      "findings": [
+        {
+          "id": "self.f2.01",
+          "batch": "F2",
+          "scope": "f2.ph.digraphs-clusters.04",
+          "found": "The question asking for the word that starts with a cluster offered whip as a wrong answer, calling wh one sound. Some speakers say the wh in whip as two sounds, and for them whip starts with a cluster too, so the question had two defensible answers.",
+          "action": "whip replaced with chin, which starts with the digraph ch for every speaker.",
+          "foundBy": "reading every option against the rule the pack states"
+        },
+        {
+          "id": "self.f2.02",
+          "batch": "F2",
+          "scope": "f2.ph.digraphs-clusters.13",
+          "found": "The question asked which two letters make ONE sound in phone. The final e is silent, so n and e together also give one sound, and a careful child could defend that option.",
+          "action": "The question now asks which two letters make the f sound, which only p and h do.",
+          "foundBy": "reading every option against the rule the pack states"
+        },
+        {
+          "id": "self.f2.03",
+          "batch": "F2",
+          "scope": "f2.ph.blend-segment.11",
+          "found": "A wrong option was gene, and its common error said that dropping the r from green gives gene. Gene starts with a j sound, not a g sound, so the stated error was false.",
+          "action": "gene replaced with grain, and the common error now names the vowel mistake that gives grin or grain.",
+          "foundBy": "reading every common error back as a claim to be checked"
+        },
+        {
+          "id": "self.f2.04",
+          "batch": "F2",
+          "scope": "f2.sp.inflections.18, f2.pack.sp.inflections rule and help steps",
+          "found": "The pack teaches doubling the last consonant after one short vowel, which applied to fox gives foxxes, one of the wrong options. Neither the rule nor the explanation said that x is never doubled, so a child following the rule exactly would be marked wrong.",
+          "action": "The rule, the help step and the explanation now say x is never doubled, and a common error names the mistake.",
+          "foundBy": "applying the stated rule to every keyed word"
+        },
+        {
+          "id": "self.f2.05",
+          "batch": "F2",
+          "scope": "f2.ph.multisyllable.07",
+          "found": "The question asked which chunk of disagreement is the base word, but the pack defines a chunk as having one vowel sound, and agree has two, so the question contradicted the pack’s own definition.",
+          "action": "Reworded to ask for the base word, like every other base-word question in the pack.",
+          "foundBy": "reading every prompt against the pack’s own terms"
+        },
+        {
+          "id": "self.f2.06",
+          "batch": "F2",
+          "scope": "f2.challenge.self.v1, f2.integration.lesson-packs.v1",
+          "found": "The first draft of these F2 records named checks held by test files that never load the F2 packs (the punctuation, sentence and C1 pack tests, and a snapshot of the C0 ids only), and listed four findings about earlier drafts that were never committed, so nothing in the repository could show them.",
+          "action": "The F2 records now name only tests that load the F2 packs, and list only defects found in the committed draft, each visible in the git history.",
+          "foundBy": "checking which test files import packs.foundation2.draft.js"
+        }
+      ],
+      "perItemResults": null,
+      "whyNoPerItemResults": "Deliberately absent. Claude wrote all of these questions, so Claude marking each one \"pass\" would record nothing a reader could rely on. The findings above are the defects actually found; every other item was checked only against the automated rules listed, and that is the whole of the claim."
     }
   ]
 }

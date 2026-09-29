@@ -11,8 +11,11 @@
 // (capitalisation, spelling patterns) that is Grade 6, and for one it finishes with (apostrophes,
 // phonics) it is earlier — which is the whole point of showing it to a child.
 //
-// NOTHING HERE IS VERIFIED. `mappingReviewedBy` in the built file is null and stays null until the
-// parent reads it. A rung is a reading of the curriculum, and a reading can be wrong.
+// NOTHING HERE IS VERIFIED RUNG BY RUNG. The parent accepted the built ladder on 2026-09-29 as
+// assumed, against the April 2022 edition, without reading each rung (`PARENT_ACCEPTANCE` in
+// `tools/build_ladder.mjs`). That acceptance is pinned to a fingerprint of the rungs, so changing
+// anything here drops it on the next build and learners are shown no grade until the parent is asked
+// again. A rung is a reading of the curriculum, and a reading can be wrong.
 
 export const skillRungs = {
   // ——— Spelling ———

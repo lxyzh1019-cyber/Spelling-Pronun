@@ -13,7 +13,7 @@ import c0Draft from '../src/data/story.c0.draft.json' with { type: 'json' };
 import ledger from '../src/data/story.ledger.json' with { type: 'json' };
 import { allStoryEpisodes, c1StoryEpisodes, storyEpisodes } from '../src/data/storyEpisodes.js';
 import { finaliseDraftEpisodes } from '../src/data/draftBatch.js';
-import { lessonsForTaskIds } from '../src/data/lessonCatalog.js';
+import { lessonBySessionId, lessonsForTaskIds } from '../src/data/lessonCatalog.js';
 
 test('every written episode is read by the app, not just chapter one', () => {
   assert.equal(allStoryEpisodes.length, c0Draft.episodes.length + c1Draft.episodes.length);
@@ -65,11 +65,15 @@ test('an episode finds its lessons from its own task ids', () => {
 test('an episode never links a lesson a learner cannot open', () => {
   for (const episode of allStoryEpisodes) {
     for (const lesson of lessonsForTaskIds(episode.taskIds)) {
-      assert.match(lesson.id, /^pilot-/, `${episode.id} links ${lesson.id}, which is not an approved lesson`);
+      assert.ok(lessonBySessionId(lesson.id), `${episode.id} links ${lesson.id}, which is not an approved lesson`);
     }
   }
-  // Chapter 2's first episode names the pronoun pack, which IS approved, so it resolves; the other
-  // nine name draft packs and resolve to nothing rather than to a broken link.
+  // Chapter 2's first episode names the pronoun pack, which IS approved. Since 2026-09-29 the
+  // apostrophe and dialogue packs are approved too, so the chapter 2 episodes that name them resolve
+  // to those lessons; every other episode names draft packs and resolves to nothing rather than to a
+  // broken link. (This is about links only: the chapter 2 to 6 episodes themselves are still not
+  // approved.)
   const withLessons = allStoryEpisodes.filter((episode) => lessonsForTaskIds(episode.taskIds).length > 0);
-  assert.deepEqual(withLessons.map((episode) => episode.id), ['c0.story.01', 'c0.story.02', 'c1.story.ch2.01']);
+  assert.deepEqual(withLessons.filter((episode) => episode.id.startsWith('c0.')).map((episode) => episode.id), ['c0.story.01', 'c0.story.02']);
+  assert.ok(withLessons.some((episode) => episode.id === 'c1.story.ch2.01'));
 });

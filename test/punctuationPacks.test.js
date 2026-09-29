@@ -5,6 +5,7 @@
 // behind them. These four packs are that content. The tests hold the things that would make them
 // wrong rather than merely unfinished.
 import test from 'node:test';
+import batchApprovalData from '../src/data/pilotApproval.batches.json' with { type: 'json' };
 import assert from 'node:assert/strict';
 import ladder from '../src/data/curriculum.ladder.json' with { type: 'json' };
 import k6 from '../src/data/curriculum.k6.json' with { type: 'json' };
@@ -83,10 +84,19 @@ test('each pack names a real Alberta outcome and leaves the grade to the ladder'
 
 // Nothing here may reach a child. These are draft, nobody has read them, and the approval gate is
 // what keeps them at /parent only.
+// The eight packs the parent approved on 2026-09-29 (R7). test/lifecycleRecords.test.js pins this list.
+const parentApproved = new Set(batchApprovalData.approvals.map((approval) => approval.scopeId));
+
+// Only the packs the parent approved reach a learner, and only on the pilot track.
 test('no punctuation pack is reachable by a learner', () => {
   for (const pack of punctuationPacks) {
     const sessionId = sessionIdForPack(pack);
     assert.ok(allLessonCatalog[sessionId], `${pack.id} is not in the catalog at all`);
+    if (parentApproved.has(pack.id)) {
+      assert.ok(lessonBySessionId(sessionId), `${pack.id} is approved but a learner cannot open it`);
+      for (const item of pack.items) assert.equal(item.releaseStatus, 'pilot_approved');
+      continue;
+    }
     assert.equal(lessonBySessionId(sessionId), null, `${pack.id} is draft but a learner can open it`);
     for (const item of pack.items) assert.equal(item.releaseStatus, 'not_released');
   }

@@ -28,9 +28,20 @@ export function openCorrectionsFor(corrections = []) {
 // Content authored but not yet challenged, reviewed, integrated or approved. Anything not at
 // `released` or `pilot_approved` is invisible to a learner, which is the point — and also the reason
 // it needs surfacing here.
+//
+// A pack the parent has approved is no longer waiting, and listing it here would contradict the
+// summary below, which tells the parent none of this is in front of a child. So a pack whose every
+// independent question a learner can already reach is left out — the same test the lesson catalog
+// uses to decide what a learner can open.
+const LEARNER_VISIBLE = ['pilot_approved', 'released'];
+const reachesLearners = (pack) => {
+  const independent = (pack.items || []).filter((item) => item.role === 'independent');
+  return independent.length > 0 && independent.every((item) => LEARNER_VISIBLE.includes(item.releaseStatus));
+};
+
 export function draftPacksFor(packGroups = []) {
   return packGroups
-    .flatMap((group) => group.packs.map((pack) => ({
+    .flatMap((group) => group.packs.filter((pack) => !reachesLearners(pack)).map((pack) => ({
       id: pack.id,
       batch: pack.batch || group.batch,
       title: pack.title,

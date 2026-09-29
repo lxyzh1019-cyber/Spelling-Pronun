@@ -9,6 +9,7 @@
 // subject after the verb, `each`/`neither`, a singular noun that ends in s. "The dog ___ loudly"
 // tests nothing, because the ear answers it.
 import test from 'node:test';
+import batchApprovalData from '../src/data/pilotApproval.batches.json' with { type: 'json' };
 import assert from 'node:assert/strict';
 import ladder from '../src/data/curriculum.ladder.json' with { type: 'json' };
 import k6 from '../src/data/curriculum.k6.json' with { type: 'json' };
@@ -150,10 +151,19 @@ test('the possessive pack separates the apostrophe from the possessive pronoun',
   assert.ok(pack.items.some((item) => /already possessive on its own/i.test((item.choices || []).map((choice) => choice.text).join(' '))));
 });
 
+// The eight packs the parent approved on 2026-09-29 (R7). test/lifecycleRecords.test.js pins this list.
+const parentApproved = new Set(batchApprovalData.approvals.map((approval) => approval.scopeId));
+
+// Only the packs the parent approved reach a learner, and only on the pilot track.
 test('no grammar pack is reachable by a learner', () => {
   for (const pack of grammarPacks) {
     const sessionId = sessionIdForPack(pack);
     assert.ok(allLessonCatalog[sessionId], `${pack.id} is not in the catalog at all`);
+    if (parentApproved.has(pack.id)) {
+      assert.ok(lessonBySessionId(sessionId), `${pack.id} is approved but a learner cannot open it`);
+      for (const item of pack.items) assert.equal(item.releaseStatus, 'pilot_approved');
+      continue;
+    }
     assert.equal(lessonBySessionId(sessionId), null, `${pack.id} is draft but a learner can open it`);
     for (const item of pack.items) assert.equal(item.releaseStatus, 'not_released');
   }

@@ -9,9 +9,10 @@
 // Two rules hold this honest, and both are tested:
 //
 //  1. A placement is shown to a LEARNER only when a person has verified the mapping. The ladder is a
-//     reading of a PDF; until the parent has read it back, `mappingReviewedBy` is null and
+//     reading of a PDF; until the parent has accepted it, `mappingReviewedBy` is null and
 //     `learnerPlacement` returns nothing. The parent's own review surface shows it regardless, which
-//     is how it gets verified in the first place.
+//     is how it gets verified in the first place. The parent accepted it on 2026-09-29 against the
+//     April 2022 edition, as assumed rather than rung by rung, and the summary says exactly that.
 //  2. A skill Alberta does not place is not given a grade. It returns `unplaced` with the reason,
 //     because inventing a grade for the pronunciation tiles — which came from the ESL benchmarks, not
 //     from this curriculum — is exactly the false confidence this module exists to prevent.
@@ -107,8 +108,20 @@ export function ladderReview(ladder, learnerGrade) {
     // Counts, never a proportion. "34% at grade" would read as a score of the child rather than a
     // description of the content, which is the one thing this must not become.
     unplacedSkills: unplaced.length,
-    summary: ladder?.mappingReviewedBy
-      ? `Verified by ${ladder.mappingReviewedBy}. Learners see the grade on each lesson.`
-      : 'Nobody has checked this mapping yet, so learners are shown no grade at all. Read the rungs below; each one quotes the Alberta outcome it rests on.',
+    // When, and against which edition. The parent recorded the edition because Alberta is changing
+    // the curriculum: an acceptance given against one edition says nothing about the next, so the
+    // date and edition are shown wherever the acceptance is.
+    reviewedAt: ladder?.mappingReviewedBy ? ladder.mappingReviewedAt || null : null,
+    sourceEdition: ladder?.mappingReviewedBy ? ladder.mappingSourceEdition || null : null,
+    summary: ladder?.mappingReviewedBy ? acceptedSummary(ladder) : 'Nobody has checked this mapping yet, so learners are shown no grade at all. Read the rungs below; each one quotes the Alberta outcome it rests on.',
   };
+}
+
+function acceptedSummary(ladder) {
+  const when = ladder.mappingReviewedAt ? ` on ${ladder.mappingReviewedAt}` : '';
+  const source = ladder.mappingSourceEdition || {};
+  const edition = source.dated ? ` against the ${source.title ? `${source.title}, ` : ''}${source.dated} edition` : '';
+  const scope = ladder.mappingReviewScope ? ` (${ladder.mappingReviewScope})` : '';
+  const recheck = source.dated ? ' A newer edition of the Alberta curriculum means checking it again.' : '';
+  return `Accepted by ${ladder.mappingReviewedBy}${when}${edition}${scope}. Learners see the grade on each lesson.${recheck}`;
 }

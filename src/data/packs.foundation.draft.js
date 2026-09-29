@@ -31,9 +31,12 @@ import correctionData from './corrections.c0.json' with { type: 'json' };
 const choice = (prompt, answer, choices, explanation, transferGroup) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup });
 const example = (prompt, explanation, transferGroup) => ({ prompt, explanation, transferGroup });
 
-function makePack(skillId, title, rule, helpSteps, rows, albertaPlacement) {
-  return buildPack({ prefix: 'f1', batch: 'F1', skillId, title, rule, helpSteps, rows, albertaPlacement });
+function makePack(skillId, title, rule, helpSteps, rows, albertaPlacement, options = {}) {
+  return buildPack({ prefix: 'f1', batch: 'F1', skillId, title, rule, helpSteps, rows, albertaPlacement, ...options });
 }
+
+// A changed row carries version 2, so a review recorded against version 1 cannot cover it.
+const v2 = (row) => ({ ...row, version: 2 });
 
 // --- PH.vowels ----------------------------------------------------------------------------------
 const vowelRows = [
@@ -71,21 +74,21 @@ const syllableRows = [
   choice('How many syllables are in “elephant”?', 'c', [['a', 'One'], ['b', 'Two'], ['c', 'Three'], ['d', 'Four']], 'El-e-phant holds three vowel sounds, so three syllables.', 'count-syllables'),
   choice('Where does “napkin” break?', 'a', [['a', 'nap-kin'], ['b', 'na-pkin'], ['c', 'napk-in'], ['d', 'n-apkin']], 'Two consonants sit between the vowels, so the break comes between them and the a stays short.', 'vccv-vcv'),
   choice('Where does “open” break?', 'c', [['a', 'op-en'], ['b', 'ope-n'], ['c', 'o-pen'], ['d', 'open has one syllable']], 'One consonant sits between the vowels, so the break comes before it and the o stays long.', 'vccv-vcv'),
-  choice('Which syllable is loudest in “photograph”?', 'a', [['a', 'PHO'], ['b', 'to'], ['c', 'graph'], ['d', 'They are all equally loud.']], 'Say it aloud: PHO-to-graph. The first beat carries the stress.', 'stress'),
+  v2(choice('Which syllable is loudest in “photograph”?', 'a', [['a', 'pho'], ['b', 'to'], ['c', 'graph'], ['d', 'They are all equally loud.']], 'Say it aloud: PHO-to-graph. The first beat carries the stress.', 'stress')),
   choice('How many syllables are in “computer”?', 'd', [['a', 'One'], ['b', 'Two'], ['c', 'Four'], ['d', 'Three']], 'Com-pu-ter holds three vowel sounds.', 'count-syllables'),
   choice('How many syllables are in “remember”?', 'b', [['a', 'Two'], ['b', 'Three'], ['c', 'Four'], ['d', 'Five']], 'Re-mem-ber holds three vowel sounds.', 'count-syllables'),
   choice('Where does “muffin” break?', 'a', [['a', 'muf-fin'], ['b', 'mu-ffin'], ['c', 'muff-in'], ['d', 'm-uffin']], 'Two consonants sit between the vowels, so the break falls between them and the u stays short.', 'vccv-vcv'),
   choice('Where does “pilot” break?', 'c', [['a', 'pil-ot'], ['b', 'pilo-t'], ['c', 'pi-lot'], ['d', 'p-ilot']], 'One consonant sits between the vowels, so the break comes before it and the i stays long.', 'vccv-vcv'),
-  choice('Which syllable is loudest in “invitation”?', 'd', [['a', 'in'], ['b', 'vi'], ['c', 'tion'], ['d', 'TA']], 'Say it aloud: in-vi-TA-tion. The third beat carries the stress.', 'stress'),
+  v2(choice('Which syllable is loudest in “invitation”?', 'd', [['a', 'in'], ['b', 'vi'], ['c', 'tion'], ['d', 'ta']], 'Say it aloud: in-vi-TA-tion. The third beat carries the stress.', 'stress')),
   choice('How many syllables are in “strength”?', 'a', [['a', 'One'], ['b', 'Two'], ['c', 'Three'], ['d', 'None']], 'Strength has eight letters but only one vowel sound, so it is one syllable. Syllables count vowel sounds, not letters.', 'count-syllables'),
   choice('A syllable that ends with its vowel, like “ti” in tiger, is called ___.', 'b', [['a', 'a closed syllable'], ['b', 'an open syllable'], ['c', 'a silent syllable'], ['d', 'a stressed syllable']], 'An open syllable ends with its vowel and that vowel is usually long. A closed syllable ends with a consonant and its vowel is usually short.', 'open-closed'),
   choice('Which word has a closed first syllable?', 'd', [['a', 'baby'], ['b', 'tiger'], ['c', 'paper'], ['d', 'rabbit']], 'Rab ends in a consonant, so it is closed and the a is short. Ba, ti and pa all end in their vowel, so those are open and long.', 'open-closed'),
-  choice('Which syllable is loudest in “community”?', 'c', [['a', 'com'], ['b', 'ni'], ['c', 'MU'], ['d', 'ty']], 'Say it aloud: com-MU-ni-ty. The second beat carries the stress.', 'stress'),
+  v2(choice('Which syllable is loudest in “community”?', 'c', [['a', 'com'], ['b', 'ni'], ['c', 'mu'], ['d', 'ty']], 'Say it aloud: com-MU-ni-ty. The second beat carries the stress.', 'stress')),
   choice('How many syllables are in “calendar”?', 'b', [['a', 'Two'], ['b', 'Three'], ['c', 'Four'], ['d', 'One']], 'Cal-en-dar holds three vowel sounds.', 'count-syllables'),
   choice('Where does “tablet” break?', 'a', [['a', 'tab-let'], ['b', 'ta-blet'], ['c', 'tabl-et'], ['d', 't-ablet']], 'Two consonants sit between the vowels, so the break falls between them.', 'vccv-vcv'),
   choice('You have never seen the word “flunbet”. How many syllables does it have?', 'b', [['a', 'One'], ['b', 'Two'], ['c', 'Three'], ['d', 'Four']], 'Two vowel sounds, u and e, so two syllables: flun-bet. You can count the beats in a word you have never met.', 'transfer-invented'),
-  choice('You have never seen the word “dremo”. Where would it break, and what does that do to the first vowel?', 'c', [['a', 'drem-o, and the e stays short'], ['b', 'd-remo, and the e is silent'], ['c', 'dre-mo, and the e stays long'], ['d', 'It has only one syllable.']], 'One consonant sits between the vowels, so the break comes before it. That leaves an open first syllable, and an open syllable keeps its vowel long.', 'transfer-invented'),
-  choice('Which syllable is loudest in “information”?', 'd', [['a', 'in'], ['b', 'for'], ['c', 'tion'], ['d', 'MA']], 'Say it aloud: in-for-MA-tion. The third beat carries the stress.', 'stress'),
+  v2(choice('You have never seen the word “plintop”. Where would it break, and what does that do to the first vowel?', 'c', [['a', 'plint-op, and the i stays long'], ['b', 'pli-ntop, and the i stays long'], ['c', 'plin-top, and the i stays short'], ['d', 'It has only one syllable.']], 'Two consonants, n and t, sit between the first two vowels, so the break comes between them. That leaves a closed first syllable, plin, and a closed syllable keeps its vowel short.', 'transfer-invented')),
+  v2(choice('Which syllable is loudest in “information”?', 'd', [['a', 'in'], ['b', 'for'], ['c', 'tion'], ['d', 'ma']], 'Say it aloud: in-for-MA-tion. The third beat carries the stress.', 'stress')),
   choice('Which word has an open first syllable?', 'a', [['a', 'paper'], ['b', 'basket'], ['c', 'window'], ['d', 'napkin']], 'Pa ends in its vowel, so it is open and the a is long. The other three have a consonant closing the first syllable.', 'open-closed'),
   choice('Where does “sudden” break?', 'b', [['a', 'su-dden'], ['b', 'sud-den'], ['c', 'sudd-en'], ['d', 's-udden']], 'Two consonants sit between the vowels, so the break falls between them and the u stays short.', 'vccv-vcv'),
   choice('How many syllables are in “umbrella”?', 'c', [['a', 'Two'], ['b', 'Four'], ['c', 'Three'], ['d', 'One']], 'Um-brel-la holds three vowel sounds.', 'count-syllables'),
@@ -109,10 +112,11 @@ const rawFoundationPacks = [
   makePack(
     'PH.syllables',
     'Breaking Long Words into Beats',
-    'Every syllable holds exactly one vowel sound, so the number of vowel sounds is the number of beats. Where a word breaks depends on how many consonants sit between the vowels, and the break decides whether the first vowel is long or short.',
+    'Every syllable holds exactly one vowel sound, so the number of vowel sounds is the number of beats. Where a word breaks depends on how many consonants sit between the vowels, and the break usually decides whether the first vowel is long or short. In a longer word, one beat is said louder than the others: that beat carries the stress.',
     ['Say the word aloud and clap the beats.', 'Count the vowel sounds, not the vowel letters.', 'Look at how many consonants sit between the vowels.'],
     syllableRows,
     PHONICS_PLACEMENT,
+    { version: 2 },
   ),
 ];
 

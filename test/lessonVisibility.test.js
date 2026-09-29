@@ -25,8 +25,9 @@ import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
 import { grammarPacks } from '../src/data/packs.grammar.draft.js';
+import { foundation2Packs } from '../src/data/packs.foundation2.draft.js';
 
-const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
+const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks, ...foundation2Packs];
 
 test('the catalog knows every authored pack, and each has its own route', () => {
   assert.equal(Object.keys(allLessonCatalog).length, allPacks.length, 'a pack is missing from the catalog');
@@ -58,9 +59,9 @@ test('only approved content is reachable by a learner', () => {
       assert.ok(allLessonCatalog[sessionId], `${pack.id} vanished instead of being withheld`);
     }
   }
-  // Today: the four C0 packs are approved and the six drafted ones are not.
-  assert.equal(Object.keys(c0LessonCatalog).length, 4);
-  assert.equal(Object.keys(allLessonCatalog).length - Object.keys(c0LessonCatalog).length, allPacks.length - 4);
+  // Today: the four C0 packs and the eight the parent approved on 2026-09-29; every other pack is draft.
+  assert.equal(Object.keys(c0LessonCatalog).length, 12);
+  assert.equal(Object.keys(allLessonCatalog).length - Object.keys(c0LessonCatalog).length, allPacks.length - 12);
 });
 
 // A pack with no approval must not become visible by having no independent items to check, which is
@@ -92,7 +93,7 @@ test('every tile points at a lesson that exists, and no draft has one', () => {
     assert.ok(tile.icon && tile.color, `${tile.to} has no style`);
     // A tile states a grade placement only when its pack does. Inventing one would be exactly the
     // false confidence the placement field exists to avoid.
-    if (tile.placement) assert.equal(tile.placement, lesson.albertaPlacement.albertaGrades);
+    if (tile.placement) assert.equal(tile.placement, `Alberta places this at ${lesson.albertaPlacement.albertaGrades}`);
     else assert.equal(lesson.albertaPlacement, undefined, `${tile.to} hides a placement its pack states`);
   }
 });
@@ -119,15 +120,21 @@ test('a pack that states where Alberta places it keeps that through to the tile'
 // and a learner grade to compare against. Two gates, and the test breaks each one separately —
 // otherwise "shows nothing" passes for the wrong reason, because nothing is wired at all.
 test('a tile names a grade only once the mapping is verified and the learner has one', () => {
-  const verified = { ...ladder, mappingReviewedBy: 'parent (fixture)' };
+  // The real ladder carries the parent's dated acceptance (2026-09-29, as assumed, April 2022
+  // edition) and is what the app uses. `unverified` is the same ladder without it.
+  assert.equal(ladder.mappingReviewedBy, 'parent');
+  assert.equal(ladder.mappingReviewedAt, '2026-09-29');
+  const verified = ladder;
+  const unverified = { ...ladder, mappingReviewedBy: null };
   // Neither gate open: the four C0 packs have no albertaPlacement of their own, so no grade at all.
-  for (const tile of learnerLessonTiles()) assert.equal(tile.relation, undefined);
+  for (const tile of learnerLessonTiles({ gradeLadder: unverified })) assert.equal(tile.relation, undefined);
   // Verified but no learner grade: still nothing, because there is nothing to be relative to.
-  for (const tile of learnerLessonTiles({ gradeLadder: verified })) assert.equal(tile.relation, undefined);
+  for (const tile of learnerLessonTiles()) assert.equal(tile.relation, undefined);
   // A learner grade but an unverified mapping: still nothing.
-  for (const tile of learnerLessonTiles({ learnerGrade: 'Grade 5' })) assert.equal(tile.relation, undefined);
-  // Both: every tile is placed, and SE.complete is the one Alberta finishes with at Grade 3.
-  const placed = learnerLessonTiles({ learnerGrade: 'Grade 5', gradeLadder: verified });
+  for (const tile of learnerLessonTiles({ learnerGrade: 'Grade 5', gradeLadder: unverified })) assert.equal(tile.relation, undefined);
+  // Both, through the app's default ladder: every tile is placed, and SE.complete is the one Alberta
+  // finishes with at Grade 3.
+  const placed = learnerLessonTiles({ learnerGrade: 'Grade 5' });
   assert.equal(placed.length, Object.keys(c0LessonCatalog).length);
   for (const tile of placed) {
     assert.ok(['revisiting', 'at_grade', 'ahead'].includes(tile.relation), `${tile.to} has no placement`);
