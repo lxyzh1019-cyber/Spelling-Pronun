@@ -23,9 +23,12 @@ import pilotApprovalData from './pilotApproval.batches.json' with { type: 'json'
 const choice = (prompt, answer, choices, explanation, transferGroup, outcomeIds) => ({ prompt, acceptedAnswers: [answer], choices, explanation, transferGroup, outcomeIds });
 const example = (prompt, explanation, transferGroup, outcomeIds) => ({ prompt, explanation, transferGroup, outcomeIds });
 
-function makePack(skillId, title, rule, helpSteps, rows) {
-  return buildPack({ prefix: 'g1', batch: 'G1', skillId, title, rule, helpSteps, rows });
+function makePack(skillId, title, rule, helpSteps, rows, options = {}) {
+  return buildPack({ prefix: 'g1', batch: 'G1', skillId, title, rule, helpSteps, rows, ...options });
 }
+
+// A changed row carries version 2, so a review recorded against version 1 cannot cover it.
+const v2 = (row) => ({ ...row, version: 2 });
 
 const AGREEMENT = ['conventions.grade5.05', 'conventions.grade6.05'];
 const TENSE = ['conventions.grade5.04', 'conventions.grade6.04'];
@@ -302,23 +305,23 @@ const rawGrammarPacks = [
   makePack(
     'GR.possessives',
     'Showing Who Owns What',
-    'Ownership is shown two ways: an apostrophe on a noun (the dog\u2019s bowl) or a possessive word that replaces one (his, her, its, their). The possessive form of a pronoun never takes an apostrophe.',
+    'Ownership is shown two ways: an apostrophe on a noun (the dog\u2019s bowl) or a possessive word that replaces one (his, her, its, their). A personal possessive pronoun (his, hers, its, ours, yours, theirs, whose) never takes an apostrophe. Words like everyone\u2019s and someone\u2019s are not personal pronouns, and they do take one.',
     [
       'Find the owner first, then decide which of the two ways you are using.',
       'On a noun: apostrophe then s, unless the owner is plural and already ends in s.',
-      'On a pronoun: no apostrophe ever \u2014 his, hers, its, ours, theirs.',
-      'If a word with an apostrophe can be read back as two words ("it is"), it is a short form, not a possessive.',
+      'On a personal pronoun: no apostrophe \u2014 his, hers, its, ours, yours, theirs, whose.',
+      'If a word with an apostrophe can be read back as two words ("it is" or "it has"), it is a short form, not a possessive.',
     ],
     [
       example('Read this: "the dog\u2019s bowl" and "his bowl". Both say the bowl belongs to him; one puts the mark on a noun and one uses a word that replaces the noun.', 'Once you see them as two ways of doing one job, the apostrophe rule stops feeling arbitrary \u2014 it only ever applies to the first way.', 1, PRONOUN_TYPES),
-      example('Read this: "It\u2019s cold" against "its paw". The first is short for "it is"; the second shows ownership and takes no apostrophe.', 'Reading the apostrophe form back as two words settles every case of this, and it is the only check you need.', 1, PUNCTUATION),
+      v2(example('Read this: "It\u2019s cold" against "its paw". The first is short for "it is"; the second shows ownership and takes no apostrophe.', 'Read the apostrophe form back as two words: "it is" or "it has". If either one fits, the apostrophe belongs. If neither fits, you need its, with no apostrophe.', 1, PUNCTUATION)),
 
       choice('Which shows that the bike belongs to one boy?', 'a',
         [['a', 'the boy\u2019s bike'], ['b', 'the boys\u2019 bike'], ['c', 'the boys bike'], ['d', 'the boy bikes']],
         'A singular owner takes an apostrophe and then an s.', 2, PUNCTUATION),
-      choice('Which word is a possessive that takes NO apostrophe?', 'c',
+      v2(choice('Which word is a possessive that takes NO apostrophe?', 'c',
         [['a', 'don\u2019t'], ['b', 'Sam\u2019s'], ['c', 'theirs'], ['d', 'it\u2019s']],
-        'Possessive pronouns never take one. The others are either a short form or a noun showing ownership.', 3, PRONOUN_TYPES),
+        'Personal possessive pronouns like theirs never take one. The others are either a short form or a noun showing ownership.', 3, PRONOUN_TYPES)),
       choice('Which is correct? "The dog wagged ___ tail."', 'b',
         [['a', 'it\u2019s'], ['b', 'its'], ['c', 'its\u2019'], ['d', 'it is']],
         'Read the apostrophe form back as "it is" and the sentence stops making sense, which is the whole test.', 4, PUNCTUATION),
@@ -353,15 +356,15 @@ const rawGrammarPacks = [
       choice('Which is correct? "The ___ engine was cold." (one bus)', 'b',
         [['a', 'bus\u2019 '], ['b', 'bus\u2019s'], ['c', 'buses\u2019'], ['d', 'buss\u2019s']],
         'The owner is singular even though it ends in s, so apostrophe then s.', 14, PUNCTUATION),
-      choice('Which sentence uses a possessive pronoun rather than a possessive noun?', 'd',
-        [['a', 'Ana\u2019s coat is blue.'], ['b', 'The dog\u2019s bowl is empty.'], ['c', 'The girls\u2019 team won.'], ['d', 'Their coats are blue.']],
-        'A possessive pronoun replaces the owner\u2019s name rather than attaching a mark to it.', 15, PRONOUN_TYPES),
+      v2(choice('Which sentence ends with a possessive pronoun that stands on its own?', 'd',
+        [['a', 'Ana\u2019s coat is blue.'], ['b', 'The dog\u2019s bowl is empty.'], ['c', 'The girls\u2019 team won.'], ['d', 'The blue coats are theirs.']],
+        'Theirs stands in for the owners and the thing owned, so it can stand on its own. The others show ownership with an apostrophe on a noun.', 15, PRONOUN_TYPES)),
       choice('Which is correct? "Is this bag ___ or mine?"', 'c',
         [['a', 'your\u2019s'], ['b', 'yours\u2019'], ['c', 'yours'], ['d', 'your']],
         'Another possessive pronoun standing alone, so no apostrophe.', 16, PRONOUN_TYPES),
-      choice('How can you always tell "it\u2019s" from "its"?', 'a',
-        [['a', 'read it back as "it is" \u2014 if that works, the apostrophe belongs'], ['b', 'the apostrophe always means ownership'], ['c', 'guess from the length of the sentence'], ['d', 'they mean the same thing']],
-        'This is the one case where the apostrophe does NOT mean ownership, which is exactly why a test that works every time is worth having.', 17, PUNCTUATION),
+      v2(choice('How can you tell "it\u2019s" from "its"?', 'a',
+        [['a', 'read it back as "it is" or "it has" \u2014 if one fits, the apostrophe belongs'], ['b', 'the apostrophe always means ownership'], ['c', 'guess from the length of the sentence'], ['d', 'they mean the same thing']],
+        '"It\u2019s" is always short for "it is" or "it has", as in "It\u2019s been raining". If neither fits, the word you need is "its".', 17, PUNCTUATION)),
 
       choice('Rewrite "the bags belonging to the students" with an apostrophe. Which is right?', 'c',
         [['a', 'the student\u2019s bags'], ['b', 'the students bags'], ['c', 'the students\u2019 bags'], ['d', 'the students\u2019s bags']],
@@ -379,10 +382,11 @@ const rawGrammarPacks = [
       choice('Which is correct? "The ___ coats were wet." (more than one woman)', 'b',
         [['a', 'womens\u2019'], ['b', 'women\u2019s'], ['c', 'womens'], ['d', 'woman\u2019s']],
         '"Women" is already plural and does not end in s, so it takes apostrophe then s.', 22, PUNCTUATION),
-      choice('Why do possessive pronouns take no apostrophe when possessive nouns do?', 'c',
+      v2(choice('Why do his, hers, ours and theirs take no apostrophe when possessive nouns do?', 'c',
         [['a', 'it is a spelling mistake in English'], ['b', 'they used to and the rule changed'], ['c', 'the word is already possessive on its own \u2014 nothing is missing and nothing needs marking'], ['d', 'there is no reason']],
-        '"Hers" already means belonging to her. The apostrophe on a noun does a job that these words do by themselves.', 23, PRONOUN_TYPES),
+        '"Hers" already means belonging to her. The apostrophe on a noun does a job that these words do by themselves.', 23, PRONOUN_TYPES)),
     ],
+    { version: 2, sourceIds: ['ab-elal-2022-overview', 'ca-language-portal-apostrophe-possession'] },
   ),
 
   makePack(

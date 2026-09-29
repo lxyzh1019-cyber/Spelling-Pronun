@@ -2059,7 +2059,7 @@
                 "GR.possessives",
                 "GR.pronoun-types"
               ],
-              "note": "Subject and object forms are covered; GR.possessives is declared with no content, and the other types have no skill at all."
+              "note": "Subject and object forms are covered by GR.subject-object-pronouns. Possessive pronouns have a draft pack (GR.possessives) and the other types a draft pack (GR.pronoun-types); neither is reviewed yet."
             },
             {
               "id": "conventions.grade5.12",
