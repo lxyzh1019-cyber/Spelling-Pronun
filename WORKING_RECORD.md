@@ -4,6 +4,7 @@ Single working record for this repository. Updated by the main session at the en
 implementation turn (the record guard hook checks this). Keep it terse; history lives in git.
 
 ## Approved baseline
+- Plan v3 approved 2026-09-29 (R7, local session): v1 plus (Rev 2) the four approved packs are opened for the private pilot after an independent check, the same path C0 took; (Rev 3) the four new packs go through the same check and open too. Later chat decisions the same day: failed questions are fixed and re-checked rather than left closed; the missing-source gap is logged, not blocking. Supersedes v1's "record only" reading of the approval.
 - Plan v1 approved 2026-09-29 (R7): build the lessons the below-grade diagnostic found. Choice A: all four missing packs. Choice B: record the parent's chat decisions (approval of four existing packs; grade mapping accepted as assumed, dated, against Alberta ELAL K–6 April 2022) in the parent's name, and loosen the tests only enough to accept a dated parent decision. Branch `below-grade-lessons`.
 - Plan v1 approved 2026-09-28 (R6): share the 48-question diagnostic result in one tap. Share sheet + dated file download + printable page; one combined all-children report; device only, no cloud and no share link; keep the existing tested wording and add a summary lead, a completion count and the child's actual wrong choices. Branch `diagnostic-share`.
 - Plan v2 approved 2026-09-22, option (a): install working-rules bundle v2 at the repo root on branch `rules-v2`; root `CLAUDE.md` is the bundle file plus a three-line footer pointing at `docs/PROJECT_ARCHITECTURE.md`, which holds the repo's pre-bundle architecture document unchanged; keep `README.md`; delete the bundle zip and `docs/CLAUDE.review-rev2.md`; track `.claude/`, ignore `.claude/state/`; run `tests/replay-hooks.sh`; commit and push to `rules-v2`.
@@ -12,19 +13,12 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 ## Pending
 - (Resolved R7 2026-09-29: parent approved the fix; see ledger #20.) One wording decision, raised by the implementation. `diagnosticReportMarkdown` still emits "This report is for the learner who was selected on the parent page when it was copied." In a combined export from the finish screen nothing was selected on the parent page and nothing was copied, so the sentence is now stale. It was kept verbatim because R6 asked to keep the existing wording exactly and an existing assertion requires the string. Fixing it is one line plus one assertion; awaiting the parent's call.
 
-## R7 handoff — continue in a LOCAL session (parent's decision 2026-09-29)
-The parent stopped the cloud run on 2026-09-29 and moved the rest of R7 to a local session. Start it on branch `below-grade-lessons` (made from current `main`, pushed). Plan v1 (R7) stays approved; do not re-ask.
-
-**Decided by the parent (2026-09-29):**
-- Diagnostic answers are genuine: the parent watched both children answer. Main session checked the two items both missed (`GR.possessives` plural, `pu.dialogue.02`): answer keys are correct, so those are real gaps.
-- Build lessons for all four skills with no pack (choice A): PH.digraphs-clusters (weak for both), SP.inflections, PH.blend-segment, PH.multisyllable. 24 questions each, text only, no story episodes.
-- Approve the four existing draft packs: GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables. Record in the parent's name, dated 2026-09-29, basis "given in chat 2026-09-29 (R7), questions not read item by item". Loosen `test/lifecycleRecords.test.js` only enough to accept a dated decision attributed to the parent with that basis (choice B); anything else stays forbidden.
-- Grade mapping (`curriculum.ladder.json`) accepted as assumed, dated 2026-09-29, against Alberta ELAL K–6 April 2022, because the government is revising the curriculum. The parent page shows edition and date so a new curriculum is a visible recheck trigger. `curriculum.k6.json` and `curriculum.alberta.elal.json` stay unreviewed.
-- Report fix (headline agrees with counts; stale sentence replaced): DONE, commit `8d83b7f`.
-
-**Partial work, unverified:** branch `below-grade-lessons-wip` (`688f1a6`), pushed, NOT for merge. It holds the stopped worker's edits: `src/data/packs.foundation2.draft.js` with the four packs, catalog/lifecycle wiring, and a half-done ladder stamp. Tests there: 475 / 472 pass / 2 fail (`no grade reaches a learner until a person has verified the mapping`, `a tile names a grade only once the mapping is verified and the learner has one` — the ladder tests not yet updated). Approvals are NOT recorded there (`pilotApproval.batches.json` still empty). The local session should review it and either bring it into `below-grade-lessons` or redo it; nothing in it is checked.
-
-**Remaining:** the open R7 rows in the deliverable ledger below, then `npm test` + `npm run build`, records, and a ready-for-review PR from `below-grade-lessons`. Separately, the stub is outdated: run Step B from the `hz-claude-config` README.
+## R7 — finished in a local session (2026-09-29)
+The cloud handoff (commits `d00f47f`, `4d5f32f`) was checked against GitHub: accurate except that recording the approval alone would not have opened any lesson (the lifecycle needs an independent check, review and integration first), GitHub Desktop was unnecessary, and "Step B" appears done by PR #31 (`1a06bcc`, not compared with the hz-claude-config README — assumed).
+- Branch `below-grade-lessons`: merged `origin/main` (`64bdacb`) and WIP `688f1a6` (`364823b`); WIP reviewed item by item, 5 defects fixed (`5454712`); ladder stamp finished (`d66afa1`).
+- Two separate agents that wrote none of the content checked all 192 items of the 8 packs (content challenge; educational/source pass). Round 1: 16 items failed (challenge) / 7 (educational). Fixed and versioned (`bc54e6b`, `e673996`); round 3: 192/192 pass on both; source mapping still fails on all 8 (logged as open, parent's decision).
+- Batch review state is now DERIVED from the records (`src/learning/independentReview.js`, `24fd36f`): a pack is reviewed/integrated only if both agent passes cover every item at its exact version and content fingerprint, plus the parent's verdict and countersignature for that pack version. Parent decisions recorded (`98d7cc3`); all 8 packs reachable on the pilot track only; nothing released.
+- `below-grade-lessons-wip` kept, not for merge.
 
 ## Request ledger
 | # | Round/date | Requirement (user's words, short) | Status | Note |
@@ -44,11 +38,15 @@ The parent stopped the cloud run on 2026-09-29 and moved the rest of R7 to a loc
 | 13 | R6 2026-09-28 | No cloud, no share link — device only | done | Nothing added to Firestore or `firestore.rules`; `diagnosticStore.js` untouched. |
 | 14 | R6 2026-09-28 | Scope: all children in one report | done | Entries built over every profile with answers, in device profile order. |
 | 15 | R6 2026-09-28 | Keep current wording + summary lead + completion count + actual wrong choices | partial | Three of four done. Existing wording kept verbatim — which is why the now-stale "selected on the parent page" sentence survives; see Pending. |
-| 16 | R7 2026-09-29 | "build the lessons that is the reason why we have the assessment" — all four missing packs (choice A) | open — moved to local session | PH.digraphs-clusters, SP.inflections, PH.blend-segment, PH.multisyllable |
-| 17 | R7 2026-09-29 | "approved" — the four existing draft packs for the flagged skills | open | GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables. Recorded as given in chat, questions not read item by item |
-| 18 | R7 2026-09-29 | Grade mapping: "assumed this is correct and date it. As government is modifying curriculum" | open | Accepted as assumed 2026-09-29 against ELAL K–6 April 2022 |
+| 16 | R7 2026-09-29 | "build the lessons that is the reason why we have the assessment" — all four missing packs (choice A) | done | PH.digraphs-clusters, SP.inflections, PH.blend-segment, PH.multisyllable — built, independently checked, opened for pilot (#22) |
+| 17 | R7 2026-09-29 | "approved" — the four existing draft packs for the flagged skills | done — revised by #21: open for pilot | GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables. Recorded as given in chat, questions not read item by item |
+| 18 | R7 2026-09-29 | Grade mapping: "assumed this is correct and date it. As government is modifying curriculum" | done | Accepted as assumed 2026-09-29 against ELAL K–6 April 2022; lapses on rung or edition change (`d66afa1`) |
 | 19 | R7 2026-09-29 | Diagnostic answers: "I watched them answer" | done | Parent observed both runs. Main session checked the two items both girls missed (`gr.possessives` plural, `pu.dialogue.02`): keys correct |
 | 20 | R7 2026-09-29 | Report headline must agree with its own counts; stale "selected on the parent page" sentence fixed | done | Resolves the R6 pending wording item |
+| 21 | R7 2026-09-29 (local) | Approval should "Open them for the pilot" | done | Via independent check, not by skipping it; `98d7cc3` |
+| 22 | R7 2026-09-29 (local) | New lessons: "Yes, same check" — open after the same independent check | done | 4 F2 packs opened on pilot track |
+| 23 | R7 2026-09-29 (local) | Failed questions: "Fix, re-check, then open" | done | 16+1 items fixed, re-checked to 192/192 |
+| 24 | R7 2026-09-29 (local) | Sources: "Open all 8, log the gap" | done | sourceOutcome fail kept verbatim as open gap in `reviews.independent.batches.json` |
 
 Superseded: #6 (merge into one file) → superseded by #8 (split, with a pointer footer). R1's original reading — bundle `CLAUDE.md` at root, project document alongside it — is what now stands.
 
@@ -60,6 +58,7 @@ Numbering note (2026-09-29): rows #11–15 were written as "R4" and numbered #9�
 | Root `CLAUDE.md` composition | 2 | 1 | 1 | 1 | R1 split the documents; R2 merged them into one file; R3 reverted to the split with a pointer footer; R4's stub install dropped the pointer footer, restored by hand as a `## Project Architecture` section | no — threshold tripped by the R4 regression |
 | `.claude/` stub install | 2 | 0 | 0 | 1 | R5 2026-09-29 reran the installer: settings and worker agents refreshed, `CLAUDE.md` untouched — the R4 footer drop did not recur | not needed — no recurrence |
 | Below-grade diagnostic export | 2 | 0 | 0 | 0 | R6: export was single-learner, clipboard-only, and reachable only after switching profiles. Fixed structurally (one shared component over all children) rather than by another prose warning. R7: the "Needs building" list counted partly-solid skills while the counts line did not — present in `separateAppReading` since it was written and copied into R6's summary line; fixed by one pair of lists (`needsBuilding`/`partlySolid`) that both texts read | n/a — below threshold |
+| Lesson pack content (R7 packs) | 2 | 1 | 0 | 0 | Independent check failed 16 items + rule texts; fixed `bc54e6b`; the same false "it is is the whole test" claim recurred in g1.05, fixed `e673996`. Structural guard added: review state derived from per-item version+fingerprint evidence, so an edit without re-review closes the lesson | n/a — below threshold |
 Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → no further patch until the comparison is presented.
 **Live warning:** the `CLAUDE.md` composition row has tripped the threshold on the regression clause (R4's install dropped the pointer footer that R3 had established). Any further change to how the root `CLAUDE.md` and the architecture document are split gets a rewrite-vs-repair comparison before any edit. R5 did not change `CLAUDE.md`, so no counter moved for it; the workaround column records the by-hand footer restore as the compensating patch.
 
@@ -93,15 +92,15 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R6: browser / iPad verification (share sheet, real download, print preview) | NOT STARTED | Needs a device. No dev server was run; plan verification steps 3–6 are untested |
 | R6: deployed | BLOCKED | No deploy stamp exists in this repo, so "deployed" cannot be claimed under the rules. Building one is a separate request |
 | R7: report — separate "Needs building" and "Partly solid" lines; comment fixed; stale sentence fixed | COMPLETE | sonnet-worker (claude-sonnet-5-5, self-reported); new test in `test/diagnostic.test.js` failed on old code, passes after; main session re-ran `node --test test/diagnostic.test.js` 17/17 and read the diff |
-| R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: pack SP.inflections (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: pack PH.blend-segment (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: pack PH.multisyllable (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: parent approval recorded for GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | opus-worker |
-| R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: `npm test` + `npm run build` | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | |
-| R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | |
-| R7: PR opened | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | |
+| R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | COMPLETE | Reviewed by worker (`5454712`), independently checked 24/24 (round 3), opened on pilot track; main session ran `tools/verify_pilot_reach.mjs` → REACHABLE track=pilot |
+| R7: pack SP.inflections (24 q, text only) + prepared records | COMPLETE | Reviewed by worker (`5454712`), independently checked 24/24 (round 3), opened on pilot track; main session ran `tools/verify_pilot_reach.mjs` → REACHABLE track=pilot |
+| R7: pack PH.blend-segment (24 q, text only) + prepared records | COMPLETE | Reviewed by worker (`5454712`), independently checked 24/24 (round 3), opened on pilot track; main session ran `tools/verify_pilot_reach.mjs` → REACHABLE track=pilot |
+| R7: pack PH.multisyllable (24 q, text only) + prepared records | COMPLETE | Reviewed by worker (`5454712`), independently checked 24/24 (round 3), opened on pilot track; main session ran `tools/verify_pilot_reach.mjs` → REACHABLE track=pilot |
+| R7: parent approval recorded for GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables (Plan v3: opened for pilot) | COMPLETE | `98d7cc3`; 8 approvals in `pilotApproval.batches.json`; `validatePilotApprovals` valid on real data (main session re-ran) |
+| R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | COMPLETE | `d66afa1`; lapse on rung/edition change mutation-tested by worker |
+| R7: `npm test` + `npm run build` | COMPLETE | Main session re-ran at `98d7cc3`: 482 tests / 481 pass / 0 fail / 1 todo (pre-existing OPEN-05); baseline `4d5f32f` 469/468/0/1. Build clean (pre-existing >500 kB chunk warning) |
+| R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | COMPLETE | FEATURES manifest v3 with regression tables; IMPLEMENTATION_STATUS lists open findings; this file |
+| R7: PR opened | NOT STARTED | Push of `below-grade-lessons` needs the parent's OK |
 
 ## Checks and evidence
 - 2026-09-29 (R5) stub installer → `SMOKE TEST: [session-start] Rules v3.1.10 loaded · branch: claude/confident-clarke-4dshy3`, last line `INSTALL OK`. Hook count read back from `.claude/settings.json` → 8. `npm test` and `npm run build` not run: no source file changed, only `.claude/` and two markdown files. No deploy, so no live stamp read.
@@ -118,6 +117,7 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 - 2026-09-29 merged `origin/main` (4 commits: R4/R5 stub work, PRs #28 and #29). `src/` and `test/` were untouched by those commits. Post-merge checks are recorded on the merge commit.
 
 ## Open questions / blockers
+- R7 open findings (not blocking, parent's decision 2026-09-29): all 8 packs lack a registered source that fully supports their rule; ~11 near-duplicate items between GR.possessives and PU.apostrophes; words shared by the digraphs and blend-segment packs; F1 placement says K–4 where curriculum.k6.json says K–3; "unfaithfully" word choice; "full stop" remains in another P1 pack and the S1 packs; other stale `conventions.grade5` notes. Intermediate commit `24fd36f` fails one test on its own; `98d7cc3` is green.
 - **Record-guard blind spot, observed R6 2026-09-28 against the v2 local hook — NOT re-checked since.** The then-local `.claude/hooks/record-guard.py` decided the record was untouched by inspecting `Edit`/`Write`/`MultiEdit`/`NotebookEdit` tool calls only, so a session editing the record through `Bash` updated the file correctly and was still blocked, and an `Edit` that changed nothing would have passed. It checked the tool used, not the file. That local file no longer exists: the R4/R5 stub removed `.claude/hooks/` and `hz-loader.py` now fetches the hook from `hz-claude-config`. Whether the fetched version still has this behaviour has not been read and must not be assumed either way.
 - The stale "selected on the parent page" sentence in the exported report — see Pending.
 - Nothing in R6 was verified in a browser or on an iPad. Share-sheet, download and print behaviour are proven against fakes only.
