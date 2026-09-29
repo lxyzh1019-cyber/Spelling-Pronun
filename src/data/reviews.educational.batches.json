@@ -437,7 +437,7 @@
           "packId": "g1.pack.gr.possessives",
           "skillId": "GR.possessives",
           "title": "Showing Who Owns What",
-          "rule": "Ownership is shown two ways: an apostrophe on a noun (the dog’s bowl) or a possessive word that replaces one (his, her, its, their). A personal possessive pronoun (his, hers, its, ours, yours, theirs, whose) never takes an apostrophe. Words like everyone’s and someone’s are not personal pronouns, and they do take one.",
+          "rule": "Ownership is shown two ways: an apostrophe on a noun (the dog’s bowl) or a possessive word that replaces one (his, her, its, their). The personal possessive pronouns (his, hers, its, ours, yours, theirs) and whose never take an apostrophe. Words like everyone’s and someone’s are not personal pronouns, and they do take one.",
           "questionCount": 24,
           "curriculumOutcomeIds": [
             "conventions.grade5.11",

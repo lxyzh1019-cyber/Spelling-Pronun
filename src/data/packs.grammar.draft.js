@@ -305,11 +305,11 @@ const rawGrammarPacks = [
   makePack(
     'GR.possessives',
     'Showing Who Owns What',
-    'Ownership is shown two ways: an apostrophe on a noun (the dog\u2019s bowl) or a possessive word that replaces one (his, her, its, their). A personal possessive pronoun (his, hers, its, ours, yours, theirs, whose) never takes an apostrophe. Words like everyone\u2019s and someone\u2019s are not personal pronouns, and they do take one.',
+    'Ownership is shown two ways: an apostrophe on a noun (the dog\u2019s bowl) or a possessive word that replaces one (his, her, its, their). The personal possessive pronouns (his, hers, its, ours, yours, theirs) and whose never take an apostrophe. Words like everyone\u2019s and someone\u2019s are not personal pronouns, and they do take one.',
     [
       'Find the owner first, then decide which of the two ways you are using.',
       'On a noun: apostrophe then s, unless the owner is plural and already ends in s.',
-      'On a personal pronoun: no apostrophe \u2014 his, hers, its, ours, yours, theirs, whose.',
+      'On a personal possessive pronoun, or on whose: no apostrophe \u2014 his, hers, its, ours, yours, theirs, whose.',
       'If a word with an apostrophe can be read back as two words ("it is" or "it has"), it is a short form, not a possessive.',
     ],
     [
@@ -322,9 +322,9 @@ const rawGrammarPacks = [
       v2(choice('Which word is a possessive that takes NO apostrophe?', 'c',
         [['a', 'don\u2019t'], ['b', 'Sam\u2019s'], ['c', 'theirs'], ['d', 'it\u2019s']],
         'Personal possessive pronouns like theirs never take one. The others are either a short form or a noun showing ownership.', 3, PRONOUN_TYPES)),
-      choice('Which is correct? "The dog wagged ___ tail."', 'b',
+      v2(choice('Which is correct? "The dog wagged ___ tail."', 'b',
         [['a', 'it\u2019s'], ['b', 'its'], ['c', 'its\u2019'], ['d', 'it is']],
-        'Read the apostrophe form back as "it is" and the sentence stops making sense, which is the whole test.', 4, PUNCTUATION),
+        'Read the apostrophe form back as "it is" or "it has". Neither fits here, so the word you need is "its".', 4, PUNCTUATION)),
       choice('Which is correct when six girls share one hook?', 'a',
         [['a', 'the girls\u2019 coats'], ['b', 'the girl\u2019s coats'], ['c', 'the girls coats'], ['d', 'the girls\u2019s coats']],
         'A plural owner already ending in s takes the apostrophe after that s, with nothing added.', 5, PUNCTUATION),
@@ -369,9 +369,9 @@ const rawGrammarPacks = [
       choice('Rewrite "the bags belonging to the students" with an apostrophe. Which is right?', 'c',
         [['a', 'the student\u2019s bags'], ['b', 'the students bags'], ['c', 'the students\u2019 bags'], ['d', 'the students\u2019s bags']],
         'More than one student owns them, and "students" already ends in s.', 18, PUNCTUATION),
-      choice('A friend writes "The cat licked it\u2019s paw." What should change?', 'b',
+      v2(choice('A friend writes "The cat licked it\u2019s paw." What should change?', 'b',
         [['a', 'nothing'], ['b', 'it should be "its", with no apostrophe'], ['c', 'it should be "its\u2019"'], ['d', 'it should be "it is"']],
-        'Read it back as "it is" and the sentence falls apart, so the possessive form is what is needed.', 19, PUNCTUATION),
+        'Read it back as "it is" or "it has" and neither fits, so the possessive form "its" is what is needed.', 19, PUNCTUATION)),
 
       choice('Which is correct? "My ___ friend called." (one sister)', 'a',
         [['a', 'sister\u2019s'], ['b', 'sisters\u2019'], ['c', 'sisters'], ['d', 'sisters\u2019s']],
