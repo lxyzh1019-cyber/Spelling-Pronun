@@ -199,6 +199,45 @@
         "Nothing in this batch is released, and nothing carries a status the parent did not grant."
       ],
       "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+    },
+    {
+      "id": "f2.integration.lesson-packs.v1",
+      "type": "lesson_packs",
+      "stage": "content_integration",
+      "status": "drafted_awaiting_parent_countersignature",
+      "draftedBy": "claude",
+      "draftedAt": "2026-09-29",
+      "countersignedBy": null,
+      "batch": "F2",
+      "describes": "below-grade foundation located by the diagnostic: digraphs and clusters, counting sounds, inflectional endings, long words in chunks",
+      "packIds": [
+        "f2.pack.ph.digraphs-clusters",
+        "f2.pack.ph.blend-segment",
+        "f2.pack.sp.inflections",
+        "f2.pack.ph.multisyllable"
+      ],
+      "expectedObjectCount": 96,
+      "routeArtifacts": [
+        "/lesson/f2-ph-digraphs-clusters",
+        "/lesson/f2-ph-blend-segment",
+        "/lesson/f2-sp-inflections",
+        "/lesson/f2-ph-multisyllable"
+      ],
+      "checks": [
+        "catalog_resolution",
+        "route_derivation",
+        "approval_gate",
+        "id_stability",
+        "release_exclusion"
+      ],
+      "evidence": [
+        "Every pack resolves through the lesson catalog and derives its own route id from its pack id.",
+        "Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.",
+        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.",
+        "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
+        "Nothing in this batch is released, and nothing carries a status the parent did not grant."
+      ],
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
     }
   ]
 }

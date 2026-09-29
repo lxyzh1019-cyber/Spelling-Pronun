@@ -1,6 +1,7 @@
 import { c0PilotPacks } from './packs.c0.draft.js';
 import { c1Packs } from './packs.c1.draft.js';
 import { foundationPacks } from './packs.foundation.draft.js';
+import { foundation2Packs } from './packs.foundation2.draft.js';
 import { punctuationPacks } from './packs.punctuation.draft.js';
 import { sentencePacks } from './packs.sentences.draft.js';
 import { grammarPacks } from './packs.grammar.draft.js';
@@ -92,7 +93,7 @@ function buildLesson(pack) {
   }];
 }
 
-const ALL_PACKS = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
+const ALL_PACKS = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks, ...foundation2Packs];
 
 // Every authored pack, approved or not. This is for the parent's review surface, never for a learner
 // route: nothing here is gated, so anything reading it must gate for itself.
