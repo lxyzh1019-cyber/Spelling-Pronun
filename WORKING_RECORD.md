@@ -12,6 +12,20 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 ## Pending
 - (Resolved R7 2026-09-29: parent approved the fix; see ledger #20.) One wording decision, raised by the implementation. `diagnosticReportMarkdown` still emits "This report is for the learner who was selected on the parent page when it was copied." In a combined export from the finish screen nothing was selected on the parent page and nothing was copied, so the sentence is now stale. It was kept verbatim because R6 asked to keep the existing wording exactly and an existing assertion requires the string. Fixing it is one line plus one assertion; awaiting the parent's call.
 
+## R7 handoff — continue in a LOCAL session (parent's decision 2026-09-29)
+The parent stopped the cloud run on 2026-09-29 and moved the rest of R7 to a local session. Start it on branch `below-grade-lessons` (made from current `main`, pushed). Plan v1 (R7) stays approved; do not re-ask.
+
+**Decided by the parent (2026-09-29):**
+- Diagnostic answers are genuine: the parent watched both children answer. Main session checked the two items both missed (`GR.possessives` plural, `pu.dialogue.02`): answer keys are correct, so those are real gaps.
+- Build lessons for all four skills with no pack (choice A): PH.digraphs-clusters (weak for both), SP.inflections, PH.blend-segment, PH.multisyllable. 24 questions each, text only, no story episodes.
+- Approve the four existing draft packs: GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables. Record in the parent's name, dated 2026-09-29, basis "given in chat 2026-09-29 (R7), questions not read item by item". Loosen `test/lifecycleRecords.test.js` only enough to accept a dated decision attributed to the parent with that basis (choice B); anything else stays forbidden.
+- Grade mapping (`curriculum.ladder.json`) accepted as assumed, dated 2026-09-29, against Alberta ELAL K–6 April 2022, because the government is revising the curriculum. The parent page shows edition and date so a new curriculum is a visible recheck trigger. `curriculum.k6.json` and `curriculum.alberta.elal.json` stay unreviewed.
+- Report fix (headline agrees with counts; stale sentence replaced): DONE, commit `8d83b7f`.
+
+**Partial work, unverified:** branch `below-grade-lessons-wip` (`688f1a6`), pushed, NOT for merge. It holds the stopped worker's edits: `src/data/packs.foundation2.draft.js` with the four packs, catalog/lifecycle wiring, and a half-done ladder stamp. Tests there: 475 / 472 pass / 2 fail (`no grade reaches a learner until a person has verified the mapping`, `a tile names a grade only once the mapping is verified and the learner has one` — the ladder tests not yet updated). Approvals are NOT recorded there (`pilotApproval.batches.json` still empty). The local session should review it and either bring it into `below-grade-lessons` or redo it; nothing in it is checked.
+
+**Remaining:** the open R7 rows in the deliverable ledger below, then `npm test` + `npm run build`, records, and a ready-for-review PR from `below-grade-lessons`. Separately, the stub is outdated: run Step B from the `hz-claude-config` README.
+
 ## Request ledger
 | # | Round/date | Requirement (user's words, short) | Status | Note |
 |---|---|---|---|---|
@@ -30,7 +44,7 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 | 13 | R6 2026-09-28 | No cloud, no share link — device only | done | Nothing added to Firestore or `firestore.rules`; `diagnosticStore.js` untouched. |
 | 14 | R6 2026-09-28 | Scope: all children in one report | done | Entries built over every profile with answers, in device profile order. |
 | 15 | R6 2026-09-28 | Keep current wording + summary lead + completion count + actual wrong choices | partial | Three of four done. Existing wording kept verbatim — which is why the now-stale "selected on the parent page" sentence survives; see Pending. |
-| 16 | R7 2026-09-29 | "build the lessons that is the reason why we have the assessment" — all four missing packs (choice A) | open | PH.digraphs-clusters, SP.inflections, PH.blend-segment, PH.multisyllable |
+| 16 | R7 2026-09-29 | "build the lessons that is the reason why we have the assessment" — all four missing packs (choice A) | open — moved to local session | PH.digraphs-clusters, SP.inflections, PH.blend-segment, PH.multisyllable |
 | 17 | R7 2026-09-29 | "approved" — the four existing draft packs for the flagged skills | open | GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables. Recorded as given in chat, questions not read item by item |
 | 18 | R7 2026-09-29 | Grade mapping: "assumed this is correct and date it. As government is modifying curriculum" | open | Accepted as assumed 2026-09-29 against ELAL K–6 April 2022 |
 | 19 | R7 2026-09-29 | Diagnostic answers: "I watched them answer" | done | Parent observed both runs. Main session checked the two items both girls missed (`gr.possessives` plural, `pu.dialogue.02`): keys correct |
@@ -79,12 +93,12 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R6: browser / iPad verification (share sheet, real download, print preview) | NOT STARTED | Needs a device. No dev server was run; plan verification steps 3–6 are untested |
 | R6: deployed | BLOCKED | No deploy stamp exists in this repo, so "deployed" cannot be claimed under the rules. Building one is a separate request |
 | R7: report — separate "Needs building" and "Partly solid" lines; comment fixed; stale sentence fixed | COMPLETE | sonnet-worker (claude-sonnet-5-5, self-reported); new test in `test/diagnostic.test.js` failed on old code, passes after; main session re-ran `node --test test/diagnostic.test.js` 17/17 and read the diff |
-| R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | NOT STARTED | opus-worker |
-| R7: pack SP.inflections (24 q, text only) + prepared records | NOT STARTED | opus-worker |
-| R7: pack PH.blend-segment (24 q, text only) + prepared records | NOT STARTED | opus-worker |
-| R7: pack PH.multisyllable (24 q, text only) + prepared records | NOT STARTED | opus-worker |
+| R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: pack SP.inflections (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: pack PH.blend-segment (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: pack PH.multisyllable (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
 | R7: parent approval recorded for GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables | NOT STARTED | opus-worker |
-| R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | NOT STARTED | opus-worker |
+| R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
 | R7: `npm test` + `npm run build` | NOT STARTED | |
 | R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | NOT STARTED | |
 | R7: PR opened | NOT STARTED | |
