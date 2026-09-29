@@ -1,10 +1,12 @@
-# FEATURES — Spelling-Pronun — manifest v1 — confirmed 2026-09-22
+# FEATURES — Spelling-Pronun — manifest v2 — confirmed 2026-09-28
 
 Locked features of the current version. Every edit is checked against this list and ends with a
 regression table. Update this file in the same change that alters a feature. Over-list rather than
 under-list.
 
 Derived from `docs/PROJECT_ARCHITECTURE.md` and `docs/CLAUDE_IMPLEMENTATION_HANDOFF.md` on 2026-09-22.
+v2 (2026-09-28) adds the Below-grade diagnostic section, which manifest v1 omitted entirely although
+the feature already existed, and records the combined share/download/print export added this round.
 Items marked *(not released)* exist in code but are gated; their gating is itself the feature.
 
 ## Identity, profiles, auth
@@ -60,6 +62,28 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - `checkLog.js` records the tester rather than the selected child, preserves the earlier result on re-check, and still reads first-version entries.
 - `gateStateAfterChecks` returns the gate's own state however many rows are ticked; `summariseChecks` exposes no `ready` or `released` field. Both enforced by test.
 
+## Below-grade diagnostic (`/diagnostic`) — added to the manifest at v2
+- 48 questions: the 16 skills Alberta finishes with before Grade 5, three each. `test/diagnostic.test.js` derives the 16 from `endsBeforeGrade5` on the ladder, so the form cannot drift from the curriculum.
+- Every question probes a grade its own skill is actually taught at, asserted row by row against the ladder.
+- It teaches nothing: no worked example, no help, no repair step, no right/wrong feedback. A diagnostic that taught would measure the teaching.
+- Parent gate before it opens: name the observed child and acknowledge what is recorded, the same shape the Family Pilot checks use.
+- Answers are written to `diagnosticStore.js` under the `spelling-diagnostic-` prefix, which refuses any key outside its own namespace. There is no path from there into `spelling-attempts`, and nothing routes through `LearningProvider`. The fence is structural, not a filter.
+- A diagnostic answer can never be mastery evidence, whatever the child scores — every item is `draft`, and both evidence tracks exclude it. Tests enforce both halves.
+- The first answer stands; a resumed run never overwrites it, and `firstAttempts` applies the same rule when the report is built.
+- `diagnosticReport.js` reports the SHAPE of the gap, never a score or proportion: per skill `solid` / `partly solid` / `needs building` / `not enough evidence`, and the word "behind" appears nowhere about a child.
+- `separateAppReading` is the only place the separate-catch-up-app judgement is made, and it refuses to answer until at least half the form is done.
+- `itemCount` / `answeredCount` are carried on the report so a part-way run can never read as a finished one.
+- Each located gap names the specific thing found and quotes the choice the child actually made (`chose`); an answer recorded without a `choiceId` carries no quoted choice rather than an invented one.
+
+## Getting a diagnostic result off the device (`DiagnosticShare`) — added at v2
+- One shared component renders the export on both the diagnostic finish screen and the parent page, so the two surfaces cannot drift apart in wording or capability. It replaces the parent page's single-learner "Copy the report" button and the prose instruction to switch profiles.
+- The export covers **every child who has answered**, in device profile order. No profile has to be selected and no child can be forgotten.
+- Three routes, all local, no cloud and no share link: `navigator.share` (the iPad share sheet), a dated `.md` file download, and a print / Save-as-PDF page.
+- `shareReport.js` returns `{ ok, via, reason }` and never claims a success it did not get: share sheet, copied, cancelled, and copy-blocked are four different sentences. Dependencies are injected so `node --test` covers every path with no browser.
+- A dismissed share sheet does not silently fall back to the clipboard; the parent's choice not to send stands.
+- The read-only textarea remains the floor: when every route fails the report is still on the page to be selected by hand.
+- The repo's only `@media print` rules live in `DiagnosticShare.module.css`; the printed page is the report alone, without app chrome.
+
 ## Persistence and sync
 - `indexedDb.js` stores session snapshots, attempts, an outbox, and recordings; opener injectable via `useDatabaseOpener`.
 - `outboxSync.js` plans idempotent cloud writes; outbox flushes on mount, after submit, on `online`, and on tab visible.
@@ -97,6 +121,9 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - Never admit unreleased content to the released review queue.
 - Never claim Firebase, two-device, real-iPad, learner-test, pilot, or release evidence without the real event.
 - No destructive migrations.
+- A diagnostic answer never reaches `spelling-attempts` and never counts as mastery, however it is scored.
+- The combined diagnostic export carries no cross-child total, no aggregate and no ranking, and orders children by device profile order — never by result. One child's gaps say nothing about another's.
+- No export route may report a success it did not get.
 
 ## Working-rules governance (added 2026-09-22)
 - Root `CLAUDE.md` is the bundle's general working rules v2.1, byte-identical to the shipped file apart from a three-line footer pointing at `docs/PROJECT_ARCHITECTURE.md`.

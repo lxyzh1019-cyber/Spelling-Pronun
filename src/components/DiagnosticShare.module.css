@@ -1,0 +1,42 @@
+.share { display: grid; gap: 12px; }
+
+.lead { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.lead li { display: grid; gap: 2px; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; background: white; }
+.lead span { color: #374151; font-size: .95rem; }
+
+.note { color: #6b7280; font-size: .92rem; margin: 0; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.primary, .secondary {
+  display: inline-flex; justify-content: center; align-items: center;
+  padding: 11px 18px; min-height: 44px; border: none; border-radius: 10px;
+  font-size: 1rem; font-weight: 750; cursor: pointer;
+}
+.primary { background: #2563eb; color: white; }
+.secondary { background: #e5e7eb; color: #1f2937; }
+
+.text { width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 10px; font-size: .95rem; }
+
+/* Held back for the printer. On screen the textarea above is the copy that can be selected. */
+.printOnly { display: none; }
+.printOnly pre { white-space: pre-wrap; word-break: break-word; font-size: 11pt; margin: 0; }
+
+/* The first print rules in this app. A parent printing the report, or saving it as a PDF from the
+   iPad share sheet, wants the report — not the parent page's headings, gates and buttons around it.
+   `visibility` rather than `display` because the block being shown is inside the page being hidden:
+   visibility inherits, so hiding the body hides everything, and setting it back on this one block
+   brings back exactly that block. */
+@media print {
+  :global(body) { visibility: hidden; background: white; }
+  .printOnly {
+    display: block;
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: black;
+  }
+}
+
+@page { margin: 14mm; }

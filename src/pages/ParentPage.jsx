@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
 import { useLearning } from '../context/LearningProvider';
+import DiagnosticShare from '../components/DiagnosticShare.jsx';
 import { registerParent, signInParent, signOutParent } from '../firebase';
 import { gateStateLabel, r2GateTracker } from '../data/r2GateTracker';
 import { c0PilotItems } from '../data/packs.c0.draft';
@@ -12,7 +13,7 @@ import { buildCoverageReport, coverageHeadline } from '../learning/curriculumCov
 import { ladderReview } from '../learning/gradeLadder';
 import ladder from '../data/curriculum.ladder.json';
 import { diagnosticForm } from '../data/diagnostic.k4.draft.js';
-import { buildDiagnosticReport, diagnosticReportMarkdown } from '../learning/diagnosticReport';
+import { buildDiagnosticReport } from '../learning/diagnosticReport';
 import { attemptsFrom, readDiagnosticRun } from '../persistence/diagnosticStore';
 import correctionData from '../data/corrections.c0.json';
 import curriculumMapping from '../data/curriculum.alberta.elal.json';
@@ -155,21 +156,18 @@ export default function ParentPage() {
     const attempts = attemptsFrom(run);
     return attempts.length ? buildDiagnosticReport(diagnosticForm, attempts, { ladder }) : null;
   }, [activeProfileId]);
-  const diagnosticLearnerName = (profiles || []).find((profile) => profile.id === activeProfileId)?.name || activeProfileId;
-  // The answers live only in this browser. The markdown is how they reach the next conversation.
-  const diagnosticMarkdown = useMemo(
-    () => diagnosticReport ? diagnosticReportMarkdown(diagnosticReport, { learnerName: diagnosticLearnerName, today: new Date().toISOString().slice(0, 10) }) : '',
-    [diagnosticReport, diagnosticLearnerName],
-  );
-  const [diagnosticCopied, setDiagnosticCopied] = useState('');
-  const copyDiagnosticReport = async () => {
-    try {
-      await navigator.clipboard.writeText(diagnosticMarkdown);
-      setDiagnosticCopied('Copied. Paste it into the next conversation.');
-    } catch {
-      setDiagnosticCopied('Copying was blocked. Select the text below and copy it manually.');
-    }
-  };
+  // Every child who has answered, in profile order. The export used to cover whichever learner was
+  // selected, which meant a second child's result was exported only if somebody remembered to switch
+  // profiles and do it again. The report below is still about the selected learner; the export is not.
+  const diagnosticEntries = useMemo(() => (profiles || []).flatMap((profile) => {
+    const attempts = attemptsFrom(readDiagnosticRun(globalThis.localStorage, profile.id, diagnosticForm.id));
+    if (!attempts.length) return [];
+    return [{
+      learnerId: profile.id,
+      learnerName: profile.name,
+      report: buildDiagnosticReport(diagnosticForm, attempts, { ladder }),
+    }];
+  }), [profiles]);
 
   return <div className={styles.page}>
     <section className={styles.card}>
@@ -266,15 +264,8 @@ export default function ParentPage() {
           {skill.locates.length > 0 && <ul>{skill.locates.map((located) => <li key={located.itemId}>{located.locates}</li>)}</ul>}
         </article>)}</div>
         <h3>Send what it found back</h3>
-        <p className={styles.meta}>This report is for <strong>{diagnosticLearnerName}</strong>, the learner currently selected. Switch profiles to export another child&rsquo;s. It lives on this device only; copy it and paste it into the next conversation.</p>
-        <div className={styles.actions}>
-          <button type="button" className={styles.primary} onClick={copyDiagnosticReport}>Copy the report</button>
-        </div>
-        {diagnosticCopied && <p role="status">{diagnosticCopied}</p>}
-        <label>
-          The report
-          <textarea className={styles.input} rows={10} readOnly value={diagnosticMarkdown} />
-        </label>
+        <p className={styles.meta}>The answers live on this device only, so this is the one way a result reaches the next conversation.</p>
+        <DiagnosticShare entries={diagnosticEntries} today={new Date().toISOString().slice(0, 10)} />
       </>}
       <h2>What has to happen before any of this reaches a child</h2>
       <p>Draft content cannot be approved straight from draft. Three records stand between it and a child, and two of them are now prepared for you rather than blank. The third is yours and only yours.</p>
