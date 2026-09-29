@@ -93,15 +93,15 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R6: browser / iPad verification (share sheet, real download, print preview) | NOT STARTED | Needs a device. No dev server was run; plan verification steps 3–6 are untested |
 | R6: deployed | BLOCKED | No deploy stamp exists in this repo, so "deployed" cannot be claimed under the rules. Building one is a separate request |
 | R7: report — separate "Needs building" and "Partly solid" lines; comment fixed; stale sentence fixed | COMPLETE | sonnet-worker (claude-sonnet-5-5, self-reported); new test in `test/diagnostic.test.js` failed on old code, passes after; main session re-ran `node --test test/diagnostic.test.js` 17/17 and read the diff |
-| R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: pack SP.inflections (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: pack PH.blend-segment (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: pack PH.multisyllable (24 q, text only) + prepared records | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: parent approval recorded for GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables | NOT STARTED | opus-worker |
-| R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | PARTIAL | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
-| R7: `npm test` + `npm run build` | NOT STARTED | |
-| R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | NOT STARTED | |
-| R7: PR opened | NOT STARTED | |
+| R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: pack SP.inflections (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: pack PH.blend-segment (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: pack PH.multisyllable (24 q, text only) + prepared records | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: parent approval recorded for GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | opus-worker |
+| R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | Unverified draft on `below-grade-lessons-wip` (`688f1a6`); continue locally |
+| R7: `npm test` + `npm run build` | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | |
+| R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | |
+| R7: PR opened | BLOCKED — parent stopped the cloud run 2026-09-29 and moved this to a local session | |
 
 ## Checks and evidence
 - 2026-09-29 (R5) stub installer → `SMOKE TEST: [session-start] Rules v3.1.10 loaded · branch: claude/confident-clarke-4dshy3`, last line `INSTALL OK`. Hook count read back from `.claude/settings.json` → 8. `npm test` and `npm run build` not run: no source file changed, only `.claude/` and two markdown files. No deploy, so no live stamp read.
