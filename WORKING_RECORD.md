@@ -4,6 +4,7 @@ Single working record for this repository. Updated by the main session at the en
 implementation turn (the record guard hook checks this). Keep it terse; history lives in git.
 
 ## Approved baseline
+- Plan v1 approved 2026-09-29 (R7): build the lessons the below-grade diagnostic found. Choice A: all four missing packs. Choice B: record the parent's chat decisions (approval of four existing packs; grade mapping accepted as assumed, dated, against Alberta ELAL K–6 April 2022) in the parent's name, and loosen the tests only enough to accept a dated parent decision. Branch `below-grade-lessons`.
 - Plan v1 approved 2026-09-28 (R6): share the 48-question diagnostic result in one tap. Share sheet + dated file download + printable page; one combined all-children report; device only, no cloud and no share link; keep the existing tested wording and add a summary lead, a completion count and the child's actual wrong choices. Branch `diagnostic-share`.
 - Plan v2 approved 2026-09-22, option (a): install working-rules bundle v2 at the repo root on branch `rules-v2`; root `CLAUDE.md` is the bundle file plus a three-line footer pointing at `docs/PROJECT_ARCHITECTURE.md`, which holds the repo's pre-bundle architecture document unchanged; keep `README.md`; delete the bundle zip and `docs/CLAUDE.review-rev2.md`; track `.claude/`, ignore `.claude/state/`; run `tests/replay-hooks.sh`; commit and push to `rules-v2`.
 - Plan v1 (2026-09-22) superseded: it merged both documents into one root `CLAUDE.md`.
@@ -29,6 +30,11 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 | 13 | R6 2026-09-28 | No cloud, no share link — device only | done | Nothing added to Firestore or `firestore.rules`; `diagnosticStore.js` untouched. |
 | 14 | R6 2026-09-28 | Scope: all children in one report | done | Entries built over every profile with answers, in device profile order. |
 | 15 | R6 2026-09-28 | Keep current wording + summary lead + completion count + actual wrong choices | partial | Three of four done. Existing wording kept verbatim — which is why the now-stale "selected on the parent page" sentence survives; see Pending. |
+| 16 | R7 2026-09-29 | "build the lessons that is the reason why we have the assessment" — all four missing packs (choice A) | open | PH.digraphs-clusters, SP.inflections, PH.blend-segment, PH.multisyllable |
+| 17 | R7 2026-09-29 | "approved" — the four existing draft packs for the flagged skills | open | GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables. Recorded as given in chat, questions not read item by item |
+| 18 | R7 2026-09-29 | Grade mapping: "assumed this is correct and date it. As government is modifying curriculum" | open | Accepted as assumed 2026-09-29 against ELAL K–6 April 2022 |
+| 19 | R7 2026-09-29 | Diagnostic answers: "I watched them answer" | done | Parent observed both runs. Main session checked the two items both girls missed (`gr.possessives` plural, `pu.dialogue.02`): keys correct |
+| 20 | R7 2026-09-29 | Report headline must agree with its own counts; stale "selected on the parent page" sentence fixed | open | Resolves the R6 pending wording item |
 
 Superseded: #6 (merge into one file) → superseded by #8 (split, with a pointer footer). R1's original reading — bundle `CLAUDE.md` at root, project document alongside it — is what now stands.
 
@@ -72,6 +78,16 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R6: PR #30 opened | COMPLETE | https://github.com/lxyzh1019-cyber/Spelling-Pronun/pull/30, open, not a draft, base `main` |
 | R6: browser / iPad verification (share sheet, real download, print preview) | NOT STARTED | Needs a device. No dev server was run; plan verification steps 3–6 are untested |
 | R6: deployed | BLOCKED | No deploy stamp exists in this repo, so "deployed" cannot be claimed under the rules. Building one is a separate request |
+| R7: report — separate "Needs building" and "Partly solid" lines; comment fixed; stale sentence fixed | NOT STARTED | sonnet-worker |
+| R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | NOT STARTED | opus-worker |
+| R7: pack SP.inflections (24 q, text only) + prepared records | NOT STARTED | opus-worker |
+| R7: pack PH.blend-segment (24 q, text only) + prepared records | NOT STARTED | opus-worker |
+| R7: pack PH.multisyllable (24 q, text only) + prepared records | NOT STARTED | opus-worker |
+| R7: parent approval recorded for GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables | NOT STARTED | opus-worker |
+| R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | NOT STARTED | opus-worker |
+| R7: `npm test` + `npm run build` | NOT STARTED | |
+| R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | NOT STARTED | |
+| R7: PR opened | NOT STARTED | |
 
 ## Checks and evidence
 - 2026-09-29 (R5) stub installer → `SMOKE TEST: [session-start] Rules v3.1.10 loaded · branch: claude/confident-clarke-4dshy3`, last line `INSTALL OK`. Hook count read back from `.claude/settings.json` → 8. `npm test` and `npm run build` not run: no source file changed, only `.claude/` and two markdown files. No deploy, so no live stamp read.
