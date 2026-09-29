@@ -231,11 +231,11 @@
         "release_exclusion"
       ],
       "evidence": [
-        "Every pack resolves through the lesson catalog and derives its own route id from its pack id.",
+        "Every pack resolves through the lesson catalog and derives its own route id from its pack id. Held by test/foundation2Packs.test.js and test/lessonVisibility.test.js.",
         "Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.",
-        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.",
-        "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
-        "Nothing in this batch is released, and nothing carries a status the parent did not grant."
+        "No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js and test/foundation2Packs.test.js.",
+        "Item ids are derived from the pack id and the row index, f2.<skill>.01 to .24 in order. Held by test/foundation2Packs.test.js.",
+        "Nothing in this batch is released, and nothing carries a status the parent did not grant. Held by test/lifecycleRecords.test.js."
       ],
       "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
     }

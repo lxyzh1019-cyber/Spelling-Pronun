@@ -76,8 +76,8 @@ const digraphRows = [
   example('Compare “knee” with “stamp”.', 'In knee the k makes no sound. You say n and then ee, so the k is a silent letter. In stamp every letter makes its own sound: s, t, a, m, p. The st and the mp are clusters, and nothing in stamp is silent.', 'silent-letters', ['Calling a cluster silent because its sounds run together.']),
   ask('Which word starts with a digraph, two letters making one sound?', 'b', 'chip', ['crab', 'clip', 'drip'],
     'In chip the c and h make one sound, ch. Crab, clip and drip start with clusters. You can hear both letters, like c and r.', 'digraph-start', [CLUSTER_AS_ONE]),
-  ask('Which word starts with a cluster, where you hear both sounds?', 'a', 'stop', ['shop', 'thin', 'whip'],
-    'In stop you hear s and then t. Shop, thin and whip start with digraphs: sh, th and wh are one sound each.', 'cluster-start', ['Choosing a digraph because it is also two letters.']),
+  ask('Which word starts with a cluster, where you hear both sounds?', 'a', 'stop', ['shop', 'thin', 'chin'],
+    'In stop you hear s and then t. Shop, thin and chin start with digraphs: sh, th and ch are one sound each.', 'cluster-start', ['Choosing a digraph because it is also two letters.']),
   ask('Which word ends with a digraph?', 'c', 'wish', ['hand', 'lamp', 'best'],
     'Wish ends in sh, which is one sound. Hand, lamp and best end in clusters: n and d, m and p, s and t. You hear both letters.', 'digraph-end', [CLUSTER_AS_ONE]),
   ask('Which word ends with a cluster, where you hear both final sounds?', 'd', 'milk', ['bath', 'sing', 'duck'],
@@ -94,7 +94,7 @@ const digraphRows = [
     'Flag has a cluster, fl, where you hear f and then l. Fish has sh, phone has ph and chop has ch. Each of those is one sound.', 'digraph-v-cluster', [DIGRAPH_AS_TWO]),
   ask('Which word has a silent letter?', 'd', 'lamb', ['lamp', 'land', 'last'],
     'In lamb the b is silent: you say l, a, m. Lamp, land and last end in clusters, and you hear both letters.', 'silent-letters', ['Calling the p in lamp silent because it is said quickly.']),
-  ask('Which two letters make ONE sound in “phone”?', 'c', 'p and h', ['o and n', 'n and e', 'h and o'],
+  ask('Which two letters work together to make the f sound in “phone”?', 'c', 'p and h', ['o and n', 'n and e', 'h and o'],
     'Ph is a digraph that says the f sound. It is one sound spelled with two letters.', 'digraph-start', [DIGRAPH_AS_TWO]),
   ask('Which letters make the cluster at the END of “stamp”?', 'd', 'm and p', ['s and t', 'a and m', 't and a'],
     'At the end of stamp you hear m and then p. Both sounds are there, so mp is a cluster. The st at the start is a cluster too.', 'cluster-end', ['Thinking the p in stamp is silent.']),
@@ -143,8 +143,8 @@ const blendRows = [
     'B, then a, then th. The t and h make one sound, so four letters make three sounds.', 'count-sounds', [DIGRAPH_AS_TWO]),
   ask('How many sounds are in “stamp”?', 'd', 'five', ['three', 'four', 'six'],
     'You hear s, t, a, m and p. Every letter makes its own sound, so five letters make five sounds. Nothing in stamp is silent.', 'count-sounds', [CLUSTER_AS_ONE]),
-  ask('Which word do these sounds make? /g/ /r/ /ee/ /n/', 'b', 'green', ['grin', 'gene', 'greet'],
-    'G and r run together, then ee, then n: green. Gr is a cluster, so both sounds are there.', 'blend', ['Dropping the r of the cluster, which gives gene.']),
+  ask('Which word do these sounds make? /g/ /r/ /ee/ /n/', 'b', 'green', ['grin', 'grain', 'greet'],
+    'G and r run together, then ee, then n: green. Gr is a cluster, so both sounds are there.', 'blend', ['Blending /ee/ as a different vowel sound, which gives grin or grain.']),
   ask('Which word has three sounds?', 'a', 'wish', ['west', 'wisp', 'wilt'],
     'Wish is w, i, sh: three sounds. West, wisp and wilt end in clusters, so each of them has four.', 'count-sounds', [DIGRAPH_AS_TWO]),
   ask('How many sounds are in “lamb”?', 'b', 'three', ['two', 'four', 'five'],
@@ -212,7 +212,7 @@ const inflectionRows = [
   ask('Which word does NOT change at all when you add -ing?', 'b', 'jump', ['hop', 'bake', 'shine'],
     'Jump ends in two consonants, m and p, so nothing changes: jumping. Hop doubles its p, and bake and shine drop their e.', 'drop-v-double', ['Doubling after two consonants, as in jumpping.']),
   ask('Add -es to “fox”.', 'd', 'foxes', ['foxs', 'foxxes', 'foxies'],
-    'Words ending in x, s, sh or ch take -es, because you can hear an extra beat: fox, foxes.', 'add-es', ['Adding only -s after x, s, sh or ch.']),
+    'Fox has one short vowel, but x is never doubled. Words ending in x, s, sh or ch take -es, because you can hear an extra beat: fox, foxes.', 'add-es', ['Adding only -s after x, s, sh or ch.', 'Doubling the x because fox has one short vowel.']),
   ask('The made-up verb “to glope” means to walk slowly. Which is right? “He was ___ home.”', 'a', 'gloping', ['glopping', 'glopeing', 'glopin'],
     'Glope ends in a silent e, just like hope, so the e is dropped: gloping. The rule works on words you have never seen.', 'transfer-invented', [DROPS_E, DOUBLES_WRONG]),
   ask('The made-up verb “to blim” means to blink fast. Add -ed.', 'c', 'blimmed', ['blimed', 'blimd', 'blimeed'],
@@ -241,7 +241,7 @@ const multisyllableRows = [
     'Two consonants, n and s, sit between the vowels, so the break goes between them: sun-set.', 'chunk', ['Breaking after the first letter.']),
   ask('How many chunks does “carefully” have?', 'b', 'three', ['two', 'four', 'five'],
     'Care, ful and ly. Each chunk has one vowel sound. The e in care is silent, so it adds no chunk.', 'count-chunks', ['Counting the silent e as a chunk of its own.']),
-  ask('Which chunk of “disagreement” is the base word?', 'b', 'agree', ['dis', 'ment', 'disagree'],
+  ask('What is the base word in “disagreement”?', 'b', 'agree', ['dis', 'ment', 'disagree'],
     'Cover dis- at the front and -ment at the end. Agree is left, and it is the base.', 'find-base', [BASE_TOO_LONG]),
   ask('Where would you chunk “basketball”?', 'd', 'bas-ket-ball', ['ba-sket-ball', 'bask-et-ball', 'bas-ke-tball'],
     'Basketball is two words, basket and ball. Basket breaks between s and k, so the chunks are bas, ket and ball.', 'chunk', ['Missing the two smaller words inside a compound word.']),
@@ -282,7 +282,7 @@ const multisyllableRows = [
 // The statements each placement rests on, quoted from `curriculum.k6.json`. `sourcePages` are the
 // pages the extraction attributes to that organizing idea at that grade band (see the header).
 const statement = (grade, organizingIdea, part, text, sourcePages, id) => ({ grade, organizingIdea, part, ...(id ? { id } : {}), text, sourcePages });
-const WHY = 'The below-grade diagnostic, answered by both children, located this gap, and the parent asked on 2026-09-29 (R7) for it to be built, knowing it is below-grade work.';
+const WHY = 'The below-grade diagnostic, answered by both children, located this gap, and on 2026-09-29 (R7) the parent asked for the lessons it found to be built.';
 
 const DIGRAPH_PLACEMENT = {
   albertaOrganizingIdea: 'Phonics',
@@ -349,8 +349,8 @@ const rawFoundation2Packs = [
   makePack(
     'SP.inflections',
     'Adding -ing, -ed and -es',
-    'Before you add an ending, look at the end of the base word. If it ends in a silent e and the ending starts with a vowel, drop the e: hope, hoping. If it has one short vowel and one final consonant, double that consonant: hop, hopping. If it ends in a consonant and y, change the y to i before -es or -ed, but keep it before -ing: carry, carries, carrying.',
-    ['Find the base word and look at its last letters.', 'Silent e at the end? Drop it before -ing or -ed.', 'One short vowel and then one consonant? Double the consonant.', 'A consonant and then y? Change the y to i, except before -ing.', 'Read your word back: hoping has a long o, hopping has a short o.'],
+    'Before you add an ending, look at the end of the base word. If it ends in a silent e and the ending starts with a vowel, drop the e: hope, hoping. If it has one short vowel and one final consonant, double that consonant (but never x): hop, hopping. If it ends in a consonant and y, change the y to i before -es or -ed, but keep it before -ing: carry, carries, carrying.',
+    ['Find the base word and look at its last letters.', 'Silent e at the end? Drop it before -ing or -ed.', 'One short vowel and then one consonant? Double the consonant, unless it is x.', 'A consonant and then y? Change the y to i, except before -ing.', 'Read your word back: hoping has a long o, hopping has a short o.'],
     inflectionRows,
     INFLECTION_PLACEMENT,
   ),

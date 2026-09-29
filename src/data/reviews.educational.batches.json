@@ -523,7 +523,7 @@
           "packId": "f2.pack.sp.inflections",
           "skillId": "SP.inflections",
           "title": "Adding -ing, -ed and -es",
-          "rule": "Before you add an ending, look at the end of the base word. If it ends in a silent e and the ending starts with a vowel, drop the e: hope, hoping. If it has one short vowel and one final consonant, double that consonant: hop, hopping. If it ends in a consonant and y, change the y to i before -es or -ed, but keep it before -ing: carry, carries, carrying.",
+          "rule": "Before you add an ending, look at the end of the base word. If it ends in a silent e and the ending starts with a vowel, drop the e: hope, hoping. If it has one short vowel and one final consonant, double that consonant (but never x): hop, hopping. If it ends in a consonant and y, change the y to i before -es or -ed, but keep it before -ing: carry, carries, carrying.",
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Grade 1 to Grade 3",

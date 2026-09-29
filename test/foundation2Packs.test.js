@@ -29,6 +29,11 @@ test('the four skills the diagnostic flagged with no pack now have one, each a f
   for (const pack of foundation2Packs) {
     assert.equal(pack.batch, 'F2');
     assert.equal(pack.items.length, 24, `${pack.id} does not hold 24 objects`);
+    // Ids are derived from the pack id and the row index, so an approval or attempt keyed by id
+    // always names the same question. The integration record cites this line.
+    const slug = pack.skillId.toLowerCase();
+    assert.equal(pack.id, `f2.pack.${slug}`);
+    assert.deepEqual(pack.items.map((item) => item.id), pack.items.map((_, i) => `f2.${slug}.${String(i + 1).padStart(2, '0')}`));
     const roles = {};
     for (const item of pack.items) roles[item.role] = (roles[item.role] || 0) + 1;
     assert.deepEqual(roles, { worked_example: 2, guided: 6, independent: 10, transfer: 2, delayed_review: 4 });
@@ -112,7 +117,7 @@ test('the questions follow the authoring rules the audit produced', () => {
     for (const [position, count] of Object.entries(tally)) assert.ok(count <= keys.length / 2, `${pack.id} puts ${count} answers at ${position}`);
     for (let i = 3; i < keys.length; i += 1) assert.ok(new Set(keys.slice(i - 3, i + 1)).size > 1, `${pack.id} answers the same position four times in a row`);
     // A key that cycles is as guessable as one that repeats, and the balance rule above cannot see
-    // it: a, c, b, d over and over is perfectly balanced. Self-challenge finding self.f2.01.
+    // it: a, c, b, d over and over is perfectly balanced.
     for (let period = 2; period <= 4; period += 1) {
       const cycles = keys.every((key, i) => i < period || key === keys[i - period]);
       assert.ok(!cycles, `${pack.id} answer key repeats every ${period} questions`);

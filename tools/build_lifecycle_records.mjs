@@ -42,16 +42,30 @@ const BATCHES = [
   // Written on 2026-09-29 for the four gaps the below-grade diagnostic located with no pack behind
   // them. Its own date, its own findings only (the findings above are about other batches and the
   // diagnostic, and attaching them here would make this record claim checks it did not run), and
-  // the two rules specific to it.
+  // its own checks and evidence: the shared lists name test files that never load these packs
+  // (the punctuation, sentence and C1 pack tests, and a snapshot of the C0 ids only), so reusing
+  // them would claim checks that were never run against F2.
   {
     batch: 'F2',
     packs: foundation2Packs,
     what: 'below-grade foundation located by the diagnostic: digraphs and clusters, counting sounds, inflectional endings, long words in chunks',
     date: '2026-09-29',
     ownFindingsOnly: true,
-    extraChecks: [
-      { rule: 'Every Alberta placement quotes statements that resolve word for word against curriculum.k6.json, cites pages the extraction gives that organizing idea, and states the grade range the ladder derives', test: 'test/foundation2Packs.test.js' },
+    automatedChecks: [
+      { rule: 'Four distinct choices, exactly one of them the key, and the key is among them', test: 'test/foundation2Packs.test.js' },
+      { rule: 'No explanation names an answer by its position or letter, and no pack puts its keys at one position, four in a row, or in a repeating cycle', test: 'test/foundation2Packs.test.js' },
+      { rule: 'Twenty-four objects in the roles a lesson expects, every item passes validateContent, and a worked example can never be answered', test: 'test/foundation2Packs.test.js, test/packBuilder.test.js' },
+      { rule: 'No pack or item cites a Grade 5/6 outcome; every Alberta placement quotes statements that resolve word for word against curriculum.k6.json, cites pages the extraction gives that organizing idea, and states the grade range the ladder derives', test: 'test/foundation2Packs.test.js' },
       { rule: 'Every question is answered by looking: no spoken text, no audio asset, no audio status on any item or option', test: 'test/foundation2Packs.test.js' },
+      { rule: 'The explanations of each pack read at Grade 7 or below by the readability formula', test: 'test/foundation2Packs.test.js' },
+      { rule: 'Nothing is released, and no item carries a status a parent did not grant', test: 'test/approvalPath.test.js, test/lifecycleRecords.test.js' },
+    ],
+    evidence: [
+      'Every pack resolves through the lesson catalog and derives its own route id from its pack id. Held by test/foundation2Packs.test.js and test/lessonVisibility.test.js.',
+      'Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.',
+      'No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js and test/foundation2Packs.test.js.',
+      'Item ids are derived from the pack id and the row index, f2.<skill>.01 to .24 in order. Held by test/foundation2Packs.test.js.',
+      'Nothing in this batch is released, and nothing carries a status the parent did not grant. Held by test/lifecycleRecords.test.js.',
     ],
   },
 ];
@@ -100,44 +114,71 @@ const SELF_CHALLENGE_FINDINGS = [
     action: 'Both derived from the packs, as a union so no hand-made judgement is overwritten.',
     foundBy: 'a cross-reference of every pack citation against the mapping',
   },
+  // F2. Found by reading all 96 committed questions (688f1a6) against the pack's own rule; each fix
+  // is visible in the git history as a change to that item.
   {
     id: 'self.f2.01',
     batch: 'F2',
-    scope: 'f2.pack.ph.multisyllable',
-    found: 'The answer key cycled a, c, b, d over and over, so a child who noticed the pattern could answer without reading. The spread per position was even, which is why the balance rule alone did not catch it.',
-    action: 'Key positions re-placed in a sequence with no repeating cycle before the content was committed.',
-    foundBy: 'printing the key sequence of every pack',
+    scope: 'f2.ph.digraphs-clusters.04',
+    found: 'The question asking for the word that starts with a cluster offered whip as a wrong answer, calling wh one sound. Some speakers say the wh in whip as two sounds, and for them whip starts with a cluster too, so the question had two defensible answers.',
+    action: 'whip replaced with chin, which starts with the digraph ch for every speaker.',
+    foundBy: 'reading every option against the rule the pack states',
   },
   {
     id: 'self.f2.02',
     batch: 'F2',
-    scope: 'f2.pack.ph.blend-segment',
-    found: 'Draft sound-counting items used whip and church. Some speakers say wh as two sounds, and programs disagree on whether ur is one sound or two, so neither word has a count everyone would accept.',
-    action: 'Replaced with thin and chick. The pack now avoids r-controlled vowels, x, qu, wh and n before k (as in drink, where programs disagree) wherever a count is asked. The digraph ng, as in sing, is kept and counted as one sound, as the rule states.',
-    foundBy: 'counting every keyed answer by hand against the rule the pack states',
+    scope: 'f2.ph.digraphs-clusters.13',
+    found: 'The question asked which two letters make ONE sound in phone. The final e is silent, so n and e together also give one sound, and a careful child could defend that option.',
+    action: 'The question now asks which two letters make the f sound, which only p and h do.',
+    foundBy: 'reading every option against the rule the pack states',
   },
   {
     id: 'self.f2.03',
     batch: 'F2',
-    scope: 'f2.pack.ph.multisyllable',
-    found: 'Draft chunking items used magnetic and problem. Mag-ne-tic and pro-blem are both defensible splits, so a child could be marked wrong for a reasonable answer.',
-    action: 'Replaced with invented and picnic, whose splits are not in dispute.',
-    foundBy: 'trying the other syllable rules on each keyed split',
+    scope: 'f2.ph.blend-segment.11',
+    found: 'A wrong option was gene, and its common error said that dropping the r from green gives gene. Gene starts with a j sound, not a g sound, so the stated error was false.',
+    action: 'gene replaced with grain, and the common error now names the vowel mistake that gives grin or grain.',
+    foundBy: 'reading every common error back as a claim to be checked',
   },
   {
     id: 'self.f2.04',
     batch: 'F2',
-    scope: 'f2.pack.ph.multisyllable, f2.pack.* albertaPlacement',
-    found: 'One explanation said that taking un away from uncle, under and unit leaves no base word, which is false for unit. A draft placement note gave a date for the second child’s diagnostic that nothing in the repository records.',
-    action: 'The explanation now says the u and n there do not mean not. The date was removed; the note says only that both children answered it.',
-    foundBy: 'reading every explanation and note back as a claim to be checked',
+    scope: 'f2.sp.inflections.18, f2.pack.sp.inflections rule and help steps',
+    found: 'The pack teaches doubling the last consonant after one short vowel, which applied to fox gives foxxes, one of the wrong options. Neither the rule nor the explanation said that x is never doubled, so a child following the rule exactly would be marked wrong.',
+    action: 'The rule, the help step and the explanation now say x is never doubled, and a common error names the mistake.',
+    foundBy: 'applying the stated rule to every keyed word',
+  },
+  {
+    id: 'self.f2.05',
+    batch: 'F2',
+    scope: 'f2.ph.multisyllable.07',
+    found: 'The question asked which chunk of disagreement is the base word, but the pack defines a chunk as having one vowel sound, and agree has two, so the question contradicted the pack’s own definition.',
+    action: 'Reworded to ask for the base word, like every other base-word question in the pack.',
+    foundBy: 'reading every prompt against the pack’s own terms',
+  },
+  {
+    id: 'self.f2.06',
+    batch: 'F2',
+    scope: 'f2.challenge.self.v1, f2.integration.lesson-packs.v1',
+    found: 'The first draft of these F2 records named checks held by test files that never load the F2 packs (the punctuation, sentence and C1 pack tests, and a snapshot of the C0 ids only), and listed four findings about earlier drafts that were never committed, so nothing in the repository could show them.',
+    action: 'The F2 records now name only tests that load the F2 packs, and list only defects found in the committed draft, each visible in the git history.',
+    foundBy: 'checking which test files import packs.foundation2.draft.js',
   },
 ];
 
 // What a self-challenge cannot do, said once and referenced by every record that needs it.
 const SELF_CHALLENGE_LIMIT = 'Claude wrote this content and Claude ran these checks, so this is the author checking their own work. It is weaker evidence than an independent pass by design: the checks can only find what their rules describe, and a rule the author did not think to write is a defect the author will not find. It does not satisfy the independent_challenge stage of the lifecycle, and no item reaches reviewed or integrated on the strength of it.';
 
-function integrationRecord({ batch, packs, what, date = TODAY }) {
+// The integration evidence every earlier batch carries. F2 names its own (see BATCHES).
+const INTEGRATION_EVIDENCE = [
+  'Every pack resolves through the lesson catalog and derives its own route id from its pack id.',
+  'Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.',
+  'No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.',
+  'Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.',
+  'Nothing in this batch is released, and nothing carries a status the parent did not grant.',
+];
+
+function integrationRecord({ batch, packs, what, date = TODAY, evidence = INTEGRATION_EVIDENCE }) {
   return {
     id: `${batch.toLowerCase()}.integration.lesson-packs.v1`,
     type: 'lesson_packs',
@@ -154,18 +195,12 @@ function integrationRecord({ batch, packs, what, date = TODAY }) {
     expectedObjectCount: packs.reduce((sum, pack) => sum + pack.items.length, 0),
     routeArtifacts: packs.map((pack) => `/lesson/${sessionIdForPack(pack)}`),
     checks: ['catalog_resolution', 'route_derivation', 'approval_gate', 'id_stability', 'release_exclusion'],
-    evidence: [
-      'Every pack resolves through the lesson catalog and derives its own route id from its pack id.',
-      'Every pack runs through applyCorrections and applyPilotApproval, so a correction can withhold an item and a parent approval can release one. Held by test/approvalPath.test.js.',
-      'No item is reachable by a learner while it is draft: lessonBySessionId returns null for all of them. Held by test/lessonVisibility.test.js.',
-      'Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.',
-      'Nothing in this batch is released, and nothing carries a status the parent did not grant.',
-    ],
+    evidence,
     whatThisDoesNotSay: 'Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should.',
   };
 }
 
-function challengeRecord({ batch, packs, date = TODAY, ownFindingsOnly = false, extraChecks = [] }) {
+function challengeRecord({ batch, packs, date = TODAY, ownFindingsOnly = false, automatedChecks = AUTOMATED_CHECKS }) {
   return {
     id: `${batch.toLowerCase()}.challenge.self.v1`,
     stage: 'author_self_challenge',
@@ -180,7 +215,7 @@ function challengeRecord({ batch, packs, date = TODAY, ownFindingsOnly = false, 
     batch,
     packIds: packs.map((pack) => pack.id),
     itemCount: packs.reduce((sum, pack) => sum + pack.items.length, 0),
-    automatedChecks: [...AUTOMATED_CHECKS, ...extraChecks],
+    automatedChecks,
     findings: SELF_CHALLENGE_FINDINGS.filter((finding) => (finding.batch || ownFindingsOnly
       ? finding.batch === batch
       : finding.scope.includes(batch.toLowerCase()) || finding.scope.includes('d1.') || finding.scope.includes('curriculum'))),
