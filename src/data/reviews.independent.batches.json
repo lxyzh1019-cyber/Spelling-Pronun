@@ -1,0 +1,3144 @@
+{
+  "version": 1,
+  "note": "Two review passes over the eight packs the below-grade diagnostic flagged, each run by a separate agent that wrote none of the content. Neither is a person: humanReviewer is false on both, and nothing here says a person reviewed any question. The parent’s own decisions are in reviews.educational.batches.json, integration.batches.json and pilotApproval.batches.json.",
+  "fingerprints": "contentFingerprint and packFingerprint were computed by Claude when these records were imported, from the content at the reviewed commit (e673996), using itemFingerprint and packFingerprint in src/learning/independentReview.js. They pin each pass to the exact text that was reviewed: an item edited afterwards no longer matches, and falls back to draft on the next build.",
+  "sourceGap": "OPEN. The educational and source pass failed the source mapping on all eight packs (sourceOutcome fail): the registered sources do not support every clause each rule teaches. The parent decided on 2026-09-29 that this is logged and does not block the pilot. The findings are kept verbatim below.",
+  "reviews": [
+    {
+      "id": "batch.independent-challenge.round3",
+      "stage": "independent_challenge",
+      "reviewerRole": "separate_content_challenge_pass",
+      "reviewerKind": "separate_agent",
+      "humanReviewer": false,
+      "wroteTheContent": false,
+      "reviewedAt": "2026-09-29",
+      "reviewedCommit": "e673996",
+      "round": 3,
+      "packs": [
+        {
+          "packId": "g1.pack.gr.possessives",
+          "packVersion": 2,
+          "skillId": "GR.possessives",
+          "itemCount": 24,
+          "packFindings": "Round 3: all 24 items re-judged against the e673996 rule and help step. Items 05 and 20 now check \"it is\" or \"it has\", and whose is listed apart from the personal pronouns, so no item contradicts the rule. Process note: the rule and help-step text changed but the pack version stayed at 2, and v2 now names two different texts. Cross-pack near-duplication with p1.pack.pu.apostrophes remains (about 11 items; note only).",
+          "packFingerprint": "cyrb53x2:0bab450f9c3526175ce908ed0bce",
+          "results": [
+            {
+              "itemId": "g1.gr.possessives.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True contrast of the two ownership forms. Minor: \"belongs to him\" presumes a male dog; \"belongs to the dog\" would be cleaner.",
+              "contentFingerprint": "cyrb53x2:0252dac705c9030cf142b2aa8712"
+            },
+            {
+              "itemId": "g1.gr.possessives.02",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: now true. Checking both \"it is\" and \"it has\" covers every case of it's, and it matches the new help step.",
+              "contentFingerprint": "cyrb53x2:02bde58cb09cfb0106d81e71be2e"
+            },
+            {
+              "itemId": "g1.gr.possessives.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key the boy's bike is right; distractors are the classic errors.",
+              "contentFingerprint": "cyrb53x2:0955d8cc7f089e1a7cbdae072a52"
+            },
+            {
+              "itemId": "g1.gr.possessives.04",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: theirs is correct, and the explanation now says \"personal possessive pronouns\", which matches the new rule.",
+              "contentFingerprint": "cyrb53x2:15c25e9c5cf54708ed2c5e4931ec"
+            },
+            {
+              "itemId": "g1.gr.possessives.05",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: the explanation now checks \"it is\" or \"it has\", neither fits, so its is the answer. True, and it matches the new help step.",
+              "contentFingerprint": "cyrb53x2:0abb722f70ab1912a436f528b623"
+            },
+            {
+              "itemId": "g1.gr.possessives.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key girls' coats is correct. Style: the stem mentions \"one hook\" but never \"coats\", so the child has to infer the owned thing from the options.",
+              "contentFingerprint": "cyrb53x2:10f691976ce27c0a2c972cd07258"
+            },
+            {
+              "itemId": "g1.gr.possessives.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "children's is correct; the explanation is true.",
+              "contentFingerprint": "cyrb53x2:0ece1c2a5fca9a00573e712a3ee7"
+            },
+            {
+              "itemId": "g1.gr.possessives.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "his is correct. Reading load: \"possessive adjective\" and \"reflexive\" are heavy for Grade 3-4 (see item 16 for the terminology clash).",
+              "contentFingerprint": "cyrb53x2:11d48e55d59956083b174562be0d"
+            },
+            {
+              "itemId": "g1.gr.possessives.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "hers with no apostrophe is correct.",
+              "contentFingerprint": "cyrb53x2:1f149a2b3077411fc42a4314caa9"
+            },
+            {
+              "itemId": "g1.gr.possessives.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Who's is correct. \"whose takes none, like its\" is consistent with the new rule, which lists whose separately from the personal possessive pronouns.",
+              "contentFingerprint": "cyrb53x2:1985274b3a4f2207716557060deb"
+            },
+            {
+              "itemId": "g1.gr.possessives.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "teams' is correct for two teams.",
+              "contentFingerprint": "cyrb53x2:121fb1d5fe35de06180249842fdf"
+            },
+            {
+              "itemId": "g1.gr.possessives.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "The greengrocer's apostrophe is correctly diagnosed.",
+              "contentFingerprint": "cyrb53x2:1cc238bec2a836171cd348e57ea5"
+            },
+            {
+              "itemId": "g1.gr.possessives.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct. Style: three distractors are identical pairs (\"hers and hers\"), so it can be answered by elimination.",
+              "contentFingerprint": "cyrb53x2:011fbe227fe9e10acf134bf95d50"
+            },
+            {
+              "itemId": "g1.gr.possessives.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "its is correct; \"their\" is clearly wrong for one bus.",
+              "contentFingerprint": "cyrb53x2:0a94d241e63aca0ae924d582ae92"
+            },
+            {
+              "itemId": "g1.gr.possessives.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "bus's is correct and the explanation is true. Cosmetic: option a text has a trailing space.",
+              "contentFingerprint": "cyrb53x2:032489341273481c02f2d6566c79"
+            },
+            {
+              "itemId": "g1.gr.possessives.16",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"The blue coats are theirs.\" is the only standalone possessive pronoun. The terminology no longer clashes with item 08.",
+              "contentFingerprint": "cyrb53x2:058e3094846f6203ec9f6869e7b4"
+            },
+            {
+              "itemId": "g1.gr.possessives.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "yours is correct.",
+              "contentFingerprint": "cyrb53x2:034f57758ce2c110afb16b498f3f"
+            },
+            {
+              "itemId": "g1.gr.possessives.18",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: the key now includes \"it has\", \"always\" is removed from the stem, and the explanation is true (It's been raining).",
+              "contentFingerprint": "cyrb53x2:0f289dc8babf120de2624b314749"
+            },
+            {
+              "itemId": "g1.gr.possessives.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "students' is correct. Duplicates p1.pu.apostrophes.19 word for word across packs.",
+              "contentFingerprint": "cyrb53x2:07777171582e8a0dbedaae6ff93b"
+            },
+            {
+              "itemId": "g1.gr.possessives.20",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: the explanation now checks both \"it is\" and \"it has\". True; its is correct.",
+              "contentFingerprint": "cyrb53x2:0b1ae184a549ff11e048feec0caf"
+            },
+            {
+              "itemId": "g1.gr.possessives.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "sister's is correct with \"(one sister)\" given.",
+              "contentFingerprint": "cyrb53x2:1d516e33c2a4421436170db89989"
+            },
+            {
+              "itemId": "g1.gr.possessives.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "ours is the only word with no apostrophe.",
+              "contentFingerprint": "cyrb53x2:1f3b88c3942a2409c4f05d0d461f"
+            },
+            {
+              "itemId": "g1.gr.possessives.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "women's is correct.",
+              "contentFingerprint": "cyrb53x2:0a2d36e8a96af310f8ed4aac9d32"
+            },
+            {
+              "itemId": "g1.gr.possessives.24",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: the stem names the pronouns, and key c is still the best answer. Caveat carried from round 1: b is partly true historically, but it is not a reason.",
+              "contentFingerprint": "cyrb53x2:0227034dcba6c000a5427aaa338d"
+            }
+          ]
+        },
+        {
+          "packId": "p1.pack.pu.apostrophes",
+          "packVersion": 2,
+          "skillId": "PU.apostrophes",
+          "itemCount": 24,
+          "packFindings": "All three round-1 failures are fixed. Cross-pack duplication with g1.pack.gr.possessives remains.",
+          "packFingerprint": "cyrb53x2:0b246ee275d83913e37ad9e9f017",
+          "results": [
+            {
+              "itemId": "p1.pu.apostrophes.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True: don't drops the o of not and the apostrophe stands there.",
+              "contentFingerprint": "cyrb53x2:050c9a90619196182d5dc4d7d4f9"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True worked example of a plural owner ending in s. It no longer leaks item 09.",
+              "contentFingerprint": "cyrb53x2:1a5d44f8a5ad101d6ba3f970e124"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "doesn't is correct.",
+              "contentFingerprint": "cyrb53x2:13636804bc4240166bdf3244e3b5"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct. Stem says \"sentence\" but the options are phrases (style).",
+              "contentFingerprint": "cyrb53x2:1daf321d5e10dc137bd2cc259d98"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.05",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: explanation now true (its, like his, hers, ours, takes no apostrophe).",
+              "contentFingerprint": "cyrb53x2:093abda0143d03096d6b5bc0dcc8"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "three apples is correct. Stem says \"word\" but the options are phrases (style).",
+              "contentFingerprint": "cyrb53x2:1f916f29c5d9fe08453c5f505a01"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "children's is correct.",
+              "contentFingerprint": "cyrb53x2:1cd5dbc6dcc3730385a133d51798"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "they'll = they will, so w and i are removed. Correct.",
+              "contentFingerprint": "cyrb53x2:105b6b8cba53ab171015b5a9cdaa"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.09",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: the cousins/shed context no longer repeats worked example 02, so the leak is removed. cousins' is correct.",
+              "contentFingerprint": "cyrb53x2:0f9eda9b2b3beb05f3a41977ed7f"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "won't is correct; the explanation is true.",
+              "contentFingerprint": "cyrb53x2:1e60d90237813511b7e0a5eea369"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "bus's is correct.",
+              "contentFingerprint": "cyrb53x2:015c9888fc81cd07fdd13db1b52f"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "The plural-apostrophe error is correctly diagnosed.",
+              "contentFingerprint": "cyrb53x2:037226c21a71f3075c1495b9cca5"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Who's coming is correct; the distractors include Who's coat (a good one).",
+              "contentFingerprint": "cyrb53x2:0efb1b4d941e610c7e898352f3b6"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "women's is correct.",
+              "contentFingerprint": "cyrb53x2:10a872f33bc975012f7d42ee54c9"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.15",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: explanation now true (w, o, u, l removed).",
+              "contentFingerprint": "cyrb53x2:02b803782afcbb07cddba6612637"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "teams' is correct.",
+              "contentFingerprint": "cyrb53x2:1cc3431e19360e1d4bb206c2722c"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct. Explanation is slightly loose: \"don't / do not\" does not change what kind of word it is.",
+              "contentFingerprint": "cyrb53x2:0516d575a975631e41dc153a53d9"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "That's = that is, i removed. Correct.",
+              "contentFingerprint": "cyrb53x2:14a91344841d870fbf8865b17dae"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct. Cross-pack duplicate of g1.gr.possessives.19.",
+              "contentFingerprint": "cyrb53x2:08ec6d8d0d02841aa2f7ce3f9cfa"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct. Near-duplicate of g1.gr.possessives.05/20 across packs.",
+              "contentFingerprint": "cyrb53x2:0c798cd4e1d6740721e2cb220281"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "sister's is correct.",
+              "contentFingerprint": "cyrb53x2:0aca11d174643a1e23a97f65f0e0"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "buses is the plural with no apostrophe.",
+              "contentFingerprint": "cyrb53x2:14dd700713ca74174d9105065565"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "shouldn't is correct.",
+              "contentFingerprint": "cyrb53x2:04efa1e6cdf30b0029b09a70117a"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "horse's / horses' is the only pair that differs in meaning.",
+              "contentFingerprint": "cyrb53x2:1f9f44161d3691119f7e11f1d2bb"
+            }
+          ]
+        },
+        {
+          "packId": "p1.pack.pu.dialogue",
+          "packVersion": 2,
+          "skillId": "PU.dialogue",
+          "itemCount": 24,
+          "packFindings": "Items 12, 16 and 24 now fit the unchanged rule, and \"full stop\" has become \"period\" throughout. No remaining defects.",
+          "packFingerprint": "cyrb53x2:09776a45f3550f019a9783090715",
+          "results": [
+            {
+              "itemId": "p1.pu.dialogue.01",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: now says \"period\" (Canadian usage). True.",
+              "contentFingerprint": "cyrb53x2:15b06bfdb233091be3dd31330978"
+            },
+            {
+              "itemId": "p1.pu.dialogue.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True description of reported speech.",
+              "contentFingerprint": "cyrb53x2:0cdd516bbc073c0d0c59a93cdaec"
+            },
+            {
+              "itemId": "p1.pu.dialogue.03",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. Correct; the guided repeat of worked example 01 is acceptable.",
+              "contentFingerprint": "cyrb53x2:045b11e3fb25f91fe5d0f83fc0d1"
+            },
+            {
+              "itemId": "p1.pu.dialogue.04",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. Inside is correct.",
+              "contentFingerprint": "cyrb53x2:18fa2282c955ff1dde6895bcd86d"
+            },
+            {
+              "itemId": "p1.pu.dialogue.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct. The same sentence as worked example 02, which is acceptable for a guided (instruction-only) item.",
+              "contentFingerprint": "cyrb53x2:0425967f443b021fcd0583d6f9b5"
+            },
+            {
+              "itemId": "p1.pu.dialogue.06",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. Correct.",
+              "contentFingerprint": "cyrb53x2:062b6c915922ec16920838caddf6"
+            },
+            {
+              "itemId": "p1.pu.dialogue.07",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. A comma after \"shouted\" is correct.",
+              "contentFingerprint": "cyrb53x2:1c3f6cfe45572f1520e6658440b6"
+            },
+            {
+              "itemId": "p1.pu.dialogue.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Only a is a direct quotation.",
+              "contentFingerprint": "cyrb53x2:0928ee738894c41ec736ab938334"
+            },
+            {
+              "itemId": "p1.pu.dialogue.09",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. b is correct.",
+              "contentFingerprint": "cyrb53x2:1100b765b2bafc107e0806669b7e"
+            },
+            {
+              "itemId": "p1.pu.dialogue.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Comma after \"said\" is correct.",
+              "contentFingerprint": "cyrb53x2:189474ed1bb8d01484fddf1fd47a"
+            },
+            {
+              "itemId": "p1.pu.dialogue.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "d is correct; the explanation is true.",
+              "contentFingerprint": "cyrb53x2:162f547d68998f1051568baf57b3"
+            },
+            {
+              "itemId": "p1.pu.dialogue.12",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: now tests marks around exactly the spoken words (Mia said, \"I lost my hat.\"), which is consistent with the pack rule. The key is unique.",
+              "contentFingerprint": "cyrb53x2:0f8c40f1db770515c770d389f2cf"
+            },
+            {
+              "itemId": "p1.pu.dialogue.13",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. Correct.",
+              "contentFingerprint": "cyrb53x2:18ead23fb436bc0b8d20a1322df3"
+            },
+            {
+              "itemId": "p1.pu.dialogue.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "c is reported speech.",
+              "contentFingerprint": "cyrb53x2:0feae0798184350b30f477c8caf7"
+            },
+            {
+              "itemId": "p1.pu.dialogue.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "a is correct; the lowercase \"asked\" is explained accurately.",
+              "contentFingerprint": "cyrb53x2:0da6a09edd8f190e6be8c003e7d5"
+            },
+            {
+              "itemId": "p1.pu.dialogue.16",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: the reported first half takes no marks and \"Keep out!\" is quoted speech, so one set is correct and consistent with the rule.",
+              "contentFingerprint": "cyrb53x2:00edc8b7282c2a17d4a7e1862f4f"
+            },
+            {
+              "itemId": "p1.pu.dialogue.17",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. Correct.",
+              "contentFingerprint": "cyrb53x2:06035d3f1c65c21c02de5fe9c5b7"
+            },
+            {
+              "itemId": "p1.pu.dialogue.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct. The explanation's reading load (\"true in substance\") is high for Grade 3-4.",
+              "contentFingerprint": "cyrb53x2:020919e3142dd60240dea89ba7fb"
+            },
+            {
+              "itemId": "p1.pu.dialogue.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "b is correct (pronoun and tense shift back to direct speech).",
+              "contentFingerprint": "cyrb53x2:180e8f364a25aa05c867dbe0aa47"
+            },
+            {
+              "itemId": "p1.pu.dialogue.20",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. Correct.",
+              "contentFingerprint": "cyrb53x2:12e3d3856c2c3905ceed0e5d48c4"
+            },
+            {
+              "itemId": "p1.pu.dialogue.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "b is correct.",
+              "contentFingerprint": "cyrb53x2:11320bc9c50c101d18cb068381bf"
+            },
+            {
+              "itemId": "p1.pu.dialogue.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "a is the only reported speech; the others are unmarked direct speech.",
+              "contentFingerprint": "cyrb53x2:0a00bbec6b9ffc101060bcc88854"
+            },
+            {
+              "itemId": "p1.pu.dialogue.23",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" wording only. Correct.",
+              "contentFingerprint": "cyrb53x2:00dedf7c14f99f17d026d07d6ffd"
+            },
+            {
+              "itemId": "p1.pu.dialogue.24",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: d is the only correct option. Note: it copies the pattern of item 11 (\"That is mine!\" he said), which is acceptable for delayed review.",
+              "contentFingerprint": "cyrb53x2:1d521a4d7fde23182549ce2ca338"
+            }
+          ]
+        },
+        {
+          "packId": "f1.pack.ph.syllables",
+          "packVersion": 2,
+          "skillId": "PH.syllables",
+          "itemCount": 24,
+          "packFindings": "The rule now says \"usually\" and introduces stress, and the stress options are all lowercase. Words still recur across items (rabbit, paper, napkin, basket), a transfer note only.",
+          "packFingerprint": "cyrb53x2:038c80c6dcb98f07a37219482941",
+          "results": [
+            {
+              "itemId": "f1.ph.syllables.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True for rabbit. The claim that every syllable has exactly one vowel sound is the standard classroom simplification (syllabic l/n, as in bottle and button, is ignored).",
+              "contentFingerprint": "cyrb53x2:14fbd63f23052c1e6f13621e1f3f"
+            },
+            {
+              "itemId": "f1.ph.syllables.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True with \"usually\". Reading load: \"tidbit\" is uncommon for young children.",
+              "contentFingerprint": "cyrb53x2:06b1d7c13142c30c9c84ebda51d7"
+            },
+            {
+              "itemId": "f1.ph.syllables.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "basket has 2 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:0163772bfec6b81d225020c9c95f"
+            },
+            {
+              "itemId": "f1.ph.syllables.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "elephant has 3 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:10303543df27790a68c0f05842c0"
+            },
+            {
+              "itemId": "f1.ph.syllables.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "nap-kin is correct.",
+              "contentFingerprint": "cyrb53x2:1832405132750316d305acff8237"
+            },
+            {
+              "itemId": "f1.ph.syllables.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "o-pen, long o. Correct.",
+              "contentFingerprint": "cyrb53x2:1d3e2c8db7dc5d1c353ffba45f77"
+            },
+            {
+              "itemId": "f1.ph.syllables.07",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options are now lowercase, so the formatting no longer gives the answer away. pho is correct.",
+              "contentFingerprint": "cyrb53x2:0733ad3e4da20e1cf9b655d8700d"
+            },
+            {
+              "itemId": "f1.ph.syllables.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "computer has 3 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:0c79b6f083f96e1d29f55f289739"
+            },
+            {
+              "itemId": "f1.ph.syllables.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "remember has 3 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:1cd9ce55a834c402a433456c3d60"
+            },
+            {
+              "itemId": "f1.ph.syllables.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "muf-fin is the standard division.",
+              "contentFingerprint": "cyrb53x2:02044ff57c4148004a5ab6767040"
+            },
+            {
+              "itemId": "f1.ph.syllables.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "pi-lot, long i. Correct.",
+              "contentFingerprint": "cyrb53x2:1fd351beb6e2ac19a028d7ffc907"
+            },
+            {
+              "itemId": "f1.ph.syllables.12",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options are now lowercase. ta is correct.",
+              "contentFingerprint": "cyrb53x2:0eaedd7e55cf920d1074ce90d247"
+            },
+            {
+              "itemId": "f1.ph.syllables.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "strength has 8 letters and 1 syllable. Correct.",
+              "contentFingerprint": "cyrb53x2:18cf5a9fcac5a10620480de957bf"
+            },
+            {
+              "itemId": "f1.ph.syllables.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "An open syllable ends with its vowel. Correct.",
+              "contentFingerprint": "cyrb53x2:0d4108599f7d440d9964dfb073cc"
+            },
+            {
+              "itemId": "f1.ph.syllables.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "rabbit is the only closed first syllable.",
+              "contentFingerprint": "cyrb53x2:10618a8cdd916a174c2267f3c6c4"
+            },
+            {
+              "itemId": "f1.ph.syllables.16",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options are now lowercase. mu is correct.",
+              "contentFingerprint": "cyrb53x2:0de88d6ae0afb303b48497a0277e"
+            },
+            {
+              "itemId": "f1.ph.syllables.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "calendar has 3 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:1c98b507489011102e23608afd6f"
+            },
+            {
+              "itemId": "f1.ph.syllables.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "tab-let is the standard division.",
+              "contentFingerprint": "cyrb53x2:07e2b7e55574830b8122051a0c16"
+            },
+            {
+              "itemId": "f1.ph.syllables.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "flunbet has 2 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:1a69a64addd6840768b34f79d5f0"
+            },
+            {
+              "itemId": "f1.ph.syllables.20",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"plintop\" is VCCV, so plin-top with a short i is the only defensible option (nt cannot start a syllable). The explanation's absolute \"a closed syllable keeps its vowel short\" is reliable for this pattern.",
+              "contentFingerprint": "cyrb53x2:1c08b7df378e821696302b2d4a66"
+            },
+            {
+              "itemId": "f1.ph.syllables.21",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options are now lowercase. ma is correct.",
+              "contentFingerprint": "cyrb53x2:0aa00939fe1bf5059d23e0c92d7f"
+            },
+            {
+              "itemId": "f1.ph.syllables.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "paper is correct. Transfer: paper, basket and napkin were all analysed in earlier items and their explanations (item 15 says \"pa ... open\"), so this measures recall more than transfer.",
+              "contentFingerprint": "cyrb53x2:0a1ae6dfca409c1db1771642ab54"
+            },
+            {
+              "itemId": "f1.ph.syllables.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "sud-den is correct; a near-duplicate pattern of muffin (item 10).",
+              "contentFingerprint": "cyrb53x2:02aaac61cae2a605c8146164ceb8"
+            },
+            {
+              "itemId": "f1.ph.syllables.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "umbrella has 3 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:05e97ab35a50471e6f27d9bc967e"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.ph.digraphs-clusters",
+          "packVersion": 2,
+          "skillId": "PH.digraphs-clusters",
+          "itemCount": 24,
+          "packFindings": "Worked example 02 (drift) no longer leaks anything in the pack. Cross-pack: stamp is still analysed in item 14 and in f2.ph.blend-segment.10 (note only).",
+          "packFingerprint": "cyrb53x2:08e4648fce0b110194bca8c97415",
+          "results": [
+            {
+              "itemId": "f2.ph.digraphs-clusters.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True contrast of ship and slip.",
+              "contentFingerprint": "cyrb53x2:06829e0464bc2b1b1292826f6b8c"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.02",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: the knee/drift contrast is true, and drift, dr and ft appear in no other item in the pack, so there is no new leak.",
+              "contentFingerprint": "cyrb53x2:146944dcf771811afdf55fc78878"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "chip is correct.",
+              "contentFingerprint": "cyrb53x2:1ae1e8d2f4989915174293cfd155"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "stop is correct.",
+              "contentFingerprint": "cyrb53x2:15a78480581c6616cb2fd77bb79b"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "wish is correct.",
+              "contentFingerprint": "cyrb53x2:07558489b15861008ceb3cc307cc"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "milk is correct; th, ng and ck are one sound each.",
+              "contentFingerprint": "cyrb53x2:11cd074f7cb121199ab4fe81aded"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "write has a silent w. Correct.",
+              "contentFingerprint": "cyrb53x2:055f04667e1682119322ec2c282d"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "gr is 2 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:177ad8fbcf2ca908cd4cc27da31b"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "then is correct.",
+              "contentFingerprint": "cyrb53x2:185e585aeb1f7115d1c218d6b044"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "much is correct.",
+              "contentFingerprint": "cyrb53x2:10f28868ac99e4012c33e91c8bb2"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "flag has no digraph. Correct.",
+              "contentFingerprint": "cyrb53x2:0d9708ac792abe11d69abadc26da"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "lamb has a silent b. Correct.",
+              "contentFingerprint": "cyrb53x2:0ea98ec35c21981405221881dc99"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "ph is correct.",
+              "contentFingerprint": "cyrb53x2:03f2a60665a88018556f152e837e"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.14",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2 (content unchanged): no longer leaked, because worked example 02 now uses drift. m and p is correct.",
+              "contentFingerprint": "cyrb53x2:0d52c8c149c82b130145958b5080"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "duck is correct.",
+              "contentFingerprint": "cyrb53x2:13b5dbe8cfcef504e41371ae47ea"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "know has a silent k. Correct.",
+              "contentFingerprint": "cyrb53x2:022cb0a3b62a2b113200d49de2a7"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "chest (ch + st) is correct; check has two digraphs.",
+              "contentFingerprint": "cyrb53x2:030c2a842b24620b268d667b3ba6"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "plant is correct; crumb, knot and wrap each have a silent letter.",
+              "contentFingerprint": "cyrb53x2:1ab4d79ac4f46a19eef32d78aa08"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "sh is correct.",
+              "contentFingerprint": "cyrb53x2:0fc50318b5241606bd40e3be036f"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "th + r = 2 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:18ca52e4ad510603632cfdea99bc"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "whale is correct for most Canadian speakers (wh = /w/). A few speakers say /hw/, which is two sounds, but the rule lists wh as a digraph.",
+              "contentFingerprint": "cyrb53x2:1dbab6e9d2ed8d05a0dc0515d9d0"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "rest is correct.",
+              "contentFingerprint": "cyrb53x2:064574e686e7390ed5fc451892b9"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "thumb has a silent b. Correct.",
+              "contentFingerprint": "cyrb53x2:0dcefe03db67af1eb5cdc82ff0e0"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "s-t-r = 3 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:079c51be5d197b0d8ab15f8364e4"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.ph.blend-segment",
+          "packVersion": 1,
+          "skillId": "PH.blend-segment",
+          "itemCount": 24,
+          "packFindings": "Unchanged; no item defects. The cross-pack word overlap with digraphs-clusters remains (note only).",
+          "packFingerprint": "cyrb53x2:196fe9ad36df18069e19c701f556",
+          "results": [
+            {
+              "itemId": "f2.ph.blend-segment.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "ship has 3 sounds. True.",
+              "contentFingerprint": "cyrb53x2:18071393b75e5301c93d4b9a1555"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True; stop has 4 sounds.",
+              "contentFingerprint": "cyrb53x2:17b9aa0078ef120c20d2d88d67e5"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "chat has 3 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:199d93b41ca86e16ee7f43d09913"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct (4). Answer shown in worked example 02, which is acceptable for a guided (instruction-only) item.",
+              "contentFingerprint": "cyrb53x2:1dfade475acf5f09d839f8fb1b24"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "fish is correct.",
+              "contentFingerprint": "cyrb53x2:171743140a322b081116d3e400cc"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "knee has 2 sounds (n, ee). Correct.",
+              "contentFingerprint": "cyrb53x2:0f8b67607814ef1adf546eb1e018"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "frog has 4 sounds; the others have 3. Correct.",
+              "contentFingerprint": "cyrb53x2:182233e6340d691e92dbfa8a7902"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "lip is correct.",
+              "contentFingerprint": "cyrb53x2:13736f391f171b194913a7872e63"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "bath has 3 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:093693a24dae0606f9b6cd4de39c"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "stamp has 5 sounds. Correct. Cross-pack leak: f2.ph.digraphs-clusters.02 spells out \"s, t, a, m, p\".",
+              "contentFingerprint": "cyrb53x2:096e57d6af36e11a3355615a5398"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "green is correct.",
+              "contentFingerprint": "cyrb53x2:19ed6f971cc21901371d65883044"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "wish has 3 sounds; west, wisp and wilt have 4. Correct.",
+              "contentFingerprint": "cyrb53x2:179ca18466173607f63b44ae0590"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "lamb has 3 sounds. Correct (the digraphs pack item 12 also says \"l, a, m\").",
+              "contentFingerprint": "cyrb53x2:1ebab3d7eefee118e71eea026d2f"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "splash is correct.",
+              "contentFingerprint": "cyrb53x2:1dfab1ca80051d03c5a78f1935d3"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "tip is correct.",
+              "contentFingerprint": "cyrb53x2:1297905c5b377c061b6f54da72d7"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "crunch has 5 sounds; chick and thick have 3, shelf has 4. Correct.",
+              "contentFingerprint": "cyrb53x2:0d97c8e0ac496502d40ff4d3a974"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "sing has 3 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:1319744e5a7bef05cf12eb9b3026"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "duck and dog have 3 each; the other words have 4. Correct.",
+              "contentFingerprint": "cyrb53x2:175321d15161961b9399c15445a6"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "thromp has 5 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:043a0f14d3b8e007c5b3fb5af1db"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "shep has 3 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:0da487f8bd999318d504ebbb48fd"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "thin has 3 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:19792a4cec0d9b06b66b10a618fc"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "black is correct.",
+              "contentFingerprint": "cyrb53x2:03a56df30c681b1efa60f71b0b46"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "trust has 5 sounds. Correct.",
+              "contentFingerprint": "cyrb53x2:005eea33e1b45a1cb5e87a110449"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "cap is correct.",
+              "contentFingerprint": "cyrb53x2:1adc853343f31c0e9fc4c4429324"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.sp.inflections",
+          "packVersion": 2,
+          "skillId": "SP.inflections",
+          "itemCount": 24,
+          "packFindings": "The v2 rule and help steps now cover w, x and y, the one-syllable limit and -es after s, x, sh or ch. All 24 items are consistent with the new rule.",
+          "packFingerprint": "cyrb53x2:1265682428a27c178b6fe4c5d189",
+          "results": [
+            {
+              "itemId": "f2.sp.inflections.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True contrast of hoping and hopping.",
+              "contentFingerprint": "cyrb53x2:015badd848ad030781307cfaf253"
+            },
+            {
+              "itemId": "f2.sp.inflections.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "True contrast of cried and played.",
+              "contentFingerprint": "cyrb53x2:186680ad68e93d0b1bb2210d9434"
+            },
+            {
+              "itemId": "f2.sp.inflections.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "hoping is correct.",
+              "contentFingerprint": "cyrb53x2:095d8b0b3d703c1749e486d085a5"
+            },
+            {
+              "itemId": "f2.sp.inflections.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "hopping is correct.",
+              "contentFingerprint": "cyrb53x2:1e075e3aaf8428033eb9271ad8d6"
+            },
+            {
+              "itemId": "f2.sp.inflections.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "baked is correct.",
+              "contentFingerprint": "cyrb53x2:0f7232a974fa5412a95dd3e35ea8"
+            },
+            {
+              "itemId": "f2.sp.inflections.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "running is correct.",
+              "contentFingerprint": "cyrb53x2:0b78f91e21282c1d3fe3a8db1277"
+            },
+            {
+              "itemId": "f2.sp.inflections.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "carries is correct.",
+              "contentFingerprint": "cyrb53x2:02caa40392f1f51b5b0c57aed458"
+            },
+            {
+              "itemId": "f2.sp.inflections.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "carrying is correct.",
+              "contentFingerprint": "cyrb53x2:050668c389ca7f0cf5ec91d1af15"
+            },
+            {
+              "itemId": "f2.sp.inflections.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "making is correct.",
+              "contentFingerprint": "cyrb53x2:0f3383575a77c30f864abdf605ce"
+            },
+            {
+              "itemId": "f2.sp.inflections.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "stopped is correct.",
+              "contentFingerprint": "cyrb53x2:131d709a348ebd170b8d3e1f6ae9"
+            },
+            {
+              "itemId": "f2.sp.inflections.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "writing is correct; the note about written is true.",
+              "contentFingerprint": "cyrb53x2:1a918f8522543305001724b38691"
+            },
+            {
+              "itemId": "f2.sp.inflections.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "taped is correct.",
+              "contentFingerprint": "cyrb53x2:0bd1c1627ec0a61257a5fae33720"
+            },
+            {
+              "itemId": "f2.sp.inflections.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "tried is correct.",
+              "contentFingerprint": "cyrb53x2:110f40bbab5d9805bf079031fb7f"
+            },
+            {
+              "itemId": "f2.sp.inflections.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "plays is correct and matches the new rule's \"never double y: play, played\".",
+              "contentFingerprint": "cyrb53x2:15317f38d3bec11e392f3e098719"
+            },
+            {
+              "itemId": "f2.sp.inflections.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "sitting is correct.",
+              "contentFingerprint": "cyrb53x2:0d89f3678b2cb216dc8488aa6293"
+            },
+            {
+              "itemId": "f2.sp.inflections.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "riding is correct.",
+              "contentFingerprint": "cyrb53x2:127a99452b8c4211fc81a05c6797"
+            },
+            {
+              "itemId": "f2.sp.inflections.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "jump is correct.",
+              "contentFingerprint": "cyrb53x2:00f338250571f10566f50e2ebc2d"
+            },
+            {
+              "itemId": "f2.sp.inflections.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "foxes is correct. The new rule and help step now teach -es after s, x, sh or ch.",
+              "contentFingerprint": "cyrb53x2:00b4ee1d42b80113e4b220c8699f"
+            },
+            {
+              "itemId": "f2.sp.inflections.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "gloping is correct.",
+              "contentFingerprint": "cyrb53x2:076e8f291dae4e09a4fbd01c080b"
+            },
+            {
+              "itemId": "f2.sp.inflections.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "blimmed is correct.",
+              "contentFingerprint": "cyrb53x2:0244f6196fd5290310dcb3ad5d31"
+            },
+            {
+              "itemId": "f2.sp.inflections.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "baking is correct. The same base word as item 05, which is acceptable for delayed review.",
+              "contentFingerprint": "cyrb53x2:0258ef11b996b90f1d016ae8b3fe"
+            },
+            {
+              "itemId": "f2.sp.inflections.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "planned is correct; planed from plane is true.",
+              "contentFingerprint": "cyrb53x2:1447ea7e02022303fc5ab2588363"
+            },
+            {
+              "itemId": "f2.sp.inflections.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "babies is correct.",
+              "contentFingerprint": "cyrb53x2:0fdc40bf6c7d8a058acba70f487a"
+            },
+            {
+              "itemId": "f2.sp.inflections.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "smiling and waving is correct.",
+              "contentFingerprint": "cyrb53x2:12a3a55d824a1304dc6c794a697f"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.ph.multisyllable",
+          "packVersion": 2,
+          "skillId": "PH.multisyllable",
+          "itemCount": 24,
+          "packFindings": "The v2 worked example (unfaithfully) removes the leak. Style: consider a more child-friendly word.",
+          "packFingerprint": "cyrb53x2:1527355e78d36712892ebfb242f7",
+          "results": [
+            {
+              "itemId": "f2.ph.multisyllable.01",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: un + faith + ful + ly is true, and faith appears in no other item, so there is no new leak. Style: \"unfaithfully\" is uncommon for children and has adult connotations; a word like \"untruthfully\" or \"unhelpfully\" in another slot would read better.",
+              "contentFingerprint": "cyrb53x2:0c18b372bf43091990c8e3a7c8b7"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "fan-tas-tic is true.",
+              "contentFingerprint": "cyrb53x2:16e6dffcba746b03ea22ccf95017"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "kind is correct.",
+              "contentFingerprint": "cyrb53x2:1e4e34f28e13b50a760d76f00192"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "play is correct.",
+              "contentFingerprint": "cyrb53x2:01f5346babaac90c770387150d27"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "sun-set is correct.",
+              "contentFingerprint": "cyrb53x2:0729017053f22502ba772a8a6869"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "care-ful-ly = 3 chunks. Correct.",
+              "contentFingerprint": "cyrb53x2:0d0a0dfad1eea40d9a25a7572372"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "agree is correct.",
+              "contentFingerprint": "cyrb53x2:1572f77308581d1eb0103dfffe93"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "bas-ket-ball is correct.",
+              "contentFingerprint": "cyrb53x2:00f2b3890fda6e1fd4e554edf1c8"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.09",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2 (content unchanged): no longer leaked by the worked example, which now shows the same un+X+ful+ly pattern with a different base. help is correct.",
+              "contentFingerprint": "cyrb53x2:0a2ee3469fb3aa04d95a83169c78"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "think is correct.",
+              "contentFingerprint": "cyrb53x2:0f8939f39681e31db9223ce66998"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "pic-nic is correct.",
+              "contentFingerprint": "cyrb53x2:19bbe16000acf201228488dddb45"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "unbelievable has 5 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:0426fb1fc7fa6501d72954d3f390"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "read is correct.",
+              "contentFingerprint": "cyrb53x2:0a2182f6cad64b0c6aa0db6a051b"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "ro-bot is correct.",
+              "contentFingerprint": "cyrb53x2:11f8b4e0e8aaef0fe448d2494e17"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "unfair is correct.",
+              "contentFingerprint": "cyrb53x2:142ecd92593927165d36e01c343e"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "important has 3 syllables. Correct.",
+              "contentFingerprint": "cyrb53x2:07a3a42a0b6d1d01e2b4eb992e6e"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "care is correct.",
+              "contentFingerprint": "cyrb53x2:1e1b3dab141566193d9480f3a51e"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "in-vent-ed is correct.",
+              "contentFingerprint": "cyrb53x2:1f11ac2b94428705246d3c016b21"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "blast is correct.",
+              "contentFingerprint": "cyrb53x2:0d1852adc179b20824d5f8265b92"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "tem-bi-con follows the taught rules.",
+              "contentFingerprint": "cyrb53x2:1aacdc71779fc2093bde0eb0bcf3"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "pack is correct.",
+              "contentFingerprint": "cyrb53x2:1d15a92f964aba08e3c737b387af"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "but-ton is correct.",
+              "contentFingerprint": "cyrb53x2:051ff37e5faeaf0a7316b957af62"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "help-ful-ness = 3 chunks. Correct.",
+              "contentFingerprint": "cyrb53x2:0214c238f69f4e02e472035447f9"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "write is correct; the explanation handles the dropped e properly.",
+              "contentFingerprint": "cyrb53x2:136a42ee77272d18b24a7d0792a2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "batch.educational-source.round2",
+      "stage": "educational_source_review",
+      "reviewerRole": "educational_and_source_resolution_pass",
+      "reviewerKind": "separate_agent",
+      "humanReviewer": false,
+      "wroteTheContent": false,
+      "reviewedAt": "2026-09-29",
+      "reviewedCommit": "e673996",
+      "packs": [
+        {
+          "packId": "g1.pack.gr.possessives",
+          "packVersion": 2,
+          "skillId": "GR.possessives",
+          "sourceIds": [
+            "ab-elal-2022-overview",
+            "ca-language-portal-apostrophe-possession"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass. The v2 rule restricts \"no apostrophe\" to personal possessive pronouns and says everyone’s/someone’s take one, which fixes the v1 overgeneralisation. The its/it’s test now covers \"it has\". Changed items 02, 04, 05, 16, 18, 20 and 24 are correct, and 16 no longer overlaps 08. Commit e673996 makes every its/it’s check include \"it has\" (05, 20) and lists whose separately from the personal pronouns. Outcomes conventions.grade5.11/5.02/6.02 resolve and fit; the ladder places GR.possessives Gr3->Gr4. All 24 items pass. SOURCE fail. ca-language-portal-apostrophe-possession now resolves and is relevant. Its registered supports cover only apostrophe = possession and singular-not-ending-in-sibilant + ’s. They do not cover the pack’s defining pronoun half, plurals ending in s (girls’), singular sibilant owners (bus’s) or irregular plurals (children’s). The overview adds nothing specific. Live Language Portal pages could not be fetched in this pass (WebFetch socket closed), so support is judged against the registered `supports` text in sources.json only.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "v1 rule overgeneralised \"pronoun never takes an apostrophe\". Fixed in v2 (personal possessive pronouns; everyone’s/someone’s take one).",
+              "status": "resolved"
+            },
+            {
+              "id": "D2",
+              "description": "Source partial: registered supports for ca-language-portal-apostrophe-possession do not cover the possessive-pronoun rule, plural-in-s, singular sibilant or irregular plurals. Either extend the `supports` excerpt after checking the page, or register a possessive-pronoun source.",
+              "status": "open"
+            },
+            {
+              "id": "D3",
+              "description": "Heavy overlap with p1.pack.pu.apostrophes (g1 03/p1 04, 07/07, 10/13, 11/16, 12/12, 13/24, 15/11, 19/19 identical, 20/20, 21/21, 23/14); evidence double-counting risk.",
+              "status": "open"
+            },
+            {
+              "id": "D4",
+              "description": "The stale conventions.grade5.11 note (\"GR.possessives declared with no content\") is updated in bc54e6b.",
+              "status": "resolved"
+            },
+            {
+              "id": "D5",
+              "description": "bc54e6b listed \"whose\" as a personal possessive pronoun. e673996 now says \"the personal possessive pronouns ... and whose\".",
+              "status": "resolved"
+            },
+            {
+              "id": "D6",
+              "description": "Outcome ids resolve with matching meaning.",
+              "status": "resolved"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:0bab450f9c3526175ce908ed0bce",
+          "results": [
+            {
+              "itemId": "g1.gr.possessives.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:0252dac705c9030cf142b2aa8712"
+            },
+            {
+              "itemId": "g1.gr.possessives.02",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: readback now \"it is\" or \"it has\" - correct and complete.",
+              "contentFingerprint": "cyrb53x2:02bde58cb09cfb0106d81e71be2e"
+            },
+            {
+              "itemId": "g1.gr.possessives.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0955d8cc7f089e1a7cbdae072a52"
+            },
+            {
+              "itemId": "g1.gr.possessives.04",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: feedback now says personal possessive pronouns - correct.",
+              "contentFingerprint": "cyrb53x2:15c25e9c5cf54708ed2c5e4931ec"
+            },
+            {
+              "itemId": "g1.gr.possessives.05",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2 (e673996): feedback now uses the \"it is\" or \"it has\" readback - correct.",
+              "contentFingerprint": "cyrb53x2:0abb722f70ab1912a436f528b623"
+            },
+            {
+              "itemId": "g1.gr.possessives.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; prompt mentions a hook but not coats - slightly unclear wording (style).",
+              "contentFingerprint": "cyrb53x2:10f691976ce27c0a2c972cd07258"
+            },
+            {
+              "itemId": "g1.gr.possessives.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0ece1c2a5fca9a00573e712a3ee7"
+            },
+            {
+              "itemId": "g1.gr.possessives.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:11d48e55d59956083b174562be0d"
+            },
+            {
+              "itemId": "g1.gr.possessives.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1f149a2b3077411fc42a4314caa9"
+            },
+            {
+              "itemId": "g1.gr.possessives.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1985274b3a4f2207716557060deb"
+            },
+            {
+              "itemId": "g1.gr.possessives.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:121fb1d5fe35de06180249842fdf"
+            },
+            {
+              "itemId": "g1.gr.possessives.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1cc238bec2a836171cd348e57ea5"
+            },
+            {
+              "itemId": "g1.gr.possessives.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:011fbe227fe9e10acf134bf95d50"
+            },
+            {
+              "itemId": "g1.gr.possessives.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0a94d241e63aca0ae924d582ae92"
+            },
+            {
+              "itemId": "g1.gr.possessives.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; option a has a trailing space (\"bus’ \") - cosmetic.",
+              "contentFingerprint": "cyrb53x2:032489341273481c02f2d6566c79"
+            },
+            {
+              "itemId": "g1.gr.possessives.16",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: keys \"The blue coats are theirs.\" (standalone possessive pronoun); no longer overlaps item 08; correct.",
+              "contentFingerprint": "cyrb53x2:058e3094846f6203ec9f6869e7b4"
+            },
+            {
+              "itemId": "g1.gr.possessives.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:034f57758ce2c110afb16b498f3f"
+            },
+            {
+              "itemId": "g1.gr.possessives.18",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"it is\" or \"it has\" test with \"It’s been raining\" example - correct.",
+              "contentFingerprint": "cyrb53x2:0f289dc8babf120de2624b314749"
+            },
+            {
+              "itemId": "g1.gr.possessives.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; identical to p1.pu.apostrophes.19 (cross-pack duplicate).",
+              "contentFingerprint": "cyrb53x2:07777171582e8a0dbedaae6ff93b"
+            },
+            {
+              "itemId": "g1.gr.possessives.20",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2 (e673996): \"it is\" or \"it has\" readback, neither fits, so \"its\" - correct.",
+              "contentFingerprint": "cyrb53x2:0b1ae184a549ff11e048feec0caf"
+            },
+            {
+              "itemId": "g1.gr.possessives.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1d516e33c2a4421436170db89989"
+            },
+            {
+              "itemId": "g1.gr.possessives.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1f3b88c3942a2409c4f05d0d461f"
+            },
+            {
+              "itemId": "g1.gr.possessives.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0a2d36e8a96af310f8ed4aac9d32"
+            },
+            {
+              "itemId": "g1.gr.possessives.24",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: prompt now names his, hers, ours, theirs - consistent with the corrected rule; key correct.",
+              "contentFingerprint": "cyrb53x2:0227034dcba6c000a5427aaa338d"
+            }
+          ]
+        },
+        {
+          "packId": "p1.pack.pu.apostrophes",
+          "packVersion": 2,
+          "skillId": "PU.apostrophes",
+          "sourceIds": [
+            "ab-elal-2022-overview",
+            "ca-language-portal-apostrophe-possession"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass. The rule (apostrophe = omitted letters or ownership; never a plural) is correct at grade level. The v2 fixes are correct: 05 no longer claims \"its\" is the only such word, 09 uses four cousins and no longer repeats worked example 02, and 15 names the w-o-u-l letters removed from \"would\". All 22 keys are correct and the outcomes resolve. All 24 items pass. SOURCE fail. ca-language-portal-apostrophe-possession is relevant to the ownership half only. Nothing registered supports the contraction half, which is half the rule, and its excerpt does not cover plural-in-s or singular sibilant owners. Live Language Portal pages could not be fetched in this pass (WebFetch socket closed), so support is judged against the registered `supports` text in sources.json only.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "Item 05 false \"only word\" feedback. Fixed in v2.",
+              "status": "resolved"
+            },
+            {
+              "id": "D2",
+              "description": "Item 15 \"the I of would\" feedback. Fixed in v2.",
+              "status": "resolved"
+            },
+            {
+              "id": "D3",
+              "description": "Source partial: no registered source for contractions; the possession excerpt does not cover plural-in-s or sibilant owners.",
+              "status": "open"
+            },
+            {
+              "id": "D4",
+              "description": "\"It never makes a word plural\" is absolute; Canadian style allows p’s and q’s. Acceptable simplification at grade level.",
+              "status": "open"
+            },
+            {
+              "id": "D5",
+              "description": "Near-duplicates of many g1.pack.gr.possessives items (evidence double-counting risk).",
+              "status": "open"
+            },
+            {
+              "id": "D6",
+              "description": "conventions.grade5.02/6.02 mapping lists only PU.capitals-endmarks under them (not reciprocal).",
+              "status": "open"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:0b246ee275d83913e37ad9e9f017",
+          "results": [
+            {
+              "itemId": "p1.pu.apostrophes.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:050c9a90619196182d5dc4d7d4f9"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:1a5d44f8a5ad101d6ba3f970e124"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:13636804bc4240166bdf3244e3b5"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1daf321d5e10dc137bd2cc259d98"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.05",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: feedback now \"its, with no apostrophe, just like his, hers and ours\" - correct.",
+              "contentFingerprint": "cyrb53x2:093abda0143d03096d6b5bc0dcc8"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1f916f29c5d9fe08453c5f505a01"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1cd5dbc6dcc3730385a133d51798"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:105b6b8cba53ab171015b5a9cdaa"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.09",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: cousins’ bikes (four cousins) - correct; no longer repeats worked example 02.",
+              "contentFingerprint": "cyrb53x2:0f9eda9b2b3beb05f3a41977ed7f"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1e60d90237813511b7e0a5eea369"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:015c9888fc81cd07fdd13db1b52f"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:037226c21a71f3075c1495b9cca5"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0efb1b4d941e610c7e898352f3b6"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:10a872f33bc975012f7d42ee54c9"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.15",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"w, o, u and l of would are removed ... before the d\" - correct.",
+              "contentFingerprint": "cyrb53x2:02b803782afcbb07cddba6612637"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1cc3431e19360e1d4bb206c2722c"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0516d575a975631e41dc153a53d9"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:14a91344841d870fbf8865b17dae"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; identical to g1.gr.possessives.19 (cross-pack duplicate).",
+              "contentFingerprint": "cyrb53x2:08ec6d8d0d02841aa2f7ce3f9cfa"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0c798cd4e1d6740721e2cb220281"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0aca11d174643a1e23a97f65f0e0"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:14dd700713ca74174d9105065565"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:04efa1e6cdf30b0029b09a70117a"
+            },
+            {
+              "itemId": "p1.pu.apostrophes.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1f9f44161d3691119f7e11f1d2bb"
+            }
+          ]
+        },
+        {
+          "packId": "p1.pack.pu.dialogue",
+          "packVersion": 2,
+          "skillId": "PU.dialogue",
+          "sourceIds": [
+            "ab-elal-2022-overview"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass. \"Full stop\" is replaced by \"period\" throughout, which matches Canadian classroom usage. Items 12, 16 and 24 are rewritten as speech and are correct and on-skill; the v1 period-outside key is gone. The rule is correct North American/Canadian convention for Gr 3-5, the ladder places PU.dialogue Gr3->Gr4, and the outcomes resolve. All 24 items pass. SOURCE fail. The only cited source, ab-elal-2022-overview, resolves but states only that Grades 4-6 apply grammar, spelling and punctuation; it supports no clause of this rule. No relevant source is registered, so this is a registry gap, not a content defect.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "Item 24 period-outside key. Replaced in v2.",
+              "status": "resolved"
+            },
+            {
+              "id": "D2",
+              "description": "Items 12/24 tested scare quotes rather than dialogue. Rewritten as speech in v2.",
+              "status": "resolved"
+            },
+            {
+              "id": "D3",
+              "description": "\"Full stop\" vs \"period\" terminology. Changed to period in v2.",
+              "status": "resolved"
+            },
+            {
+              "id": "D4",
+              "description": "Source: only the overview is cited; no quotation-mark source is registered.",
+              "status": "open"
+            },
+            {
+              "id": "D5",
+              "description": "The rule says the end mark always goes inside the closing mark; that does not hold when the whole sentence is the question. Acceptable simplification; no item tests it.",
+              "status": "open"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:09776a45f3550f019a9783090715",
+          "results": [
+            {
+              "itemId": "p1.pu.dialogue.01",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:15b06bfdb233091be3dd31330978"
+            },
+            {
+              "itemId": "p1.pu.dialogue.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:0cdd516bbc073c0d0c59a93cdaec"
+            },
+            {
+              "itemId": "p1.pu.dialogue.03",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:045b11e3fb25f91fe5d0f83fc0d1"
+            },
+            {
+              "itemId": "p1.pu.dialogue.04",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct; option d mixes straight and curly marks (cosmetic).",
+              "contentFingerprint": "cyrb53x2:18fa2282c955ff1dde6895bcd86d"
+            },
+            {
+              "itemId": "p1.pu.dialogue.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0425967f443b021fcd0583d6f9b5"
+            },
+            {
+              "itemId": "p1.pu.dialogue.06",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:062b6c915922ec16920838caddf6"
+            },
+            {
+              "itemId": "p1.pu.dialogue.07",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:1c3f6cfe45572f1520e6658440b6"
+            },
+            {
+              "itemId": "p1.pu.dialogue.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0928ee738894c41ec736ab938334"
+            },
+            {
+              "itemId": "p1.pu.dialogue.09",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:1100b765b2bafc107e0806669b7e"
+            },
+            {
+              "itemId": "p1.pu.dialogue.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:189474ed1bb8d01484fddf1fd47a"
+            },
+            {
+              "itemId": "p1.pu.dialogue.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:162f547d68998f1051568baf57b3"
+            },
+            {
+              "itemId": "p1.pu.dialogue.12",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: now speech - Mia said, \"I lost my hat.\" keyed; exact words only inside the marks. Correct and on-skill.",
+              "contentFingerprint": "cyrb53x2:0f8c40f1db770515c770d389f2cf"
+            },
+            {
+              "itemId": "p1.pu.dialogue.13",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:18ead23fb436bc0b8d20a1322df3"
+            },
+            {
+              "itemId": "p1.pu.dialogue.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0feae0798184350b30f477c8caf7"
+            },
+            {
+              "itemId": "p1.pu.dialogue.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0da6a09edd8f190e6be8c003e7d5"
+            },
+            {
+              "itemId": "p1.pu.dialogue.16",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: reported part unmarked, \"Keep out!\" quoted - one set of marks. Correct and on-skill.",
+              "contentFingerprint": "cyrb53x2:00edc8b7282c2a17d4a7e1862f4f"
+            },
+            {
+              "itemId": "p1.pu.dialogue.17",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:06035d3f1c65c21c02de5fe9c5b7"
+            },
+            {
+              "itemId": "p1.pu.dialogue.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; nested single/double quotation marks in the prompt add reading load for Gr 3.",
+              "contentFingerprint": "cyrb53x2:020919e3142dd60240dea89ba7fb"
+            },
+            {
+              "itemId": "p1.pu.dialogue.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:180e8f364a25aa05c867dbe0aa47"
+            },
+            {
+              "itemId": "p1.pu.dialogue.20",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:12e3d3856c2c3905ceed0e5d48c4"
+            },
+            {
+              "itemId": "p1.pu.dialogue.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:11320bc9c50c101d18cb068381bf"
+            },
+            {
+              "itemId": "p1.pu.dialogue.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0a00bbec6b9ffc101060bcc88854"
+            },
+            {
+              "itemId": "p1.pu.dialogue.23",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"period\" terminology - correct.",
+              "contentFingerprint": "cyrb53x2:00dedf7c14f99f17d026d07d6ffd"
+            },
+            {
+              "itemId": "p1.pu.dialogue.24",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"We won!\" shouted Leo. keyed - correct; period-outside key removed. Same pattern as items 11/15 (fine for delayed review).",
+              "contentFingerprint": "cyrb53x2:1d521a4d7fde23182549ce2ca338"
+            }
+          ]
+        },
+        {
+          "packId": "f1.pack.ph.syllables",
+          "packVersion": 2,
+          "skillId": "PH.syllables",
+          "sourceIds": [
+            "ab-elal-2022-overview"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass. The stress options are all lower case (07/12/16/21), so the answer cue is gone. The rule now says \"usually\" and names stress. Item 20 (plintop -> plin-top, short i) is correct and unambiguous. All counts, divisions and stress keys are correct, and all 24 items pass. One open metadata defect remains: albertaPlacement still says \"Kindergarten to Grade 4\" / \"Alberta ends Phonics after Grade 4\". curriculum.k6.json has phonics lastGrade Grade 3, and the ladder has PH.syllables consolidated at Grade 3. The source of the error, curriculum.alberta.elal.json organizingIdeasNotInGrade56, still says Grade 4. The placement is still plausible (below Grade 5, no Gr5/6 outcome claimed), so this is not a learner-facing defect. SOURCE fail. The only cited source, ab-elal-2022-overview, resolves but states only that Grades 4-6 apply grammar, spelling and punctuation; it supports no clause of this rule. No relevant source is registered, so this is a registry gap, not a content defect.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "Stress-item capitalisation cue. Fixed in v2.",
+              "status": "resolved"
+            },
+            {
+              "id": "D2",
+              "description": "albertaPlacement \"Kindergarten to Grade 4\" conflicts with curriculum.k6.json (Phonics ends Grade 3) and curriculum.ladder.json (PH.syllables consolidated Grade 3). Root: curriculum.alberta.elal.json organizingIdeasNotInGrade56 Phonics lastGrade \"Grade 4\". Not changed in bc54e6b.",
+              "status": "open"
+            },
+            {
+              "id": "D3",
+              "description": "Source: only the overview is cited; no syllabication source or K-6 curriculum document is registered.",
+              "status": "open"
+            },
+            {
+              "id": "D4",
+              "description": "Pack claims no Gr5/6 outcome (correct).",
+              "status": "resolved"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:038c80c6dcb98f07a37219482941",
+          "results": [
+            {
+              "itemId": "f1.ph.syllables.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:14fbd63f23052c1e6f13621e1f3f"
+            },
+            {
+              "itemId": "f1.ph.syllables.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct with \"usually\"; \"tidbit\" is an uncommon word for Gr 3-5.",
+              "contentFingerprint": "cyrb53x2:06b1d7c13142c30c9c84ebda51d7"
+            },
+            {
+              "itemId": "f1.ph.syllables.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0163772bfec6b81d225020c9c95f"
+            },
+            {
+              "itemId": "f1.ph.syllables.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:10303543df27790a68c0f05842c0"
+            },
+            {
+              "itemId": "f1.ph.syllables.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1832405132750316d305acff8237"
+            },
+            {
+              "itemId": "f1.ph.syllables.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1d3e2c8db7dc5d1c353ffba45f77"
+            },
+            {
+              "itemId": "f1.ph.syllables.07",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options lower case - cue removed; PHO-to-graph key correct.",
+              "contentFingerprint": "cyrb53x2:0733ad3e4da20e1cf9b655d8700d"
+            },
+            {
+              "itemId": "f1.ph.syllables.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0c79b6f083f96e1d29f55f289739"
+            },
+            {
+              "itemId": "f1.ph.syllables.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1cd9ce55a834c402a433456c3d60"
+            },
+            {
+              "itemId": "f1.ph.syllables.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:02044ff57c4148004a5ab6767040"
+            },
+            {
+              "itemId": "f1.ph.syllables.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1fd351beb6e2ac19a028d7ffc907"
+            },
+            {
+              "itemId": "f1.ph.syllables.12",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options lower case - cue removed; in-vi-TA-tion key correct.",
+              "contentFingerprint": "cyrb53x2:0eaedd7e55cf920d1074ce90d247"
+            },
+            {
+              "itemId": "f1.ph.syllables.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:18cf5a9fcac5a10620480de957bf"
+            },
+            {
+              "itemId": "f1.ph.syllables.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0d4108599f7d440d9964dfb073cc"
+            },
+            {
+              "itemId": "f1.ph.syllables.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:10618a8cdd916a174c2267f3c6c4"
+            },
+            {
+              "itemId": "f1.ph.syllables.16",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options lower case - cue removed; com-MU-ni-ty key correct.",
+              "contentFingerprint": "cyrb53x2:0de88d6ae0afb303b48497a0277e"
+            },
+            {
+              "itemId": "f1.ph.syllables.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1c98b507489011102e23608afd6f"
+            },
+            {
+              "itemId": "f1.ph.syllables.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct (dictionary division tab-let).",
+              "contentFingerprint": "cyrb53x2:07e2b7e55574830b8122051a0c16"
+            },
+            {
+              "itemId": "f1.ph.syllables.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1a69a64addd6840768b34f79d5f0"
+            },
+            {
+              "itemId": "f1.ph.syllables.20",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: \"plintop\" -> plin-top, closed first syllable, short i. Unambiguous VCCV; correct.",
+              "contentFingerprint": "cyrb53x2:1c08b7df378e821696302b2d4a66"
+            },
+            {
+              "itemId": "f1.ph.syllables.21",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: all options lower case - cue removed; in-for-MA-tion key correct.",
+              "contentFingerprint": "cyrb53x2:0aa00939fe1bf5059d23e0c92d7f"
+            },
+            {
+              "itemId": "f1.ph.syllables.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0a1ae6dfca409c1db1771642ab54"
+            },
+            {
+              "itemId": "f1.ph.syllables.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:02aaac61cae2a605c8146164ceb8"
+            },
+            {
+              "itemId": "f1.ph.syllables.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:05e97ab35a50471e6f27d9bc967e"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.ph.digraphs-clusters",
+          "packVersion": 2,
+          "skillId": "PH.digraphs-clusters",
+          "sourceIds": [
+            "ab-elal-2022-overview"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass. Worked example 02 now uses drift (dr, ft clusters), so item 14 (stamp) is no longer pre-answered. All classifications and sound counts are correct, the placement statements resolve verbatim in curriculum.k6.json, and all 24 items pass. SOURCE fail. The only cited source, ab-elal-2022-overview, resolves but states only that Grades 4-6 apply grammar, spelling and punctuation; it supports no clause of this rule. No relevant source is registered, so this is a registry gap, not a content defect.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "Source: only the overview is cited; the Alberta K-6 curriculum (whose pages the placement cites) is not a registered source.",
+              "status": "open"
+            },
+            {
+              "id": "D2",
+              "description": "The silent-letter half cites the Grade 1 Knowledge line; phonics.grade3.03 is a closer match. Minor.",
+              "status": "open"
+            },
+            {
+              "id": "D3",
+              "description": "Placement ids and texts verified verbatim.",
+              "status": "resolved"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:08e4648fce0b110194bca8c97415",
+          "results": [
+            {
+              "itemId": "f2.ph.digraphs-clusters.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:06829e0464bc2b1b1292826f6b8c"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.02",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: knee vs drift - dr and ft clusters, nothing silent; correct.",
+              "contentFingerprint": "cyrb53x2:146944dcf771811afdf55fc78878"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1ae1e8d2f4989915174293cfd155"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:15a78480581c6616cb2fd77bb79b"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:07558489b15861008ceb3cc307cc"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:11cd074f7cb121199ab4fe81aded"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:055f04667e1682119322ec2c282d"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:177ad8fbcf2ca908cd4cc27da31b"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:185e585aeb1f7115d1c218d6b044"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:10f28868ac99e4012c33e91c8bb2"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0d9708ac792abe11d69abadc26da"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0ea98ec35c21981405221881dc99"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:03f2a60665a88018556f152e837e"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.14",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2 (re-versioned, content unchanged): mp cluster at end of stamp - correct; no longer repeats the worked example word.",
+              "contentFingerprint": "cyrb53x2:0d52c8c149c82b130145958b5080"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:13b5dbe8cfcef504e41371ae47ea"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:022cb0a3b62a2b113200d49de2a7"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:030c2a842b24620b268d667b3ba6"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1ab4d79ac4f46a19eef32d78aa08"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0fc50318b5241606bd40e3be036f"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:18ca52e4ad510603632cfdea99bc"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1dbab6e9d2ed8d05a0dc0515d9d0"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:064574e686e7390ed5fc451892b9"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0dcefe03db67af1eb5cdc82ff0e0"
+            },
+            {
+              "itemId": "f2.ph.digraphs-clusters.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:079c51be5d197b0d8ab15f8364e4"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.ph.blend-segment",
+          "packVersion": 1,
+          "skillId": "PH.blend-segment",
+          "sourceIds": [
+            "ab-elal-2022-overview"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass (unchanged since v1 review). All phoneme counts, blends and deletions are correct, the placement statements resolve verbatim, and the print-only modality is disclosed. All 24 items pass. SOURCE fail. The only cited source, ab-elal-2022-overview, resolves but states only that Grades 4-6 apply grammar, spelling and punctuation; it supports no clause of this rule. No relevant source is registered, so this is a registry gap, not a content defect.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "Source: only the overview is cited; nothing registered supports the phoneme-counting rule.",
+              "status": "open"
+            },
+            {
+              "id": "D2",
+              "description": "Oral outcomes delivered in print with /slash/ notation. Disclosed; accepted design choice.",
+              "status": "resolved"
+            },
+            {
+              "id": "D3",
+              "description": "Placement ids and texts verified verbatim.",
+              "status": "resolved"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:196fe9ad36df18069e19c701f556",
+          "results": [
+            {
+              "itemId": "f2.ph.blend-segment.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:18071393b75e5301c93d4b9a1555"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:17b9aa0078ef120c20d2d88d67e5"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:199d93b41ca86e16ee7f43d09913"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1dfade475acf5f09d839f8fb1b24"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:171743140a322b081116d3e400cc"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0f8b67607814ef1adf546eb1e018"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:182233e6340d691e92dbfa8a7902"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:13736f391f171b194913a7872e63"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:093693a24dae0606f9b6cd4de39c"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:096e57d6af36e11a3355615a5398"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:19ed6f971cc21901371d65883044"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:179ca18466173607f63b44ae0590"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1ebab3d7eefee118e71eea026d2f"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1dfab1ca80051d03c5a78f1935d3"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1297905c5b377c061b6f54da72d7"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0d97c8e0ac496502d40ff4d3a974"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1319744e5a7bef05cf12eb9b3026"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:175321d15161961b9399c15445a6"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:043a0f14d3b8e007c5b3fb5af1db"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0da487f8bd999318d504ebbb48fd"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:19792a4cec0d9b06b66b10a618fc"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:03a56df30c681b1efa60f71b0b46"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:005eea33e1b45a1cb5e87a110449"
+            },
+            {
+              "itemId": "f2.ph.blend-segment.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1adc853343f31c0e9fc4c4429324"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.sp.inflections",
+          "packVersion": 2,
+          "skillId": "SP.inflections",
+          "sourceIds": [
+            "ab-elal-2022-overview",
+            "ca-language-portal-double-consonant",
+            "ca-language-portal-silent-e",
+            "ca-language-portal-suffix-y"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass. The v2 rule is correct and complete for the items: drop silent e before a vowel ending; double after one short vowel + one consonant in a one-syllable word; never double w/x/y; consonant+y usually -> i before -es/-ed, kept before -ing; -es after s/x/sh/ch. The help steps match. All 24 items pass. SOURCE fail, but close: the three new sources resolve and are directly relevant. Their registered supports cover the silent-e drop, one-syllable doubling and y->i \"generally, with exceptions\" (the rule now says \"usually\", matching the source). They do not cover three clauses: never double w/x/y, keep y before -ing, and -es after s/x/sh/ch (tested by item 18). Live Language Portal pages could not be fetched in this pass (WebFetch socket closed), so support is judged against the registered `supports` text in sources.json only.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "Three relevant registered sources (double-consonant, silent-e, suffix-y) are now cited.",
+              "status": "resolved"
+            },
+            {
+              "id": "D2",
+              "description": "v1 doubling rule omitted \"one-syllable\" and the y-rule was stated as universal. Fixed in v2.",
+              "status": "resolved"
+            },
+            {
+              "id": "D3",
+              "description": "Source partial: no registered supports for \"never double w, x or y\", \"keep y before -ing\" or \"-es after s, x, sh, ch\". Extend the `supports` excerpts if the pages state them, or register a plural -es source.",
+              "status": "open"
+            },
+            {
+              "id": "D4",
+              "description": "Placement ids and texts verified verbatim; y->i disclosed as beyond the Alberta Gr3 text.",
+              "status": "resolved"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:1265682428a27c178b6fe4c5d189",
+          "results": [
+            {
+              "itemId": "f2.sp.inflections.01",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:015badd848ad030781307cfaf253"
+            },
+            {
+              "itemId": "f2.sp.inflections.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; common-error text calls \"carrys\" keeping y before -es/-ed, but carrys is the -s form (cosmetic).",
+              "contentFingerprint": "cyrb53x2:186680ad68e93d0b1bb2210d9434"
+            },
+            {
+              "itemId": "f2.sp.inflections.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:095d8b0b3d703c1749e486d085a5"
+            },
+            {
+              "itemId": "f2.sp.inflections.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1e075e3aaf8428033eb9271ad8d6"
+            },
+            {
+              "itemId": "f2.sp.inflections.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0f7232a974fa5412a95dd3e35ea8"
+            },
+            {
+              "itemId": "f2.sp.inflections.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0b78f91e21282c1d3fe3a8db1277"
+            },
+            {
+              "itemId": "f2.sp.inflections.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:02caa40392f1f51b5b0c57aed458"
+            },
+            {
+              "itemId": "f2.sp.inflections.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; \"English avoids ii\" has rare exceptions (skiing) - acceptable.",
+              "contentFingerprint": "cyrb53x2:050668c389ca7f0cf5ec91d1af15"
+            },
+            {
+              "itemId": "f2.sp.inflections.09",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0f3383575a77c30f864abdf605ce"
+            },
+            {
+              "itemId": "f2.sp.inflections.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:131d709a348ebd170b8d3e1f6ae9"
+            },
+            {
+              "itemId": "f2.sp.inflections.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1a918f8522543305001724b38691"
+            },
+            {
+              "itemId": "f2.sp.inflections.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0bd1c1627ec0a61257a5fae33720"
+            },
+            {
+              "itemId": "f2.sp.inflections.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:110f40bbab5d9805bf079031fb7f"
+            },
+            {
+              "itemId": "f2.sp.inflections.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:15317f38d3bec11e392f3e098719"
+            },
+            {
+              "itemId": "f2.sp.inflections.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0d89f3678b2cb216dc8488aa6293"
+            },
+            {
+              "itemId": "f2.sp.inflections.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:127a99452b8c4211fc81a05c6797"
+            },
+            {
+              "itemId": "f2.sp.inflections.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:00f338250571f10566f50e2ebc2d"
+            },
+            {
+              "itemId": "f2.sp.inflections.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Correct; now backed by the v2 rule clause \"after s, x, sh or ch, add -es\".",
+              "contentFingerprint": "cyrb53x2:00b4ee1d42b80113e4b220c8699f"
+            },
+            {
+              "itemId": "f2.sp.inflections.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:076e8f291dae4e09a4fbd01c080b"
+            },
+            {
+              "itemId": "f2.sp.inflections.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0244f6196fd5290310dcb3ad5d31"
+            },
+            {
+              "itemId": "f2.sp.inflections.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0258ef11b996b90f1d016ae8b3fe"
+            },
+            {
+              "itemId": "f2.sp.inflections.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1447ea7e02022303fc5ab2588363"
+            },
+            {
+              "itemId": "f2.sp.inflections.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0fdc40bf6c7d8a058acba70f487a"
+            },
+            {
+              "itemId": "f2.sp.inflections.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:12a3a55d824a1304dc6c794a697f"
+            }
+          ]
+        },
+        {
+          "packId": "f2.pack.ph.multisyllable",
+          "packVersion": 2,
+          "skillId": "PH.multisyllable",
+          "sourceIds": [
+            "ab-elal-2022-overview"
+          ],
+          "outcome": "fail",
+          "contentOutcome": "pass",
+          "sourceOutcome": "fail",
+          "findings": "CONTENT pass. Worked example 01 now uses unfaithfully, so item 09 (unhelpfully) is no longer pre-answered. All base words, chunkings and chunk counts are correct, and all 24 items pass. SOURCE fail. The only cited source, ab-elal-2022-overview, resolves but states only that Grades 4-6 apply grammar, spelling and punctuation; it supports no clause of this rule. No relevant source is registered, so this is a registry gap, not a content defect.",
+          "discrepancies": [
+            {
+              "id": "D1",
+              "description": "Source: only the overview is cited; nothing registered supports the affix-then-syllable chunking rule.",
+              "status": "open"
+            },
+            {
+              "id": "D2",
+              "description": "albertaOrganizingIdea is \"Phonics\" while two of three matching statements are Phonological Awareness/Vocabulary. Label only.",
+              "status": "open"
+            },
+            {
+              "id": "D3",
+              "description": "Placement ids and texts verified verbatim.",
+              "status": "resolved"
+            }
+          ],
+          "sourceGap": {
+            "status": "open",
+            "sourceOutcome": "fail"
+          },
+          "packFingerprint": "cyrb53x2:1527355e78d36712892ebfb242f7",
+          "results": [
+            {
+              "itemId": "f2.ph.multisyllable.01",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2: un + faith + ful + ly - correct.",
+              "contentFingerprint": "cyrb53x2:0c18b372bf43091990c8e3a7c8b7"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.02",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Worked example: accurate and on-skill.",
+              "contentFingerprint": "cyrb53x2:16e6dffcba746b03ea22ccf95017"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.03",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1e4e34f28e13b50a760d76f00192"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.04",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:01f5346babaac90c770387150d27"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.05",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0729017053f22502ba772a8a6869"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.06",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0d0a0dfad1eea40d9a25a7572372"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.07",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1572f77308581d1eb0103dfffe93"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.08",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:00f2b3890fda6e1fd4e554edf1c8"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.09",
+              "itemVersion": 2,
+              "outcome": "pass",
+              "note": "v2 (re-versioned, content unchanged): base \"help\" - correct; no longer answered by the worked example.",
+              "contentFingerprint": "cyrb53x2:0a2ee3469fb3aa04d95a83169c78"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.10",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0f8939f39681e31db9223ce66998"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.11",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:19bbe16000acf201228488dddb45"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.12",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0426fb1fc7fa6501d72954d3f390"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.13",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0a2182f6cad64b0c6aa0db6a051b"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.14",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:11f8b4e0e8aaef0fe448d2494e17"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.15",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:142ecd92593927165d36e01c343e"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.16",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:07a3a42a0b6d1d01e2b4eb992e6e"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.17",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1e1b3dab141566193d9480f3a51e"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.18",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1f11ac2b94428705246d3c016b21"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.19",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0d1852adc179b20824d5f8265b92"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.20",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1aacdc71779fc2093bde0eb0bcf3"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.21",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:1d15a92f964aba08e3c737b387af"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.22",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:051ff37e5faeaf0a7316b957af62"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.23",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:0214c238f69f4e02e472035447f9"
+            },
+            {
+              "itemId": "f2.ph.multisyllable.24",
+              "itemVersion": 1,
+              "outcome": "pass",
+              "note": "Key correct; explanation accurate; on-skill; age-appropriate.",
+              "contentFingerprint": "cyrb53x2:136a42ee77272d18b24a7d0792a2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

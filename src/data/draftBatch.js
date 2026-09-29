@@ -23,14 +23,21 @@
 // version against the correction's `toVersion`. Approving first would stamp every corrected item
 // `correction_not_installed` on the way past.
 
+//
+// Review state sits between the two. A batch item is reviewed and integrated only when the records
+// cover it at its current version and content (`applyReviewEvidence`), and the pilot approval can
+// only promote an item that is. So an item edited after its review falls back to draft here, and
+// the approval no longer reaches it.
 import { applyCorrections } from '../learning/contentCorrections.js';
 import { applyPilotApproval, applyPilotApprovalToEpisode } from '../learning/pilotApproval.js';
+import { applyReviewEvidence } from '../learning/independentReview.js';
+import { batchReviewEvidence } from './batchReviewEvidence.js';
 
-export function finaliseDraftPacks(packs, { corrections = [], approvals = [] } = {}) {
-  return packs.map((pack) => ({
-    ...pack,
-    items: applyCorrections(pack.items, corrections).map((item) => applyPilotApproval(item, approvals, pack.id)),
-  }));
+export function finaliseDraftPacks(packs, { corrections = [], approvals = [], reviews = batchReviewEvidence } = {}) {
+  return packs.map((pack) => {
+    const reviewed = applyReviewEvidence({ ...pack, items: applyCorrections(pack.items, corrections) }, reviews);
+    return { ...reviewed, items: reviewed.items.map((item) => applyPilotApproval(item, approvals, pack.id)) };
+  });
 }
 
 // Episodes carry their own lifecycle rather than a list of items, so they have their own mapper.
