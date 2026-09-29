@@ -3,12 +3,18 @@ import assert from 'node:assert/strict';
 import { acceptWorkedSolution, completeReflection, continueLesson, createLessonState, startLesson, submitLessonResult } from '../src/learning/lessonFlow.js';
 import { c0LessonCatalog } from '../src/data/lessonCatalog.js';
 
-test('each C0 lesson serves two examples and six independent questions, withholding quarantined items', async () => {
+// Every lesson a learner can open: the four C0 packs and the eight approved on 2026-09-29.
+test('each learner lesson serves two examples and six independent questions, withholding quarantined items', async () => {
   const { c0PilotPacks } = await import('../src/data/packs.c0.draft.js');
+  const { grammarPacks } = await import('../src/data/packs.grammar.draft.js');
+  const { punctuationPacks } = await import('../src/data/packs.punctuation.draft.js');
+  const { foundationPacks } = await import('../src/data/packs.foundation.draft.js');
+  const { foundation2Packs } = await import('../src/data/packs.foundation2.draft.js');
   const { isQuarantined } = await import('../src/learning/contentCorrections.js');
-  assert.equal(Object.keys(c0LessonCatalog).length, 4);
+  const packs = [...c0PilotPacks, ...grammarPacks, ...punctuationPacks, ...foundationPacks, ...foundation2Packs];
+  assert.equal(Object.keys(c0LessonCatalog).length, 12);
   for (const lesson of Object.values(c0LessonCatalog)) {
-    const pack = c0PilotPacks.find((candidate) => candidate.id === lesson.packId);
+    const pack = packs.find((candidate) => candidate.id === lesson.packId);
     // The pack still holds the full required inventory; quarantine withholds items from the
     // served lesson rather than deleting them, and the reduction is reported.
     assert.equal(pack.items.length, 24);

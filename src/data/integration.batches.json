@@ -75,7 +75,16 @@
         "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
         "Nothing in this batch is released, and nothing carries a status the parent did not grant."
       ],
-      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should.",
+      "countersignatures": [
+        {
+          "packId": "f1.pack.ph.syllables",
+          "packVersion": 2,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+        }
+      ]
     },
     {
       "id": "p1.integration.lesson-packs.v1",
@@ -116,7 +125,23 @@
         "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
         "Nothing in this batch is released, and nothing carries a status the parent did not grant."
       ],
-      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should.",
+      "countersignatures": [
+        {
+          "packId": "p1.pack.pu.apostrophes",
+          "packVersion": 2,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+        },
+        {
+          "packId": "p1.pack.pu.dialogue",
+          "packVersion": 2,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+        }
+      ]
     },
     {
       "id": "s1.integration.lesson-packs.v1",
@@ -198,7 +223,16 @@
         "Item ids are derived from the pack id and the row index and are stable across the builder consolidation. Held by the snapshot in test/packBuilder.test.js.",
         "Nothing in this batch is released, and nothing carries a status the parent did not grant."
       ],
-      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should.",
+      "countersignatures": [
+        {
+          "packId": "g1.pack.gr.possessives",
+          "packVersion": 2,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+        }
+      ]
     },
     {
       "id": "f2.integration.lesson-packs.v1",
@@ -237,7 +271,37 @@
         "Item ids are derived from the pack id and the row index, f2.<skill>.01 to .24 in order. Held by test/foundation2Packs.test.js.",
         "Nothing in this batch is released, and nothing carries a status the parent did not grant. Held by test/lifecycleRecords.test.js."
       ],
-      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should."
+      "whatThisDoesNotSay": "Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should.",
+      "countersignatures": [
+        {
+          "packId": "f2.pack.ph.digraphs-clusters",
+          "packVersion": 2,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+        },
+        {
+          "packId": "f2.pack.ph.blend-segment",
+          "packVersion": 1,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+        },
+        {
+          "packId": "f2.pack.sp.inflections",
+          "packVersion": 2,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+        },
+        {
+          "packId": "f2.pack.ph.multisyllable",
+          "packVersion": 2,
+          "countersignedBy": "parent",
+          "countersignedAt": "2026-09-29",
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+        }
+      ]
     }
   ]
 }

@@ -5,6 +5,7 @@
 // children outranks a grade label as a reason to teach something. What it does not do is change what
 // the content may CLAIM, and that is what these tests hold.
 import test from 'node:test';
+import batchApprovalData from '../src/data/pilotApproval.batches.json' with { type: 'json' };
 import assert from 'node:assert/strict';
 import { foundationItems, foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { validateContent } from '../src/learning/contentValidator.js';
@@ -58,8 +59,21 @@ test('every foundation question can be answered by looking, not listening', () =
   }
 });
 
+// The eight packs the parent approved on 2026-09-29 (R7). test/lifecycleRecords.test.js pins this list.
+const parentApproved = new Set(batchApprovalData.approvals.map((approval) => approval.scopeId));
+
+// PH.syllables was reviewed by two separate agents and approved by the parent on 2026-09-29; its
+// statuses are derived from those records (test/independentReview.test.js). PH.vowels is not.
 test('nothing in the foundation batch claims a status it has not earned', () => {
-  for (const pack of foundationPacks) {
+  const syllables = foundationPacks.find((pack) => pack.skillId === 'PH.syllables');
+  assert.ok(parentApproved.has(syllables.id));
+  assert.equal(syllables.status, 'integrated');
+  for (const item of syllables.items) {
+    assert.equal(item.reviewStatus, 'reviewed');
+    assert.equal(item.integrationStatus, 'integrated');
+    assert.equal(item.releaseStatus, 'pilot_approved');
+  }
+  for (const pack of foundationPacks.filter((candidate) => !parentApproved.has(candidate.id))) {
     assert.equal(pack.status, 'draft_needs_independent_challenge');
     for (const item of pack.items) {
       assert.equal(item.authorStatus, 'draft');

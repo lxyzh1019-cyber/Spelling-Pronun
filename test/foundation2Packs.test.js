@@ -151,20 +151,21 @@ test('each pack teaches against the wrong answers the diagnostic located', () =>
   assert.ok(keyed('PH.multisyllable').some(({ item, answer }) => /unhelpfully/.test(item.prompt) && answer === 'help'), 'unhelpfully → help is not asked');
 });
 
-// Nothing here reaches a child. It is draft, and the approval gate keeps it at /parent.
-test('the F2 packs are draft, listed for the parent, and reachable by no learner', () => {
-  const listed = draftPacksFor([{ batch: 'F2', packs: foundation2Packs }]);
-  assert.equal(listed.length, foundation2Packs.length);
+// Opened on 2026-09-29 at the parent's direction, after two separate agents checked every question.
+// The statuses are derived from those records (test/independentReview.test.js), and the pilot
+// approval is what lets a learner in: pilot track only, never released.
+test('the F2 packs are reviewed, approved by the parent, and reachable on the pilot track only', () => {
+  assert.deepEqual(draftPacksFor([{ batch: 'F2', packs: foundation2Packs }]), [], 'an approved pack is still listed as waiting');
   for (const pack of foundation2Packs) {
-    assert.equal(pack.status, 'draft_needs_independent_challenge');
+    assert.equal(pack.status, 'integrated');
     const sessionId = sessionIdForPack(pack);
     assert.ok(allLessonCatalog[sessionId], `${pack.id} is not in the catalog at all`);
-    assert.equal(lessonBySessionId(sessionId), null, `${pack.id} is draft but a learner can open it`);
+    assert.ok(lessonBySessionId(sessionId), `${pack.id} is approved but a learner cannot open it`);
     for (const item of pack.items) {
-      assert.equal(item.authorStatus, 'draft');
-      assert.equal(item.reviewStatus, 'needs_independent_challenge');
-      assert.equal(item.integrationStatus, 'not_integrated');
-      assert.equal(item.releaseStatus, 'not_released');
+      assert.equal(item.authorStatus, 'reviewed');
+      assert.equal(item.reviewStatus, 'reviewed');
+      assert.equal(item.integrationStatus, 'integrated');
+      assert.equal(item.releaseStatus, 'pilot_approved');
     }
   }
 });

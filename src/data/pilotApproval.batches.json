@@ -1,6 +1,79 @@
 {
   "note": "Approved-for-private-pilot decisions for every batch written after C0: C1 (vocabulary and comprehension), F1 (phonics), P1 (punctuation), S1 (sentences and editing), and the chapter 2 to 6 story episodes. Same meaning and same rules as pilotApproval.c0.json — a record here is the parent's explicit decision, and pilot attempts are kept in a separate evidence record that is never presented as validated mastery.",
-  "emptyOnPurpose": "The list below is empty because the parent has not approved any of this content, and Claude may never add a record to it. Until 2026-09-19 there was no mechanism at all: these packs did not run through applyPilotApproval, so a record would have done nothing even if one existed. The mechanism is wired now and the list is still the parent's to fill.",
   "howAnApprovalTakesEffect": "applyPilotApproval will only promote an item whose reviewStatus is 'reviewed' AND whose integrationStatus is 'integrated', that has no open correction against it, and that does not depend on audio nobody has listened to. So a record here is the last step, not the first: the challenge, review and integration records have to exist first. Claude drafts the integration record and a self-labelled challenge record; the review decision is the parent's alone.",
-  "approvals": []
+  "approvals": [
+    {
+      "scopeId": "g1.pack.gr.possessives",
+      "scopeType": "pack",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+    },
+    {
+      "scopeId": "p1.pack.pu.apostrophes",
+      "scopeType": "pack",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+    },
+    {
+      "scopeId": "p1.pack.pu.dialogue",
+      "scopeType": "pack",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+    },
+    {
+      "scopeId": "f1.pack.ph.syllables",
+      "scopeType": "pack",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item."
+    },
+    {
+      "scopeId": "f2.pack.ph.digraphs-clusters",
+      "scopeType": "pack",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+    },
+    {
+      "scopeId": "f2.pack.ph.blend-segment",
+      "scopeType": "pack",
+      "scopeVersion": 1,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+    },
+    {
+      "scopeId": "f2.pack.sp.inflections",
+      "scopeType": "pack",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+    },
+    {
+      "scopeId": "f2.pack.ph.multisyllable",
+      "scopeType": "pack",
+      "scopeVersion": 2,
+      "decision": "approved",
+      "decidedBy": "parent",
+      "decidedAt": "2026-09-29",
+      "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item."
+    }
+  ],
+  "whoFillsThis": "Only the parent decides what is in this list. Until 2026-09-29 it was empty. On 2026-09-29 (R7) the parent approved eight packs for the pilot in chat, and they were recorded here at the parent’s direction, each with the basis the parent gave and the pack version it covers. Every other pack after C0, and every story episode after chapter 1, is still unapproved, and Claude may not add a record on its own judgement."
 }

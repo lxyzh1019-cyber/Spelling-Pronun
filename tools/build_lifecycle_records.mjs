@@ -72,6 +72,32 @@ const BATCHES = [
 const allPacks = BATCHES.flatMap((entry) => entry.packs);
 const TODAY = '2026-09-19';
 
+// THE PARENT'S DECISIONS, R7, 2026-09-29. Recorded decisions, not something this script decides.
+// The parent approved the four existing packs the diagnostic flagged, and directed that all eight
+// be opened for the pilot once a separate agent had checked them. That check is in
+// reviews.independent.batches.json. The parent did not read the questions item by item, and each
+// basis says so in the parent's terms.
+//
+// Each decision names the pack version it was given against. A pack that moves to a new version is
+// not covered: its educational verdict, integration countersignature and pilot approval all stop
+// matching, and src/learning/independentReview.js returns it to draft. Changing a version here
+// without a new parent decision would be Claude signing on the parent's behalf.
+const PARENT_DECISION_DATE = '2026-09-29';
+const PARENT_BASIS_EXISTING = "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.";
+const PARENT_BASIS_F2 = 'Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.';
+const PARENT_DECISIONS = [
+  { packId: 'g1.pack.gr.possessives', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'p1.pack.pu.apostrophes', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'p1.pack.pu.dialogue', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'f1.pack.ph.syllables', packVersion: 2, basis: PARENT_BASIS_EXISTING },
+  { packId: 'f2.pack.ph.digraphs-clusters', packVersion: 2, basis: PARENT_BASIS_F2 },
+  { packId: 'f2.pack.ph.blend-segment', packVersion: 1, basis: PARENT_BASIS_F2 },
+  { packId: 'f2.pack.sp.inflections', packVersion: 2, basis: PARENT_BASIS_F2 },
+  { packId: 'f2.pack.ph.multisyllable', packVersion: 2, basis: PARENT_BASIS_F2 },
+];
+const decisionFor = (packId) => PARENT_DECISIONS.find((decision) => decision.packId === packId) || null;
+const SOURCE_GAP = 'Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.';
+
 // The rules every question was actually checked against. Naming the test file matters: it is how the
 // parent can see what the claim rests on without taking anyone's word for it.
 const AUTOMATED_CHECKS = [
@@ -197,6 +223,14 @@ function integrationRecord({ batch, packs, what, date = TODAY, evidence = INTEGR
     checks: ['catalog_resolution', 'route_derivation', 'approval_gate', 'id_stability', 'release_exclusion'],
     evidence,
     whatThisDoesNotSay: 'Integration is about wiring, not about whether the questions are any good. It says a child COULD reach this content once approved, and nothing about whether they should.',
+    // The parent countersigns pack by pack, at the version they were told about. The record as a
+    // whole stays uncountersigned while any pack in it is not.
+    ...(packs.some((pack) => decisionFor(pack.id)) ? {
+      countersignatures: packs.filter((pack) => decisionFor(pack.id)).map((pack) => {
+        const decision = decisionFor(pack.id);
+        return { packId: pack.id, packVersion: decision.packVersion, countersignedBy: 'parent', countersignedAt: PARENT_DECISION_DATE, basis: decision.basis };
+      }),
+    } : {}),
   };
 }
 
@@ -228,8 +262,9 @@ function educationalReviewForm({ batch, packs, what, date = TODAY }) {
   return {
     id: `${batch.toLowerCase()}.educational.v1`,
     stage: 'educational_source_review',
-    // The one field Claude may never fill.
-    status: 'awaiting_parent',
+    // The one field Claude may never fill on its own judgement. A pack's verdict below is filled only
+    // from PARENT_DECISIONS; the form is decided once every pack in it is.
+    status: packs.every((pack) => decisionFor(pack.id)) ? 'decided_by_parent' : 'awaiting_parent',
     reviewedBy: null,
     reviewedAt: null,
     verdict: null,
@@ -246,8 +281,17 @@ function educationalReviewForm({ batch, packs, what, date = TODAY }) {
       questionCount: pack.items.length,
       curriculumOutcomeIds: pack.curriculumOutcomeIds || [],
       albertaPlacement: pack.albertaPlacement?.albertaGrades || null,
-      // The judgement, per pack, left empty.
-      verdict: null,
+      // The version a verdict is about, so a verdict can never cover a later text.
+      packVersion: pack.version,
+      // The judgement, per pack: empty unless the parent gave one.
+      ...(decisionFor(pack.id) ? {
+        verdict: 'approved',
+        reviewedBy: 'parent',
+        reviewedAt: PARENT_DECISION_DATE,
+        decidedAtPackVersion: decisionFor(pack.id).packVersion,
+        basis: decisionFor(pack.id).basis,
+        openGap: SOURCE_GAP,
+      } : { verdict: null }),
       note: null,
     })),
     dimensions: ['curriculum_alignment', 'rule_accuracy', 'answer_accuracy', 'feedback_quality', 'age_accessibility'],
@@ -287,6 +331,23 @@ const educational = {
 fs.writeFileSync('src/data/integration.batches.json', JSON.stringify(integration, null, 2) + '\n');
 fs.writeFileSync('src/data/reviews.batches.json', JSON.stringify(challenge, null, 2) + '\n');
 fs.writeFileSync('src/data/reviews.educational.batches.json', JSON.stringify(educational, null, 2) + '\n');
+
+// The pilot approvals are the same decisions, so they are written from the same list.
+const approvalFile = JSON.parse(fs.readFileSync('src/data/pilotApproval.batches.json', 'utf8'));
+const { emptyOnPurpose: _retired, ...approvalHeader } = approvalFile;
+fs.writeFileSync('src/data/pilotApproval.batches.json', JSON.stringify({
+  ...approvalHeader,
+  whoFillsThis: 'Only the parent decides what is in this list. Until 2026-09-29 it was empty. On 2026-09-29 (R7) the parent approved eight packs for the pilot in chat, and they were recorded here at the parent\u2019s direction, each with the basis the parent gave and the pack version it covers. Every other pack after C0, and every story episode after chapter 1, is still unapproved, and Claude may not add a record on its own judgement.',
+  approvals: PARENT_DECISIONS.map((decision) => ({
+    scopeId: decision.packId,
+    scopeType: 'pack',
+    scopeVersion: decision.packVersion,
+    decision: 'approved',
+    decidedBy: 'parent',
+    decidedAt: PARENT_DECISION_DATE,
+    basis: decision.basis,
+  })),
+}, null, 2) + '\n');
 
 console.log(`integration records: ${integration.records.length}`);
 console.log(`self-challenge records: ${challenge.reviews.length}, findings: ${SELF_CHALLENGE_FINDINGS.length}`);

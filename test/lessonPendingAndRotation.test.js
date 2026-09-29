@@ -71,7 +71,13 @@ test('the real punctuation item sends a reasonable alternative to review, not to
 // DEF: the catalog served `independent` items `.slice(0, 6)` and nothing consumed `guided`, so ten of
 // every pack's twenty-four objects could never be reached by any learner.
 test('every authored item in a pack is reachable', async () => {
-  const { c0PilotPacks } = await import('../src/data/packs.c0.draft.js');
+  const { c0PilotPacks: c0Only } = await import('../src/data/packs.c0.draft.js');
+  const { grammarPacks } = await import('../src/data/packs.grammar.draft.js');
+  const { punctuationPacks } = await import('../src/data/packs.punctuation.draft.js');
+  const { foundationPacks } = await import('../src/data/packs.foundation.draft.js');
+  const { foundation2Packs } = await import('../src/data/packs.foundation2.draft.js');
+  // Every learner-visible lesson, C0 and the eight approved on 2026-09-29.
+  const c0PilotPacks = [...c0Only, ...grammarPacks, ...punctuationPacks, ...foundationPacks, ...foundation2Packs];
   const { buildReviewQueue } = await import('../src/learning/reviewQueue.js');
   const { EVIDENCE_TRACKS } = await import('../src/learning/pilotApproval.js');
   for (const lesson of Object.values(c0LessonCatalog)) {

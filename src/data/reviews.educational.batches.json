@@ -110,6 +110,7 @@
             "vocabulary.grade6.08"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -124,6 +125,7 @@
             "comprehension.grade6.11"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -138,6 +140,7 @@
             "comprehension.grade6.09"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -152,6 +155,7 @@
             "vocabulary.grade6.10"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         }
@@ -185,6 +189,7 @@
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Kindergarten to Grade 4",
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -196,7 +201,13 @@
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Kindergarten to Grade 4",
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         }
       ],
@@ -232,6 +243,7 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -246,6 +258,7 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -260,7 +273,13 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -274,7 +293,13 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -288,6 +313,7 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         }
@@ -323,6 +349,7 @@
             "conventions.grade6.06"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -338,6 +365,7 @@
             "conventions.grade6.06"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -352,6 +380,7 @@
             "writing.grade6.10"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -367,6 +396,7 @@
             "conventions.grade6.06"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         }
@@ -403,6 +433,7 @@
             "conventions.grade6.05"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -417,6 +448,7 @@
             "conventions.grade6.04"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -430,6 +462,7 @@
             "conventions.grade5.08"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -445,7 +478,13 @@
             "conventions.grade6.02"
           ],
           "albertaPlacement": null,
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -459,6 +498,7 @@
             "conventions.grade6.08"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         },
@@ -472,6 +512,7 @@
             "conventions.grade5.11"
           ],
           "albertaPlacement": null,
+          "packVersion": 1,
           "verdict": null,
           "note": null
         }
@@ -487,7 +528,7 @@
     {
       "id": "f2.educational.v1",
       "stage": "educational_source_review",
-      "status": "awaiting_parent",
+      "status": "decided_by_parent",
       "reviewedBy": null,
       "reviewedAt": null,
       "verdict": null,
@@ -505,7 +546,13 @@
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Grade 1 to Grade 3",
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -516,7 +563,13 @@
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Kindergarten to Grade 2",
-          "verdict": null,
+          "packVersion": 1,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 1,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -527,7 +580,13 @@
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Grade 1 to Grade 3",
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         },
         {
@@ -538,7 +597,13 @@
           "questionCount": 24,
           "curriculumOutcomeIds": [],
           "albertaPlacement": "Grade 1 to Grade 3",
-          "verdict": null,
+          "packVersion": 2,
+          "verdict": "approved",
+          "reviewedBy": "parent",
+          "reviewedAt": "2026-09-29",
+          "decidedAtPackVersion": 2,
+          "basis": "Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.",
+          "openGap": "Sources are an open gap: the separate educational and source pass (reviews.independent.batches.json) failed the source mapping for this pack. The parent logged it as not blocking the pilot.",
           "note": null
         }
       ],

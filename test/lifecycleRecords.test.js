@@ -27,23 +27,72 @@ import { c1StoryEpisodes } from '../src/data/storyEpisodes.js';
 const allPacks = [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks, ...foundation2Packs];
 const packIds = new Set(allPacks.map((pack) => pack.id));
 
-// THE RULE. Nothing Claude writes may carry a judgement attributed to anyone.
+// THE ONE EXCEPTION, and exactly as wide as the parent's words. On 2026-09-29 (R7) the parent, in
+// chat, approved the four existing packs the diagnostic flagged and directed that all eight be opened
+// after the independent check (choice B: record it in the parent's name). A record may carry a
+// verdict or a countersignature only if it names the parent, is dated 2026-09-29, is about one of
+// these eight packs, and carries that pack's basis word for word. Anything else is still Claude
+// signing on someone's behalf.
+const PARENT_DATE = '2026-09-29';
+const BASIS_EXISTING = "Given in chat 2026-09-29 (R7): approved; opened after the independent check at the parent's direction; questions not read item by item.";
+const BASIS_F2 = 'Given in chat 2026-09-29 (R7): open after the independent check; questions not read item by item.';
+const PARENT_DECIDED = new Map([
+  ['g1.pack.gr.possessives', BASIS_EXISTING],
+  ['p1.pack.pu.apostrophes', BASIS_EXISTING],
+  ['p1.pack.pu.dialogue', BASIS_EXISTING],
+  ['f1.pack.ph.syllables', BASIS_EXISTING],
+  ['f2.pack.ph.digraphs-clusters', BASIS_F2],
+  ['f2.pack.ph.blend-segment', BASIS_F2],
+  ['f2.pack.sp.inflections', BASIS_F2],
+  ['f2.pack.ph.multisyllable', BASIS_F2],
+]);
+
+// THE RULE. Nothing Claude writes may carry a judgement attributed to anyone, except the parent's
+// recorded decisions above.
 test('no record Claude drafted carries a review verdict', () => {
+  const verdictPacks = [];
   for (const form of educational.reviews) {
     assert.equal(form.verdict, null, `${form.id} has a verdict Claude must not set`);
     assert.equal(form.reviewedBy, null, `${form.id} names a reviewer`);
     assert.equal(form.reviewedAt, null, `${form.id} is dated as reviewed`);
-    assert.equal(form.status, 'awaiting_parent');
+    const allDecided = form.packs.every((pack) => PARENT_DECIDED.has(pack.packId));
+    assert.equal(form.status, allDecided ? 'decided_by_parent' : 'awaiting_parent');
     for (const pack of form.packs) {
-      assert.equal(pack.verdict, null, `${pack.packId} has a verdict Claude must not set`);
+      if (!PARENT_DECIDED.has(pack.packId)) {
+        assert.equal(pack.verdict, null, `${pack.packId} has a verdict Claude must not set`);
+        for (const field of ['reviewedBy', 'reviewedAt', 'basis', 'decidedAtPackVersion']) assert.equal(pack[field], undefined, `${pack.packId} carries ${field}`);
+        continue;
+      }
+      verdictPacks.push(pack.packId);
+      assert.equal(pack.verdict, 'approved');
+      assert.equal(pack.reviewedBy, 'parent');
+      assert.equal(pack.reviewedAt, PARENT_DATE);
+      assert.equal(pack.basis, PARENT_DECIDED.get(pack.packId), `${pack.packId} carries a basis the parent did not give`);
+      assert.equal(pack.decidedAtPackVersion, pack.packVersion, `${pack.packId}'s verdict is about another version`);
+      assert.match(pack.openGap, /^Sources are an open gap/, `${pack.packId} does not say its sources are an open gap`);
     }
   }
+  assert.deepEqual(verdictPacks.sort(), [...PARENT_DECIDED.keys()].sort(), 'the parent\u2019s verdicts are not exactly the eight packs');
   for (const episode of educational.episodesAwaitingReview) {
     assert.equal(episode.verdict, null, `${episode.episodeId} has a verdict Claude must not set`);
   }
-  // And nothing anywhere in these three files claims a person decided something.
-  const text = JSON.stringify([integration, challenge, educational]);
+  // The countersignatures follow the same rule.
+  const countersigned = integration.records.flatMap((record) => record.countersignatures || []);
+  assert.deepEqual(countersigned.map((entry) => entry.packId).sort(), [...PARENT_DECIDED.keys()].sort());
+  for (const entry of countersigned) {
+    assert.equal(entry.countersignedBy, 'parent');
+    assert.equal(entry.countersignedAt, PARENT_DATE);
+    assert.equal(entry.basis, PARENT_DECIDED.get(entry.packId), `${entry.packId} is countersigned on a basis the parent did not give`);
+  }
+  // And nothing else anywhere in these three files claims a person decided something. The parent's
+  // entries, having passed the checks above, are the only thing taken out before looking.
+  const withoutParent = JSON.parse(JSON.stringify([integration, challenge, educational]), (key, value) => {
+    if (value && typeof value === 'object' && PARENT_DECIDED.get(value.packId) === value.basis && (value.reviewedBy === 'parent' || value.countersignedBy === 'parent')) return undefined;
+    return value;
+  });
+  const text = JSON.stringify(withoutParent);
   assert.doesNotMatch(text, /"reviewedBy"\s*:\s*"(?!null)/, 'a record names a reviewer');
+  assert.doesNotMatch(text, /"countersignedBy"\s*:\s*"(?!null)/, 'a record names a countersigner');
   assert.doesNotMatch(text, /"decidedBy"\s*:\s*"/, 'a record names a decider');
   assert.doesNotMatch(text, /"verdict"\s*:\s*"/, 'a record carries a verdict');
 });
@@ -122,10 +171,13 @@ test('every drafted pack and episode has a review form waiting', () => {
 });
 
 // The records must not be able to release anything by existing. They are documents; the status
-// fields on each item are what the approval mapper reads, and Claude does not set those.
+// fields on each item are derived, and only the eight packs the parent decided can reach reviewed,
+// integrated or the pilot (test/independentReview.test.js holds what else that takes).
 test('writing these records releases nothing', () => {
   for (const pack of allPacks) {
     for (const item of pack.items) {
+      assert.notEqual(item.releaseStatus, 'released', `${item.id} was released by a record Claude wrote`);
+      if (PARENT_DECIDED.has(pack.id)) continue;
       assert.equal(item.releaseStatus, 'not_released', `${item.id} was released by a record Claude wrote`);
       assert.notEqual(item.reviewStatus, 'reviewed', `${item.id} is marked reviewed`);
       assert.notEqual(item.integrationStatus, 'integrated', `${item.id} is marked integrated`);

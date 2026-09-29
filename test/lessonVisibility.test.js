@@ -59,9 +59,9 @@ test('only approved content is reachable by a learner', () => {
       assert.ok(allLessonCatalog[sessionId], `${pack.id} vanished instead of being withheld`);
     }
   }
-  // Today: the four C0 packs are approved and the six drafted ones are not.
-  assert.equal(Object.keys(c0LessonCatalog).length, 4);
-  assert.equal(Object.keys(allLessonCatalog).length - Object.keys(c0LessonCatalog).length, allPacks.length - 4);
+  // Today: the four C0 packs and the eight the parent approved on 2026-09-29; every other pack is draft.
+  assert.equal(Object.keys(c0LessonCatalog).length, 12);
+  assert.equal(Object.keys(allLessonCatalog).length - Object.keys(c0LessonCatalog).length, allPacks.length - 12);
 });
 
 // A pack with no approval must not become visible by having no independent items to check, which is
@@ -93,7 +93,7 @@ test('every tile points at a lesson that exists, and no draft has one', () => {
     assert.ok(tile.icon && tile.color, `${tile.to} has no style`);
     // A tile states a grade placement only when its pack does. Inventing one would be exactly the
     // false confidence the placement field exists to avoid.
-    if (tile.placement) assert.equal(tile.placement, lesson.albertaPlacement.albertaGrades);
+    if (tile.placement) assert.equal(tile.placement, `Alberta places this at ${lesson.albertaPlacement.albertaGrades}`);
     else assert.equal(lesson.albertaPlacement, undefined, `${tile.to} hides a placement its pack states`);
   }
 });
