@@ -1,5 +1,4 @@
 {
-  "model": "opus",
   "permissions": {
     "defaultMode": "plan",
     "deny": [
@@ -39,31 +38,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" plan-gate.py'"
-          },
-          {
-            "type": "command",
-            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" skill-router.py'"
+            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" dispatch.py'"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash|Agent|Task|WebFetch|mcp__.*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" routing-guard.py'"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" git-guard.py'"
+            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" dispatch.py'"
           }
         ]
       }
@@ -73,19 +59,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" record-guard.py'"
-          },
-          {
-            "type": "command",
-            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" completion-guard.py'"
-          },
-          {
-            "type": "command",
-            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" validation-line.py'"
+            "command": "bash -c 'p=$(command -v python3 || command -v python); exec \"$p\" -B \"$CLAUDE_PROJECT_DIR/.claude/hz-loader.py\" dispatch.py'"
           }
         ]
       }
     ]
-  },
-  "advisorModel": "fable"
+  }
 }
