@@ -195,13 +195,152 @@ test('the markdown export states no proportion and passes no verdict, and names 
   assert.equal(diagnosticReportMarkdown(null), '');
 });
 
-test('source guard: the parent page exports the diagnostic report for the selected learner and the finish card says so', async () => {
+// The form is 48 questions long and a child can stop anywhere. A report that did not say how much
+// of it was answered would read the same after nine questions as after forty-eight.
+test('the report counts the questions and the answers it actually has', () => {
+  const nine = diagnosticItems.slice(0, 9).map((item) => ({ itemId: item.id, correct: true }));
+  const report = buildDiagnosticReport(diagnosticForm, nine, { ladder });
+  assert.equal(report.itemCount, diagnosticItems.length);
+  assert.equal(report.itemCount, 48);
+  assert.equal(report.answeredCount, 9);
+  // The same rule the skill counts use: a retry is not a second answer.
+  const withRetry = buildDiagnosticReport(diagnosticForm, [...nine, { itemId: diagnosticItems[0].id, correct: false }], { ladder });
+  assert.equal(withRetry.answeredCount, 9, 'a retry was counted as another answer');
+  assert.equal(buildDiagnosticReport(diagnosticForm, [], { ladder }).answeredCount, 0);
+  assert.equal(buildDiagnosticReport(diagnosticForm, [], { ladder }).itemCount, 48);
+});
+
+// "Needs building" says what to teach; the choice the child actually made says where the idea went
+// wrong. Both come from the item, never from a guess about the child.
+test('a located wrong answer carries the choice the child actually made', () => {
+  const item = diagnosticItems.find((row) => row.skillId === 'PU.apostrophes');
+  const wrongChoice = item.choices.find((choice) => choice.id !== item.acceptedAnswers[0]);
+  const rightItem = diagnosticItems.find((row) => row.skillId === 'SE.complete');
+  const report = buildDiagnosticReport(diagnosticForm, [
+    { itemId: item.id, choiceId: wrongChoice.id, correct: false },
+    { itemId: rightItem.id, choiceId: rightItem.acceptedAnswers[0], correct: true },
+  ], { ladder });
+  const located = report.skills.find((skill) => skill.skillId === item.skillId).locates;
+  assert.equal(located.length, 1);
+  assert.equal(located[0].chose, wrongChoice.text);
+  assert.deepEqual(report.skills.find((skill) => skill.skillId === rightItem.skillId).locates, [], 'a right answer located something');
+  // An answer recorded before the choice was kept still reports, and never invents one.
+  const older = buildDiagnosticReport(diagnosticForm, [{ itemId: item.id, correct: false }], { ladder });
+  assert.equal(older.skills.find((skill) => skill.skillId === item.skillId).locates[0].chose, undefined);
+});
+
+// The lead a parent reads first, and the one place a part-way run could be mistaken for a finished
+// one — which is the whole reason the count is in it.
+test('the summary line states how much was answered and what needs building', async () => {
+  const { diagnosticSummaryLine } = await import('../src/learning/diagnosticReport.js');
+  const scattered = new Set(['PU.apostrophes', 'SP.confusables', 'PH.vowels']);
+  const full = buildDiagnosticReport(diagnosticForm, diagnosticItems.map((item) => ({ itemId: item.id, correct: !scattered.has(item.skillId) })), { ladder });
+  const summary = diagnosticSummaryLine(full);
+  assert.match(summary, /48 of 48 answered/);
+  for (const skillId of scattered) assert.ok(summary.includes(skillId), `${skillId} is missing from the summary`);
+  assert.doesNotMatch(summary, /%|percent|score|behind|failed|weak/i, 'the summary judges the child');
+
+  const nine = buildDiagnosticReport(diagnosticForm, diagnosticItems.slice(0, 9).map((item) => ({ itemId: item.id, correct: false })), { ladder });
+  const partial = diagnosticSummaryLine(nine);
+  assert.match(partial, /9 of 48 answered/);
+  assert.match(partial, /part-way/, 'a nine-question run did not say it was part-way through');
+  assert.doesNotMatch(partial, /finished|all done|whole form is answered/i, 'a nine-question run read as a finished one');
+  assert.equal(diagnosticSummaryLine(null), '');
+});
+
+// The item bank's own English is not the report's voice. One question locates "comparison (than)
+// from sequence (then)" and a Grade 3 sentence choice is about a path "behind the school": both are
+// content being quoted back, on a located-item line. The wording guards below therefore run over
+// everything the report itself wrote — every line that is not a located item — while the
+// no-arithmetic guard runs over the whole document, because a total would be the report's own doing
+// wherever it appeared.
+const reportsOwnWords = (markdown) => markdown.split('\n').filter((line) => !line.startsWith('- (')).join('\n');
+
+// One document for every child who has answered, because the alternative was switching profiles and
+// exporting one at a time. Listing children together is exactly where a ranking would creep in, so
+// the guard that matters here is the one that says there is no arithmetic across children at all.
+test('the combined report gives every child their own section and never compares them', async () => {
+  const { combinedDiagnosticReportMarkdown } = await import('../src/learning/diagnosticReport.js');
+  // Jenn stopped after nine and got them all wrong, including the sentence question whose own
+  // choices contain the word "behind"; Jess answered all forty-eight and got all but one skill right.
+  const jennItems = diagnosticItems.slice(0, 9);
+  const jenn = buildDiagnosticReport(diagnosticForm, jennItems.map((item) => ({
+    itemId: item.id,
+    choiceId: item.choices.find((choice) => choice.id !== item.acceptedAnswers[0]).id,
+    correct: false,
+  })), { ladder });
+  const jess = buildDiagnosticReport(diagnosticForm, diagnosticItems.map((item) => ({
+    itemId: item.id,
+    choiceId: item.acceptedAnswers[0],
+    correct: item.skillId !== 'SP.confusables',
+  })), { ladder });
+  const entries = [{ learnerName: 'Jenn', report: jenn }, { learnerName: 'Jess', report: jess }];
+  const markdown = combinedDiagnosticReportMarkdown(entries, { today: '2026-09-28' });
+
+  // Both children, each with their own complete section and their own count.
+  assert.ok(markdown.includes('what it found for Jenn'), 'Jenn has no section');
+  assert.ok(markdown.includes('what it found for Jess'), 'Jess has no section');
+  assert.match(markdown, /9 of 48 answered/);
+  assert.match(markdown, /48 of 48 answered/);
+  assert.ok(markdown.includes(jenn.separateAppQuestion.detail), "Jenn's own reading is missing");
+  assert.ok(markdown.includes(jess.separateAppQuestion.detail), "Jess's own reading is missing");
+  assert.match(markdown, /Exported 2026-09-28/);
+
+  // Profile order, never result order: Jess answered more and got more right, and still comes second.
+  assert.ok(markdown.indexOf('for Jenn') < markdown.indexOf('for Jess'), 'the children were reordered by result');
+  const reversed = combinedDiagnosticReportMarkdown([entries[1], entries[0]], { today: '2026-09-28' });
+  assert.ok(reversed.indexOf('for Jess') < reversed.indexOf('for Jenn'), 'the order does not follow the profile list');
+
+  // No ranking, and no arithmetic across children: 9 + 48 and 48 + 48 appear nowhere.
+  assert.doesNotMatch(reportsOwnWords(markdown), /rank|compared|comparison|better|worse|ahead of|stronger|weaker|highest|lowest|between the children|across the children|altogether/i, 'the combined report compares the children');
+  assert.doesNotMatch(markdown, /\b57\b|\b96\b/, 'the combined report totals the children');
+  assert.doesNotMatch(reportsOwnWords(markdown), /total/i, 'the combined report totals something');
+  assert.equal(combinedDiagnosticReportMarkdown([], { today: '2026-09-28' }), '');
+});
+
+// The wording rule, carried into the combined document. "behind" survives in one place only: on a
+// located-item line, inside the quotation of the choice the child picked, where it is the question's
+// own English — a Grade 3 sentence about a path behind a school — and not a verdict about anybody.
+test('the combined report still carries the mastery note and passes no verdict on any child', async () => {
+  const { combinedDiagnosticReportMarkdown } = await import('../src/learning/diagnosticReport.js');
+  const wrongEverything = (item) => ({
+    itemId: item.id,
+    choiceId: item.choices.find((choice) => choice.id !== item.acceptedAnswers[0]).id,
+    correct: false,
+  });
+  const report = buildDiagnosticReport(diagnosticForm, diagnosticItems.map(wrongEverything), { ladder });
+  const markdown = combinedDiagnosticReportMarkdown([
+    { learnerName: 'Jenn', report },
+    { learnerName: 'Jess', report },
+  ], { today: '2026-09-28' });
+  assert.ok(markdown.includes(report.masteryNote), 'the combined report dropped the mastery note');
+  assert.ok(markdown.includes('chose "Running along the wet path behind the school."'), 'the fixture never exercised the quoted-choice case');
+  assert.doesNotMatch(reportsOwnWords(markdown), /%|percent|score|behind|failed|weak/i, 'the combined export judges a child');
+});
+
+test('source guard: both diagnostic surfaces export every child through the one shared component', async () => {
   const { readFile } = await import('node:fs/promises');
-  const parent = await readFile(new URL('../src/pages/ParentPage.jsx', import.meta.url), 'utf8');
-  assert.match(parent, /diagnosticReportMarkdown\(/);
-  assert.match(parent, /Copy the report/);
-  assert.match(parent, /readOnly/);
+  const read = (name) => readFile(new URL(name, import.meta.url), 'utf8');
+  const share = await read('../src/components/DiagnosticShare.jsx');
+  assert.match(share, /combinedDiagnosticReportMarkdown\(/);
+  assert.match(share, /readOnly/);
+  assert.match(share, />Share</);
+  assert.match(share, />Save as a file</);
+  assert.match(share, />Print or save as PDF</);
+  // The status line says what actually happened, so it reads `via` rather than assuming success.
+  assert.match(share, /\.via/);
+  assert.match(share, /was blocked/);
+
+  // One implementation, both surfaces — and neither keeps a copy button or a switch-profiles
+  // instruction of its own, because neither is true any more.
+  for (const page of ['../src/pages/ParentPage.jsx', '../src/pages/DiagnosticPage.jsx']) {
+    const source = await read(page);
+    assert.match(source, /<DiagnosticShare/, `${page} does not render the shared export component`);
+    assert.doesNotMatch(source, /Copy the report/, `${page} still has a copy button of its own`);
+    assert.doesNotMatch(source, /Switch profiles to export/, `${page} still tells the parent to switch profiles`);
+  }
+  // The parent page keeps its own on-screen report, which IS about the learner selected there.
+  const parent = await read('../src/pages/ParentPage.jsx');
   assert.match(parent, /currently selected/);
-  const page = await readFile(new URL('../src/pages/DiagnosticPage.jsx', import.meta.url), 'utf8');
-  assert.match(page, /selected learner/);
+  assert.match(parent, /buildDiagnosticReport\(/);
 });

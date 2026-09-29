@@ -1,12 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWords } from '../context/WordProvider';
+import DiagnosticShare from '../components/DiagnosticShare.jsx';
 import { diagnosticForm } from '../data/diagnostic.k4.draft.js';
 import { buildDiagnosticReport } from '../learning/diagnosticReport.js';
 import {
   answerDiagnostic,
   attemptsFrom,
   clearDiagnosticRun,
+  readDiagnosticRun,
   resumeDiagnosticRun,
   writeDiagnosticRun,
 } from '../persistence/diagnosticStore.js';
@@ -58,6 +60,21 @@ export default function DiagnosticPage() {
     () => (run ? buildDiagnosticReport(diagnosticForm, attemptsFrom(run), { ladder }) : null),
     [run],
   );
+
+  // Every child who has answered, in profile order, read through the same store-to-report chain the
+  // parent page uses. The finish screen used to send the parent away to export one child at a time;
+  // this is what it sends instead, and it needs no profile to be selected. `run` is in the
+  // dependencies because each answer writes to the store this reads: it is the refresh signal, not
+  // an input.
+  const entries = useMemo(() => (profiles || []).flatMap((profile) => {
+    const attempts = attemptsFrom(readDiagnosticRun(globalThis.localStorage, profile.id, diagnosticForm.id));
+    if (!attempts.length) return [];
+    return [{
+      learnerId: profile.id,
+      learnerName: profile.name,
+      report: buildDiagnosticReport(diagnosticForm, attempts, { ladder }),
+    }];
+  }), [profiles, run]);
 
   // The parent gate, the same shape the Family Pilot checks use: name the child, acknowledge what is
   // being recorded, and only then does anything open.
@@ -139,7 +156,8 @@ export default function DiagnosticPage() {
           <h2>Finished</h2>
           <p>Every question is answered. What it found is on the parent page, with the skills to build next.</p>
           <p className={styles.meta}>{report.masteryNote}</p>
-          <p className={styles.meta}>The parent page shows the report for whichever learner is selected there, and has a <strong>Copy the report</strong> button. To copy {learnerName(run.learnerId)}&rsquo;s, make them the selected learner first.</p>
+          <h3>Send what it found back</h3>
+          <DiagnosticShare entries={entries} today={new Date().toISOString().slice(0, 10)} />
           <div className={styles.actions}>
             <Link className={styles.primary} to="/parent">See what it found</Link>
             <button

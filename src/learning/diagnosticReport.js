@@ -59,7 +59,19 @@ export function buildDiagnosticReport(form, attempts = [], { ladder = null } = {
     if (attempt.correct) entry.correct += 1;
     // What a wrong answer points at. This is the output the parent can act on: not "weak on
     // punctuation" but "the apostrophe on a plural that already ends in s".
-    else entry.locates.push({ itemId: item.id, locates: item.locates, probesGrade: item.probesGrade });
+    //
+    // `chose` is the text of the answer that was picked, resolved from the item's own choices. It
+    // says where the idea went wrong rather than only that it did — and it is never invented: an
+    // answer recorded without a `choiceId` carries no `chose` at all.
+    else {
+      const chose = item.choices?.find((choice) => choice.id === attempt.choiceId)?.text;
+      entry.locates.push({
+        itemId: item.id,
+        locates: item.locates,
+        probesGrade: item.probesGrade,
+        ...(chose ? { chose } : {}),
+      });
+    }
   }
 
   const skills = [...bySkill.values()]
@@ -90,6 +102,10 @@ export function buildDiagnosticReport(form, attempts = [], { ladder = null } = {
     // Stated in the output, not only in a comment, so anything reading this cannot mistake it.
     producesMasteryEvidence: false,
     masteryNote: 'This locates gaps; it is not mastery evidence. Every question in it is draft content, and draft content can never count as independent evidence however it is answered.',
+    // How much of the form this reading is built on. A child can stop anywhere, and without these
+    // two numbers nine questions and forty-eight questions produce reports that read the same.
+    itemCount: items.length,
+    answeredCount: answers.length,
     skillCount: skills.length,
     counts,
     skills,
@@ -142,6 +158,22 @@ const STATE_LABELS = {
   not_enough_evidence: 'not enough evidence yet',
 };
 
+// The two or three lines that go first, so a report sent as a message says what it found before the
+// reader has scrolled anywhere. It carries the completion count because that is the one thing a
+// reader cannot infer: a part-way run and a finished one look identical without it.
+export function diagnosticSummaryLine(report) {
+  if (!report) return '';
+  const needing = report.separateAppQuestion?.needing || [];
+  const lines = [`${report.answeredCount ?? 0} of ${report.itemCount ?? 0} answered.`];
+  lines.push(needing.length
+    ? `Needs building: ${needing.join(', ')}.`
+    : 'Nothing answered so far came back needing to be built.');
+  lines.push((report.answeredCount ?? 0) < (report.itemCount ?? 0)
+    ? 'This is a part-way run. The questions nobody answered say nothing either way.'
+    : 'The whole form is answered.');
+  return lines.join('\n');
+}
+
 export function diagnosticReportMarkdown(report, { learnerName = '', today = '' } = {}) {
   if (!report) return '';
   const who = learnerName || 'the selected learner';
@@ -150,6 +182,8 @@ export function diagnosticReportMarkdown(report, { learnerName = '', today = '' 
     '',
     `Exported ${today || 'today'}. Form ${report.formId || 'unknown'}.`,
     'This report is for the learner who was selected on the parent page when it was copied.',
+    '',
+    diagnosticSummaryLine(report),
     '',
     report.masteryNote,
     '',
@@ -167,12 +201,38 @@ export function diagnosticReportMarkdown(report, { learnerName = '', today = '' 
     const finishes = skill.albertaFinishesAt ? ` Alberta finishes with this at ${skill.albertaFinishesAt}.` : '';
     lines.push(`${skill.correct} of ${skill.answered} right.${finishes}`);
     if (skill.locates?.length) {
-      for (const located of skill.locates) lines.push(`- (${located.probesGrade}) ${located.locates}`);
+      for (const located of skill.locates) {
+        lines.push(`- (${located.probesGrade}) ${located.locates}${located.chose ? ` — chose "${located.chose}"` : ''}`);
+      }
     } else {
       lines.push('Nothing located.');
     }
     lines.push('');
   }
   lines.push('Paste this into the next conversation. It locates gaps in content; it is not a judgement of the child and it is not mastery evidence.');
+  return lines.join('\n');
+}
+
+// Every child who has answered, in one document — because the alternative was exporting one child,
+// switching profiles, and exporting again, which is how a second child's result gets forgotten.
+//
+// Putting children in one document is also the place a ranking would appear, so this deliberately
+// does none of the things that would make one: no count across children, no sum, no ordering by
+// result. `entries` are emitted in the order they are given, which is the order the profiles are in
+// on the device, and each child's section is the unchanged output of `diagnosticReportMarkdown` —
+// the same words they would get on their own.
+export function combinedDiagnosticReportMarkdown(entries = [], { today = '' } = {}) {
+  const rows = (entries || []).filter((entry) => entry?.report);
+  if (!rows.length) return '';
+  const lines = [
+    '# Below-grade diagnostic — what it found',
+    '',
+    `Exported ${today || 'today'}. Every child who has answered has their own section below, in the order they appear on this device.`,
+    'Each section reads on its own. What one child needs built says nothing about another.',
+    '',
+  ];
+  for (const row of rows) {
+    lines.push('---', '', diagnosticReportMarkdown(row.report, { learnerName: row.learnerName, today }), '');
+  }
   return lines.join('\n');
 }
