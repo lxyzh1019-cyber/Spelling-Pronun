@@ -145,8 +145,9 @@ const TILE_STYLE = {
   default: { icon: '📚', color: '#475569' },
 };
 
-// `gradeLadder` is a parameter only so a test can pass a verified fixture; the app always uses the
-// real one, which is unverified, which is why no tile shows a grade today.
+// `gradeLadder` is a parameter only so a test can pass a fixture; the app always uses the real one.
+// The parent accepted it on 2026-09-29 (as assumed, against the April 2022 edition), so a tile shows
+// a grade once the learner has one recorded. An unaccepted ladder shows none; a test holds both.
 export function learnerLessonTiles({ learnerGrade = null, gradeLadder = ladder } = {}) {
   return Object.values(c0LessonCatalog).map((lesson) => {
     const style = TILE_STYLE[lesson.skillId] || TILE_STYLE[lesson.skillId.split('.')[0]] || TILE_STYLE.default;

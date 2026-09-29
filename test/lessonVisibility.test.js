@@ -120,15 +120,21 @@ test('a pack that states where Alberta places it keeps that through to the tile'
 // and a learner grade to compare against. Two gates, and the test breaks each one separately —
 // otherwise "shows nothing" passes for the wrong reason, because nothing is wired at all.
 test('a tile names a grade only once the mapping is verified and the learner has one', () => {
-  const verified = { ...ladder, mappingReviewedBy: 'parent (fixture)' };
+  // The real ladder carries the parent's dated acceptance (2026-09-29, as assumed, April 2022
+  // edition) and is what the app uses. `unverified` is the same ladder without it.
+  assert.equal(ladder.mappingReviewedBy, 'parent');
+  assert.equal(ladder.mappingReviewedAt, '2026-09-29');
+  const verified = ladder;
+  const unverified = { ...ladder, mappingReviewedBy: null };
   // Neither gate open: the four C0 packs have no albertaPlacement of their own, so no grade at all.
-  for (const tile of learnerLessonTiles()) assert.equal(tile.relation, undefined);
+  for (const tile of learnerLessonTiles({ gradeLadder: unverified })) assert.equal(tile.relation, undefined);
   // Verified but no learner grade: still nothing, because there is nothing to be relative to.
-  for (const tile of learnerLessonTiles({ gradeLadder: verified })) assert.equal(tile.relation, undefined);
+  for (const tile of learnerLessonTiles()) assert.equal(tile.relation, undefined);
   // A learner grade but an unverified mapping: still nothing.
-  for (const tile of learnerLessonTiles({ learnerGrade: 'Grade 5' })) assert.equal(tile.relation, undefined);
-  // Both: every tile is placed, and SE.complete is the one Alberta finishes with at Grade 3.
-  const placed = learnerLessonTiles({ learnerGrade: 'Grade 5', gradeLadder: verified });
+  for (const tile of learnerLessonTiles({ learnerGrade: 'Grade 5', gradeLadder: unverified })) assert.equal(tile.relation, undefined);
+  // Both, through the app's default ladder: every tile is placed, and SE.complete is the one Alberta
+  // finishes with at Grade 3.
+  const placed = learnerLessonTiles({ learnerGrade: 'Grade 5' });
   assert.equal(placed.length, Object.keys(c0LessonCatalog).length);
   for (const tile of placed) {
     assert.ok(['revisiting', 'at_grade', 'ahead'].includes(tile.relation), `${tile.to} has no placement`);

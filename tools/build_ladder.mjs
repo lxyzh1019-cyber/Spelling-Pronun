@@ -19,12 +19,12 @@ const k6 = JSON.parse(fs.readFileSync(new URL('../src/data/curriculum.k6.json', 
 const sourceEdition = JSON.parse(fs.readFileSync(new URL('../src/data/curriculum.alberta.elal.json', import.meta.url), 'utf8')).source;
 
 // THE PARENT'S ACCEPTANCE OF THIS LADDER. A recorded decision, not something this script decides:
-// given in chat on 2026-09-29 (R7), as "approved" and "accepted as assumed", without checking the
-// rungs one by one. It is written here, beside the build, so that regenerating the ladder emits it
-// instead of wiping it.
+// given in chat on 2026-09-29 (R7) in these words, "assumed this is correct and date it. As
+// government is modifying curriculum", without checking the rungs one by one. It is written here,
+// beside the build, so that regenerating the ladder emits it instead of wiping it.
 //
 // It carries over only while it is still about the same thing. The parent's stated reason for
-// recording the edition is that the government is changing the curriculum, so an acceptance given
+// dating it is that the government is changing the curriculum, so an acceptance given
 // against the April 2022 edition must not silently cover a newer one; and an acceptance of these
 // rungs must not silently cover different rungs. So it names the edition and a fingerprint of the
 // rungs it was given against. If either no longer matches, the build emits no reviewer, learners are
@@ -34,7 +34,7 @@ export const PARENT_ACCEPTANCE = {
   mappingReviewedBy: 'parent',
   mappingReviewedAt: '2026-09-29',
   mappingReviewScope: 'accepted as assumed, not checked rung by rung',
-  mappingReviewBasis: 'Given in chat 2026-09-29 (R7): accepted as assumed, not checked rung by rung. The parent asked for the edition to be recorded because the government is modifying the curriculum, so a newer edition is a reason to check the ladder again.',
+  mappingReviewBasis: 'Given in chat 2026-09-29 (R7): "assumed this is correct and date it. As government is modifying curriculum". Accepted as assumed, not checked rung by rung, against the April 2022 edition; because the curriculum is being changed, a newer edition is a reason to check the ladder again.',
   mappingSourceEdition: { title: 'Alberta ELAL K–6 Program of Studies', dated: 'April 2022' },
   // The ladder as committed when the parent accepted it (curriculum.ladder.json at 4c4dfe9, unchanged
   // since, and reproduced byte for byte by this build).
@@ -70,7 +70,7 @@ export function reviewFor(ladderBody, { acceptance = PARENT_ACCEPTANCE, dated = 
     mappingReviewBasis: acceptance.mappingReviewBasis,
     mappingSourceEdition: acceptance.mappingSourceEdition,
     ladderFingerprint: acceptance.ladderFingerprint,
-    mappingReviewNote: `Every rung cites outcome ids that resolve against curriculum.k6.json, which was extracted from the PDF’s own text layer. The parent accepted it on ${acceptance.mappingReviewedAt} against the ${acceptance.mappingSourceEdition.dated} edition (${acceptance.mappingReviewScope}). A newer edition of the curriculum is a reason to check it again, and regenerating it against one drops this acceptance.`,
+    mappingReviewNote: `Every rung cites outcome ids that resolve against curriculum.k6.json, which was extracted from the PDF’s own text layer. The parent accepted it on ${acceptance.mappingReviewedAt} against the ${acceptance.mappingSourceEdition.title}, ${acceptance.mappingSourceEdition.dated} edition (${acceptance.mappingReviewScope}). A newer edition of the curriculum is a reason to check it again, and regenerating it against one drops this acceptance.`,
   };
 }
 
@@ -163,4 +163,11 @@ if (process.argv[1]?.endsWith('build_ladder.mjs')) {
   console.log('placed', ladder.skills.length, 'of', ladder.skills.length + Object.keys(noCurriculumBasis).length, 'skills');
   for (const grade of ORDER) if (byGrade.get(grade)) console.log(' introduced at', grade.padEnd(13), byGrade.get(grade));
   console.log(' revisiting at Grade 5 (Alberta finishes before then):', ladder.skills.filter((s) => s.endsBeforeGrade5).map((s) => s.skillId).join(', '));
+  // Never silent either way: a rebuild that keeps the acceptance says so, and one that drops it says
+  // why, so the parent can be asked again rather than finding learners quietly shown no grade.
+  if (ladder.mappingReviewedBy) {
+    console.log(`parent acceptance of ${ladder.mappingReviewedAt} carried over (${ladder.mappingSourceEdition.title}, ${ladder.mappingSourceEdition.dated})`);
+  } else {
+    console.warn(`NO PARENT ACCEPTANCE: learners will be shown no grade. ${ladder.mappingReviewNote}`);
+  }
 }

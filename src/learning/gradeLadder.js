@@ -119,8 +119,9 @@ export function ladderReview(ladder, learnerGrade) {
 
 function acceptedSummary(ladder) {
   const when = ladder.mappingReviewedAt ? ` on ${ladder.mappingReviewedAt}` : '';
-  const edition = ladder.mappingSourceEdition?.dated ? ` against the ${ladder.mappingSourceEdition.dated} edition` : '';
+  const source = ladder.mappingSourceEdition || {};
+  const edition = source.dated ? ` against the ${source.title ? `${source.title}, ` : ''}${source.dated} edition` : '';
   const scope = ladder.mappingReviewScope ? ` (${ladder.mappingReviewScope})` : '';
-  const recheck = ladder.mappingSourceEdition?.dated ? ' A newer edition of the Alberta curriculum means checking it again.' : '';
+  const recheck = source.dated ? ' A newer edition of the Alberta curriculum means checking it again.' : '';
   return `Accepted by ${ladder.mappingReviewedBy}${when}${edition}${scope}. Learners see the grade on each lesson.${recheck}`;
 }

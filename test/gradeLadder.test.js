@@ -18,6 +18,7 @@ import {
   placementLabel,
   skillRung,
 } from '../src/learning/gradeLadder.js';
+import { buildLadder, ladderFingerprint, PARENT_ACCEPTANCE, reviewFor } from '../tools/build_ladder.mjs';
 
 const skillIds = (Array.isArray(skillsFile) ? skillsFile : skillsFile.skills).map((skill) => skill.id);
 const outcomes = new Map();
@@ -116,21 +117,72 @@ test('a skill Alberta does not place is given no grade, only a reason', () => {
   assert.equal(review.counts.no_learner_grade, ladder.skills.length);
 });
 
-// Rule two, and the one worth breaking on purpose. The ladder is a reading of a PDF that nobody has
-// checked; a child must not be told their grade on the strength of it.
+// The ladder with no acceptance on it: the state before 2026-09-29, and the state a rebuild falls
+// back to when the acceptance no longer covers the rungs or the edition. Built from the real ladder so
+// the only difference is the acceptance.
+const ACCEPTANCE_FIELDS = ['mappingReviewedAt', 'mappingReviewScope', 'mappingReviewBasis', 'mappingSourceEdition', 'ladderFingerprint'];
+const unaccepted = Object.fromEntries(Object.entries({ ...ladder, status: 'ladder_awaiting_parent_verification', mappingReviewedBy: null })
+  .filter(([key]) => !ACCEPTANCE_FIELDS.includes(key)));
+
+// Rule two, and the one worth breaking on purpose. The ladder is a reading of a PDF; a child must not
+// be told their grade on the strength of it until a person has accepted that reading. The parent
+// accepted it on 2026-09-29, as assumed rather than rung by rung, against a named edition.
 test('no grade reaches a learner until a person has verified the mapping', () => {
-  assert.equal(ladder.mappingReviewedBy, null, 'the ladder claims a reviewer');
-  assert.equal(learnerPlacement(ladder, 'SE.complete', 'Grade 5'), null, 'an unverified grade reached a learner');
-  // Mutation: with a reviewer recorded, the same call must produce the label. If this half fails, the
-  // gate above is passing for the wrong reason — because nothing is wired, not because it is withheld.
-  const verified = { ...ladder, mappingReviewedBy: 'parent (fixture)' };
-  const shown = learnerPlacement(verified, 'SE.complete', 'Grade 5');
-  assert.ok(shown, 'a verified ladder still showed nothing');
-  assert.match(shown.label, /Grade 3 — revisiting/);
+  // Unaccepted: nothing reaches a learner.
+  assert.equal(learnerPlacement(unaccepted, 'SE.complete', 'Grade 5'), null, 'an unverified grade reached a learner');
+  assert.equal(ladderReview(unaccepted, 'Grade 5').verified, false);
+  assert.equal(ladderReview(unaccepted, 'Grade 5').reviewedAt, null);
+  assert.equal(ladderReview(unaccepted, 'Grade 5').sourceEdition, null);
+  assert.match(ladderReview(unaccepted, 'Grade 5').summary, /Nobody has checked this mapping/);
   // The parent's own surface is never gated, or the mapping could never be verified at all.
-  assert.equal(ladderReview(ladder, 'Grade 5').verified, false);
-  assert.ok(ladderReview(ladder, 'Grade 5').skills.length > 40);
-  assert.equal(ladderReview(verified, 'Grade 5').verified, true);
+  assert.ok(ladderReview(unaccepted, 'Grade 5').skills.length > 40);
+
+  // The real ladder carries exactly the parent's dated acceptance, and nobody else's.
+  assert.equal(ladder.status, 'ladder_accepted_by_parent');
+  assert.equal(ladder.mappingReviewedBy, 'parent', 'the ladder names a reviewer other than the parent');
+  assert.equal(ladder.mappingReviewedAt, '2026-09-29');
+  assert.equal(ladder.mappingReviewScope, 'accepted as assumed, not checked rung by rung');
+  assert.deepEqual(ladder.mappingSourceEdition, { title: 'Alberta ELAL K–6 Program of Studies', dated: 'April 2022' });
+  assert.match(ladder.mappingReviewBasis, /^Given in chat 2026-09-29 \(R7\)/);
+
+  // Accepted: the same call produces the label. If this half fails, the gate above is passing for
+  // the wrong reason — because nothing is wired, not because it is withheld.
+  const shown = learnerPlacement(ladder, 'SE.complete', 'Grade 5');
+  assert.ok(shown, 'an accepted ladder still showed nothing');
+  assert.match(shown.label, /Grade 3 — revisiting/);
+
+  // And the parent's page says when, against which edition, and how far it was checked.
+  const review = ladderReview(ladder, 'Grade 5');
+  assert.equal(review.verified, true);
+  assert.equal(review.reviewedAt, '2026-09-29');
+  assert.deepEqual(review.sourceEdition, ladder.mappingSourceEdition);
+  for (const part of ['2026-09-29', 'Alberta ELAL K–6 Program of Studies', 'April 2022', 'not checked rung by rung']) {
+    assert.ok(review.summary.includes(part), `the parent's summary does not say "${part}"`);
+  }
+});
+
+// The acceptance lives beside the build so a rebuild emits it rather than wiping it — and it must
+// neither silently survive a change to what was accepted nor silently vanish while nothing changed.
+test('regenerating the ladder keeps the acceptance only while it covers the same rungs and edition', () => {
+  assert.deepEqual(JSON.parse(JSON.stringify(buildLadder())), ladder, 'the committed ladder is not what the build emits');
+  assert.equal(ladderFingerprint(ladder), PARENT_ACCEPTANCE.ladderFingerprint, 'the committed rungs are not the ones the parent accepted');
+  const body = { organizingIdeaRange: ladder.organizingIdeaRange, skills: ladder.skills, noCurriculumBasis: ladder.noCurriculumBasis };
+  assert.equal(reviewFor(body).mappingReviewedBy, 'parent');
+
+  const lapses = [
+    ['a changed rung', reviewFor({ ...body, skills: body.skills.map((rung, i) => (i === 0 ? { ...rung, introducedAt: rung.introducedAt === 'Grade 1' ? 'Grade 2' : 'Grade 1' } : rung)) }), /different rungs/],
+    ['a newer edition', reviewFor(body, { dated: 'September 2027' }), /April 2022 edition.*September 2027/],
+    ['no acceptance at all', reviewFor(body, { acceptance: null }), /Nothing in the app may present a grade/],
+  ];
+  for (const [why, review, note] of lapses) {
+    assert.equal(review.status, 'ladder_awaiting_parent_verification', `${why} kept the acceptance`);
+    assert.equal(review.mappingReviewedBy, null, `${why} kept a reviewer`);
+    for (const field of ACCEPTANCE_FIELDS) assert.equal(review[field], undefined, `${why} kept ${field}`);
+    assert.match(review.mappingReviewNote, note, `${why} does not say why the acceptance lapsed`);
+    const { status, ...fields } = review;
+    const lapsedLadder = { ...unaccepted, status, ...fields };
+    assert.equal(learnerPlacement(lapsedLadder, 'SE.complete', 'Grade 5'), null, `${why} still showed a learner a grade`);
+  }
 });
 
 test('the parent review counts every skill and never states a proportion', () => {
