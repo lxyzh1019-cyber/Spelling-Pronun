@@ -100,7 +100,7 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | COMPLETE | `d66afa1`; lapse on rung/edition change mutation-tested by worker |
 | R7: `npm test` + `npm run build` | COMPLETE | Main session re-ran at `98d7cc3`: 482 tests / 481 pass / 0 fail / 1 todo (pre-existing OPEN-05); baseline `4d5f32f` 469/468/0/1. Build clean (pre-existing >500 kB chunk warning) |
 | R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | COMPLETE | FEATURES manifest v3 with regression tables; IMPLEMENTATION_STATUS lists open findings; this file |
-| R7: PR opened | NOT STARTED | Push of `below-grade-lessons` needs the parent's OK |
+| R7: PR opened | COMPLETE | https://github.com/lxyzh1019-cyber/Spelling-Pronun/pull/32, ready for review, base `main`; branch pushed `4d5f32f..21bcbd2` |
 
 ## Checks and evidence
 - 2026-09-29 (R5) stub installer → `SMOKE TEST: [session-start] Rules v3.1.10 loaded · branch: claude/confident-clarke-4dshy3`, last line `INSTALL OK`. Hook count read back from `.claude/settings.json` → 8. `npm test` and `npm run build` not run: no source file changed, only `.claude/` and two markdown files. No deploy, so no live stamp read.
