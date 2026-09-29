@@ -17,9 +17,10 @@
 
 export const SKILL_STATES = ['solid', 'needs_building', 'partly_solid', 'not_enough_evidence'];
 
-// Three questions, and the reading of them. Two or three right is solid: the questions probe
-// different sub-rules of one skill, so getting two of three is a working grasp with a thin patch.
-// One right is partly solid — something is there. None right needs building.
+// Three questions, and the reading of them. All right is solid (3 of 3). Exactly one wrong among the
+// answers given is partly solid (2 of 3): something is there, with a thin patch. Anything worse — none
+// right, or two or more wrong (0 or 1 of 3) — needs building. Fewer than two answered is not enough
+// evidence to say.
 export function stateFor({ answered, correct }) {
   if (answered < 2) return 'not_enough_evidence';
   if (correct === answered) return 'solid';
@@ -95,6 +96,8 @@ export function buildDiagnosticReport(form, attempts = [], { ladder = null } = {
   const counts = SKILL_STATES.reduce((out, state) => ({ ...out, [state]: 0 }), {});
   for (const skill of skills) counts[skill.state] += 1;
   const measured = skills.filter((skill) => skill.state !== 'not_enough_evidence');
+  // `needing` is both groups together and keeps its old shape; the two groups are also kept apart
+  // because the text has to name them apart to agree with `counts`.
   const needing = skills.filter((skill) => skill.state === 'needs_building' || skill.state === 'partly_solid');
 
   return {
@@ -122,28 +125,37 @@ export function buildDiagnosticReport(form, attempts = [], { ladder = null } = {
 // wholesale gap would say something else, and this is deliberately the only place that judgement is
 // made — from evidence, not from an opinion formed in advance.
 export function separateAppReading(measured, skillCount, needing) {
+  const ids = (list) => list.map((skill) => skill.skillId);
+  const needsBuilding = needing.filter((skill) => skill.state === 'needs_building');
+  const partlySolid = needing.filter((skill) => skill.state === 'partly_solid');
+  const groups = { needing: ids(needing), needsBuilding: ids(needsBuilding), partlySolid: ids(partlySolid) };
+  // The two groups, worded apart, so no number in the text disagrees with the counts line.
+  const parts = [];
+  if (needsBuilding.length) parts.push(`${needsBuilding.length} ${needsBuilding.length === 1 ? 'needs' : 'need'} building (${groups.needsBuilding.join(', ')})`);
+  if (partlySolid.length) parts.push(`${partlySolid.length} ${partlySolid.length === 1 ? 'is' : 'are'} partly solid (one wrong answer: ${groups.partlySolid.join(', ')})`);
+  const described = parts.join(' and ');
   if (measured.length < Math.ceil(skillCount / 2)) {
     return {
       answer: 'not_enough_evidence',
       detail: `Only ${measured.length} of ${skillCount} skills have been answered. The question of whether a separate catch-up app is needed is a question about the shape of the gap, and there is not enough of the form done yet to see a shape.`,
-      needing: needing.map((skill) => skill.skillId),
+      ...groups,
     };
   }
   const share = needing.length / measured.length;
   if (needing.length === 0) {
-    return { answer: 'no_gap_found', detail: 'Nothing in this form came back needing to be built. Whatever else is worth doing, catching up on these sixteen skills is not it.', needing: [] };
+    return { answer: 'no_gap_found', detail: 'Nothing in this form came back needing to be built. Whatever else is worth doing, catching up on these sixteen skills is not it.', ...groups };
   }
   if (share <= 0.5) {
     return {
       answer: 'build_packs_here',
-      detail: `${needing.length} of the ${measured.length} skills answered need building: ${needing.map((skill) => skill.skillId).join(', ')}. That is a scattered gap, not a wholesale one, so it is a few packs inside this app rather than a separate one — and keeping it here means one record of what the child can do instead of two.`,
-      needing: needing.map((skill) => skill.skillId),
+      detail: `Of the ${measured.length} skills answered, ${described}. That is a scattered gap, not a wholesale one, so it is a few packs inside this app rather than a separate one — and keeping it here means one record of what the child can do instead of two.`,
+      ...groups,
     };
   }
   return {
     answer: 'reconsider_scope',
-    detail: `${needing.length} of the ${measured.length} skills answered need building. That is most of the form, which is a different situation from a few specific gaps and worth talking about before building anything: a run of packs at this size is a curriculum, not a patch.`,
-    needing: needing.map((skill) => skill.skillId),
+    detail: `Of the ${measured.length} skills answered, ${described}. That is most of the form, which is a different situation from a few specific gaps and worth talking about before building anything: a run of packs at this size is a curriculum, not a patch.`,
+    ...groups,
   };
 }
 
@@ -163,11 +175,12 @@ const STATE_LABELS = {
 // reader cannot infer: a part-way run and a finished one look identical without it.
 export function diagnosticSummaryLine(report) {
   if (!report) return '';
-  const needing = report.separateAppQuestion?.needing || [];
+  const needsBuilding = report.separateAppQuestion?.needsBuilding || [];
+  const partlySolid = report.separateAppQuestion?.partlySolid || [];
   const lines = [`${report.answeredCount ?? 0} of ${report.itemCount ?? 0} answered.`];
-  lines.push(needing.length
-    ? `Needs building: ${needing.join(', ')}.`
-    : 'Nothing answered so far came back needing to be built.');
+  if (needsBuilding.length) lines.push(`Needs building: ${needsBuilding.join(', ')}.`);
+  if (partlySolid.length) lines.push(`Partly solid (one wrong answer): ${partlySolid.join(', ')}.`);
+  if (!needsBuilding.length && !partlySolid.length) lines.push('Nothing answered so far came back needing to be built.');
   lines.push((report.answeredCount ?? 0) < (report.itemCount ?? 0)
     ? 'This is a part-way run. The questions nobody answered say nothing either way.'
     : 'The whole form is answered.');
@@ -181,7 +194,7 @@ export function diagnosticReportMarkdown(report, { learnerName = '', today = '' 
     `# Below-grade diagnostic — what it found for ${who}`,
     '',
     `Exported ${today || 'today'}. Form ${report.formId || 'unknown'}.`,
-    'This report is for the learner who was selected on the parent page when it was copied.',
+    `This section is for ${who} only.`,
     '',
     diagnosticSummaryLine(report),
     '',

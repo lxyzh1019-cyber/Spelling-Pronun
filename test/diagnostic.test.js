@@ -191,7 +191,11 @@ test('the markdown export states no proportion and passes no verdict, and names 
   const withGrade = report.skills.find((skill) => skill.albertaFinishesAt);
   assert.ok(withGrade, 'no skill carries a grade, so the test cannot check it');
   assert.match(markdown, new RegExp(`Alberta finishes with this at ${withGrade.albertaFinishesAt}`));
-  assert.match(markdown, /selected on the parent page/);
+  // R7 (parent decision 2026-09-29): the old sentence said the report was for whoever was selected on
+  // the parent page when it was copied, which is false in the combined export (nothing selected or
+  // copied). The section now names its learner.
+  assert.match(markdown, /This section is for Jenn only\./);
+  assert.doesNotMatch(markdown, /selected on the parent page/);
   assert.equal(diagnosticReportMarkdown(null), '');
 });
 
@@ -343,4 +347,48 @@ test('source guard: both diagnostic surfaces export every child through the one 
   const parent = await read('../src/pages/ParentPage.jsx');
   assert.match(parent, /currently selected/);
   assert.match(parent, /buildDiagnosticReport\(/);
+});
+
+// R7 (parent decision 2026-09-29): the export contradicted itself. `needing` holds needs_building AND
+// partly_solid skills, and the summary line and the separate-app detail listed all of them under
+// "Needs building" while the counts line said "1 need building". The two groups are now named apart,
+// and every number and list in the text has to agree with `counts`.
+test('the summary and the separate-app detail name needs-building and partly-solid skills apart and agree with the counts', async () => {
+  const { diagnosticSummaryLine, diagnosticReportMarkdown } = await import('../src/learning/diagnosticReport.js');
+  const needsBuilding = ['PH.digraphs-clusters'];
+  const partlySolid = ['GR.possessives', 'PH.syllables', 'PU.apostrophes', 'PU.dialogue', 'SP.inflections'];
+  const attempts = diagnosticItems.map((item) => {
+    const items = diagnosticItems.filter((other) => other.skillId === item.skillId);
+    const position = items.findIndex((other) => other.id === item.id);
+    // 0 right of 3 for needs-building skills, 2 right of 3 for partly-solid skills, all right otherwise.
+    if (needsBuilding.includes(item.skillId)) return { itemId: item.id, correct: false };
+    if (partlySolid.includes(item.skillId)) return { itemId: item.id, correct: position !== 0 };
+    return { itemId: item.id, correct: true };
+  });
+  const report = buildDiagnosticReport(diagnosticForm, attempts, { ladder });
+  assert.equal(report.counts.needs_building, 1);
+  assert.equal(report.counts.partly_solid, 5);
+
+  const summary = diagnosticSummaryLine(report);
+  const listAfter = (text, label) => {
+    // Skill ids contain dots, so read to the end of the line and drop the closing full stop.
+    const match = text.match(new RegExp(`^${label}[^:]*: (.*)\\.$`, 'm'));
+    return match ? match[1].split(', ').filter(Boolean) : [];
+  };
+  assert.deepEqual(listAfter(summary, 'Needs building'), needsBuilding, 'the Needs building list is not the needs-building skills');
+  assert.equal(listAfter(summary, 'Needs building').length, report.counts.needs_building);
+  assert.deepEqual(listAfter(summary, 'Partly solid'), partlySolid);
+
+  const detail = report.separateAppQuestion.detail;
+  assert.match(detail, /\b1 needs building\b/);
+  assert.match(detail, /\b5 are partly solid\b/);
+  assert.ok(needsBuilding.every((id) => detail.includes(id)));
+  assert.doesNotMatch(detail, /\b6 (of|skills)/, 'the two groups were added together again');
+  // The decision itself is unchanged: six of sixteen is a scattered gap.
+  assert.equal(report.separateAppQuestion.answer, 'build_packs_here');
+  assert.equal(report.separateAppQuestion.needing.length, 6, 'the backward-compatible needing field changed shape');
+
+  const markdown = diagnosticReportMarkdown(report, { learnerName: 'Jenn', today: '2026-09-29' });
+  assert.doesNotMatch(markdown, /%|percent|score|behind|failed|weak/i);
+  assert.match(markdown, /1 need building/);
 });

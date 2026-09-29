@@ -72,6 +72,7 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - The first answer stands; a resumed run never overwrites it, and `firstAttempts` applies the same rule when the report is built.
 - `diagnosticReport.js` reports the SHAPE of the gap, never a score or proportion: per skill `solid` / `partly solid` / `needs building` / `not enough evidence`, and the word "behind" appears nowhere about a child.
 - `separateAppReading` is the only place the separate-catch-up-app judgement is made, and it refuses to answer until at least half the form is done.
+- The summary line and the separate-app detail name `needs building` and `partly solid` skills as two separate lists, so every number and list in the export agrees with the counts line (R7, 2026-09-29); `separateAppQuestion.needing` keeps both groups together for callers, with `needsBuilding` / `partlySolid` alongside. Each section says "This section is for <name> only." rather than claiming a parent-page selection.
 - `itemCount` / `answeredCount` are carried on the report so a part-way run can never read as a finished one.
 - Each located gap names the specific thing found and quotes the choice the child actually made (`chose`); an answer recorded without a `choiceId` carries no quoted choice rather than an invented one.
 

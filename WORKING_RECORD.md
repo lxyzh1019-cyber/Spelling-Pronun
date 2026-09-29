@@ -10,7 +10,7 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 - Plan v1 (2026-09-22) superseded: it merged both documents into one root `CLAUDE.md`.
 
 ## Pending
-- One wording decision, raised by the implementation and NOT actioned. `diagnosticReportMarkdown` still emits "This report is for the learner who was selected on the parent page when it was copied." In a combined export from the finish screen nothing was selected on the parent page and nothing was copied, so the sentence is now stale. It was kept verbatim because R6 asked to keep the existing wording exactly and an existing assertion requires the string. Fixing it is one line plus one assertion; awaiting the parent's call.
+- (Resolved R7 2026-09-29: parent approved the fix; see ledger #20.) One wording decision, raised by the implementation. `diagnosticReportMarkdown` still emits "This report is for the learner who was selected on the parent page when it was copied." In a combined export from the finish screen nothing was selected on the parent page and nothing was copied, so the sentence is now stale. It was kept verbatim because R6 asked to keep the existing wording exactly and an existing assertion requires the string. Fixing it is one line plus one assertion; awaiting the parent's call.
 
 ## Request ledger
 | # | Round/date | Requirement (user's words, short) | Status | Note |
@@ -34,7 +34,7 @@ implementation turn (the record guard hook checks this). Keep it terse; history 
 | 17 | R7 2026-09-29 | "approved" — the four existing draft packs for the flagged skills | open | GR.possessives, PU.apostrophes, PU.dialogue, PH.syllables. Recorded as given in chat, questions not read item by item |
 | 18 | R7 2026-09-29 | Grade mapping: "assumed this is correct and date it. As government is modifying curriculum" | open | Accepted as assumed 2026-09-29 against ELAL K–6 April 2022 |
 | 19 | R7 2026-09-29 | Diagnostic answers: "I watched them answer" | done | Parent observed both runs. Main session checked the two items both girls missed (`gr.possessives` plural, `pu.dialogue.02`): keys correct |
-| 20 | R7 2026-09-29 | Report headline must agree with its own counts; stale "selected on the parent page" sentence fixed | open | Resolves the R6 pending wording item |
+| 20 | R7 2026-09-29 | Report headline must agree with its own counts; stale "selected on the parent page" sentence fixed | done | Resolves the R6 pending wording item |
 
 Superseded: #6 (merge into one file) → superseded by #8 (split, with a pointer footer). R1's original reading — bundle `CLAUDE.md` at root, project document alongside it — is what now stands.
 
@@ -45,7 +45,7 @@ Numbering note (2026-09-29): rows #11–15 were written as "R4" and numbered #9�
 |---|---|---|---|---|---|---|
 | Root `CLAUDE.md` composition | 2 | 1 | 1 | 1 | R1 split the documents; R2 merged them into one file; R3 reverted to the split with a pointer footer; R4's stub install dropped the pointer footer, restored by hand as a `## Project Architecture` section | no — threshold tripped by the R4 regression |
 | `.claude/` stub install | 2 | 0 | 0 | 1 | R5 2026-09-29 reran the installer: settings and worker agents refreshed, `CLAUDE.md` untouched — the R4 footer drop did not recur | not needed — no recurrence |
-| Below-grade diagnostic export | 1 | 0 | 0 | 0 | R6: export was single-learner, clipboard-only, and reachable only after switching profiles. Fixed structurally (one shared component over all children) rather than by another prose warning | n/a — first fix round |
+| Below-grade diagnostic export | 2 | 0 | 0 | 0 | R6: export was single-learner, clipboard-only, and reachable only after switching profiles. Fixed structurally (one shared component over all children) rather than by another prose warning. R7: the "Needs building" list counted partly-solid skills while the counts line did not — present in `separateAppReading` since it was written and copied into R6's summary line; fixed by one pair of lists (`needsBuilding`/`partlySolid`) that both texts read | n/a — below threshold |
 Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → no further patch until the comparison is presented.
 **Live warning:** the `CLAUDE.md` composition row has tripped the threshold on the regression clause (R4's install dropped the pointer footer that R3 had established). Any further change to how the root `CLAUDE.md` and the architecture document are split gets a rewrite-vs-repair comparison before any edit. R5 did not change `CLAUDE.md`, so no counter moved for it; the workaround column records the by-hand footer restore as the compensating patch.
 
@@ -78,7 +78,7 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R6: PR #30 opened | COMPLETE | https://github.com/lxyzh1019-cyber/Spelling-Pronun/pull/30, open, not a draft, base `main` |
 | R6: browser / iPad verification (share sheet, real download, print preview) | NOT STARTED | Needs a device. No dev server was run; plan verification steps 3–6 are untested |
 | R6: deployed | BLOCKED | No deploy stamp exists in this repo, so "deployed" cannot be claimed under the rules. Building one is a separate request |
-| R7: report — separate "Needs building" and "Partly solid" lines; comment fixed; stale sentence fixed | NOT STARTED | sonnet-worker |
+| R7: report — separate "Needs building" and "Partly solid" lines; comment fixed; stale sentence fixed | COMPLETE | sonnet-worker (claude-sonnet-5-5, self-reported); new test in `test/diagnostic.test.js` failed on old code, passes after; main session re-ran `node --test test/diagnostic.test.js` 17/17 and read the diff |
 | R7: pack PH.digraphs-clusters (24 q, text only) + prepared records | NOT STARTED | opus-worker |
 | R7: pack SP.inflections (24 q, text only) + prepared records | NOT STARTED | opus-worker |
 | R7: pack PH.blend-segment (24 q, text only) + prepared records | NOT STARTED | opus-worker |
