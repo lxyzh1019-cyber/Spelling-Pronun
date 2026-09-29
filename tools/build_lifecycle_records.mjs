@@ -29,6 +29,7 @@ import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
 import { grammarPacks } from '../src/data/packs.grammar.draft.js';
+import { foundation2Packs } from '../src/data/packs.foundation2.draft.js';
 import { c1StoryEpisodes } from '../src/data/storyEpisodes.js';
 import { sessionIdForPack } from '../src/data/lessonCatalog.js';
 
@@ -38,6 +39,21 @@ const BATCHES = [
   { batch: 'P1', packs: punctuationPacks, what: 'punctuation' },
   { batch: 'S1', packs: sentencePacks, what: 'sentences and editing' },
   { batch: 'G1', packs: grammarPacks, what: 'grammar: agreement, tense and pronoun reference' },
+  // Written on 2026-09-29 for the four gaps the below-grade diagnostic located with no pack behind
+  // them. Its own date, its own findings only (the findings above are about other batches and the
+  // diagnostic, and attaching them here would make this record claim checks it did not run), and
+  // the two rules specific to it.
+  {
+    batch: 'F2',
+    packs: foundation2Packs,
+    what: 'below-grade foundation located by the diagnostic: digraphs and clusters, counting sounds, inflectional endings, long words in chunks',
+    date: '2026-09-29',
+    ownFindingsOnly: true,
+    extraChecks: [
+      { rule: 'Every Alberta placement quotes statements that resolve word for word against curriculum.k6.json, cites pages the extraction gives that organizing idea, and states the grade range the ladder derives', test: 'test/foundation2Packs.test.js' },
+      { rule: 'Every question is answered by looking: no spoken text, no audio asset, no audio status on any item or option', test: 'test/foundation2Packs.test.js' },
+    ],
+  },
 ];
 const allPacks = BATCHES.flatMap((entry) => entry.packs);
 const TODAY = '2026-09-19';
@@ -84,12 +100,44 @@ const SELF_CHALLENGE_FINDINGS = [
     action: 'Both derived from the packs, as a union so no hand-made judgement is overwritten.',
     foundBy: 'a cross-reference of every pack citation against the mapping',
   },
+  {
+    id: 'self.f2.01',
+    batch: 'F2',
+    scope: 'f2.pack.ph.multisyllable',
+    found: 'The answer key cycled a, c, b, d over and over, so a child who noticed the pattern could answer without reading. The spread per position was even, which is why the balance rule alone did not catch it.',
+    action: 'Key positions re-placed in a sequence with no repeating cycle before the content was committed.',
+    foundBy: 'printing the key sequence of every pack',
+  },
+  {
+    id: 'self.f2.02',
+    batch: 'F2',
+    scope: 'f2.pack.ph.blend-segment',
+    found: 'Draft sound-counting items used whip and church. Some speakers say wh as two sounds, and programs disagree on whether ur is one sound or two, so neither word has a count everyone would accept.',
+    action: 'Replaced with thin and chick. The pack now avoids r-controlled vowels, x, qu, wh and n before k (as in drink, where programs disagree) wherever a count is asked. The digraph ng, as in sing, is kept and counted as one sound, as the rule states.',
+    foundBy: 'counting every keyed answer by hand against the rule the pack states',
+  },
+  {
+    id: 'self.f2.03',
+    batch: 'F2',
+    scope: 'f2.pack.ph.multisyllable',
+    found: 'Draft chunking items used magnetic and problem. Mag-ne-tic and pro-blem are both defensible splits, so a child could be marked wrong for a reasonable answer.',
+    action: 'Replaced with invented and picnic, whose splits are not in dispute.',
+    foundBy: 'trying the other syllable rules on each keyed split',
+  },
+  {
+    id: 'self.f2.04',
+    batch: 'F2',
+    scope: 'f2.pack.ph.multisyllable, f2.pack.* albertaPlacement',
+    found: 'One explanation said that taking un away from uncle, under and unit leaves no base word, which is false for unit. A draft placement note gave a date for the second child’s diagnostic that nothing in the repository records.',
+    action: 'The explanation now says the u and n there do not mean not. The date was removed; the note says only that both children answered it.',
+    foundBy: 'reading every explanation and note back as a claim to be checked',
+  },
 ];
 
 // What a self-challenge cannot do, said once and referenced by every record that needs it.
 const SELF_CHALLENGE_LIMIT = 'Claude wrote this content and Claude ran these checks, so this is the author checking their own work. It is weaker evidence than an independent pass by design: the checks can only find what their rules describe, and a rule the author did not think to write is a defect the author will not find. It does not satisfy the independent_challenge stage of the lifecycle, and no item reaches reviewed or integrated on the strength of it.';
 
-function integrationRecord({ batch, packs, what }) {
+function integrationRecord({ batch, packs, what, date = TODAY }) {
   return {
     id: `${batch.toLowerCase()}.integration.lesson-packs.v1`,
     type: 'lesson_packs',
@@ -98,7 +146,7 @@ function integrationRecord({ batch, packs, what }) {
     // re-checkable. The parent countersigns rather than reconstructs.
     status: 'drafted_awaiting_parent_countersignature',
     draftedBy: 'claude',
-    draftedAt: TODAY,
+    draftedAt: date,
     countersignedBy: null,
     batch,
     describes: what,
@@ -117,7 +165,7 @@ function integrationRecord({ batch, packs, what }) {
   };
 }
 
-function challengeRecord({ batch, packs }) {
+function challengeRecord({ batch, packs, date = TODAY, ownFindingsOnly = false, extraChecks = [] }) {
   return {
     id: `${batch.toLowerCase()}.challenge.self.v1`,
     stage: 'author_self_challenge',
@@ -128,18 +176,20 @@ function challengeRecord({ batch, packs }) {
     limitation: SELF_CHALLENGE_LIMIT,
     reviewerRole: 'claude_self_challenge',
     checkedBy: 'claude',
-    checkedAt: TODAY,
+    checkedAt: date,
     batch,
     packIds: packs.map((pack) => pack.id),
     itemCount: packs.reduce((sum, pack) => sum + pack.items.length, 0),
-    automatedChecks: AUTOMATED_CHECKS,
-    findings: SELF_CHALLENGE_FINDINGS.filter((finding) => finding.scope.includes(batch.toLowerCase()) || finding.scope.includes('d1.') || finding.scope.includes('curriculum')),
+    automatedChecks: [...AUTOMATED_CHECKS, ...extraChecks],
+    findings: SELF_CHALLENGE_FINDINGS.filter((finding) => (finding.batch || ownFindingsOnly
+      ? finding.batch === batch
+      : finding.scope.includes(batch.toLowerCase()) || finding.scope.includes('d1.') || finding.scope.includes('curriculum'))),
     perItemResults: null,
     whyNoPerItemResults: 'Deliberately absent. Claude wrote all of these questions, so Claude marking each one "pass" would record nothing a reader could rely on. The findings above are the defects actually found; every other item was checked only against the automated rules listed, and that is the whole of the claim.',
   };
 }
 
-function educationalReviewForm({ batch, packs, what }) {
+function educationalReviewForm({ batch, packs, what, date = TODAY }) {
   return {
     id: `${batch.toLowerCase()}.educational.v1`,
     stage: 'educational_source_review',
@@ -149,7 +199,7 @@ function educationalReviewForm({ batch, packs, what }) {
     reviewedAt: null,
     verdict: null,
     formPreparedBy: 'claude',
-    formPreparedAt: TODAY,
+    formPreparedAt: date,
     batch,
     describes: what,
     instructions: 'Read each pack below, then set verdict to "approved" or "changes_required" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.',

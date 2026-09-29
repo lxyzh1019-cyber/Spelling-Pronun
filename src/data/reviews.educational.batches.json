@@ -483,6 +483,72 @@
         "feedback_quality",
         "age_accessibility"
       ]
+    },
+    {
+      "id": "f2.educational.v1",
+      "stage": "educational_source_review",
+      "status": "awaiting_parent",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "verdict": null,
+      "formPreparedBy": "claude",
+      "formPreparedAt": "2026-09-29",
+      "batch": "F2",
+      "describes": "below-grade foundation located by the diagnostic: digraphs and clusters, counting sounds, inflectional endings, long words in chunks",
+      "instructions": "Read each pack below, then set verdict to \"approved\" or \"changes_required\" and record who decided and when. An approved verdict is what lets reviewStatus move to reviewed; nothing else does, and Claude may not set it.",
+      "packs": [
+        {
+          "packId": "f2.pack.ph.digraphs-clusters",
+          "skillId": "PH.digraphs-clusters",
+          "title": "Two Letters, One Sound or Two",
+          "rule": "A digraph is two letters that make ONE sound: sh, ch, th, wh, ph, ck and ng. A cluster is two or three consonants side by side where you still hear EVERY sound: st, bl, gr, mp, nd. Some words also hold a silent letter, like the k in knee, that makes no sound at all.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Grade 1 to Grade 3",
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "f2.pack.ph.blend-segment",
+          "skillId": "PH.blend-segment",
+          "title": "Counting Sounds, Not Letters",
+          "rule": "A word is made of sounds, and the number of sounds is often not the number of letters. A digraph like sh or ck is two letters but one sound, a silent letter is no sound, and a cluster like st is two sounds. Count what you hear, then check each sound against the letters that spell it.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Kindergarten to Grade 2",
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "f2.pack.sp.inflections",
+          "skillId": "SP.inflections",
+          "title": "Adding -ing, -ed and -es",
+          "rule": "Before you add an ending, look at the end of the base word. If it ends in a silent e and the ending starts with a vowel, drop the e: hope, hoping. If it has one short vowel and one final consonant, double that consonant: hop, hopping. If it ends in a consonant and y, change the y to i before -es or -ed, but keep it before -ing: carry, carries, carrying.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Grade 1 to Grade 3",
+          "verdict": null,
+          "note": null
+        },
+        {
+          "packId": "f2.pack.ph.multisyllable",
+          "skillId": "PH.multisyllable",
+          "title": "Reading Long Words in Chunks",
+          "rule": "A long word is easier to read in chunks. First look for a prefix at the front and a suffix at the end, and cover them to find the base word. Then break what is left between syllables, so each chunk has one vowel sound. Read the chunks in order and blend them into the word.",
+          "questionCount": 24,
+          "curriculumOutcomeIds": [],
+          "albertaPlacement": "Grade 1 to Grade 3",
+          "verdict": null,
+          "note": null
+        }
+      ],
+      "dimensions": [
+        "curriculum_alignment",
+        "rule_accuracy",
+        "answer_accuracy",
+        "feedback_quality",
+        "age_accessibility"
+      ]
     }
   ]
 }

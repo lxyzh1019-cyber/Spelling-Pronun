@@ -25,8 +25,9 @@ import { foundationPacks } from '../src/data/packs.foundation.draft.js';
 import { punctuationPacks } from '../src/data/packs.punctuation.draft.js';
 import { sentencePacks } from '../src/data/packs.sentences.draft.js';
 import { grammarPacks } from '../src/data/packs.grammar.draft.js';
+import { foundation2Packs } from '../src/data/packs.foundation2.draft.js';
 
-const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks];
+const allPacks = [...c0PilotPacks, ...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks, ...foundation2Packs];
 
 test('the catalog knows every authored pack, and each has its own route', () => {
   assert.equal(Object.keys(allLessonCatalog).length, allPacks.length, 'a pack is missing from the catalog');

@@ -19,6 +19,7 @@ import correctionData from '../data/corrections.c0.json';
 import curriculumMapping from '../data/curriculum.alberta.elal.json';
 import { c1Packs } from '../data/packs.c1.draft';
 import { foundationPacks } from '../data/packs.foundation.draft';
+import { foundation2Packs } from '../data/packs.foundation2.draft';
 import { punctuationPacks } from '../data/packs.punctuation.draft';
 import integrationRecords from '../data/integration.batches.json';
 import challengeRecords from '../data/reviews.batches.json';
@@ -135,13 +136,14 @@ export default function ParentPage() {
     { batch: 'P1', packs: punctuationPacks },
     { batch: 'S1', packs: sentencePacks },
     { batch: 'G1', packs: grammarPacks },
+    { batch: 'F2', packs: foundation2Packs },
   ]), []);
   const draftSummary = useMemo(() => summariseDraftInventory({ corrections: openCorrections, packs: draftPacks }), [openCorrections, draftPacks]);
   // The drafted packs are passed in so the report works out for itself which outcomes have content
   // written against them. It used to read a hand-written `draftedIn` on each outcome, which drifted
   // within a day of the packs being written.
   const coverageReport = useMemo(
-    () => buildCoverageReport(curriculumMapping, { packs: [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks] }),
+    () => buildCoverageReport(curriculumMapping, { packs: [...c1Packs, ...foundationPacks, ...punctuationPacks, ...sentencePacks, ...grammarPacks, ...foundation2Packs] }),
     [],
   );
   const coverage = useMemo(() => coverageHeadline(coverageReport), [coverageReport]);
