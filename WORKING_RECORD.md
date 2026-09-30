@@ -104,7 +104,7 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R7: `npm test` + `npm run build` | COMPLETE | Main session re-ran at `98d7cc3`: 482 tests / 481 pass / 0 fail / 1 todo (pre-existing OPEN-05); baseline `4d5f32f` 469/468/0/1. Build clean (pre-existing >500 kB chunk warning) |
 | R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | COMPLETE | FEATURES manifest v3 with regression tables; IMPLEMENTATION_STATUS lists open findings; this file |
 | R8: R2 (M3) checklist built, tested, browser-checked | COMPLETE | See R8 checks; commit on `pilot-checklist` |
-| R8: PR opened | NOT STARTED | |
+| R8: PR opened | COMPLETE | https://github.com/lxyzh1019-cyber/Spelling-Pronun/pull/33, ready for review, base `main` |
 | R7: PR opened | COMPLETE | https://github.com/lxyzh1019-cyber/Spelling-Pronun/pull/32, ready for review, base `main`; branch pushed `4d5f32f..21bcbd2` |
 
 ## Checks and evidence — R8 2026-09-29
