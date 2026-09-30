@@ -177,7 +177,7 @@ test('the exported log reports the findings and states its own limits', () => {
   // The row's own label has to reach the report; pinning a particular pair here would only re-assert
   // today's content, and did exactly that until the listening items were retargeted.
   const label = contrast.prompts[0].label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  assert.match(report, new RegExp(`\\| .*${label}.* \\| Problem found \\| Parent \\| — \\| ship and sheep sound identical \\|`));
+  assert.match(report, new RegExp(`\\| .*${label}.* \\| Problem found \\| Parent \\| — \\| — \\| ship and sheep sound identical \\|`));
   // Two of the check's own rows were recorded. The denominator is the check's real prompt count, so
   // this does not have to be edited every time the derived rows change.
   assert.match(report, new RegExp(`Technical Test Lab · Status: Problem found \\(2 of ${contrast.prompts.length} recorded\\)`));
@@ -188,6 +188,23 @@ test('the exported log reports the findings and states its own limits', () => {
   // A note containing a table separator cannot break the table it is written into.
   const escaped = checkReportMarkdown([contrast], { [contrast.prompts[0].id]: { result: 'pass', note: 'a | b' } });
   assert.match(escaped, /\| a \/ b \|/);
+});
+
+// R8: the Observed column was dropped from the export, so a Family Pilot row could not say which
+// child it was about. It now names the child by profile name, and a Test Lab row names none.
+test('the exported log says which child a Family Pilot row observed', () => {
+  const pilot = findCheck('check.lesson-journey');
+  const ipad = findCheck('check.ipad');
+  const results = {
+    [pilot.prompts[0].id]: { result: 'pass', testedBy: 'Parent', observedLearner: 'p2', deviceLabel: 'ipad-9' },
+    [ipad.prompts[0].id]: { result: 'pass', testedBy: 'Parent', observedLearner: '' },
+  };
+  const report = checkReportMarkdown([pilot, ipad], results, { today: '2026-10-01', learnerNames: { p2: 'Second child' } });
+  assert.match(report, /\| Row \| Result \| Tester \| Observed \| Device \| Note \|/);
+  assert.match(report, /\| Worked \| Parent \| Second child \| ipad-9 \| — \|/);
+  assert.match(report, /\| Worked \| Parent \| — \| — \| — \|/, 'a Test Lab row names no child');
+  // Without a name to hand, the stored id is shown rather than nothing.
+  assert.match(checkReportMarkdown([pilot], results), /\| Parent \| p2 \|/);
 });
 
 test('an observation is attributed to the tester, never to whichever child is selected', () => {
@@ -221,7 +238,7 @@ test('observations written by the earlier version still load and still count', (
   assert.equal(checkProgress(ipad, loaded).status, 'problem_found');
   // The export tolerates the missing fields rather than printing undefined.
   const report = checkReportMarkdown([ipad], loaded, { today: '2026-09-10' });
-  assert.match(report, /\| Parent \| — \| silent \|/);
+  assert.match(report, /\| Parent \| — \| — \| silent \|/);
   assert.doesNotMatch(report, /undefined/);
 
   // Re-checking an old row keeps it as history and adds the new fields alongside.

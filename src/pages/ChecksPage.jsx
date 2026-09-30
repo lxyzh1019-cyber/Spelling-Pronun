@@ -10,7 +10,6 @@ import {
   RESULT_VALUES,
   checkAvailability,
   checkProgress,
-  checkReportMarkdown,
   checksInArea,
   gateStateAfterChecks,
   nextPrompt,
@@ -24,6 +23,8 @@ import { twoDevicePreflight } from '../learning/testLabPreflight';
 import { clearTestRun, resumeTestRun, writeTestRun } from '../persistence/testLabStore';
 import { getOrCreateDeviceId } from '../persistence/deviceIdentity';
 import { clearCheckResult, readCheckLog, recordCheckResult } from '../persistence/checkLog';
+import { localStorageOrNull } from '../utils/localStore';
+import R2Checklist from '../components/R2Checklist.jsx';
 import styles from './Learning.module.css';
 
 const TEST_RUN_ID = 'practice';
@@ -235,14 +236,14 @@ function CheckCard({ check, results, availability, onRecord, onClear, onPlay, pl
 
 export default function ChecksPage() {
   const { user, profiles } = useWords();
-  const storage = globalThis.localStorage;
+  // Null rather than a throw when the browser blocks site data, so the page still opens.
+  const storage = useMemo(() => localStorageOrNull(), []);
   const [results, setResults] = useState(() => readCheckLog(storage));
   const [playState, setPlayState] = useState(null);
   const [preflight, setPreflight] = useState(null);
   const [busy, setBusy] = useState(false);
   const [observedLearner, setObservedLearner] = useState('');
   const [confirmed, setConfirmed] = useState(false);
-  const [copied, setCopied] = useState('');
   const deviceLabel = useMemo(() => getOrCreateDeviceId(storage).slice(0, 8), [storage]);
   // Scoped to the page, deliberately not to the row being played. The hook cancels
   // whenever its scope key changes, so keying it on the playing row made the first
@@ -263,10 +264,9 @@ export default function ChecksPage() {
       // Only a Family Pilot row involved a child; a Test Lab row did not.
       observedLearner: check?.area === 'pilot' ? observedLearner : '',
     }));
-    setCopied('');
   }, [deviceLabel, observedLearner, storage]);
 
-  const clear = useCallback((promptId) => { setResults(clearCheckResult(storage, promptId)); setCopied(''); }, [storage]);
+  const clear = useCallback((promptId) => { setResults(clearCheckResult(storage, promptId)); }, [storage]);
 
   const playRow = useCallback(async (row) => {
     setPlayState({ rowId: row.rowId, message: 'Playing…' });
@@ -305,20 +305,6 @@ export default function ChecksPage() {
     };
   }, [results]);
 
-  const report = useMemo(
-    () => checkReportMarkdown(humanChecks, results, { today: new Date().toISOString().slice(0, 10) }),
-    [results]
-  );
-
-  const copyReport = async () => {
-    try {
-      await navigator.clipboard.writeText(report);
-      setCopied('Copied. Paste it into the ledger or send it back with the next change.');
-    } catch {
-      setCopied('Copying was blocked. Select the text below and copy it manually.');
-    }
-  };
-
   const renderScenario = (check) => {
     if (check.scenario === 'twoDevice') {
       return <TwoDevicePanel user={user} deviceLabel={deviceLabel} preflight={preflight} onRun={runPreflight} busy={busy} />;
@@ -348,6 +334,8 @@ export default function ChecksPage() {
           <span style={{ width: `${totals.prompts ? Math.round((totals.recorded / totals.prompts) * 100) : 0}%` }} />
         </div>
       </section>
+
+      <R2Checklist profiles={profiles} checks={humanChecks} checkResults={results} />
 
       <section className={styles.card} aria-labelledby="test-lab">
         <h2 id="test-lab">Technical Test Lab</h2>
@@ -439,22 +427,6 @@ export default function ChecksPage() {
           })}
         </div>
         <p><Link className={styles.secondary} to="/parent">Open the parent view</Link></p>
-      </section>
-
-      <section className={styles.card}>
-        <h2>Send the findings back</h2>
-        <p>
-          The log lives on this device only. Copy it and paste it into the ledger, or into the next conversation, so the
-          problems you found get fixed.
-        </p>
-        <div className={styles.actions}>
-          <button type="button" className={styles.primary} onClick={copyReport}>Copy the log</button>
-        </div>
-        {copied && <p role="status">{copied}</p>}
-        <label>
-          The log
-          <textarea className={styles.input} rows={10} readOnly value={report} />
-        </label>
       </section>
     </div>
   );

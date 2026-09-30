@@ -1,0 +1,7 @@
+.tick { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
+.tick input { width: 24px; height: 24px; flex: none; }
+
+/* A column per child can be wider than a phone; the table scrolls, the page does not. */
+.scroll { overflow-x: auto; }
+
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
