@@ -8,6 +8,12 @@ function storage() {
   }
 }
 
+// localStorage, or null when the browser blocks it. Reading `window.localStorage` itself throws a
+// SecurityError when site data is blocked, so a page that needs the object calls this instead.
+export function localStorageOrNull() {
+  return storage();
+}
+
 export function readJson(key, fallback = null) {
   try {
     const raw = storage()?.getItem(key) ?? memoryFallback.get(key);
@@ -28,6 +34,12 @@ export function writeJson(key, value) {
     memoryFallback.set(key, raw);
     return false;
   }
+}
+
+// Where a learner's immutable attempts are mirrored on this device. `LearningProvider` owns the
+// writes; the R2 checklist only reads it to count pilot visits.
+export function learningAttemptsKey(learnerId) {
+  return `spelling-learning-attempts:${learnerId}`;
 }
 
 export function progressStorageKey(learnerId) {

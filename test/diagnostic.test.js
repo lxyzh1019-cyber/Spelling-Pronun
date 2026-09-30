@@ -327,13 +327,17 @@ test('source guard: both diagnostic surfaces export every child through the one 
   const read = (name) => readFile(new URL(name, import.meta.url), 'utf8');
   const share = await read('../src/components/DiagnosticShare.jsx');
   assert.match(share, /combinedDiagnosticReportMarkdown\(/);
-  assert.match(share, /readOnly/);
-  assert.match(share, />Share</);
-  assert.match(share, />Save as a file</);
-  assert.match(share, />Print or save as PDF</);
+  // R8: the buttons, the status line and the textarea moved into the shared ReportShare, which the
+  // checks page's R2 checklist uses too. The diagnostic renders it, so it keeps all three routes.
+  assert.match(share, /<ReportShare/);
+  const shared = await read('../src/components/ReportShare.jsx');
+  assert.match(shared, /readOnly/);
+  assert.match(shared, />Share</);
+  assert.match(shared, />Save as a file</);
+  assert.match(shared, />Print or save as PDF</);
   // The status line says what actually happened, so it reads `via` rather than assuming success.
-  assert.match(share, /\.via/);
-  assert.match(share, /was blocked/);
+  assert.match(shared, /\.via/);
+  assert.match(shared, /was blocked/);
 
   // One implementation, both surfaces — and neither keeps a copy button or a switch-profiles
   // instruction of its own, because neither is true any more.

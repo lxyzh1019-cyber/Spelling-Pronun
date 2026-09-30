@@ -4,6 +4,7 @@ Single working record for this repository. Updated by the main session at the en
 implementation turn (the record guard hook checks this). Keep it terse; history lives in git.
 
 ## Approved baseline
+- Plan v1 approved 2026-09-29 (R8): an R2 (M3) checklist on `/checks` with export — everything left for R2, device only, auto-filled from pilot answers where the app knows. Branch `pilot-checklist`. Naming: the parent calls R2 "M3" and R3 "M4".
 - Plan v3 approved 2026-09-29 (R7, local session): v1 plus (Rev 2) the four approved packs are opened for the private pilot after an independent check, the same path C0 took; (Rev 3) the four new packs go through the same check and open too. Later chat decisions the same day: failed questions are fixed and re-checked rather than left closed; the missing-source gap is logged, not blocking. Supersedes v1's "record only" reading of the approval.
 - Plan v1 approved 2026-09-29 (R7): build the lessons the below-grade diagnostic found. Choice A: all four missing packs. Choice B: record the parent's chat decisions (approval of four existing packs; grade mapping accepted as assumed, dated, against Alberta ELAL K–6 April 2022) in the parent's name, and loosen the tests only enough to accept a dated parent decision. Branch `below-grade-lessons`.
 - Plan v1 approved 2026-09-28 (R6): share the 48-question diagnostic result in one tap. Share sheet + dated file download + printable page; one combined all-children report; device only, no cloud and no share link; keep the existing tested wording and add a summary lead, a completion count and the child's actual wrong choices. Branch `diagnostic-share`.
@@ -47,6 +48,8 @@ The cloud handoff (commits `d00f47f`, `4d5f32f`) was checked against GitHub: acc
 | 22 | R7 2026-09-29 (local) | New lessons: "Yes, same check" — open after the same independent check | done | 4 F2 packs opened on pilot track |
 | 23 | R7 2026-09-29 (local) | Failed questions: "Fix, re-check, then open" | done | 16+1 items fixed, re-checked to 192/192 |
 | 24 | R7 2026-09-29 (local) | Sources: "Open all 8, log the gap" | done | sourceOutcome fail kept verbatim as open gap in `reviews.independent.batches.json` |
+| 25 | R8 2026-09-29 | "M3 and M4 are the R2 and R3 releases" | done | Naming recorded in the approved baseline |
+| 26 | R8 2026-09-29 | "add a checklist form in the app that can be export to complete the tasks of the pilot" — scope: everything left for R2; device only; auto where the app knows | done | `/checks` R2 (M3) checklist + shared ReportShare export |
 
 Superseded: #6 (merge into one file) → superseded by #8 (split, with a pointer footer). R1's original reading — bundle `CLAUDE.md` at root, project document alongside it — is what now stands.
 
@@ -100,7 +103,14 @@ Rule: 3 fix rounds, or 2 recurrences, or a fix causing a nearby regression → n
 | R7: grade ladder stamped parent-accepted 2026-09-29, source edition shown on parent page | COMPLETE | `d66afa1`; lapse on rung/edition change mutation-tested by worker |
 | R7: `npm test` + `npm run build` | COMPLETE | Main session re-ran at `98d7cc3`: 482 tests / 481 pass / 0 fail / 1 todo (pre-existing OPEN-05); baseline `4d5f32f` 469/468/0/1. Build clean (pre-existing >500 kB chunk warning) |
 | R7: FEATURES.md, IMPLEMENTATION_STATUS.md, this record updated | COMPLETE | FEATURES manifest v3 with regression tables; IMPLEMENTATION_STATUS lists open findings; this file |
+| R8: R2 (M3) checklist built, tested, browser-checked | COMPLETE | See R8 checks; commit on `pilot-checklist` |
+| R8: PR opened | COMPLETE | https://github.com/lxyzh1019-cyber/Spelling-Pronun/pull/33, ready for review, base `main` |
 | R7: PR opened | COMPLETE | https://github.com/lxyzh1019-cyber/Spelling-Pronun/pull/32, ready for review, base `main`; branch pushed `4d5f32f..21bcbd2` |
+
+## Checks and evidence — R8 2026-09-29
+- opus-worker (claude-opus-5-5, self-reported) built it; baseline on `main` 482/481/0/1. Main session re-ran on the working tree: `npm test` 503 / 502 pass / 0 fail / 1 todo (pre-existing OPEN-05); `npm run build` clean.
+- Main session asked for two fixes after the first report: held-back exit ticks are cleared (no silent return), and Critical/High block until "fixed and checked", accepted or quarantined (MASTER_PLAN §12). Worker mutation-checked both.
+- Main session browser check (dev server, `/#/checks`): added a Critical problem → saved under `spelling-r2-checklist-v1`, survived reload, all four exit rows disabled with the held-back message, export text carries the problem and the exit notes. Test data removed afterwards. Share/Save/Print buttons not clicked (download needs the parent); covered by `test/diagnosticShare.test.js` fakes.
 
 ## Checks and evidence
 - 2026-09-29 (R5) stub installer → `SMOKE TEST: [session-start] Rules v3.1.10 loaded · branch: claude/confident-clarke-4dshy3`, last line `INSTALL OK`. Hook count read back from `.claude/settings.json` → 8. `npm test` and `npm run build` not run: no source file changed, only `.claude/` and two markdown files. No deploy, so no live stamp read.

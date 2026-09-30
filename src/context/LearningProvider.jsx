@@ -9,7 +9,7 @@ import { flushOutbox, queueAttempt } from '../persistence/indexedDb';
 import { syncLearnerAttempts } from '../persistence/attemptSync';
 import { buildImportPreview, importDecisionRecord } from '../learning/importPreview';
 import { deriveWordRows, planProgressWrites } from '../learning/progressAggregate';
-import { progressStorageKey, readJson, writeJson } from '../utils/localStore';
+import { learningAttemptsKey, progressStorageKey, readJson, writeJson } from '../utils/localStore';
 import { collection, doc, getDoc, getDocs, query, runTransaction, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import skillsData from '../data/skills.json';
@@ -19,7 +19,7 @@ import { EVIDENCE_TRACKS, approvedPilotScopeIds } from '../learning/pilotApprova
 const LearningContext = createContext(null);
 
 function attemptsKey(learnerId) {
-  return `spelling-learning-attempts:${learnerId}`;
+  return learningAttemptsKey(learnerId);
 }
 
 function importDecisionKey(uid, learnerId) {

@@ -1,4 +1,4 @@
-# FEATURES — Spelling-Pronun — manifest v3 — 2026-09-29 (v2 confirmed 2026-09-28; v3 additions not yet confirmed)
+# FEATURES — Spelling-Pronun — manifest v4 — 2026-09-29 (v2 confirmed 2026-09-28; v3 and v4 additions not yet confirmed)
 
 Locked features of the current version. Every edit is checked against this list and ends with a
 regression table. Update this file in the same change that alters a feature. Over-list rather than
@@ -9,6 +9,9 @@ v2 (2026-09-28) adds the Below-grade diagnostic section, which manifest v1 omitt
 the feature already existed, and records the combined share/download/print export added this round.
 v3 (2026-09-29, R7) adds the Grade ladder section, which earlier versions omitted although the ladder
 already existed, records the parent's dated acceptance of it, and lists the F2 draft packs.
+v4 (2026-09-29, R8) adds the R2 (M3) checklist on `/checks`, generalises the diagnostic's export into
+the shared `ReportShare`, adds the Observed column to the check-log export, and retires the checks
+page's clipboard-only "Send the findings back" box.
 Items marked *(not released)* exist in code but are gated; their gating is itself the feature.
 
 ## Identity, profiles, auth
@@ -76,6 +79,20 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - Two-device check gated by a real preflight (`testLabPreflight.js`); no hand-set override; a passing preflight makes the check runnable, never done.
 - `checkLog.js` records the tester rather than the selected child, preserves the earlier result on re-check, and still reads first-version entries.
 - `gateStateAfterChecks` returns the gate's own state however many rows are ticked; `summariseChecks` exposes no `ready` or `released` field. Both enforced by test.
+- The check-log export (`checkReportMarkdown`) has an Observed column naming the child a Family Pilot row observed, by profile name; a Test Lab row shows a dash (added v4). The log entries themselves keep exactly their existing fields.
+- The page no longer has its own clipboard-only "Send the findings back" box (removed v4, by plan): the check log travels inside the R2 checklist export below.
+
+## R2 (M3) checklist (top of `/checks`) — added at v4
+- Four groups: setup checks (two devices, real iPad, listening, each showing its Test Lab result line); pilot window, one column per child from the app's own profiles (no names built in); problems log; exit check (R2-G7). "N of M done".
+- Items live in `src/data/r2Checklist.js`, each with a group, a gate id from `r2GateTracker.js` and `source: 'app' | 'parent'`.
+- "From the app" rows are derived by `derivePilotExposure` (`src/learning/pilotExposure.js`) from pilot-track answers only (released, draft, unreleased and technical-failure answers ignored): days with pilot answers (target 2), first and latest day, a review on the same skill (or item, when an answer has no skill) at least 7 days after that skill's first answer, and a starting result (a finished assessment form or a finished diagnostic, otherwise the pending parts). They cannot be ticked by hand. It reads only and feeds no mastery, review queue or gate.
+- The parent ticks the setup checks, "came back and carried on where she left off" per child, and the four exit checks, each with a note.
+- Problems log rows: where, which child, what happened, severity (Critical / High / Medium / Low, master plan §12), decision (open / fix / fixed and checked / accept / quarantine), date. No delete; a row is closed by its decision.
+- A Critical or High problem holds the whole exit group back until its decision is fixed and checked, accept or quarantine; open and fix both still block (master plan §12: both block the affected release). Medium and Low never hold the exit group back. A problem without a severity or still open holds back "every problem has a severity and a decision".
+- A stored exit tick (and its note) that a problem holds back is cleared, and a held row cannot be ticked, so a tick given before the problem was found never comes back by itself: the parent re-ticks after the problem is resolved.
+- A finished list says "Everything on this list is done — you can decide R2 is complete." It changes no gate state; a test ticks everything and checks every gate is unchanged.
+- Stored under `spelling-r2-checklist-v1` (`r2ChecklistStore.js`), separate from the check log; every read and write is wrapped, a blocked storage never throws, and the page says when something was not saved. The checks page reads storage through `localStorageOrNull`, so blocked site data does not crash it.
+- Export `r2-checklist-<date>.md` through `ReportShare`: all four groups, each child's numbers, the problems log and the Test Lab table with the Observed column.
 
 ## Below-grade diagnostic (`/diagnostic`) — added to the manifest at v2
 - 48 questions: the 16 skills Alberta finishes with before Grade 5, three each. `test/diagnostic.test.js` derives the 16 from `endsBeforeGrade5` on the ladder, so the form cannot drift from the curriculum.
@@ -91,20 +108,22 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - `itemCount` / `answeredCount` are carried on the report so a part-way run can never read as a finished one.
 - Each located gap names the specific thing found and quotes the choice the child actually made (`chose`); an answer recorded without a `choiceId` carries no quoted choice rather than an invented one.
 
-## Getting a diagnostic result off the device (`DiagnosticShare`) — added at v2
+## Getting a report off the device (`ReportShare`, `DiagnosticShare`) — added at v2, generalised at v4
+- v4: the share / save / print routes, their status line, the read-only textarea and the print copy live in one shared `ReportShare` (title, filename, markdown, summary). `DiagnosticShare` is a thin wrapper over it, and the R2 checklist uses it too. One share block per page.
 - One shared component renders the export on both the diagnostic finish screen and the parent page, so the two surfaces cannot drift apart in wording or capability. It replaces the parent page's single-learner "Copy the report" button and the prose instruction to switch profiles.
 - The export covers **every child who has answered**, in device profile order. No profile has to be selected and no child can be forgotten.
 - Three routes, all local, no cloud and no share link: `navigator.share` (the iPad share sheet), a dated `.md` file download, and a print / Save-as-PDF page.
 - `shareReport.js` returns `{ ok, via, reason }` and never claims a success it did not get: share sheet, copied, cancelled, and copy-blocked are four different sentences. Dependencies are injected so `node --test` covers every path with no browser.
 - A dismissed share sheet does not silently fall back to the clipboard; the parent's choice not to send stands.
 - The read-only textarea remains the floor: when every route fails the report is still on the page to be selected by hand.
-- The repo's only `@media print` rules live in `DiagnosticShare.module.css`; the printed page is the report alone, without app chrome.
+- The repo's only `@media print` rules live in `ReportShare.module.css` (moved from `DiagnosticShare.module.css` at v4); the printed page is the report alone, without app chrome.
 
 ## Persistence and sync
 - `indexedDb.js` stores session snapshots, attempts, an outbox, and recordings; opener injectable via `useDatabaseOpener`.
 - `outboxSync.js` plans idempotent cloud writes; outbox flushes on mount, after submit, on `online`, and on tab visible.
 - `durableSession.js` + `useDurableSession.js`: resumable, learner-and-version-pinned state with per-tab leases (`sessionLease.js`).
 - Cloud-owner contract (`sessionSync.js`, `firebaseSessionStore.js`) is wired but not yet verified against a live Firebase project. *(not released)*
+- `learningAttemptsKey` in `utils/localStore.js` is the one owner of the `spelling-learning-attempts:<learner>` key; `LearningProvider` writes through it and the R2 checklist only reads it (v4).
 - `spellAgain.js` holds the per-learner "words to spell again" list; practice bookkeeping the child opts into, never evidence.
 
 ## Data and rules
@@ -140,6 +159,7 @@ Items marked *(not released)* exist in code but are gated; their gating is itsel
 - A diagnostic answer never reaches `spelling-attempts` and never counts as mastery, however it is scored.
 - The combined diagnostic export carries no cross-child total, no aggregate and no ranking, and orders children by device profile order — never by result. One child's gaps say nothing about another's.
 - No export route may report a success it did not get.
+- Nothing on the R2 checklist changes a gate's state, counts as mastery, or claims a pilot happened; its numbers come only from real pilot answers (v4).
 
 ## Working-rules governance (added 2026-09-22; stub install 2026-09-27)
 - Root `CLAUDE.md` is the `hz-claude-config` pointer stub plus a "Project Architecture" section pointing at `docs/PROJECT_ARCHITECTURE.md`. The working rules themselves are not copied into this repository.

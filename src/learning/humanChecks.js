@@ -112,8 +112,10 @@ export function summariseChecks(checks = [], results = {}, context = {}) {
 }
 
 // What the parent hands back so the findings reach the ledger rather than
-// staying on one device.
-export function checkReportMarkdown(checks = [], results = {}, { today = '' } = {}) {
+// staying on one device. `learnerNames` maps a profile id to its name, so a
+// Family Pilot row can say which child was observed; without a name the stored
+// id is shown, and a Test Lab row, which observed no child, shows a dash.
+export function checkReportMarkdown(checks = [], results = {}, { today = '', learnerNames = {} } = {}) {
   const lines = ['# Human check log', ''];
   if (today) lines.push(`Exported ${today}.`, '');
   lines.push(
@@ -130,12 +132,13 @@ export function checkReportMarkdown(checks = [], results = {}, { today = '' } = 
       lines.push('Nothing recorded yet.', '');
       return;
     }
-    lines.push('| Row | Result | Tester | Device | Note |', '|---|---|---|---|---|');
+    lines.push('| Row | Result | Tester | Observed | Device | Note |', '|---|---|---|---|---|---|');
     check.prompts.forEach((prompt) => {
       const entry = results?.[prompt.id];
       if (!entry || !isResultValue(entry.result)) return;
       const clean = (value) => String(value || '').replace(/\|/g, '/').replace(/\n/g, ' ').trim();
-      lines.push(`| ${clean(prompt.label)} | ${resultLabel(entry.result)} | ${clean(entry.testedBy) || 'Parent'} | ${clean(entry.deviceLabel) || '—'} | ${clean(entry.note) || '—'} |`);
+      const observed = entry.observedLearner ? (learnerNames?.[entry.observedLearner] || entry.observedLearner) : '';
+      lines.push(`| ${clean(prompt.label)} | ${resultLabel(entry.result)} | ${clean(entry.testedBy) || 'Parent'} | ${clean(observed) || '—'} | ${clean(entry.deviceLabel) || '—'} | ${clean(entry.note) || '—'} |`);
     });
     lines.push('');
   });
